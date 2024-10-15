@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+[x-cloak] {
+    display: none;
+}
+
+ol {
+    list-style-type: decimal;
+}
+
+li {
+    margin-left: 1.25rem;
+}
