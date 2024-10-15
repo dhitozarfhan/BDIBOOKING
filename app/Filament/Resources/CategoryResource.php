@@ -6,6 +6,7 @@ use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,6 +16,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class CategoryResource extends Resource
 {
@@ -32,7 +34,8 @@ class CategoryResource extends Resource
                 ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
                     $set('slug', Str::slug($state));
                 }),
-                TextInput::make('slug')->required()->unique(ignoreRecord: true)->minLength(1)->maxLength(150)
+                TextInput::make('slug')->required()->unique(ignoreRecord: true)->minLength(1)->maxLength(150),
+                Select::make('type_id')->relationship('types', 'name')->searchable()->required()
             ]);
     }
 
@@ -42,6 +45,7 @@ class CategoryResource extends Resource
             ->columns([
                 TextColumn::make('title')->sortable()->searchable(),
                 TextColumn::make('slug')->sortable()->searchable(),
+                TextColumn::make('types.name')->sortable()->searchable(),
             ])
             ->filters([
                 //
