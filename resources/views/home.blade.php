@@ -10,9 +10,9 @@
         <img src="{{ asset('images/illustrasi-pelatihan.png') }}" alt="Pelatihan" class="w-32 md:w-72 mb-4 md:mb-0"
             x-show="shown" x-transition.scale.duration.1500ms>
         <div class="ml-0 md:ml-6 mt-4 md:mt-10" x-show="shown" x-transition.duration.1500ms>
-            <h2 class="text-xl md:text-3xl font-bold mb-2">Diklat Industri Berbasis Kompetensi</h2>
+            <h2 class="text-xl md:text-3xl font-bold mb-2">{{ __('home.competency_based_industrial_training') }}</h2>
             <p class="text-gray-700 text-sm md:text-lg mb-4 md:mb-10">
-                Peserta dilatih, disertifikasi, dan langsung ditempatkan bekerja di industri.
+                {{ __('home.competency_based_industrial_training_desc')}}
             </p>
             <button class="btn bg-blue-500 text-white">Selengkapnya</button>
         </div>
@@ -20,9 +20,9 @@
 
     <div class="flex items-center justify-center md:px-40">
         <div class="mr-0 md:ml-6 mt-4 md:mt-10 text-right">
-            <h2 class="text-xl md:text-3xl font-bold mb-2">Inkubator Bisnis</h2>
+            <h2 class="text-xl md:text-3xl font-bold mb-2">{{ __('home.business_incubator') }}</h2>
             <p class="text-gray-700 text-sm md:text-lg mb-4 md:mb-10">
-                Inkubator Bisnis Pazti Bisa (IBIZA) menumbuhkan wirausaha infustri baru.
+                {{__('home.business_incubator_desc')}}
             </p>
             <button class="btn bg-green-500 text-white">Selengkapnya</button>
         </div>
@@ -32,9 +32,9 @@
     <div class="flex items-center justify-center md:px-40">
         <img src="{{ asset('images/illustrasi-pelatihan.png') }}" alt="Pelatihan" class="w-32 md:w-72 mb-4 md:mb-0">
         <div class="ml-0 md:ml-6 mt-4 md:mt-10">
-            <h2 class="text-xl md:text-3xl font-bold mb-2">Infrastruktur Kompetensi</h2>
+            <h2 class="text-xl md:text-3xl font-bold mb-2">{{__('home.competency_infrastructure')}}</h2>
             <p class="text-gray-700 text-sm md:text-lg mb-4 md:mb-10">
-                Disusun oleh praktisi industri dan sesuai dengan kebutuhan saat ini.
+                {{__('home.competency_infrastructure_desc')}}
             </p>
             <button class="btn bg-red-500 text-white">Selengkapnya</button>
         </div>
@@ -42,10 +42,9 @@
 
     <div class="flex items-center justify-center md:px-40">
         <div class="mr-0 md:ml-6 mt-4 md:mt-10 text-right">
-            <h2 class="text-xl md:text-3xl font-bold mb-2">Informasi Publik - PPID</h2>
+            <h2 class="text-xl md:text-3xl font-bold mb-2">{{__('home.ppid_public_information')}}</h2>
             <p class="text-gray-700 text-sm md:text-lg mb-4 md:mb-10">
-                Layanan dalam mendukung keterbukaan informasi publik oleh Pejabat Pengelola Informasi dan Dokumentasi
-                (PPID).
+                {{__('home.ppid_public_information_desc')}}
             </p>
             <button class="btn bg-purple-500 text-white">Selengkapnya</button>
         </div>
@@ -54,8 +53,8 @@
     <hr>
 
     <div class="mb-10">
-        <h2 class="mt-16 mb-5 ml-5 px-10 text-4xl font-bold">Berita & Blog</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <h2 class="mt-16 mb-5 ml-5 px-10 text-4xl font-bold">{{__('home.news')}} & <span class="text-red-600">{{__('home.blog')}}</span></h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
             @foreach ($featuredPosts as $post)
                 <div class="col-span-1">
                     <x-posts.post-card :post="$post" />
@@ -71,15 +70,12 @@
         </figure>
         <div class="card-body">
             <p class="text-lg md:text-2xl font-semibold">
-                "Dalam periode kedua ini saya ingin fokus pada pembangunan SDM,
-                <em>vocational training</em>, <em>up-skilling</em>, kemudian reformasi di
-                bidang pendidikan. Sehingga muncul sebuah SDM yang memiliki kualifikasi dan
-                kualitas yang baik."
+                {!!__('home.president_message')!!}
             </p>
-            <p class="text-sm md-text-base">
+            <p class="text-sm md-text-base font-bold">
                 Joko Widodo
                 <span class="text-red-600">
-                    - Presiden Indonesia
+                    — {{__('home.president_ri')}}
                 </span>
             </p>
         </div>
