@@ -35,7 +35,7 @@ class CategoryResource extends Resource
                     $set('slug', Str::slug($state));
                 }),
                 TextInput::make('slug')->required()->unique(ignoreRecord: true)->minLength(1)->maxLength(150),
-                Select::make('type_id')->relationship('types', 'name')->searchable()->required()
+                Select::make('type_id')->relationship('types', 'name')->required(),
             ]);
     }
 

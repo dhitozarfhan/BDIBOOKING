@@ -39,4 +39,7 @@
     @stack('modals')
     @livewireScripts
 
+    <!-- Stack for additional scripts -->
+    @stack('scripts')
+</body>
 </html>

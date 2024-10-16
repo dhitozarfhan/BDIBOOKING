@@ -33,7 +33,7 @@
             <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Maklumat Pelayanan Publik</a></li>
             <li class="ml-0"><a wire:navigate href="{{ route('gratification.index') }}" class="hover:bg-blue-100 hover:text-blue-500">Pelaporan Gratifikasi</a></li>
             <li class="ml-0"><a wire:navigate href="{{ route('wbs.index') }}" class="hover:bg-blue-100 hover:text-blue-500">Whistle Blowing System</a></li>
-            <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Pengaduan Masyarakat</a></li>
+            <li class="ml-0"><a wire:navigate href="{{ route('information.question') }}" class="hover:bg-blue-100 hover:text-blue-500">Pengaduan Masyarakat</a></li>
             <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Survei Kualitas Layanan</a></li>
         </ul>
     </div>

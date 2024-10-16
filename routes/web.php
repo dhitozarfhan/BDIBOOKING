@@ -7,6 +7,7 @@ use App\Http\Controllers\IbizaController;
 use App\Http\Controllers\InformationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\WBSController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,8 @@ Route::get('/competency', [CompetencyController::class, 'index'])->name('compete
 // Zona Integritas
 Route::get('/gratification', [GratificationController::class, 'index'])->name('gratification.index');
 Route::get('/wbs', [WBSController::class, 'index'])->name('wbs.index');
+Route::get('/information/question', [QuestionController::class, 'question'])->name('information.question');
+Route::post('/submit-form', [QuestionController::class, 'submit'])->name('question.submit');
 
 Route::middleware([
     'auth:sanctum',
