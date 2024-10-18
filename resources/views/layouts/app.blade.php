@@ -28,9 +28,11 @@
         @include('layouts.partials.header')
     </div>
 
-    @yield('hero')
+    <div class="bg-white">
+        @yield('hero')
+    </div>
 
-    <main class="container mx-auto px-10">
+    <main class="container">
         {{ $slot }}
     </main>
 

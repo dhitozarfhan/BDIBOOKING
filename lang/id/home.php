@@ -5,6 +5,7 @@ return[
 
     'news' => 'Berita',
     'blog' => 'Blog',
+    'more' => 'Selengkapnya',
 
     'competency_based_industrial_training' => 'Diklat Industri Berbasis Kompetensi',
     'competency_based_industrial_training_desc' => 'Peserta dilatih, disertifikasi, dan langsung ditempatkan bekerja di industri.',
