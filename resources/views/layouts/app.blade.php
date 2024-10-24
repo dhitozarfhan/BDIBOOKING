@@ -28,7 +28,7 @@
         @include('layouts.partials.header')
     </div>
 
-    <div class="bg-white">
+    <div class="bg-white" style="background-image: url('{{ asset('images/background/bg-batik.png') }}'); background-size: contain;">
         @yield('hero')
     </div>
 

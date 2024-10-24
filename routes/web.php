@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CompetencyController;
+use App\Http\Controllers\CoreController;
 use App\Http\Controllers\GratificationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IbizaController;
@@ -15,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', HomeController::class)->name('home');
 
 Route::get('/blog', [PostController::class, 'index'])->name('posts.index');
+
+//Core
+Route::get('/information', [CoreController::class, 'index'])->name('information.home');
 
 // Profil
 Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
