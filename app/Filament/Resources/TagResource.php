@@ -2,23 +2,26 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CoreResource\Pages;
-use App\Filament\Resources\CoreResource\RelationManagers;
-use App\Models\Core;
+use App\Filament\Resources\TagResource\Pages;
+use App\Filament\Resources\TagResource\RelationManagers;
+use App\Models\Tag;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class CoreResource extends Resource
+class TagResource extends Resource
 {
-    protected static ?string $model = Core::class;
+    protected static ?string $model = Tag::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -26,12 +29,15 @@ class CoreResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('en_name'),
-                TextInput::make('id_name'),
-                TextInput::make('slug')->required(),
-                Select::make('type')->options(['information' => 'Information']),
-                TextInput::make('icon'),
-                TextInput::make('sort')->numeric()
+                Section::make()->label('Nama Tag')->schema([
+                    TextInput::make('id_name')->required(),
+                    TextInput::make('en_name'),
+                ])->columns(1)->columnSpan(1),
+                Section::make()->schema([
+                    Select::make('type')
+                        ->options(['news' => 'News', 'blog' => 'Blog', 'event' => 'Event', 'gallery' => 'Gallery']),
+                    Toggle::make('is_active')->default('true')->label('Apakah Aktif?')
+                ])->columns(1)->columnSpan(1),
             ]);
     }
 
@@ -39,11 +45,10 @@ class CoreResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id'),
+                TextColumn::make('tag_id'),
                 TextColumn::make('id_name'),
                 TextColumn::make('type'),
-                TextColumn::make('icon'),
-                TextColumn::make('sort')
+                ToggleColumn::make('is_active')
             ])
             ->filters([
                 //
@@ -68,9 +73,9 @@ class CoreResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCores::route('/'),
-            'create' => Pages\CreateCore::route('/create'),
-            'edit' => Pages\EditCore::route('/{record}/edit'),
+            'index' => Pages\ListTags::route('/'),
+            'create' => Pages\CreateTag::route('/create'),
+            'edit' => Pages\EditTag::route('/{record}/edit'),
         ];
     }
 }
