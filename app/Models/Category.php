@@ -9,17 +9,15 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'type_id',
-        'title',
-        'slug',
-    ];
+    protected $table = 'category';
+    protected $primaryKey = 'category_id';
+    protected $fillable = [ 'core_id', 'type', 'en_name', 'id_name', 'sort', 'is_root', 'is_active'];
 
-    public function posts() {
-        return $this->belongsToMany(Post::class);
-    }
+    // public function posts() {
+    //     return $this->belongsToMany(Post::class);
+    // }
 
-    public function types() {
-        return $this->belongsTo(Type::class, 'type_id');
+    public function cores() {
+        return $this->belongsTo(Core::class, 'core_id');
     }
 }

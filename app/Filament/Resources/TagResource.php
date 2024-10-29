@@ -29,14 +29,14 @@ class TagResource extends Resource
     {
         return $form
             ->schema([
-                Section::make()->label('Nama Tag')->schema([
+                Section::make()->schema([
                     TextInput::make('id_name')->required(),
                     TextInput::make('en_name'),
                 ])->columns(1)->columnSpan(1),
                 Section::make()->schema([
                     Select::make('type')
                         ->options(['news' => 'News', 'blog' => 'Blog', 'event' => 'Event', 'gallery' => 'Gallery']),
-                    Toggle::make('is_active')->default('true')->label('Apakah Aktif?')
+                    Toggle::make('is_active')->default(true)->label('Apakah Aktif?')
                 ])->columns(1)->columnSpan(1),
             ]);
     }
