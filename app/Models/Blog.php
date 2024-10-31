@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Blog extends Model
 {
@@ -15,5 +16,12 @@ class Blog extends Model
 
     public function category() {
         return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function getThumbnailImage()
+    {
+        $isUrl = str_contains($this->image, 'http');
+
+        return $isUrl ? $this->image : Storage::url($this->image);
     }
 }

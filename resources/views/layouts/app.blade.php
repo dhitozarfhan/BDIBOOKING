@@ -32,7 +32,7 @@
         @yield('hero')
     </div>
 
-    <main class="container">
+    <main>
         {{ $slot }}
     </main>
 
