@@ -10,8 +10,7 @@ class BlogController extends Controller
     public function index()
     {
         $blog = Blog::latest()->get();
-        $imagePath = 'public\storage\blog\thumbnails';
 
-        return view('home', compact('blog', 'imagePath'));
+        return view('home', compact('blog'));
     }
 }
