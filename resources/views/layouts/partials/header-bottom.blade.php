@@ -6,10 +6,10 @@
     <div class="dropdown dropdown-hover">
         <div class="btn btn-ghost m-1 text-gray-500 hover:bg-transparent hover:text-blue-500">Profil<i class="fas fa-angle-down"></i></div>
         <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-            <li class="ml-0"><a wire:navigate href="{{ route('pages.show', ['slug' => 'sejarah-balai-diklat-industri-yogyakarta']) }}" class="hover:bg-blue-100 hover:text-blue-500">Tentang BDI Yogyakarta</a></li>
-            <li class="ml-0"><a wire:navigate href="{{ route('pages.show', ['slug' => 'visi-misi']) }}" class="hover:bg-blue-100 hover:text-blue-500">Visi & Misi</a></li>
-            <li class="ml-0"><a wire:navigate href="{{ route('pages.show', ['slug' => 'rencana-strategis-dan-kebijakan']) }}" class="hover:bg-blue-100 hover:text-blue-500">Renstra & Kebijakan</a></li>
-            <li class="ml-0"><a wire:navigate href="{{ route('pages.show', ['slug' => 'tugas-pokok-dan-fungsi']) }}" class="hover:bg-blue-100 hover:text-blue-500">Tugas Pokok & Fungsi</a></li>
+            <li class="ml-0"><a wire:navigate href="{{ route('information.post', ['id' => 1, 'slug' => Str::slug('Tentang BDI Yogyakarta')]) }}" class="hover:bg-blue-100 hover:text-blue-500">Tentang BDI Yogyakarta</a></li>
+            <li class="ml-0"><a wire:navigate href="{{ route('information.post', ['id' => 2, 'slug' => Str::slug('Visi & Misi')]) }}" class="hover:bg-blue-100 hover:text-blue-500">Visi & Misi</a></li>
+            <li class="ml-0"><a wire:navigate href="{{ route('information.post', ['id' => 4, 'slug' => Str::slug('Renstra & Kebijakan')]) }}" class="hover:bg-blue-100 hover:text-blue-500">Renstra & Kebijakan</a></li>
+            <li class="ml-0"><a wire:navigate href="{{ route('information.post', ['id' => 3, 'slug' => Str::slug('Tugas Pokok & Fungsi')]) }}" class="hover:bg-blue-100 hover:text-blue-500">Tugas Pokok & Fungsi</a></li>
             <li class="ml-0"><a wire:navigate href="" class="hover:bg-blue-100 hover:text-blue-500">Data Kepegawaian</a></li>
             <li class="ml-0"><a wire:navigate href="{{ route('pages.show', ['slug' => 'struktur-organisasi-bdi-yogyakarta']) }}" class="hover:bg-blue-100 hover:text-blue-500">Struktur Organisasi</a></li>
             <li class="ml-0"><a wire:navigate href="{{ route('pages.show', ['slug' => 'daftar-pejabat-pengelola-informasi-dan-dokumentasi']) }}" class="hover:bg-blue-100 hover:text-blue-500">Daftar & Penetapan PPID</a></li>

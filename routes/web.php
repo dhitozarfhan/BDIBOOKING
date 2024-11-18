@@ -22,6 +22,7 @@ Route::get('/information', [CoreController::class, 'index'])->name('information.
 
 // Profil
 Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
+Route::get('/information/post/{id}/{slug}', [InformationController::class, 'show'])->name('information.post');
 
 // Program Kerja
 Route::get('/training', [TrainingController::class, 'index'])->name('training.index');

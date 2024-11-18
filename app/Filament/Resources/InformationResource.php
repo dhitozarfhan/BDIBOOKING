@@ -18,6 +18,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -64,8 +65,9 @@ class InformationResource extends Resource
                 TextColumn::make('category_id')->label('Category'),
                 TextColumn::make('time_stamp')->label('Timestamp'),
                 TextColumn::make('id_title')->label('Judul'),
+                TextColumn::make('year')->label('Tahun'),
                 TextColumn::make('sort')->label('Sort'),
-                TextColumn::make('is_active')->label('Aktif'),
+                ToggleColumn::make('is_active')->label('Aktif'),
             ])
             ->filters([
                 //
