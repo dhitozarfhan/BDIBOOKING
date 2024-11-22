@@ -36,8 +36,9 @@ class NewsResource extends Resource
             ->schema([
                 Section::make()->schema([
                     Select::make('category_id')->relationship('category', 'category_id')->required(),
-                    DateTimePicker::make('time_stamp')->required()
-                ])->columns(2),
+                    DateTimePicker::make('time_stamp')->required(),
+                    Toggle::make('is_active')->default(true)->label('Apakah Aktif?')
+                ])->columns(3),
                 Section::make()->schema([
                     FileUpload::make('image')->image()->imageEditor()->directory('news/thumbnails')
                 ]),
@@ -51,10 +52,6 @@ class NewsResource extends Resource
                     Textarea::make('en_summary')->label('Summary'),
                     RichEditor::make('en_content')->label('Content'),
                 ]),
-                Section::make()->schema([
-                    TextInput::make('hit')->required(),
-                    Toggle::make('is_active')->default(true)
-                ])->columns(2)
             ]);
     }
 
@@ -62,9 +59,11 @@ class NewsResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('image'),
-                TextColumn::make('id_title'),
-                ToggleColumn::make('is_active')
+                ImageColumn::make('image')->label('Thumbnail'),
+                TextColumn::make('id_title')->label('Judul Berita')->limit(50),
+                TextColumn::make('time_stamp')->label('Tanggal Pembuatan')->dateTime('d F Y'),
+                TextColumn::make('hit')->label('Views'),
+                ToggleColumn::make('is_active')->label('Aktif')
             ])
             ->filters([
                 //

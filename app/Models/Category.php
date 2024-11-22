@@ -13,11 +13,11 @@ class Category extends Model
     protected $primaryKey = 'category_id';
     protected $fillable = [ 'core_id', 'type', 'en_name', 'id_name', 'sort', 'is_root', 'is_active'];
 
-    // public function posts() {
-    //     return $this->belongsToMany(Post::class);
-    // }
-
     public function cores() {
         return $this->belongsTo(Core::class, 'core_id');
+    }
+
+    public function news() {
+        return $this->hasMany(News::class, 'category_id');
     }
 }
