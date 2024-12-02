@@ -9,17 +9,34 @@ use Illuminate\Support\Facades\DB;
 
 class BlogController extends Controller
 {
-    public function index()
+    public function index($categoryId = null, $categorySlug = null)
     {
-        $blog = Blog::with('category')
+        if ($categoryId) {
+            $category = Category::findOrFail($categoryId);
+
+            $blog = Blog::where('category_id', $categoryId)
+                ->orderBy('time_stamp', 'desc')
+                ->take(10)
+                ->get()
+                ->map(function($item) {
+                    $item->formatted_date = Carbon::parse($item->time_stamp)->translatedFormat('d F Y');
+                    $item->time_stamp = Carbon::parse($item->time_stamp);
+                    return $item;
+                });
+            $category_name = $category->id_name;
+        }
+        else {
+            $blog = Blog::with('category')
             ->orderBy('time_stamp', 'desc')
-            ->get()
             ->take(10)
+            ->get()
             ->map(function ($item) {
                 $item->formatted_date = Carbon::parse($item->time_stamp)->translatedFormat('d F Y');
                 $item->time_stamp = Carbon::parse($item->time_stamp);
                 return $item;
             });
+            $category_name = null;
+        }
         $category = Category::has('blog')->withCount('blog')->get();
         $archive = DB::table('blog')
             ->selectRaw('EXTRACT(YEAR FROM time_stamp) as year, EXTRACT(MONTH FROM time_stamp) as month')
@@ -27,7 +44,7 @@ class BlogController extends Controller
             ->orderByRaw('EXTRACT(YEAR FROM time_stamp) DESC, EXTRACT(MONTH FROM time_stamp) DESC')
             ->get();
 
-        return view('blog.index', compact('blog', 'archive', 'category'));
+        return view('blog.index', compact('blog', 'archive', 'category', 'category_name'));
     }
 
     public function show($year, $month, Category $category, Blog $blog, $title)

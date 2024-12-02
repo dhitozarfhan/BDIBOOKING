@@ -1,7 +1,7 @@
 <x-app-layout>
     <section class="bg-gray-100 py-10">
         <div class="container mx-auto md:px-20">
-            <h2 class="mb-12 text-5xl font-bold">{{ __('home.news') }}</h2>
+            <h2 class="mb-12 text-5xl font-bold">{{ __('home.news') }} @isset($category_name) : {{ $category_name }} @endisset</h2>
             <div class="w-full grid grid-cols-4 gap-10">
                 <div class="md:col-span-3 col-span-4">
                     @foreach ($news as $item)

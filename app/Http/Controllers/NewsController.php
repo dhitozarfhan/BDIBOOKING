@@ -9,17 +9,34 @@ use Illuminate\Support\Facades\DB;
 
 class NewsController extends Controller
 {
-    public function index()
+    public function index($categoryId = null, $categorySlug = null)
     {
-        $news = News::with('category')
+        if ($categoryId) {
+            $category = Category::findOrFail($categoryId);
+
+            $news = News::where('category_id', $categoryId)
+                ->orderBy('time_stamp', 'desc')
+                ->take(10)
+                ->get()
+                ->map(function($item) {
+                    $item->formatted_date = Carbon::parse($item->time_stamp)->translatedFormat('d F Y');
+                    $item->time_stamp = Carbon::parse($item->time_stamp);
+                    return $item;
+                });
+            $category_name = $category->id_name;
+        }
+        else {
+            $news = News::with('category')
             ->orderBy('time_stamp', 'desc')
-            ->get()
             ->take(10)
+            ->get()
             ->map(function($item) {
                 $item->formatted_date = Carbon::parse($item->time_stamp)->translatedFormat('d F Y');
                 $item->time_stamp = Carbon::parse($item->time_stamp);
                 return $item;
             });
+            $category_name = null;
+        }
         $category = Category::has('news')->withCount('news')->get();
         $archive = DB::table('news')
             ->selectRaw('EXTRACT(YEAR FROM time_stamp) as year, EXTRACT(MONTH FROM time_stamp) as month')
@@ -27,7 +44,7 @@ class NewsController extends Controller
             ->orderByRaw('EXTRACT(YEAR FROM time_stamp) DESC, EXTRACT(MONTH FROM time_stamp) DESC')
             ->get();
 
-            return view('news.index', compact('news', 'archive', 'category'));
+            return view('news.index', compact('news', 'archive', 'category', 'category_name'));
     }
 
     public function show($year, $month, Category $category, News $news, $title)
