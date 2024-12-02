@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CompetencyController;
 use App\Http\Controllers\CoreController;
 use App\Http\Controllers\GratificationController;
@@ -16,11 +17,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 
-Route::get('/blog', [PostController::class, 'index'])->name('posts.index');
-
 //News
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');
 Route::get('/news/post/{year}/{month}/{category}/{news}/{title}', [NewsController::class, 'show'])->name('news.post');
+
+//Blog
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/post/{year}/{month}/{category}/{blog}/{title}', [BlogController::class, 'show'])->name('blog.post');
 
 //Core
 Route::get('/information', [CoreController::class, 'index'])->name('information.home');

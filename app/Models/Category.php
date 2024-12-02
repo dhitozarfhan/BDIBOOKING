@@ -20,4 +20,8 @@ class Category extends Model
     public function news() {
         return $this->hasMany(News::class, 'category_id');
     }
+
+    public function blog() {
+        return $this->hasMany(Blog::class, 'category_id');
+    }
 }
