@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CompetencyController;
 use App\Http\Controllers\CoreController;
@@ -16,6 +17,8 @@ use App\Http\Controllers\WBSController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+
+Route::get('/archive/posted/{year}/{month}', [ArchiveController::class, 'posted'])->name('archive.posted');
 
 //News
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');

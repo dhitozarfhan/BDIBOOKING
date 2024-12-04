@@ -10,9 +10,9 @@
         </div>
         <div class="space-y-2">
             @foreach ($archive as $arc)
-                <a href="" class="block bg-white border p-3 rounded-lg shadow hover:border-blue-500">
+                <a href="{{ url('archive/posted/' . $arc->year . '/' . $arc->month) }}" class="block bg-white border p-3 rounded-lg shadow hover:border-blue-500">
                     <div class="flex items-center justify-between">
-                        <h6 class="font-semibold">{{ \Carbon\Carbon::create($arc->year, $arc->month, 1)->translatedFormat('F Y') }}</h6>
+                        <h6 class="font-semibold">{{ \Carbon\Carbon::create($arc->year, $arc->month)->translatedFormat('F Y') }}</h6>
                         <i class="fas fa-chevron-right text-blue-500"></i>
                     </div>
                 </a>
