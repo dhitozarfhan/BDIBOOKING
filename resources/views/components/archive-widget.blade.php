@@ -9,7 +9,7 @@
             <h3 class="text-3xl font-bold">{{ __('home.archives') }}</h3>
         </div>
         <div class="space-y-2">
-            @foreach ($archive as $arc)
+            @foreach ($archive->take(5) as $arc)
                 <a href="{{ url('archive/posted/' . $arc->year . '/' . $arc->month) }}" class="block bg-white border p-3 rounded-lg shadow hover:border-blue-500">
                     <div class="flex items-center justify-between">
                         <h6 class="font-semibold">{{ \Carbon\Carbon::create($arc->year, $arc->month)->translatedFormat('F Y') }}</h6>

@@ -16,9 +16,8 @@ class NewsController extends Controller
 
             $news = News::where('category_id', $categoryId)
                 ->orderBy('time_stamp', 'desc')
-                ->take(10)
-                ->get()
-                ->map(function($item) {
+                ->paginate(10)
+                ->through(function($item) {
                     $item->formatted_date = Carbon::parse($item->time_stamp)->translatedFormat('d F Y');
                     $item->time_stamp = Carbon::parse($item->time_stamp);
                     return $item;
@@ -28,9 +27,8 @@ class NewsController extends Controller
         else {
             $news = News::with('category')
             ->orderBy('time_stamp', 'desc')
-            ->take(10)
-            ->get()
-            ->map(function($item) {
+            ->paginate(10)
+            ->through(function($item) {
                 $item->formatted_date = Carbon::parse($item->time_stamp)->translatedFormat('d F Y');
                 $item->time_stamp = Carbon::parse($item->time_stamp);
                 return $item;

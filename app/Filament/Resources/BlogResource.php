@@ -58,6 +58,7 @@ class BlogResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('time_stamp', 'desc')
             ->columns([
                 ImageColumn::make('image')->label('Thumbnail'),
                 TextColumn::make('id_title')->label('Judul Berita')->limit(50),

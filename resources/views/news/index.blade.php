@@ -14,6 +14,9 @@
                         :type="'news'"
                         :image="$item->image" />
                     @endforeach
+                    <nav>
+                        {{ $news->links() }}
+                    </nav>
                 </div>
                 <div class="md:col-span-1 col-span-4">
                     <x-archive-widget :archive="$archive"/>
