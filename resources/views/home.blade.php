@@ -57,7 +57,7 @@
         <div class="container mx-auto">
             <h2 class="mb-5 px-10 text-4xl font-bold">{{ __('home.news') }} & <span class="text-red-600">{{ __('home.blog') }}</span></h2>
             <div class="columns-1 sm:columns-2 md:columns-4 space-y-3 mx-10">
-                @foreach ($news as $item)
+                @foreach ($posts as $item)
                 <div class="break-inside-avoid">
                     <x-article-card
                         :post="$item"
@@ -65,20 +65,7 @@
                         :summary="$item->id_summary"
                         :category="$item->category->id_name"
                         :date="$item->formatted_date"
-                        :type="'news'"
-                        :image="$item->image" />
-                </div>
-                @endforeach
-                @foreach ($blog as $item)
-                <div class="break-inside-avoid">
-                    <x-article-card
-                        :post="$item"
-                        :title="$item->id_title"
-                        :summary="$item->id_summary"
-                        :category="$item->category->id_name"
-                        :date="$item->formatted_date"
-                        :type="'blog'"
-                        :image="$item->image" />
+                        :type="$item->type"/>
                 </div>
                 @endforeach
             </div>

@@ -17,25 +17,26 @@ class HomeController extends Controller
     public function __invoke(Request $request)
     {
         $slideshows = Slideshow::all();
-        $newsImage = 'storage/news/thumbnails';
-        $blogImage = 'storage/blog/thumbnails';
 
-        $news = News::with('category')->get()->map(function($item) {
-            $item->formatted_date = Carbon::parse($item->time_stamp)->format('d M Y');
+        $news = News::with('category')->latest('time_stamp')->take(6)->get()->map(function($item) {
+            $item->formatted_date = Carbon::parse($item->time_stamp)->translatedFormat('l, d M Y');
+            $item->time_stamp = Carbon::parse($item->time_stamp);
+            $item->type = 'news';
             return $item;
         });
-        $blog = Blog::with('category')->get()->map(function($item) {
-            $item->formatted_date = Carbon::parse($item->time_stamp)->format('d M Y');
+        $blog = Blog::with('category')->latest('time_stamp')->take(6)->get()->map(function($item) {
+            $item->formatted_date = Carbon::parse($item->time_stamp)->translatedFormat('l, d M Y');
+            $item->time_stamp = Carbon::parse($item->time_stamp);
+            $item->type = 'blog';
             return $item;
         });
+
+        $posts = $news->concat($blog)->sortByDesc('time_stamp');
 
         return view('home', [
             // 'featuredPosts' => Post::published()->featured()->latest('published_at')->take(9)->get(),
             'slideshows' => $slideshows,
-            'news' => $news,
-            'blog' => $blog,
-            'newsImage' => $newsImage,
-            'blogImage' => $blogImage,
+            'posts' => $posts
         ]);
     }
 }
