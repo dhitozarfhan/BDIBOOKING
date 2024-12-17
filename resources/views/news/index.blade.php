@@ -20,7 +20,10 @@
                 </div>
                 <div class="md:col-span-1 col-span-4">
                     <x-archive-widget :archive="$archive"/>
-                    <x-news-widget :category="$category"/>
+                    <x-news-widget
+                        :recent="$recent"
+                        :category="$category"
+                        :popular="$popular" />
                 </div>
             </div>
         </div>

@@ -41,8 +41,10 @@ class NewsController extends Controller
             ->groupByRaw('EXTRACT(YEAR FROM time_stamp), EXTRACT(MONTH FROM time_stamp)')
             ->orderByRaw('EXTRACT(YEAR FROM time_stamp) DESC, EXTRACT(MONTH FROM time_stamp) DESC')
             ->get();
+        $recent = News::orderBy('time_stamp', 'desc')->take(5)->get();
+        $popular = News::orderBy('hit', 'desc')->take(5)->get();
 
-            return view('news.index', compact('news', 'archive', 'category', 'category_name'));
+        return view('news.index', compact('news', 'archive', 'category', 'category_name', 'recent', 'popular'));
     }
 
     public function show($year, $month, Category $category, News $news, $title)
@@ -55,7 +57,9 @@ class NewsController extends Controller
             ->groupByRaw('EXTRACT(YEAR FROM time_stamp), EXTRACT(MONTH FROM time_stamp)')
             ->orderByRaw('EXTRACT(YEAR FROM time_stamp) DESC, EXTRACT(MONTH FROM time_stamp) DESC')
             ->get();
+        $recent = News::orderBy('time_stamp', 'desc')->take(5)->get();
+        $popular = News::orderBy('hit', 'desc')->take(5)->get();
 
-        return view('news.post', compact('news', 'formatted_date', 'archive', 'category'));
+        return view('news.post', compact('news', 'formatted_date', 'archive', 'category', 'recent', 'popular'));
     }
 }
