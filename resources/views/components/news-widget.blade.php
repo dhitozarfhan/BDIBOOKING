@@ -23,7 +23,6 @@
 @endif
 
 <div x-data="{ activeTab: 'recent' }" class="space-y-4">
-    <!-- Tombol Navigasi -->
     <div class="flex justify-center py-2 space-x-2 bg-blue-100 rounded-lg">
         <button
             @click="activeTab = 'recent'"
@@ -54,7 +53,7 @@
                             'category' => $item->category_id,
                             'news' => $item->news_id,
                             'title' => Str::slug($item->id_title)]) }}">
-                            <h4 class="font-bold leading-tight hover:text-blue-600">{{ $item->id_title }}</h2>
+                            <h4 class="font-bold leading-tight hover:text-blue-600">{{ $item->id_title }}</h4>
                         </a>
                         <div class="text-gray-600 text-xs flex items-center">
                             <i class="far fa-calendar-alt mr-2"></i>

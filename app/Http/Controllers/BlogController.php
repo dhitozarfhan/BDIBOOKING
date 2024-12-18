@@ -41,8 +41,10 @@ class BlogController extends Controller
             ->groupByRaw('EXTRACT(YEAR FROM time_stamp), EXTRACT(MONTH FROM time_stamp)')
             ->orderByRaw('EXTRACT(YEAR FROM time_stamp) DESC, EXTRACT(MONTH FROM time_stamp) DESC')
             ->get();
+        $recent = Blog::orderBy('time_stamp', 'desc')->take(5)->get();
+        $popular = Blog::orderBy('hit', 'desc')->take(5)->get();
 
-        return view('blog.index', compact('blog', 'archive', 'category', 'category_name'));
+        return view('blog.index', compact('blog', 'archive', 'category', 'category_name', 'recent', 'popular'));
     }
 
     public function show($year, $month, Category $category, Blog $blog, $title)
@@ -55,7 +57,9 @@ class BlogController extends Controller
             ->groupByRaw('EXTRACT(YEAR FROM time_stamp), EXTRACT(MONTH FROM time_stamp)')
             ->orderByRaw('EXTRACT(YEAR FROM time_stamp) DESC, EXTRACT(MONTH FROM time_stamp) DESC')
             ->get();
+        $recent = Blog::orderBy('time_stamp', 'desc')->take(5)->get();
+        $popular = Blog::orderBy('hit', 'desc')->take(5)->get();
 
-        return view('blog.post', compact('blog', 'formatted_date', 'archive', 'category'));
+        return view('blog.post', compact('blog', 'formatted_date', 'archive', 'category', 'recent', 'popular'));
     }
 }
