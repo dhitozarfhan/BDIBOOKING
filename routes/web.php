@@ -33,11 +33,11 @@ Route::get('/blog/post/{year}/{month}/{category}/{blog}/{title}', [BlogControlle
 
 //Core
 Route::get('/information', [InformationController::class, 'home'])->name('information.home');
+Route::get('information/core/{slug}', [InformationController::class, 'showCore'])->name('information.core');
 
 // Profil
 Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
 Route::get('/information/post/{id}/{slug}', [InformationController::class, 'show'])->name('information.post');
-Route::get('information/core/{slug}', [InformationController::class, 'showCore'])->name('information.core');
 
 // Program Kerja
 Route::get('/training', [TrainingController::class, 'index'])->name('training.index');
@@ -49,6 +49,9 @@ Route::get('/gratification', [GratificationController::class, 'index'])->name('g
 Route::get('/wbs', [WBSController::class, 'index'])->name('wbs.index');
 Route::get('/information/question', [QuestionController::class, 'question'])->name('information.question');
 Route::post('/submit-form', [QuestionController::class, 'submit'])->name('question.submit');
+
+//Procedure
+Route::get('/information/procedure/{type?}', [InformationController::class, 'procedure'])->name('information.procedure');
 
 Route::middleware([
     'auth:sanctum',

@@ -40,4 +40,18 @@ class InformationController extends Controller
             ->groupBy('category_id');
         return view('information.core', compact('cores', 'core', 'informations'));
     }
+
+    public function procedure($type = null) {
+        $validTypes = ['propose', 'challenge', 'dispute', 'court_dispute'];
+        if (!in_array($type, $validTypes)) {
+            $type = 'propose';
+        }
+        
+        $data = [
+            'title' => __('information.' . $type),
+            'type' => $type
+        ];
+
+        return view('information.procedure', $data);
+    }
 }

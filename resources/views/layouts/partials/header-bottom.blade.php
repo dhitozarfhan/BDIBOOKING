@@ -66,7 +66,7 @@
         <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
             <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Pengaduan Masyarakat</a></li>
             <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Form Permohonan Informasi Publik</a></li>
-            <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Prosedur Memperoleh Informasi</a></li>
+            <li class="ml-0"><a href="{{ route('information.procedure') }}" class="hover:bg-blue-100 hover:text-blue-500">Prosedur Memperoleh Informasi</a></li>
             <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Jawaban Pertanyaan</a></li>
             <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Laporan Kinerja</a></li>
             <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Whistle Blowing System</a></li>
