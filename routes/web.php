@@ -53,6 +53,11 @@ Route::post('/submit-form', [QuestionController::class, 'submit'])->name('questi
 //Procedure
 Route::get('/information/procedure/{type?}', [InformationController::class, 'procedure'])->name('information.procedure');
 
+//VirtualTour
+Route::get('/virtualtour', function() {
+    return view('virtualtour.index');
+});
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

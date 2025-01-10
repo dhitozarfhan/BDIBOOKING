@@ -74,6 +74,6 @@
     </div>
 
     <div role="button" class="btn btn-ghost m-1 text-gray-500 hover:bg-transparent hover:text-blue-500">
-        <a href="#">Virtual Tour</a>
+        <a href="/virtualtour">Virtual Tour</a>
     </div>
 </div>

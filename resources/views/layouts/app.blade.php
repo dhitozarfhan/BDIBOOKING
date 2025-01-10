@@ -32,7 +32,7 @@
         @yield('hero')
     </div>
 
-    <main class="mx-2 md:mx-40">
+    <main class="mx-2 md:mx-40 my-8 md:my-12">
         {{ $slot }}
     </main>
 
