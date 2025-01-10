@@ -14,6 +14,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\WBSController;
+use App\Models\Information;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
@@ -31,11 +32,12 @@ Route::get('/blog/category/{categoryId}/{categorySlug}', [BlogController::class,
 Route::get('/blog/post/{year}/{month}/{category}/{blog}/{title}', [BlogController::class, 'show'])->name('blog.post');
 
 //Core
-Route::get('/information', [CoreController::class, 'index'])->name('information.home');
+Route::get('/information', [InformationController::class, 'home'])->name('information.home');
 
 // Profil
 Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
 Route::get('/information/post/{id}/{slug}', [InformationController::class, 'show'])->name('information.post');
+Route::get('information/core/{slug}', [InformationController::class, 'showCore'])->name('information.core');
 
 // Program Kerja
 Route::get('/training', [TrainingController::class, 'index'])->name('training.index');
