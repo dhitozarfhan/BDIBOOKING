@@ -31,13 +31,18 @@ Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/category/{categoryId}/{categorySlug}', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/post/{year}/{month}/{category}/{blog}/{title}', [BlogController::class, 'show'])->name('blog.post');
 
-//Core
+//Information
 Route::get('/information', [InformationController::class, 'home'])->name('information.home');
+Route::get('/information/post/{id}/{slug}', [InformationController::class, 'show'])->name('information.post');
 Route::get('information/core/{slug}', [InformationController::class, 'showCore'])->name('information.core');
+Route::get('/information/question', [QuestionController::class, 'question'])->name('information.question');
+Route::get('/information/procedure/{type?}', [InformationController::class, 'procedure'])->name('information.procedure');
+Route::get('/information/request', function() {
+    return view('information.request');
+});
 
 // Profil
 Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
-Route::get('/information/post/{id}/{slug}', [InformationController::class, 'show'])->name('information.post');
 
 // Program Kerja
 Route::get('/training', [TrainingController::class, 'index'])->name('training.index');
@@ -47,11 +52,7 @@ Route::get('/competency', [CompetencyController::class, 'index'])->name('compete
 // Zona Integritas
 Route::get('/gratification', [GratificationController::class, 'index'])->name('gratification.index');
 Route::get('/wbs', [WBSController::class, 'index'])->name('wbs.index');
-Route::get('/information/question', [QuestionController::class, 'question'])->name('information.question');
 Route::post('/submit-form', [QuestionController::class, 'submit'])->name('question.submit');
-
-//Procedure
-Route::get('/information/procedure/{type?}', [InformationController::class, 'procedure'])->name('information.procedure');
 
 //VirtualTour
 Route::get('/virtualtour', function() {

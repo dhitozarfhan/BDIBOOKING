@@ -44,7 +44,7 @@
             <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Motto & Nilai Organisasi</a></li>
             <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Unit Pelayanan Publik</a></li>
             <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Pengadaan Barang/Jasa</a></li>
-            <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Layanan Informasi Publik</a></li>
+            <li class="ml-0"><a href="/information/request" class="hover:bg-blue-100 hover:text-blue-500">Layanan Informasi Publik</a></li>
             <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Pengaduan Masyarakat</a></li>
             <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Kode Etik</a></li>
             <li class="ml-0"><a href="" class="hover:bg-blue-100 hover:text-blue-500">Laporan Survei Kepuasan Masyarakat</a></li>
