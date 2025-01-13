@@ -7,7 +7,7 @@
     </figure>
     <div class="card-body">
         @if ($type === 'news')
-            <a href="{{ route('news.post', [
+            <a wire:navigate href="{{ route('news.post', [
                     'year' => $post->time_stamp->format('Y'),
                     'month' => $post->time_stamp->format('m'),
                     'category' => $post->category->category_id,
@@ -16,7 +16,7 @@
                 <h2 class="text-xl font-bold hover:text-blue-600 transition">{{ $title }}</h2>
             </a>
         @elseif ($type === 'blog')
-            <a href="{{ route('blog.post', [
+            <a wire:navigate href="{{ route('blog.post', [
                     'year' => $post->time_stamp->format('Y'),
                     'month' => $post->time_stamp->format('m'),
                     'category' => $post->category->category_id,

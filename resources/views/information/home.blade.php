@@ -1,11 +1,11 @@
 <x-app-layout>
     <section class="bg-gray-100">
-        <div class="container mx-auto text-center p-12">
+        <div class="container mx-auto text-center">
             <div class="flex justify-between items-center mb-8">
                 <i class="fas fa-plus text-purple-600 text-2xl"></i>
                 <i class="fas fa-star text-orange-500 text-2xl"></i>
             </div>
-            <h1 class="text-5xl font-bold text-gray-800 mb-12">{{ __('home.dip') }}</h1>
+            <h1 class="text-6xl font-bold text-gray-800 mb-12">{{ __('home.dip') }}</h1>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 @foreach ($cores as $dt)
                     <div class="bg-white rounded-lg shadow-md hover:ring-1 hover:ring-blue-500 group">

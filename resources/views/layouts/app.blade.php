@@ -29,10 +29,14 @@
     </div>
 
     <div class="bg-white" style="background-image: url('{{ asset('images/background/bg-batik.png') }}'); background-size: contain;">
+        @yield('carousel')
+    </div>
+
+    <div class="bg-white">
         @yield('hero')
     </div>
 
-    <main class="mx-2 md:mx-40 my-8 md:my-12">
+    <main>
         {{ $slot }}
     </main>
 

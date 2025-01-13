@@ -1,16 +1,35 @@
 <x-app-layout>
-    <section class="pt-5 pb-0 px-10 lg:pb-0">
+    <section class="bg-gray-100 mx-40">
+        <div class="container text-center">
+            <div class="flex justify-between items-center mb-8">
+                <i class="fas fa-plus text-purple-600 text-2xl"></i>
+                <i class="fas fa-star text-orange-500 text-2xl"></i>
+            </div>
+            <h1 class="text-6xl font-bold text-gray-800 mb-12">{{ __('home.dip') }}</h1>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                @foreach ($cores as $dt)
+                    <div class="bg-white rounded-lg shadow-md hover:ring-1 hover:ring-blue-500 group">
+                        <a wire:navigate href="{{ route('information.core', ['slug' => $dt->slug]) }}" class="p-4">
+                            <h2 class="text-4xl text-gray-400 mb-2 group-hover:text-blue-500">{!! $dt['icon'] !!}</h2>
+                            <h6 class="font-bold">{{ $dt[config('app.locale').'_name'] }}</h6>
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    <section class="bg-white mt-8 pt-5">
         <div class="container">
             <div class="grid gap-4 md:gap-5">
-                <div>
+                <div class="mx-40">
                     <h3 class="mb-6 text-3xl font-bold">
                         {!! $core->icon !!} {{ $core->{config('app.locale') . '_name'} }}
                     </h3>
-                    <div>
+                    <div class="mb-10">
                         @if (!empty($informations))
                             @forelse ($informations as $index => $info)
                                 <div class="mb-4">
-                                    <button onclick="toggleAccordion({{ $index }})" class="w-full flex justify-between items-center py-4 bg-gray-200 rounded-md">
+                                    <button onclick="toggleAccordion({{ $index }})" class="w-full flex justify-between items-center py-4 bg-gray-100 rounded-md">
                                         <span class="font-bold ml-4">{{ $info->first()->category->id_name }}</span>
                                         <span id="icon-{{ $index }}" class="font-bold mr-4 transition-transform duration-300">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4">
