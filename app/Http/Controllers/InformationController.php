@@ -22,8 +22,9 @@ class InformationController extends Controller
         if ($generatedSlug !== $slug){
             return redirect()->route('information.post', ['id' => $id, 'slug' => $generatedSlug]);
         }
+        $cores = Core::all();
 
-        return view('information.post', compact('post'));
+        return view('information.post', compact('post', 'cores'));
     }
 
     public function showCore($slug)
@@ -46,7 +47,7 @@ class InformationController extends Controller
         if (!in_array($type, $validTypes)) {
             $type = 'propose';
         }
-        
+
         $data = [
             'title' => __('information.' . $type),
             'type' => $type

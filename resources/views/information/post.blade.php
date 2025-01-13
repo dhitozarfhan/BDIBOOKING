@@ -10,6 +10,14 @@
         </div>
         <div id="side-bar">
             @include('components.archive-widget')
+            @foreach ($cores as $dt)
+                    <div class="flex justify-start bg-white rounded-lg shadow-md mb-6 hover:ring-1 hover:ring-blue-500 group">
+                        <a href="{{ route('information.core', ['slug' => $dt->slug]) }}" class="p-4">
+                            <p class="text-4xl text-gray-400 group-hover:text-blue-500">{!! $dt['icon'] !!}</p>
+                            <p class="font-bold">{{ $dt[config('app.locale').'_name'] }}</p>
+                        </a>
+                    </div>
+                @endforeach
         </div>
     </div>
 </x-app-layout>
