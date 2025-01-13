@@ -10,17 +10,15 @@ class Page extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'title',
-        'slug',
-        'content',
-        'document',
-    ];
+    protected $table = 'page';
+    protected $primaryKey = 'page_id';
+    public $timestamps = false;
+    protected $fillable = ['admin_id', 'slug', 'time_stamp', 'en_title', 'id_title', 'en_summary',
+                            'id_summary', 'en_content', 'id_content', 'hit', 'is_active',
+                            'enable_comment', 'auto_accept_comment', 'email_notification_comment'];
 
-    public function getDocument()
+    public function incrementHit()
     {
-        $isUrl = str_contains($this->document, 'http');
-
-        return $isUrl ? $this->document : Storage::url($this->document);
+        $this->increment('hit');
     }
 }

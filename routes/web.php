@@ -41,8 +41,8 @@ Route::get('/information/request', function() {
     return view('information.request');
 });
 
-// Profil
-Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
+// Page
+Route::get('/page/post/{slug}', [PageController::class, 'show'])->name('page.post');
 
 // Program Kerja
 Route::get('/training', [TrainingController::class, 'index'])->name('training.index');
