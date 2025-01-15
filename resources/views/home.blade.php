@@ -59,8 +59,8 @@
 
     <section class="bg-gray-100">
         <div class="container mx-auto">
-            <h2 class="mb-5 px-10 text-5xl font-bold">{{ __('home.news') }} & <span class="text-red-600">{{ __('home.blog') }}</span></h2>
-            <div class="columns-1 sm:columns-2 md:columns-4 space-y-3 mx-10">
+            <h2 class="my-5 ml-40 text-5xl font-bold">{{ __('home.news') }} & <span class="text-red-600">{{ __('home.blog') }}</span></h2>
+            <div class="columns-1 sm:columns-2 md:columns-4 space-y-3 mx-40">
                 @foreach ($posts as $item)
                 <div class="break-inside-avoid">
                     <x-article-card
@@ -75,6 +75,4 @@
             </div>
         </div>
     </section>
-
-    @include('components.testimonial')
 </x-app-layout>
