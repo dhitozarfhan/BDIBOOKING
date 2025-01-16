@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\QuestionSubmission;
+use App\Models\Category;
+use App\Models\Question;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class QuestionController extends Controller
 {
@@ -15,31 +16,34 @@ class QuestionController extends Controller
 
     public function submit(Request $request)
     {
-        $validator = Validator::class($request->all(), [
-            'g-recaptcha-response' => 'required|captcha',
+        $validated = $request->validate([
             'subject' => 'required|string|max:255',
             'content' => 'required|string',
-            'name' => 'required|string|max:255',
-            'mobile' => 'required|string|max:15',
-            'email' => 'required|email',
+            'name' => 'required|string|max:30',
+            'mobile' => 'required|string|max:20',
+            'email' => 'nullable|email|max:50',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
+        $questionCode = strtoupper(Str::random(6));
+        $category = Category::where('type', 'question')->first();
+        $categoryId = $category ? $category->category_id : 7;
 
-        if (!function_exists('generate_captcha')) {
-            function generate_captcha()
-            {
-                // Ganti dengan logika untuk menghasilkan captcha
-                return '<img src="path_to_your_captcha_image" alt="captcha">';
-            }
-        }
+        $question = new Question([
+            'question_code' => $questionCode,
+            'category_id' => $categoryId,
+            'subject' => $validated['subject'],
+            'content' => $validated['content'],
+            'name' => $validated['name'],
+            'mobile' => $validated['mobile'],
+            'email' => $validated['email'] ?? null,
+            'status' => 'C',
+            'time_insert' => now(),
+            'time_update' => now(),
+            'time_publish' => now(),
+        ]);
 
-        QuestionSubmission::class($request->only('subject', 'content', 'name', 'mobile', 'email'));
+        $question->save();
 
-        return redirect()->back()->with('message', 'Form submitted succesfully!');
+        return redirect()->route('information.question')->with('msg', 'Pertanyaan anda telah dikirim!');
     }
 }

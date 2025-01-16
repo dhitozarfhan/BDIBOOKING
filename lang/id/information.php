@@ -4,6 +4,27 @@
 return[
     'information' => 'Informasi yang Anda maksud tidak ditemukan.',
 
+    'public_question' => 'Pertanyaan / Pengaduan Masyarakat',
+    'question_hint' => 'Jika anda mempunyai pertanyaan, atau saran dan kritik yang ingin disampaikan kepada kami, silakan isi form berikut kemudian kirim, maka kami akan berusaha menjawab keluhan Anda dengan segera.',
+    'subject' => 'Topik / Judul',
+    'message' => 'Pertanyaan / Pesan',
+    'name' => 'Nama',
+    'mobile' => 'Mobilephone',
+    'email' => 'Email',
+    'submit' => 'Submit',
+
+    'contact' => 'Kontak Kami',
+    'phone' => 'Telepon',
+    '_phone' => '(0274) 373912',
+    'fax' => 'Faksmile',
+    '_fax' => '(0274) 376048',
+    'address' => 'Alamat',
+    '_address' => 'Jalan Gedongkuning 140, Kotagede, Yogyakarta 55171',
+    'email' => 'Email',
+    '_email' => 'bdiyogyakarta@kemenperin.go.id',
+    'maps' => 'Maps',
+    'facebook' => 'Facebook',
+
     'public_information_request_form' => 'Formulir Permohonan Informasi Publik',
     'applicant_name' => 'Nama Pemohon',
     'applicant_id_card_number' => 'Nomor Kartu Identitas / KTP',
