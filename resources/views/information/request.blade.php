@@ -120,7 +120,7 @@
                                 </div>
                                 <div class="mt-4">
                                     <button type="submit" class="btn btn-primary text-base text-white w-28">
-                                        Submit
+                                        {{ __('information.submit') }}
                                     </button>
                                 </div>
                             </div>

@@ -41,7 +41,7 @@ return[
     'applicant_softcopy' => 'Mendapatkan salinan berupa <em>softcopy</em>',
     'applicant_request' => 'Pertanyaan / Rincian Informasi yang Dibutuhkan',
     'applicant_used_for' => 'Tujuan Pengguna Informasi',
-    'applicant_provision' => 'Saya telah membaca dan menyetujui <a href="%s" target="_blank" class="text-blue-600">ketentuan permohonan.</a>',
+    'applicant_provision' => 'Saya telah membaca dan menyetujui <a href="/information/provision" target="_blank" class="text-blue-600">ketentuan permohonan.</a>',
 
     'propose' => 'Prosedur Pengajuan',
     'challenge' => 'Prosedur Tantangan',

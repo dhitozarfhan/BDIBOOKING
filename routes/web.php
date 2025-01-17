@@ -40,6 +40,9 @@ Route::get('/information/procedure/{type?}', [InformationController::class, 'pro
 Route::get('/information/request', function() {
     return view('information.request');
 });
+Route::get('/information/provision', function() {
+    return view('information.provision');
+});
 
 // Page
 Route::get('/page/post/{slug}', [PageController::class, 'show'])->name('page.post');
