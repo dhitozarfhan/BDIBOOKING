@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CompetencyController;
 use App\Http\Controllers\CoreController;
 use App\Http\Controllers\GratificationController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\IbizaController;
 use App\Http\Controllers\InformationController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\TrainingController;
@@ -43,6 +45,12 @@ Route::get('/information/request', function() {
 Route::get('/information/provision', function() {
     return view('information.provision');
 });
+
+//Booking
+Route::get('/seminar', [BookingController::class, 'index'])->name('booking.index');
+Route::get('/seminar/{id}/{title}', [BookingController::class, 'show'])->name('booking.post');
+Route::get('/seminar/{id}/{title}/checkout', [BookingController::class, 'detail'])->middleware('auth')->name('booking.detail');
+Route::post('/seminar/{seminar}/peserta', [ParticipantController::class, 'store'])->middleware('auth')->name('participant.store');
 
 // Page
 Route::get('/page/post/{slug}', [PageController::class, 'show'])->name('page.post');
