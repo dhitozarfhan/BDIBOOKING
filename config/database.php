@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => env('DB_CONNECTION', 'pgsql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -110,6 +110,16 @@ return [
             'prefix_indexes' => true,
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
+        ],
+
+        'second_db' => [
+            'driver' => env('SECOND_DB_CONNECTION', 'mysql'),
+            'host' => env('SECOND_DB_HOST', '127.0.0.1'),
+            'port' => env('SECOND_DB_PORT', '3306'),
+            'database' => env('SECOND_DB_DATABASE', 'bdiyk_new'),
+            'username' => env('SECOND_DB_USERNAME', 'root'),
+            'password' => env('SECOND_DB_PASSWORD', ''),
+            // ...
         ],
 
     ],

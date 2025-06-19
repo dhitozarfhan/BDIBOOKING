@@ -15,12 +15,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Post::factory(100)->create();
-        Category::factory(5)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        
+        $this->call([
+            CategoryTypeSeeder::class,
+            CategorySeeder::class,
         ]);
     }
 }
