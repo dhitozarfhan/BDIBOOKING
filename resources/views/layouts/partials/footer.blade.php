@@ -1,7 +1,7 @@
 <footer class="footer bg-zinc-800 px-10 py-5">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
         <div class="p-3">
-            <img src="https://bdiyogyakarta.kemenperin.go.id/assets/images/bdi-yogyakarta-white.svg"
+            <img src="{{ asset('images/bdi-yogyakarta-white.svg') }}"
                 alt="Balai Diklat Industri Yogyakarta" class="h-10">
             <p class="py-3 text-gray-300">
                 BDI Yogyakarta mempunyai tugas melaksanakan

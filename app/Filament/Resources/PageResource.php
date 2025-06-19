@@ -4,18 +4,19 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PageResource\Pages;
 use App\Filament\Resources\PageResource\RelationManagers;
-use App\Models\Category;
 use App\Models\Page;
 use Filament\Forms;
-use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -30,16 +31,27 @@ class PageResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('title')->required(),
-                TextInput::make('slug')->required(),
-                RichEditor::make('content')->required()->columnSpanFull(),
-                FileUpload::make('document')
-                    ->appendFiles()
-                    ->previewable()
-                    ->acceptedFileTypes(['application/pdf'])
-                    ->label('Upload File (opsional)')
-                    ->directory('information/document'),
-
+                Section::make()->schema([
+                    TextInput::make('admin_id'),
+                    TextInput::make('slug'),
+                    DateTimePicker::make('time_stamp')->required(),
+                ])->columns(3),
+                Section::make('Indonesia')->schema([
+                    TextInput::make('id_title'),
+                    Textarea::make('id_summary'),
+                    RichEditor::make('id_content'),
+                ]),
+                Section::make('English')->schema([
+                    TextInput::make('en_title'),
+                    Textarea::make('en_summary'),
+                    RichEditor::make('en_content'),
+                ]),
+                Section::make('Toggle')->schema([
+                    Toggle::make('is_active')->default(false),
+                    Toggle::make('enable_comment')->default(false),
+                    Toggle::make('auto_accept_comment')->default(false),
+                    Toggle::make('email_notification_comment')->default(false),
+                ])->columns(4),
             ]);
     }
 
@@ -47,9 +59,14 @@ class PageResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('title'),
-                TextColumn::make('slug'),
-                TextColumn::make('created_at')->dateTime(),
+                TextColumn::make('page_id'),
+                TextColumn::make('admin_id'),
+                TextColumn::make('time_stamp'),
+                TextColumn::make('id_title'),
+                ToggleColumn::make('is_active'),
+                ToggleColumn::make('enable_comment'),
+                ToggleColumn::make('auto_accept_comment'),
+                ToggleColumn::make('email_notification_comment'),
             ])
             ->filters([
                 //

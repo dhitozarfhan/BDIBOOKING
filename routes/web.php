@@ -1,22 +1,59 @@
 <?php
 
+use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CompetencyController;
+use App\Http\Controllers\CoreController;
 use App\Http\Controllers\GratificationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\IbizaController;
 use App\Http\Controllers\InformationController;
+use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\WBSController;
+use App\Models\Information;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 
-Route::get('/blog', [PostController::class, 'index'])->name('posts.index');
+Route::get('/archive/posted/{year}/{month}', [ArchiveController::class, 'posted'])->name('archive.posted');
 
-// Profil
-Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
+//News
+Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+Route::get('/news/category/{categoryId}/{categorySlug}', [NewsController::class, 'index'])->name('news.index');
+Route::get('/news/post/{year}/{month}/{category}/{news}/{title}', [NewsController::class, 'show'])->name('news.post');
+
+//Blog
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/category/{categoryId}/{categorySlug}', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/post/{year}/{month}/{category}/{blog}/{title}', [BlogController::class, 'show'])->name('blog.post');
+
+//Information
+Route::get('/information', [InformationController::class, 'home'])->name('information.home');
+Route::get('/information/post/{id}/{slug}', [InformationController::class, 'show'])->name('information.post');
+Route::get('information/core/{slug}', [InformationController::class, 'showCore'])->name('information.core');
+Route::get('/information/question', [QuestionController::class, 'question'])->name('information.question');
+Route::get('/information/procedure/{type?}', [InformationController::class, 'procedure'])->name('information.procedure');
+Route::get('/information/request', function() {
+    return view('information.request');
+});
+Route::get('/information/provision', function() {
+    return view('information.provision');
+});
+
+//Booking
+Route::get('/seminar', [BookingController::class, 'index'])->name('booking.index');
+Route::get('/seminar/{id}/{title}', [BookingController::class, 'show'])->name('booking.post');
+Route::get('/seminar/{id}/{title}/checkout', [BookingController::class, 'detail'])->middleware('auth')->name('booking.detail');
+Route::post('/seminar/{seminar}/peserta', [ParticipantController::class, 'store'])->middleware('auth')->name('participant.store');
+
+// Page
+Route::get('/page/post/{slug}', [PageController::class, 'show'])->name('page.post');
 
 // Program Kerja
 Route::get('/training', [TrainingController::class, 'index'])->name('training.index');
@@ -26,6 +63,12 @@ Route::get('/competency', [CompetencyController::class, 'index'])->name('compete
 // Zona Integritas
 Route::get('/gratification', [GratificationController::class, 'index'])->name('gratification.index');
 Route::get('/wbs', [WBSController::class, 'index'])->name('wbs.index');
+Route::post('/submit-form', [QuestionController::class, 'submit'])->name('question.submit');
+
+//VirtualTour
+Route::get('/virtualtour', function() {
+    return view('virtualtour.index');
+});
 
 Route::middleware([
     'auth:sanctum',

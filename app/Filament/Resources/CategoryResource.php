@@ -6,15 +6,20 @@ use App\Filament\Resources\CategoryResource\Pages;
 use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class CategoryResource extends Resource
 {
@@ -26,13 +31,22 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('title')
-                ->live()
-                ->required()->minLength(1)->maxLength(150)
-                ->afterStateUpdated(function (string $operation, $state, Forms\Set $set) {
-                    $set('slug', Str::slug($state));
-                }),
-                TextInput::make('slug')->required()->unique(ignoreRecord: true)->minLength(1)->maxLength(150)
+                Section::make()->schema([
+                    TextInput::make('id_name')->required(),
+                    TextInput::make('en_name'),
+                ])->columns(2),
+                Section::make()->schema([
+                    Select::make('type')
+                    ->options(['news' => 'News', 'blog' => 'Blog', 'gallery' => 'Gallery',
+                                'event' => 'Event', 'information' => 'Information', 'question' => 'Question',
+                                'request' => 'Request', 'wbs' => 'WBS', 'service' => 'Service',])->required(),
+                    Select::make('core_id')->relationship('cores', 'core_id'),
+                ])->columns(2),
+                Section::make()->schema([
+                    TextInput::make('sort')->required(),
+                    Toggle::make('is_root')->default(true)->label('Apakah Root?'),
+                    Toggle::make('is_active')->default(true)->label('Apakah Active?'),
+                ])->columns(3),
             ]);
     }
 
@@ -40,8 +54,14 @@ class CategoryResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('title')->sortable()->searchable(),
-                TextColumn::make('slug')->sortable()->searchable(),
+                TextColumn::make('category_id'),
+                TextColumn::make('core_id'),
+                TextColumn::make('type'),
+                TextColumn::make('en_name'),
+                TextColumn::make('id_name'),
+                TextColumn::make('sort'),
+                ToggleColumn::make('is_root'),
+                ToggleColumn::make('is_active'),
             ])
             ->filters([
                 //

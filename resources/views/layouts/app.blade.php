@@ -28,9 +28,15 @@
         @include('layouts.partials.header')
     </div>
 
-    @yield('hero')
+    <div class="bg-white" style="background-image: url('{{ asset('images/background/bg-batik.png') }}'); background-size: contain;">
+        @yield('carousel')
+    </div>
 
-    <main class="container mx-auto px-10">
+    <div class="bg-white">
+        @yield('hero')
+    </div>
+
+    <main>
         {{ $slot }}
     </main>
 
@@ -39,4 +45,7 @@
     @stack('modals')
     @livewireScripts
 
+    <!-- Stack for additional scripts -->
+    @stack('scripts')
+</body>
 </html>
