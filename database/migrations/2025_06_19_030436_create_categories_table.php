@@ -17,8 +17,8 @@ return new class extends Migration
             $table->integer('category_type_id');
             $table->json('name');
             $table->integer('sort')->default(0);
-            $table->boolean('is_root')->nullable();
-            $table->boolean('is_active')->nullable();
+            $table->boolean('is_root')->default(false);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

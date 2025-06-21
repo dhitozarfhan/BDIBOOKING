@@ -20,15 +20,15 @@ class CategoryTypeSeeder extends Seeder
         }
 
         $datas = [
-            ['id' => EnumsCategoryType::News->value, 'name' => 'Berita'],
-            ['id' => EnumsCategoryType::Blog->value, 'name' => 'Blog'],
-            ['id' => EnumsCategoryType::Gallery->value, 'name' => 'Galeri'],
-            ['id' => EnumsCategoryType::Event->value, 'name' => 'Acara'],
-            ['id' => EnumsCategoryType::Information->value, 'name' => 'Informasi'],
-            ['id' => EnumsCategoryType::Question->value, 'name' => 'Pertanyaan Masyarakat'],
-            ['id' => EnumsCategoryType::Request->value, 'name' => 'PPID'],
-            ['id' => EnumsCategoryType::Wbs->value, 'name' => 'WBS'],
-            ['id' => EnumsCategoryType::Service->value, 'name' => 'Layanan'],
+            ['id' => EnumsCategoryType::News->value, 'name' => 'Berita', 'slug' => 'news'],
+            ['id' => EnumsCategoryType::Blog->value, 'name' => 'Blog', 'slug' => 'blog'],
+            ['id' => EnumsCategoryType::Gallery->value, 'name' => 'Galeri', 'slug' => 'gallery'],
+            ['id' => EnumsCategoryType::Event->value, 'name' => 'Acara', 'slug' => 'event'],
+            ['id' => EnumsCategoryType::Information->value, 'name' => 'Informasi', 'slug' => 'information'],
+            ['id' => EnumsCategoryType::Question->value, 'name' => 'Pertanyaan Masyarakat', 'slug' => 'question'],
+            ['id' => EnumsCategoryType::Request->value, 'name' => 'PPID', 'slug' => 'request'],
+            // ['id' => EnumsCategoryType::Wbs->value, 'name' => 'WBS', 'slug' => 'wbs'],
+            ['id' => EnumsCategoryType::Service->value, 'name' => 'Layanan', 'slug' => 'service'],
         ];
         
         CategoryType::insert($datas);

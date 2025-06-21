@@ -11,68 +11,49 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
-use Symfony\Contracts\Service\Attribute\Required;
 
 class CategoryResource extends Resource
 {
+
+    use Translatable;
+
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-folder-open';
+
+    public static function getModelLabel(): string
+    {
+        return __('Category');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make()->schema([
-                    TextInput::make('id_name')->required(),
-                    TextInput::make('en_name'),
-                ])->columns(2),
-                Section::make()->schema([
-                    Select::make('type')
-                    ->options(['news' => 'News', 'blog' => 'Blog', 'gallery' => 'Gallery',
-                                'event' => 'Event', 'information' => 'Information', 'question' => 'Question',
-                                'request' => 'Request', 'wbs' => 'WBS', 'service' => 'Service',])->required(),
-                    Select::make('core_id')->relationship('cores', 'core_id'),
-                ])->columns(2),
-                Section::make()->schema([
-                    TextInput::make('sort')->required(),
-                    Toggle::make('is_root')->default(true)->label('Apakah Root?'),
-                    Toggle::make('is_active')->default(true)->label('Apakah Active?'),
-                ])->columns(3),
+                TextInput::make('name')->label(__('Category Name'))->required(),
+                Select::make('category_type_id')->label(__('Category Type'))->relationship('categoryType', 'name', fn (Builder $query) => $query->orderBy('id'))->required(),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('sort', 'asc')
+            ->reorderable('sort')
             ->columns([
-                TextColumn::make('category_id'),
-                TextColumn::make('core_id'),
-                TextColumn::make('type'),
-                TextColumn::make('en_name'),
-                TextColumn::make('id_name'),
-                TextColumn::make('sort'),
-                ToggleColumn::make('is_root'),
-                ToggleColumn::make('is_active'),
-            ])
-            ->filters([
-                //
+                TextColumn::make('name')->label(__('Category Name'))->searchable(),
+                ToggleColumn::make('is_active')->label(__('Is Active ?'))
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteAction::make()->disabled(fn($record) => $record->is_root)->hidden(fn($record) => $record->is_root),
+                Tables\Actions\EditAction::make(),//->disabled(fn($record) => $record->is_root)->hidden(fn($record) => $record->is_root),
             ]);
     }
 

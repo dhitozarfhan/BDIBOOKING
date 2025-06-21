@@ -36,5 +36,11 @@ class CategorySeeder extends Seeder
             ]);
         }
 
+        $pdo = DB::getPdo();
+        $pdo->beginTransaction();
+        $statement = $pdo->prepare("SELECT setval('categories_id_seq', (SELECT MAX(id) FROM categories))");
+        $statement->execute();
+        $pdo->commit();
+
     }
 }

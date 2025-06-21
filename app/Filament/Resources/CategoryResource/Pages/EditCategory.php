@@ -8,12 +8,19 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditCategory extends EditRecord
 {
-    protected static string $resource = CategoryResource::class;
+    use EditRecord\Concerns\Translatable;
 
+    protected static string $resource = CategoryResource::class;
+ 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\LocaleSwitcher::make()
         ];
+    }
+    
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index').'?activeTab='.$this->record->categoryType->slug;
     }
 }
