@@ -6,14 +6,21 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Translatable\HasTranslations;
 
 class Blog extends Model
 {
-    use HasFactory;
+    use HasTranslations;
+    protected $fillable = ['category_id', 'image', 'title', 'summary', 'content', 'hit', 'is_active'];
 
-    protected $table = 'blog';
-    protected $primaryKey = 'blog_id';
-    protected $fillable = ['category_id', 'time_stamp', 'image', 'en_title', 'id_title', 'en_summary', 'id_summary', 'en_content', 'id_content', 'hit', 'is_active'];
+    public $translatable = ['title', 'summary', 'content'];
+
+    protected $casts = [
+        'title' => 'array',
+        'summary' => 'array',
+        'content' => 'array'
+    ];
+
 
     public function category() {
         return $this->belongsTo(Category::class, 'category_id');
@@ -24,15 +31,15 @@ class Blog extends Model
         $this->increment('hit');
     }
 
-    public function scopePublished($query)
-    {
-        $query->where('time_stamp', '<=', Carbon::now());
-    }
+    // public function scopePublished($query)
+    // {
+    //     $query->where('time_stamp', '<=', Carbon::now());
+    // }
 
-    public function getThumbnailImage()
-    {
-        $isUrl = str_contains($this->image, 'http');
+    // public function getThumbnailImage()
+    // {
+    //     $isUrl = str_contains($this->image, 'http');
 
-        return $isUrl ? $this->image : Storage::url($this->image);
-    }
+    //     return $isUrl ? $this->image : Storage::url($this->image);
+    // }
 }

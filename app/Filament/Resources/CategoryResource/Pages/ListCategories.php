@@ -6,7 +6,6 @@ use App\Enums\CategoryType;
 use App\Filament\Resources\CategoryResource;
 use App\Models\Category;
 use Filament\Actions;
-use Filament\Forms\Components\TextInput;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;

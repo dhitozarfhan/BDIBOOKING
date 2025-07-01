@@ -41,4 +41,18 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'disk'  => [
+        'employee'  => [
+            'image'     => 'employee/images',
+        ],
+        'blog' => [
+            'image' => 'blog',
+            'thumb' => 'blog/thumbs',
+            // 'thumb' => [
+            //     'square' => 'blog/squares',
+            //     'wide' => 'blog/wides'
+            // ]
+        ],
+
+    ]
 ];

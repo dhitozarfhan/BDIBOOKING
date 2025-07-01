@@ -393,5 +393,19 @@
 
     "Category Name": "Nama Kategori",
     "Category Type": "Tipe Kategori",
-    "Is Active ?": "Apakah Aktif ?"
+    "Is Active ?": "Apakah Aktif ?",
+    "Title": "Judul",
+    "Content": "Konten",
+    "Description": "Deskripsi",
+    "Thumbnail": "Gambar Mini",
+    "Status": "Status",
+    "Published": "Dipublikasikan",
+    "Published At": "Dipublikasikan Pada",
+    "Created At": "Dibuat Pada",
+    "Updated At": "Diperbarui Pada",
+    "Created By": "Dibuat Oleh",
+    "Updated By": "Diperbarui Oleh",
+    "Author": "Penulis",
+    "Author Name": "Nama Penulis",
+    "View Count": "Jumlah Tampilan"
 }

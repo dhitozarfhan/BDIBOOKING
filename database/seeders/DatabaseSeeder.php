@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             CategoryTypeSeeder::class,
             CategorySeeder::class,
 
+            BlogSeeder::class,
+
             EducationSeeder::class,
             EmployeeStatusSeeder::class,
             GenderSeeder::class,

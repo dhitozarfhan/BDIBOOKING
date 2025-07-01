@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BlogResource\Pages;
 use App\Filament\Resources\BlogResource\RelationManagers;
 use App\Models\Blog;
-use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
@@ -15,6 +14,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
@@ -26,9 +26,16 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class BlogResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = Blog::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+
+    public static function getModelLabel(): string
+    {
+        return __('Blog');
+    }
 
     public static function form(Form $form): Form
     {
@@ -36,7 +43,7 @@ class BlogResource extends Resource
             ->schema([
                 Section::make()->schema([
                     Select::make('category_id')->relationship('category', 'category_id')->required(),
-                    DateTimePicker::make('time_stamp')->required(),
+                    DateTimePicker::make('created_at')->required(),
                     Toggle::make('is_active')->default(true)->label('Apakah Aktif?')
                 ])->columns(3),
                 Section::make()->schema([
@@ -58,13 +65,21 @@ class BlogResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('time_stamp', 'desc')
+            ->defaultSort('created_at', 'desc')
             ->columns([
-                ImageColumn::make('image')->label('Thumbnail'),
-                TextColumn::make('id_title')->label('Judul Berita')->limit(50),
-                TextColumn::make('time_stamp')->label('Tanggal Pembuatan')->dateTime('d F Y'),
-                TextColumn::make('hit')->label('Views'),
-                ToggleColumn::make('is_active')->label('Aktif')
+                ImageColumn::make('image')->label(__('Image'))
+                    ->square()
+                    ->size(50)
+                    ->default(asset('images/no-image.jpg')),
+                TextColumn::make('title')->label(__('Title'))->sortable()->wrap()->searchable(),
+                TextColumn::make('category.name')->label(__('Category'))->sortable()->searchable()->limit(50),
+                TextColumn::make('created_at')->label(__('Created At'))->dateTime('d F Y')->sortable(),
+                TextColumn::make('hit')->label(__('View Count'))->sortable(),
+                ToggleColumn::make('is_active')->label(__('Is Active ?'))->sortable()
+                    // ->trueIcon('heroicon-o-check-circle')
+                    // ->falseIcon('heroicon-o-x-circle')
+                    // ->trueColor('success')
+                    // ->falseColor('danger'),
             ])
             ->filters([
                 //
