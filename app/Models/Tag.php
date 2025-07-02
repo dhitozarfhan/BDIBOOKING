@@ -2,14 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
 
 class Tag extends Model
 {
-    use HasFactory;
+    use HasTranslations;
 
-    protected $table = 'tag';
-    protected $primaryKey = 'tag_id';
-    protected $fillable = ['type', 'en_name', 'id_name', 'is_active'];
+    protected $fillable = ['name', 'is_active'];
+
+    public $translatable = ['name'];
+    
+    protected $casts = [
+        'name' => 'array'
+    ];
+
 }
