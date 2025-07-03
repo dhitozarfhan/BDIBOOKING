@@ -45,9 +45,10 @@ return [
         'employee'  => [
             'image'     => 'employee/images',
         ],
-        'blog' => [
-            'image' => 'blog',
-            'thumb' => 'blog/thumbs',
+        'article'   => [
+            'image' => 'article/images',
+            'slide' => 'article/slides',
+            'thumb' => 'article/thumbs',
             // 'thumb' => [
             //     'square' => 'blog/squares',
             //     'wide' => 'blog/wides'

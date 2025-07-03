@@ -4,8 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CategoryResource\Pages;
 use App\Models\Category;
-use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
@@ -13,8 +14,6 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-
 class CategoryResource extends Resource
 {
 
@@ -31,11 +30,12 @@ class CategoryResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
+        return $form->schema([
+            Section::make()->schema([
                 TextInput::make('name')->label(__('Category Name'))->required(),
-                Select::make('category_type_id')->label(__('Category Type'))->relationship('categoryType', 'name', fn (Builder $query) => $query->orderBy('id'))->required(),
-            ]);
+                Toggle::make('is_active')->default(true)->label(__('Is Active ?'))
+            ])->columnSpan(1)
+        ])->columns(2);
     }
 
     public static function table(Table $table): Table

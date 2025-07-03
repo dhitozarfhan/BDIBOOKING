@@ -2,10 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
-use App\Models\Post;
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,11 +13,6 @@ class DatabaseSeeder extends Seeder
     {
         
         $this->call([
-            CategoryTypeSeeder::class,
-            CategorySeeder::class,
-
-            BlogSeeder::class,
-
             EducationSeeder::class,
             EmployeeStatusSeeder::class,
             GenderSeeder::class,
@@ -30,6 +21,9 @@ class DatabaseSeeder extends Seeder
             PositionTypeSeeder::class,
             PositionSeeder::class,
             EmployeeSeeder::class,
+            
+            ArticleTypeSeeder::class,
+            ArticleSeeder::class,
         ]);
     }
 }
