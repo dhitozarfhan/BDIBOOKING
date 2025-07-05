@@ -7,6 +7,7 @@ use App\Filament\Resources\ArticleResource\Pages;
 use App\Filament\Resources\ArticleResource\RelationManagers;
 use App\Models\Article;
 use App\Models\ArticleType;
+use App\Models\Tag;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -20,6 +21,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ArticleResource extends Resource
 {
@@ -65,7 +67,8 @@ class ArticleResource extends Resource
                         Forms\Components\RichEditor::make('content')
                             ->label(__('Content'))
                             ->required()
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->fileAttachmentsDirectory(config('services.disk.article.content'))
                     ]),
                 Forms\Components\Section::make()
                     ->columnSpan(1)
@@ -82,6 +85,23 @@ class ArticleResource extends Resource
                             ->hidden(fn (Get $get): bool => !in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value])  || !$get('article_type_id') )
                             ->required(fn (Get $get): bool => in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value])),
                 
+                        Forms\Components\CheckboxList::make('tags')
+                            ->label(__('Tags'))
+                            ->columns([
+                                'default' => 1,
+                                'sm' => 2,
+                                'md' => 2,
+                                'lg' => 2,
+                                'xl' => 2,
+                            ])
+                            ->helperText(__('Select tags for this article'))
+                            ->hidden(fn (Get $get): bool => !in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value]) || !$get('article_type_id'))
+                            ->required(fn (Get $get): bool => in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value]))
+                            ->relationship('tags')
+                            ->options(Tag::where('is_active', true)->orderBy('name->en')
+                                ->get()
+                                ->pluck('name', 'id')),
+
                         Forms\Components\FileUpload::make('image')
                             ->label(__('Image'))
                             ->image()
@@ -96,13 +116,15 @@ class ArticleResource extends Resource
                             ->default(true)
                             ->inline(false),
 
-                        Forms\Components\DatePicker::make('published_at')
+                        Forms\Components\DateTimePicker::make('published_at')
                             ->label(__('Published At'))
+                            ->seconds(false)
+                            // ->minutesStep(15)
                             ->default(now())
                             ->required()
                             ->columnSpanFull()
                             ->native(false)
-                            ->displayFormat('d F Y')
+                            ->displayFormat('d F Y H:i')
                     ]),
             ]);
     }
@@ -110,7 +132,7 @@ class ArticleResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('published_at', 'desc')
             ->columns([
                 ImageColumn::make('image')->label(__('Image'))
                     ->square()
@@ -119,7 +141,7 @@ class ArticleResource extends Resource
                 TextColumn::make('title')->label(__('Title'))->sortable()->wrap()->searchable(),
                 TextColumn::make('articleType.name')->label(__('Type'))->sortable(),
                 TextColumn::make('category.name')->label(__('Category'))->sortable()->searchable(),
-                TextColumn::make('created_at')->label(__('Created At'))->dateTime('d F Y')->sortable(),
+                TextColumn::make('published_at')->label(__('Published At'))->dateTime('d F Y H:i')->sortable(),
                 TextColumn::make('author.name')->label(__('Author'))->sortable()->searchable(),
                 TextColumn::make('hit')->label(__('View Count'))->sortable(),
                 ToggleColumn::make('is_active')->label(__('Is Active ?'))->sortable()

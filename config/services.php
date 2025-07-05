@@ -48,7 +48,7 @@ return [
         'article'   => [
             'image' => 'article/images',
             'slide' => 'article/slides',
-            'thumb' => 'article/thumbs',
+            'content' => 'article/contents',
             // 'thumb' => [
             //     'square' => 'blog/squares',
             //     'wide' => 'blog/wides'

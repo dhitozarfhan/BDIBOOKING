@@ -31,6 +31,11 @@ class Article extends Model
         return $this->belongsTo(Employee::class, 'author_id');
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'article_tag', 'article_id', 'tag_id');
+    }
+
     public function incrementHit()
     {
         $this->increment('hit');

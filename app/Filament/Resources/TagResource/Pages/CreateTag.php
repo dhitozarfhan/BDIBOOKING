@@ -18,4 +18,9 @@ class CreateTag extends CreateRecord
             Actions\LocaleSwitcher::make()
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index');
+    }
 }

@@ -23,7 +23,7 @@ return new class extends Migration
             $table->json('content')->nullable();
             $table->integer('hit')->default(0);
             $table->boolean('is_active')->default(false);
-            $table->date('published_at')->nullable();
+            $table->dateTime('published_at')->nullable();
             $table->timestamps();
         });
     }
