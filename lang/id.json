@@ -380,10 +380,12 @@
     "Your email address is unverified.": "Alamat surel Anda belum diverifikasi.",
 
     "Category": "Kategori",
-    "News": "Berita",
     "Article": "Artikel",
+    "All Articles": "Semua Artikel",
     "Type": "Tipe",
     "Article Type": "Tipe Artikel",
+    "News": "Berita",
+    "Page": "Halaman",
     "Blog": "Blog",
     "Gallery": "Galeri",
     "Event": "Acara",
@@ -395,6 +397,7 @@
     "Tag Name": "Nama Tag",
     "Category Name": "Nama Kategori",
     "Is Active ?": "Apakah Aktif ?",
+    "Not Active": "Tidak Aktif",
     "Title": "Judul",
     "Content": "Konten",
     "Summary": "Ringkasan",
@@ -410,5 +413,6 @@
     "Author": "Penulis",
     "Author Name": "Nama Penulis",
     "View Count": "Jumlah Tampilan",
-    "Select tags for this article": "Pilih tag untuk artikel ini"
+    "Select tags for this article": "Pilih tag untuk artikel ini",
+    "Images": "Gambar"
 }

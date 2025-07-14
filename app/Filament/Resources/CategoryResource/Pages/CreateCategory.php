@@ -12,6 +12,7 @@ class CreateCategory extends CreateRecord
     use CreateRecord\Concerns\Translatable;
 
     protected static string $resource = CategoryResource::class;
+    protected static bool $canCreateAnother = false;
  
     protected function getHeaderActions(): array
     {

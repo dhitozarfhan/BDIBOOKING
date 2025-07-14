@@ -48,12 +48,16 @@ return [
         'article'   => [
             'image' => 'article/images',
             'slide' => 'article/slides',
-            'content' => 'article/contents',
             // 'thumb' => [
             //     'square' => 'blog/squares',
             //     'wide' => 'blog/wides'
             // ]
         ],
 
-    ]
+    ],
+
+    'locale' => [
+        'default' => 'id',
+        'available' => ['id', 'en'],
+    ],
 ];

@@ -45,7 +45,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 SpatieLaravelTranslatablePlugin::make()
-                ->defaultLocales(['id', 'en']),
+                ->defaultLocales(config('services.locale.available')),
 
                 RenewPasswordPlugin::make()
                 ->passwordExpiresIn(days: 60)

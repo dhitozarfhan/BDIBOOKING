@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Enums\ArticleType as EnumsArticleType;
 use App\Filament\Resources\ArticleResource\Pages;
 use App\Filament\Resources\ArticleResource\RelationManagers;
+use App\Filament\Resources\ArticleResource\RelationManagers\ImagesRelationManager;
 use App\Models\Article;
 use App\Models\ArticleType;
 use App\Models\Tag;
@@ -19,6 +20,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -107,7 +109,6 @@ class ArticleResource extends Resource
                             ->image()
                             ->imageEditor()
                             ->directory(config('services.disk.article.image'))
-                            ->preserveFilenames()
                             ->columnSpanFull()
                             ->required(fn (Get $get): bool => in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value])),
 
@@ -144,22 +145,26 @@ class ArticleResource extends Resource
                 TextColumn::make('published_at')->label(__('Published At'))->dateTime('d F Y H:i')->sortable(),
                 TextColumn::make('author.name')->label(__('Author'))->sortable()->searchable(),
                 TextColumn::make('hit')->label(__('View Count'))->sortable(),
-                ToggleColumn::make('is_active')->label(__('Is Active ?'))->sortable()
+                ToggleColumn::make('is_active')->label(__('Is Active ?'))->sortable(),
+                TextColumn::make('tags.name')
+                    ->label(__('Tags'))
+                    ->searchable()
+                    ->sortable()
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+            ImagesRelationManager::class,
         ];
     }
 

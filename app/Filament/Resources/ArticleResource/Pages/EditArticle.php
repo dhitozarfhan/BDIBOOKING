@@ -4,7 +4,9 @@ namespace App\Filament\Resources\ArticleResource\Pages;
 
 use App\Filament\Resources\ArticleResource;
 use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Colors\Color;
 
 class EditArticle extends EditRecord
 {
@@ -23,5 +25,14 @@ class EditArticle extends EditRecord
     protected function getRedirectUrl(): string
     {
         return static::getResource()::getUrl('index');
+    }
+
+    protected function getCancelFormAction(): Action
+    {
+        return Actions\Action::make('cancel')
+            ->label(__('Cancel'))
+            ->color('gray')
+            ->url(static::getResource()::getUrl('index'))
+            ->requiresConfirmation(false);
     }
 }

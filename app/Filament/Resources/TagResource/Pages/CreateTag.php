@@ -11,6 +11,7 @@ class CreateTag extends CreateRecord
     use CreateRecord\Concerns\Translatable;
 
     protected static string $resource = TagResource::class;
+    protected static bool $canCreateAnother = false;
 
     protected function getHeaderActions(): array
     {
