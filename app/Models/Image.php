@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
 
 class Image extends Model
@@ -27,6 +28,12 @@ class Image extends Model
     {
         static::creating(function ($record) {
             $record->sort = Image::where('article_id', $record->article_id)->count() + 1;
+        });
+
+        static::deleted(function ($record) {
+            if(Storage::exists($record->path)) {
+                Storage::delete($record->path);
+            }
         });
 
     }
