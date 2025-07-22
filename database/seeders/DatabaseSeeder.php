@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             PositionSeeder::class,
             EmployeeSeeder::class,
             
+            CategorySeeder::class,
+            TagSeeder::class,
             ArticleTypeSeeder::class,
             ArticleSeeder::class,
         ]);

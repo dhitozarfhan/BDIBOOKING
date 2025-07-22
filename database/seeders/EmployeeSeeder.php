@@ -25,8 +25,8 @@ class EmployeeSeeder extends Seeder
         foreach ($datas as $data) {
             Employee::create([
                 'username'      => $data->id_pegawai,
-                'nip'           => is_numeric($data->nip_baru) && strlen($data->nip_baru) == 18  && in_array($data->id_status_pegawai, [1,2,3]) ? (Employee::where('nip', $data->nip_baru)->count() == 0 ? $data->nip_baru : null ) : null,
-                'nip_intranet'  => null,
+                'nip'           => is_numeric($data->nip) && strlen($data->nip) == 18  && in_array($data->id_status_pegawai, [1,2,3]) ? (Employee::where('nip', $data->nip)->count() == 0 ? $data->nip : null ) : null,
+                'nip_intranet'  => is_numeric($data->nip_intranet) && in_array($data->id_status_pegawai, [1,2,3]) ? (Employee::where('nip_intranet', $data->nip_intranet)->count() == 0 ? $data->nip_intranet : null ) : null,
                 'name'          => $data->nama,
                 'title_pre'     => $data->titel,
                 'title_post'    => $data->gelar,

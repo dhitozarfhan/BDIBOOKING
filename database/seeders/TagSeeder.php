@@ -2,47 +2,45 @@
 
 namespace Database\Seeders;
 
-use App\Enums\CategoryType;
-use App\Models\Category;
+use App\Models\Tag;
+use App\Services\Ai;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class CategorySeeder extends Seeder
+class TagSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        if(Category::count()){
-            Category::truncate();
+        if(Tag::count()){
+            Tag::truncate();
         }
 
         $id = 1;
 
-        $datas = DB::connection('second_db')->table('category')
+        $datas = DB::connection('second_db')->table('tag')
         ->whereIn('type', ['news', 'gallery', 'blog'])
-        ->groupBy('id_name')->orderBy('category_id')->get();
+        ->groupBy('id_name')->orderBy('tag_id')->get();
 
         foreach ($datas as $data) {
-            Category::create([
+            Tag::create([
                 'id' => $id++,
                 'name' => [
-                    'en' => $data->en_name,
                     'id' => $data->id_name,
+                    'en' => $data->en_name,
+                    // 'en' => empty($data->en_name) ? $ai->translateToEnglish($data->id_name) : $data->en_name
                 ],
-                'sort' => $data->sort,
-                'is_root' => $data->is_root,
                 'is_active' => $data->is_active == 'Y',
             ]);
         }
 
         $pdo = DB::getPdo();
         $pdo->beginTransaction();
-        $statement = $pdo->prepare("SELECT setval('categories_id_seq', (SELECT MAX(id) FROM categories))");
+        $statement = $pdo->prepare("SELECT setval('tags_id_seq', (SELECT MAX(id) FROM tags))");
         $statement->execute();
         $pdo->commit();
-
     }
 }

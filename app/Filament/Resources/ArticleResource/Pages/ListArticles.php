@@ -28,9 +28,6 @@ class ListArticles extends ListRecords
         $tabs = [];
         $tabs[] = Tab::make(__('All Articles'))
         ->badge(Article::count())
-        ->modifyQueryUsing(function ($query) {
-            return $query->where('is_active', true);
-        })
         ->icon('heroicon-o-document-text');
 
         $tabs[] = Tab::make(__('News'))

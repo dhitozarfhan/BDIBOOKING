@@ -46,7 +46,12 @@ class TagResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->label(__('Tag Name'))->searchable(),
+                TextColumn::make('name')->label(__('Tag Name'))
+                ->sortable(
+                    // buatkan sortable custom untuk nama dengan translasi dan menyesuaikan kondisi sort asc atau desc
+                    query: fn (Builder $query, string $direction) => $query->orderBy('name->' . app()->getLocale(), $direction)
+                )
+                ->searchable(),
                 ToggleColumn::make('is_active')->label(__('Is Active ?'))
             ])
             ->actions([

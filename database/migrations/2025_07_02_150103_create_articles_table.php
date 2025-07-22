@@ -17,7 +17,6 @@ return new class extends Migration
             $table->integer('category_id')->nullable();
             $table->integer('author_id')->nullable();
             $table->string('image')->nullable();
-            $table->string('thumb')->nullable();
             $table->json('title')->nullable();
             $table->json('summary')->nullable();
             $table->json('content')->nullable();
