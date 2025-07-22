@@ -139,9 +139,13 @@ class ArticleResource extends Resource
                     ->square()
                     ->size(50)
                     ->default(asset('images/no-image.jpg')),
-                TextColumn::make('title')->label(__('Title'))->sortable()->wrap()->searchable(),
+                TextColumn::make('title')->label(__('Title'))
+                ->sortable(query: fn (Builder $query, string $direction) => $query->orderBy('title->' . app()->getLocale(), $direction))
+                ->wrap()->searchable(),
                 TextColumn::make('articleType.name')->label(__('Type'))->sortable(),
-                TextColumn::make('category.name')->label(__('Category'))->sortable()->searchable(),
+                TextColumn::make('category.name')->label(__('Category'))
+                ->sortable(query: fn (Builder $query, string $direction) => $query->join('categories', 'categories.id', '=', 'articles.category_id')->orderBy('categories.name->' . app()->getLocale(), $direction))
+                ->searchable(),
                 TextColumn::make('published_at')->label(__('Published At'))->dateTime('d F Y H:i')->sortable(),
                 TextColumn::make('author.name')->label(__('Author'))->sortable()->searchable(),
                 TextColumn::make('hit')->label(__('View Count'))->sortable(),
@@ -149,7 +153,11 @@ class ArticleResource extends Resource
                 TextColumn::make('tags.name')
                     ->label(__('Tags'))
                     ->searchable()
-                    ->sortable()
+                    ->sortable(
+                        query: fn (Builder $query, string $direction) => $query->join('article_tag', 'article_tag.article_id', '=', 'articles.id')
+                            ->join('tags', 'tags.id', '=', 'article_tag.tag_id')
+                            ->orderBy('tags.name->' . app()->getLocale(), $direction)
+                    )
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -13,15 +13,17 @@ class DatabaseSeeder extends Seeder
     {
         
         $this->call([
-            EducationSeeder::class,
-            EmployeeStatusSeeder::class,
-            GenderSeeder::class,
-            RankSeeder::class,
-            ReligionSeeder::class,
-            PositionTypeSeeder::class,
-            PositionSeeder::class,
-            EmployeeSeeder::class,
+            // EducationSeeder::class,
+            // EmployeeStatusSeeder::class,
+            // GenderSeeder::class,
+            // RankSeeder::class,
+            // ReligionSeeder::class,
+            // PositionTypeSeeder::class,
+            // PositionSeeder::class,
+            // EmployeeSeeder::class,
             
+            CategorySeeder::class,
+            TagSeeder::class,
             ArticleTypeSeeder::class,
             ArticleSeeder::class,
         ]);
