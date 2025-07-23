@@ -1,5 +1,11 @@
 <?php
 
+use App\Livewire\Home;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', Home::class)->name('home');
+
+/*
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BookingController;
@@ -17,7 +23,6 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\WBSController;
 use App\Models\Information;
-use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 
@@ -79,3 +84,4 @@ Route::middleware([
     //     return view('dashboard');
     // })->name('dashboard');
 });
+*/
