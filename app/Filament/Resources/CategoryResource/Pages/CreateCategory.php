@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\CategoryResource\Pages;
 
+use App\Enums\CategoryType;
 use App\Filament\Resources\CategoryResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
@@ -24,6 +25,7 @@ class CreateCategory extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         // dd($data);
+        $data['category_type_id'] = CategoryType::Article->value;
         $data['is_root'] = false; // Default to root category
         $data['is_active'] = true; // Default to active category
 

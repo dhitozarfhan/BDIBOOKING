@@ -11,14 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('category_types', function (Blueprint $table) {
             $table->id();
-            $table->integer('category_type_id');
-            $table->integer('parent_id')->nullable();
-            $table->json('name');
-            $table->integer('sort')->default(0);
-            $table->boolean('is_root')->default(false);
-            $table->boolean('is_active')->default(true);
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -28,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('category_types');
     }
 };

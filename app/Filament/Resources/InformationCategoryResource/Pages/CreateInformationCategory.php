@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Filament\Resources\InformationResource\Pages;
+namespace App\Filament\Resources\InformationCategoryResource\Pages;
 
-use App\Enums\ArticleType;
-use App\Filament\Resources\InformationResource;
+use App\Enums\CategoryType;
+use App\Filament\Resources\InformationCategoryResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreateInformation extends CreateRecord
+class CreateInformationCategory extends CreateRecord
 {
+
     use CreateRecord\Concerns\Translatable;
 
-    protected static string $resource = InformationResource::class;
+    protected static string $resource = InformationCategoryResource::class;
     protected static bool $canCreateAnother = false;
-
+ 
     protected function getHeaderActions(): array
     {
         return [
@@ -23,8 +24,10 @@ class CreateInformation extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['article_type_id'] = ArticleType::Information->value;
-        
+        $data['category_type_id'] = CategoryType::Information->value;
+        $data['is_root'] = false; // Default to root category
+        $data['is_active'] = true; // Default to active category
+
         return $data;
     }
 

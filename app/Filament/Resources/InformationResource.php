@@ -2,91 +2,176 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\ArticleType as EnumsArticleType;
+use App\Enums\CategoryType;
 use App\Filament\Resources\InformationResource\Pages;
-use App\Filament\Resources\InformationResource\RelationManagers;
-use App\Models\Information;
+use App\Models\Article;
+use App\Models\Category;
 use Filament\Forms;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Ramsey\Uuid\Type\Integer;
 
 class InformationResource extends Resource
 {
-    protected static ?string $model = Information::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    use Translatable;
 
+    protected static ?string $model = Article::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
+    
+    public static function getModelLabel(): string
+    {
+        return __('Public Information');
+    }
+    
     public static function form(Form $form): Form
     {
         return $form
+            ->columns(3)
             ->schema([
-                Section::make()->schema([
-                    Select::make('category_id')->relationship('category', 'category_id')->required(),
-                    DateTimePicker::make('time_stamp')->required(),
-                    TextInput::make('year')->numeric(),
-                ])->columns(3),
-                Section::make('Indonesia')->schema([
-                    TextInput::make('id_title')->required()->label('Judul'),
-                    Textarea::make('id_summary')->required()->label('Ringkasan'),
-                    RichEditor::make('id_content')->required()->label('Konten'),
-                ]),
-                Section::make('English')->schema([
-                    TextInput::make('en_title')->label('Title'),
-                    Textarea::make('en_summary')->label('Summary'),
-                    RichEditor::make('en_content')->label('Content'),
-                ]),
-                Section::make()->schema([
-                    FileUpload::make('file')->appendFiles()->previewable()->acceptedFileTypes(['application/pdf'])->label('Upload File (opsional)')->directory('information/file'),
-                    TextInput::make('sort')->numeric()->required(),
-                    Toggle::make('is_active')->default(true)
-                ])->columns(3),
+                Forms\Components\Section::make()
+                    ->columnSpan(2)
+                    ->schema([
+                        Forms\Components\Radio::make('parent_id', fn (Builder $query) => $query->orderBy('id'))
+                            ->label(__('Public Information Type'))
+                            ->options(Category::where('category_type_id', CategoryType::InformationType->value)->pluck('name', 'id'))
+                            // ->default(fn (Get $get) => $get('parent_id') ?? Category::where('category_type_id', CategoryType::InformationType->value)->first()?->id)
+                            ->inline()
+                            ->inlineLabel(false)
+                            ->required()
+                            ->hidden(fn (string $operation): bool => $operation === 'edit')
+                            ->live(),
+
+
+                        Forms\Components\TextInput::make('title')
+                            ->label(__('Title'))
+                            ->required()
+                            ->maxLength(255)
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('summary')
+                            ->label(__('Summary'))
+                            ->required()
+                            ->maxLength(500)
+                            ->columnSpanFull(),
+                        Forms\Components\RichEditor::make('content')
+                            ->label(__('Content'))
+                            ->required()
+                            ->columnSpanFull()
+                            ->fileAttachmentsDirectory(config('services.disk.article.content'))
+                    ]),
+
+                Forms\Components\Grid::make()
+                    ->schema([
+                    
+                        Forms\Components\Section::make()
+                            ->columns(1)
+                            ->schema([
+
+                                Forms\Components\Select::make('category_id')
+                                    ->label(__('Category'))
+                                    ->options(
+                                        //buatkan group select kategori dari parent dan child
+                                        function(Get $get, $operation){
+                                            if($operation === 'edit'){
+                                                $record = static::getModel()::find($get('id'));
+                                                $category = Category::where('id', $record->category_id)->first();
+                                                return Category::where('category_type_id', CategoryType::Information->value)->where('parent_id', $category->parent_id)
+                                                    ->orderBy('sort')->pluck('name', 'id');
+                                            }
+                                            else {
+                                                return Category::where('category_type_id', CategoryType::Information->value)->where('parent_id', $get('parent_id'))
+                                                    ->orderBy('sort')->pluck('name', 'id');
+                                            }
+                                        }
+                                    )
+                                    ->required(),
+                        
+                                Forms\Components\Toggle::make('is_active')
+                                    ->label(__('Is Active ?'))
+                                    ->default(true)
+                                    ->inline(false),
+
+                                //year
+                                Forms\Components\TextInput::make('year')
+                                    ->label(__('Year'))
+                                    ->numeric()
+                                    ->maxValue(date('Y') + 1)
+                                    ->minValue(2000)
+                                    ->maxLength(4),
+
+                                Forms\Components\DateTimePicker::make('published_at')
+                                    ->label(__('Published At'))
+                                    ->seconds(false)
+                                    // ->minutesStep(15)
+                                    ->default(now())
+                                    ->required()
+                                    ->native(false)
+                                    ->displayFormat('d F Y H:i')
+                                
+                            ]),
+
+                        Forms\Components\Section::make(__('Material Files').' PDF, WORD, SPREASHEET, PRESENTATION, ZIP, MP4')->schema([
+                            Forms\Components\FileUpload::make('files')->label('')
+                            ->directory(config('services.disk.lms.material'))
+                            ->storeFileNamesIn('original_files')
+                            // ->downloadable()->openable()
+                            ->acceptedFileTypes([
+                                'application/pdf',
+                                'application/vnd.oasis.opendocument.presentation',
+                                'application/vnd.oasis.opendocument.spreadsheet',
+                                'application/vnd.oasis.opendocument.text',
+                                'application/vnd.ms-powerpoint',
+                                'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                                'application/vnd.ms-excel',
+                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                'application/msword',
+                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                'application/zip',
+                                'application/x-zip-compressed',
+                                'audio/mpeg',
+                                'video/mpeg',
+                                'video/mp4'
+                            ])
+                            ->maxSize(10240)
+                            ->multiple()->reorderable(),
+                        ])->columns(1)
+                    ])
+                    ->columnSpan(1)
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('information_id')->label('ID'),
-                TextColumn::make('category_id')->label('Category'),
-                TextColumn::make('time_stamp')->label('Timestamp'),
-                TextColumn::make('id_title')->label('Judul'),
-                TextColumn::make('year')->label('Tahun'),
-                TextColumn::make('sort')->label('Sort'),
-                ToggleColumn::make('is_active')->label('Aktif'),
+            ->defaultSort('sort', 'asc')
+            ->groups([
+                Group::make('category_id')->label(__('Public Information Type'))->titlePrefixedWithLabel(false)->getTitleFromRecordUsing(fn (Article $record): string => $record->category->name)->collapsible()
             ])
-            ->filters([
-                //
+            ->defaultGroup('category_id')
+            ->columns([
+                TextColumn::make('title')->label(__('Title'))->wrap()->searchable(),
+                TextColumn::make('category.name')->label(__('Category'))->searchable(),
+                TextColumn::make('published_at')->label(__('Published At'))->dateTime('d F Y H:i'),
+                TextColumn::make('hit')->label(__('View Count')),
+                ToggleColumn::make('is_active')->label(__('Is Active ?'))
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
@@ -96,5 +181,10 @@ class InformationResource extends Resource
             'create' => Pages\CreateInformation::route('/create'),
             'edit' => Pages\EditInformation::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('article_type_id', EnumsArticleType::Information->value);
     }
 }

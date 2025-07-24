@@ -23,6 +23,7 @@ class ArticleTypeSeeder extends Seeder
             ['id' => EnumsArticleType::Blog->value, 'name' => 'Blog', 'slug' => 'blog'],
             ['id' => EnumsArticleType::Gallery->value, 'name' => 'Galeri', 'slug' => 'gallery'],
             ['id' => EnumsArticleType::Page->value, 'name' => 'Laman', 'slug' => 'page'],
+            ['id' => EnumsArticleType::Information->value, 'name' => 'Informasi', 'slug' => 'information']
         ];
         
         ArticleType::insert($datas);

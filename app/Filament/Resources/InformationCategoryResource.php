@@ -3,8 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Enums\CategoryType;
-use App\Filament\Resources\CategoryResource\Pages;
+use App\Filament\Resources\InformationCategoryResource\Pages;
 use App\Models\Category;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -17,24 +18,30 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class CategoryResource extends Resource
+class InformationCategoryResource extends Resource
 {
 
     use Translatable;
 
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-folder-open';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-group';
 
     public static function getModelLabel(): string
     {
-        return __('Category');
+        return __('Public Information Type');
     }
 
     public static function form(Form $form): Form
     {
         return $form->schema([
             Section::make()->schema([
+                Radio::make('parent_id', fn (Builder $query) => $query->orderBy('id'))
+                    ->label(__('Category Type'))
+                    ->options(Category::where('category_type_id', CategoryType::InformationType->value)->pluck('name', 'id'))
+                    ->inlineLabel(false)
+                    ->required()
+                    ->disabled(fn (string $operation): bool => $operation === 'edit'),
                 TextInput::make('name')->label(__('Category Name'))->required(),
                 Toggle::make('is_active')->default(true)->label(__('Is Active ?'))
             ])->columnSpan(1)
@@ -66,9 +73,9 @@ class CategoryResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCategories::route('/'),
-            'create' => Pages\CreateCategory::route('/create'),
-            'edit' => Pages\EditCategory::route('/{record}/edit'),
+            'index' => Pages\ListInformationCategories::route('/'),
+            'create' => Pages\CreateInformationCategory::route('/create'),
+            'edit' => Pages\EditInformationCategory::route('/{record}/edit'),
         ];
     }
 
@@ -76,6 +83,6 @@ class CategoryResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('category_type_id', CategoryType::Article->value);
+        return parent::getEloquentQuery()->where('category_type_id', CategoryType::Information->value);
     }
 }

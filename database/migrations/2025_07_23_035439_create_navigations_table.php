@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('navigations', function (Blueprint $table) {
             $table->id();
-            $table->integer('category_type_id');
-            $table->integer('parent_id')->nullable();
+            $table->integer('navigation_type_id');
+            $table->integer('link_type_id');
+            $table->integer('article_id')->nullable();
             $table->json('name');
-            $table->integer('sort')->default(0);
-            $table->boolean('is_root')->default(false);
+            $table->string('path');
+            $table->string('target')->nullable();
+            $table->integer('lft');
+            $table->integer('rgt');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('navigations');
     }
 };

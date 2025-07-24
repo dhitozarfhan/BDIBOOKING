@@ -3,8 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Enums\ArticleType as EnumsArticleType;
+use App\Enums\CategoryType;
 use App\Filament\Resources\ArticleResource\Pages;
-use App\Filament\Resources\ArticleResource\RelationManagers;
 use App\Filament\Resources\ArticleResource\RelationManagers\ImagesRelationManager;
 use App\Models\Article;
 use App\Models\ArticleType;
@@ -20,10 +20,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class ArticleResource extends Resource
 {
@@ -47,14 +44,36 @@ class ArticleResource extends Resource
                 Forms\Components\Section::make()
                     ->columnSpan(2)
                     ->schema([
-                        Forms\Components\Radio::make('article_type_id', fn (Builder $query) => $query->orderBy('id'))
-                            ->label(__('Article Type'))
-                            ->options(ArticleType::pluck('name', 'id'))
-                            ->inline()
-                            ->inlineLabel(false)
-                            ->required()
-                            ->disabled(fn (string $operation): bool => $operation === 'edit')
-                            ->live(),
+
+                        Forms\Components\Grid::make()
+                        ->columns(5)
+                        ->schema([
+                            Forms\Components\Radio::make('article_type_id', fn (Builder $query) => $query->orderBy('id'))
+                                ->columnSpan(2)
+                                ->label(__('Article Type'))
+                                ->options(ArticleType::whereIn('id', [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value, EnumsArticleType::Page->value])->pluck('name', 'id'))
+                                ->inline()
+                                ->inlineLabel(false)
+                                ->required()
+                                ->disabled(fn (string $operation): bool => $operation === 'edit')
+                                ->live(),
+
+                            Forms\Components\Toggle::make('is_active')
+                                ->columnSpan(1)
+                                ->label(__('Is Active ?'))
+                                ->default(true)
+                                ->inline(false),
+
+                            Forms\Components\DateTimePicker::make('published_at')
+                                ->columnSpan(2)
+                                ->label(__('Published At'))
+                                ->seconds(false)
+                                // ->minutesStep(15)
+                                ->default(now())
+                                ->required()
+                                ->native(false)
+                                ->displayFormat('d F Y H:i')
+                        ]),
 
                         Forms\Components\TextInput::make('title')
                             ->label(__('Title'))
@@ -76,6 +95,13 @@ class ArticleResource extends Resource
                     ->columnSpan(1)
                     ->schema([
 
+                        Forms\Components\FileUpload::make('image')
+                                ->label(__('Image'))
+                                ->image()
+                                ->imageEditor()
+                                ->directory(config('services.disk.article.image'))
+                                ->required(fn (Get $get): bool => in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value])),
+
                         Forms\Components\Select::make('author_id')
                             ->label(__('Author'))
                             ->default(Auth::user()->id)
@@ -83,7 +109,7 @@ class ArticleResource extends Resource
                             ->required(),
                         Forms\Components\Select::make('category_id')
                             ->label(__('Category'))
-                            ->relationship('category', 'name', fn (Builder $query) => $query->orderBy('sort'))
+                            ->relationship('category', 'name', fn (Builder $query) => $query->where('category_type_id', CategoryType::Article->value)->orderBy('sort'))
                             ->hidden(fn (Get $get): bool => !in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value])  || !$get('article_type_id') )
                             ->required(fn (Get $get): bool => in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value])),
                 
@@ -103,29 +129,7 @@ class ArticleResource extends Resource
                             ->options(Tag::where('is_active', true)->orderBy('name->en')
                                 ->get()
                                 ->pluck('name', 'id')),
-
-                        Forms\Components\FileUpload::make('image')
-                            ->label(__('Image'))
-                            ->image()
-                            ->imageEditor()
-                            ->directory(config('services.disk.article.image'))
-                            ->columnSpanFull()
-                            ->required(fn (Get $get): bool => in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value])),
-
-                        Forms\Components\Toggle::make('is_active')
-                            ->label(__('Is Active ?'))
-                            ->default(true)
-                            ->inline(false),
-
-                        Forms\Components\DateTimePicker::make('published_at')
-                            ->label(__('Published At'))
-                            ->seconds(false)
-                            // ->minutesStep(15)
-                            ->default(now())
-                            ->required()
-                            ->columnSpanFull()
-                            ->native(false)
-                            ->displayFormat('d F Y H:i')
+                        
                     ]),
             ]);
     }
@@ -183,5 +187,10 @@ class ArticleResource extends Resource
             'create' => Pages\CreateArticle::route('/create'),
             'edit' => Pages\EditArticle::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->whereIn('article_type_id', [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value, EnumsArticleType::Page->value]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ArticleType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
@@ -9,14 +10,17 @@ use Spatie\Translatable\HasTranslations;
 class Article extends Model
 {
     use HasTranslations;
-    protected $fillable = ['category_id', 'article_type_id', 'author_id', 'image', 'title', 'summary', 'content', 'hit', 'is_active', 'published_at'];
+    protected $fillable = ['category_id', 'article_type_id', 'author_id', 'image', 'title', 'summary', 'content', 'hit', 'is_active', 'published_at',
+        'sort', 'year', 'files', 'original_files'];
 
     public $translatable = ['title', 'summary', 'content'];
 
     protected $casts = [
         'title' => 'array',
         'summary' => 'array',
-        'content' => 'array'
+        'content' => 'array',
+        'files' => 'array',
+        'original_files' => 'json',
     ];
 
     public function articleType() {
@@ -48,6 +52,11 @@ class Article extends Model
 
     protected static function booted(): void
     {
+        static::creating(function ($record) {
+            if($record->article_type_id == ArticleType::Information->value){
+                Article::where('article_type_id', ArticleType::Information->value)->where('category_id', $record->category_id)->increment('sort');
+            }
+        });
 
         static::deleted(function ($record) {
             if(Storage::exists($record->image)) {
