@@ -21,6 +21,7 @@ class LinkTypeSeeder extends Seeder
             ['id' => EnumsLinkType::Internal->value, 'name' => 'Internal'],
             ['id' => EnumsLinkType::External->value, 'name' => 'Eksternal'],
             ['id' => EnumsLinkType::Module->value, 'name' => 'Modul'],
+            ['id' => EnumsLinkType::Empty->value, 'name' => 'Kosong'],
         ];
 
         LinkType::insert($datas);

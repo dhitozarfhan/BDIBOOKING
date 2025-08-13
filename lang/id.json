@@ -420,5 +420,15 @@
     "Images": "Gambar",
     "Year": "Tahun",
     "Month": "Bulan",
-    "Day": "Hari"
+    "Day": "Hari",
+    "Open in new tab ?": "Buka di tab baru ?",
+    "URL is not valid": "URL tidak valid",
+    "Link Type": "Tipe Tautan",
+    "Article is required": "Artikel wajib diisi.",
+    "Path is required": "Path wajib diisi.",
+    "Menu": "Menu",
+    "Header": "Header",
+    "Header Navigation": "Navigasi Header",
+    "Footer": "Footer",
+    "Footer Navigation": "Navigasi Footer"
 }

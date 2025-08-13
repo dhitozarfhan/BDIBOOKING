@@ -24,9 +24,8 @@ class DatabaseSeeder extends Seeder
             // EmployeeSeeder::class,
 
             
-            // LinkTypeSeeder::class,
-            // NavigationTypeSeeder::class,
-
+            LinkTypeSeeder::class,
+            NavigationTypeSeeder::class,
 
             CategoryTypeSeeder::class,
             CategorySeeder::class,

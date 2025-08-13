@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\ArticleType;
+use App\Enums\ArticleType as EnumsArticleType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
@@ -53,8 +53,8 @@ class Article extends Model
     protected static function booted(): void
     {
         static::creating(function ($record) {
-            if($record->article_type_id == ArticleType::Information->value){
-                Article::where('article_type_id', ArticleType::Information->value)->where('category_id', $record->category_id)->increment('sort');
+            if($record->article_type_id == EnumsArticleType::Information->value){
+                Article::where('article_type_id', EnumsArticleType::Information->value)->where('category_id', $record->category_id)->increment('sort');
             }
         });
 

@@ -17,11 +17,10 @@ return new class extends Migration
             $table->integer('link_type_id');
             $table->integer('article_id')->nullable();
             $table->json('name');
-            $table->string('path');
-            $table->string('target')->nullable();
-            $table->integer('lft');
-            $table->integer('rgt');
+            $table->string('path')->nullable();
+            $table->boolean('target_blank')->default(false);
             $table->boolean('is_active')->default(true);
+            $table->nestedSet();
             $table->timestamps();
         });
     }
