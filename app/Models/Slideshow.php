@@ -2,29 +2,49 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Translatable\HasTranslations;
 
 class Slideshow extends Model
 {
-    use HasFactory;
-
-    protected $table = 'slideshows';
+    use HasTranslations;
 
     protected $fillable = [
+        'link_type_id',
+        'article_id',
         'image',
-        'en_title',
-        'id_title',
-        'en_description',
-        'id_description',
-        'path'
+        'title',
+        'description',
+        'path',
+        'target_blank',
+        'is_active',
+        'sort'
     ];
 
-    public function getSlideImage()
-    {
-        $isUrl = str_contains($this->image, 'http');
+    public $translatable = ['title', 'description'];
 
-        return $isUrl ? $this->image : Storage::url($this->image);
+    public $casts = [
+        'title' => 'array',
+        'description' => 'array'
+    ];
+
+    public function linkType()
+    {
+        return $this->belongsTo(LinkType::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function ($record) {
+            $record->sort = Slideshow::count() + 1;
+        });
+
+        //delete remove image from storage
+        static::deleted(function ($record) {
+            if(Storage::exists($record->image)) {
+                Storage::delete($record->image);
+            }
+        });
     }
 }

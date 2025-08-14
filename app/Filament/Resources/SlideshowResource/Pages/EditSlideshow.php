@@ -8,12 +8,20 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditSlideshow extends EditRecord
 {
+    use EditRecord\Concerns\Translatable;
+
     protected static string $resource = SlideshowResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
+            Actions\LocaleSwitcher::make(),
             Actions\DeleteAction::make(),
         ];
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index');
     }
 }

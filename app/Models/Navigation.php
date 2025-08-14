@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\LinkType;
 use Illuminate\Database\Eloquent\Model;
 use Kalnoy\Nestedset\NodeTrait;
 use Studio15\FilamentTree\Concerns\InteractsWithTree;

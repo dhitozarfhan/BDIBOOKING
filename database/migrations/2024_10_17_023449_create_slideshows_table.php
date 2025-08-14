@@ -13,12 +13,15 @@ return new class extends Migration
     {
         Schema::create('slideshows', function (Blueprint $table) {
             $table->id();
+            $table->integer('link_type_id');
+            $table->integer('article_id')->nullable();
             $table->string('image');
-            $table->string('en_title')->nullable();
-            $table->string('id_title')->nullable();
-            $table->text('en_description')->nullable();
-            $table->text('id_description')->nullable();
+            $table->json('title')->nullable();
+            $table->json('description')->nullable();
             $table->string('path')->nullable();
+            $table->boolean('target_blank')->default(false);
+            $table->boolean('is_active')->default(true);
+            $table->integer('sort')->default(0);
             $table->timestamps();
         });
     }

@@ -50,7 +50,9 @@ return [
             'slide' => 'article/slides',
             'file'  => 'article/files',
         ],
-
+        'slideshow' => [
+            'image' => 'slideshow/images',
+        ],
     ],
 
     'locale' => [
