@@ -6,4 +6,5 @@ return [
     App\Providers\FortifyServiceProvider::class,
     App\Providers\JetstreamServiceProvider::class,
     Laravel\Socialite\SocialiteServiceProvider::class,
+    Studio15\FilamentTree\FilamentTreeServiceProvider::class,
 ];

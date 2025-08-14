@@ -20,18 +20,16 @@ class ArticleSeeder extends Seeder
      */
     public function run(): void
     {
-        if(Article::count()){
-            Article::truncate();
-        }
-
-        if(Image::count()){
-            Image::truncate();
-        }
+        
+        Article::truncate();
+        Image::truncate();
 
         // truncate article_tag table
         DB::table('article_tag')->truncate();
 
         $id = 1;
+
+        $uncategorizedId = 5;
 
         //seeder for news
         $datas = DB::connection('second_db')->table('news')->orderBy('news_id')->get();
@@ -40,7 +38,7 @@ class ArticleSeeder extends Seeder
             $article = [
                 'id' => $id++,
                 'article_type_id' => ArticleType::News->value,
-                'category_id' => Category::where('name->id', DB::connection('second_db')->table('category')->where('category_id', $data->category_id)->pluck('id_name')->first())->pluck('id')->first() ?? 1,
+                'category_id' => Category::where('name->id', DB::connection('second_db')->table('category')->where('category_id', $data->category_id)->where('type', 'news')->pluck('id_name')->first())->pluck('id')->first() ?? $uncategorizedId,
                 'author_id' => Employee::where('username', $data->admin_id)->pluck('id')->first() ?? null,
                 'image' => null,
                 'title' => [
@@ -86,7 +84,7 @@ class ArticleSeeder extends Seeder
             $article = [
                 'id' => $id++,
                 'article_type_id' => ArticleType::Blog->value,
-                'category_id' => Category::where('name->id', DB::connection('second_db')->table('category')->where('category_id', $data->category_id)->pluck('id_name')->first())->pluck('id')->first() ?? 1,
+                'category_id' => Category::where('name->id', DB::connection('second_db')->table('category')->where('category_id', $data->category_id)->where('type', 'blog')->pluck('id_name')->first())->pluck('id')->first() ?? $uncategorizedId,
                 'author_id' => Employee::where('username', $data->admin_id)->pluck('id')->first() ?? null,
                 'image' => null,
                 'title' => [
@@ -131,7 +129,7 @@ class ArticleSeeder extends Seeder
             $article = [
                 'id' => $id++,
                 'article_type_id' => ArticleType::Gallery->value,
-                'category_id' => Category::where('name->id', DB::connection('second_db')->table('category')->where('category_id', $data->category_id)->pluck('id_name')->first())->pluck('id')->first() ?? 1,
+                'category_id' => Category::where('name->id', DB::connection('second_db')->table('category')->where('category_id', $data->category_id)->where('type', 'gallery')->pluck('id_name')->first())->pluck('id')->first() ?? $uncategorizedId,
                 'author_id' => Employee::where('username', $data->admin_id)->pluck('id')->first() ?? null,
                 'image' => null,
                 'title' => [
@@ -222,5 +220,58 @@ class ArticleSeeder extends Seeder
             Article::create($article);
         }
 
+        //seeder for information
+
+        $datas = DB::connection('second_db')->table('information')->selectRaw('information.*, category.core_id')->join('category', 'category.category_id', '=', 'information.category_id')->orderBy('information_id')->get();
+
+        foreach ($datas as $data) {
+            $article = [
+                'id' => $id++,
+                'article_type_id' => ArticleType::Information->value,
+                'category_id' => Category::where('name->id', DB::connection('second_db')->table('category')->where('category_id', $data->category_id)->pluck('id_name')->first())->where('parent_id', $data->core_id * -1)->pluck('id')->first() ?? $data->core_id,
+                'author_id' => null,
+                'image' => null,
+                'title' => [
+                    'en' => $data->en_title,
+                    'id' => $data->id_title
+                ],
+                'summary' => [
+                    'en' => $data->en_summary,
+                    'id' => $data->id_summary
+                ],
+                'content' => [
+                    'en' => $data->en_content,
+                    'id' => $data->id_content
+                ],
+                'hit' => 0,
+                'is_active' => $data->is_active == 'Y',
+                'published_at' => $data->time_stamp,
+                'sort' => $data->sort,
+                'year' => $data->year,
+            ];
+            $file = $data->file;
+            if(!empty($file)){
+                $article['files'] = [];
+                $origs = [];
+                // ($file);
+                $url = env('URL_BEFORE').'filebox/information/'.$file;
+                $contents = @file_get_contents($url);
+                if($contents !== false){
+                    Storage::put($file_path = config('services.disk.article.file').'/'.$file, $contents);
+                    $article['files'][] = $file_path;
+                    $origs[] = [
+                        $file_path  => $file
+                    ];
+                }
+                $article['original_files'] = json_encode($origs);
+            }
+            Article::create($article);
+        }
+
+        $pdo = DB::getPdo();
+        $pdo->beginTransaction();
+        $statement = $pdo->prepare("SELECT setval('articles_id_seq', (SELECT MAX(id) FROM articles))");
+        $statement->execute();
+        $pdo->commit();
     }
 }

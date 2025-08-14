@@ -8,7 +8,7 @@ enum ArticleType: int
     case Blog        = 2;
     case Gallery     = 3;
     case Page        = 4;
-    // case Information = 5;
+    case Information = 5;
     // case Question    = 6;
     // case Request     = 7;
     // case Wbs         = 8;

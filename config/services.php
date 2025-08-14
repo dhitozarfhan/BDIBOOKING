@@ -48,12 +48,11 @@ return [
         'article'   => [
             'image' => 'article/images',
             'slide' => 'article/slides',
-            // 'thumb' => [
-            //     'square' => 'blog/squares',
-            //     'wide' => 'blog/wides'
-            // ]
+            'file'  => 'article/files',
         ],
-
+        'slideshow' => [
+            'image' => 'slideshow/images',
+        ],
     ],
 
     'locale' => [

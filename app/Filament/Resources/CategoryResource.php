@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\CategoryType;
 use App\Filament\Resources\CategoryResource\Pages;
 use App\Models\Category;
 use Filament\Forms\Components\Section;
@@ -14,6 +15,8 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+
 class CategoryResource extends Resource
 {
 
@@ -67,5 +70,12 @@ class CategoryResource extends Resource
             'create' => Pages\CreateCategory::route('/create'),
             'edit' => Pages\EditCategory::route('/{record}/edit'),
         ];
+    }
+
+
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->where('category_type_id', CategoryType::Article->value);
     }
 }

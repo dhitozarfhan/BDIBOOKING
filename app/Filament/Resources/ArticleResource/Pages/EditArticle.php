@@ -6,7 +6,6 @@ use App\Filament\Resources\ArticleResource;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
-use Filament\Support\Colors\Color;
 
 class EditArticle extends EditRecord
 {

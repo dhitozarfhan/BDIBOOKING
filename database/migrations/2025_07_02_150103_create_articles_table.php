@@ -23,6 +23,10 @@ return new class extends Migration
             $table->integer('hit')->default(0);
             $table->boolean('is_active')->default(false);
             $table->dateTime('published_at')->nullable();
+            $table->integer('sort')->default(0);
+            $table->year('year')->nullable();
+            $table->longText('files')->nullable();
+            $table->longText('original_files')->nullable();
             $table->timestamps();
         });
     }

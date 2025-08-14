@@ -15,25 +15,59 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        if(Category::count()){
-            Category::truncate();
-        }
+        Category::truncate();
 
         $id = 1;
-
-        $datas = DB::connection('second_db')->table('category')
-        ->whereIn('type', ['news', 'gallery', 'blog'])
-        ->groupBy('id_name')->orderBy('category_id')->get();
+        
+        $datas = DB::connection('second_db')->table('core')->orderBy('sort')->get();
 
         foreach ($datas as $data) {
             Category::create([
-                'id' => $id++,
+                'id' => $data->core_id * -1,
+                'category_type_id' => CategoryType::InformationType->value,
+                'parent_id' => null,
                 'name' => [
                     'en' => $data->en_name,
                     'id' => $data->id_name,
                 ],
                 'sort' => $data->sort,
-                'is_root' => $data->is_root,
+                'is_root' => true,
+                'is_active' => true
+            ]);
+
+            Category::create([
+                'id' => $id,
+                'category_type_id' => CategoryType::Information->value,
+                'parent_id' => $id * -1,
+                'name' => [
+                    'en' => 'Uncategorized',
+                    'id' => 'Belum Terkategorikan',
+                ],
+                'sort' => 1,
+                'is_root' => true,
+                'is_active' => true
+            ]);
+            $id++;
+        }
+
+        $datas = DB::connection('second_db')->table('category')
+        ->whereIn('type', ['news', 'gallery', 'blog', 'information'])
+        ->groupBy('id_name')->orderBy('category_id')->get();
+
+        foreach ($datas as $data) {
+            if($data->type == 'information' && $data->id_name == 'Belum Terkategorikan') {
+                continue;
+            }
+            Category::create([
+                'id' => $id++,
+                'category_type_id' => $data->type == 'information' ? CategoryType::Information->value : CategoryType::Article->value,
+                'parent_id' => $data->type == 'information' ? $data->core_id * -1 : null,
+                'name' => [
+                    'en' => $data->en_name,
+                    'id' => $data->id_name,
+                ],
+                'sort' => $data->sort,
+                'is_root' => $data->is_root == 'Y',
                 'is_active' => $data->is_active == 'Y',
             ]);
         }

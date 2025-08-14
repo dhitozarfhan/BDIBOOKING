@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->integer('category_type_id');
+            $table->integer('parent_id')->nullable();
             $table->json('name');
             $table->integer('sort')->default(0);
             $table->boolean('is_root')->default(false);
