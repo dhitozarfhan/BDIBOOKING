@@ -12,7 +12,7 @@ class Navigation extends Model
     use NodeTrait;
     use InteractsWithTree;
 
-    protected $fillable = ['navigation_type_id', 'link_type_id', 'article_id', 'name', 'path', 'target_blank', 'is_active'];
+    protected $fillable = ['navigation_type_id', 'link_type_id', 'article_id', 'name', 'path', 'target_blank'];
 
     protected $casts = [
         'name' => 'json',

@@ -108,12 +108,7 @@ class HeaderMenuPage extends TreePage
             Toggle::make('target_blank')
                 ->label(__('Open in new tab ?'))
                 ->default(false)
-                ->inline(false),
-
-            Toggle::make('is_active')
-                ->label(__('Is Active ?'))
-                ->default(true)
-                ->inline(false),
+                ->inline(false)
 
         ]);
     }

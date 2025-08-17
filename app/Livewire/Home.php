@@ -12,8 +12,8 @@ class Home extends Component
     public function render()
     {
         return view('livewire.home', [
-            'posts' => Article::where('is_active', true)->whereIn('article_type_id', [ArticleType::Blog->value, ArticleType::News->value])
-                        ->orderBy('published_at', 'desc')->take(10)->get()
+            'posts' => Article::where('is_active', true)->whereIn('article_type_id', [ArticleType::News->value, ArticleType::Blog->value])
+                        ->orderBy('published_at', 'desc')->take(10)->get(),
         ]);
     }
 }
