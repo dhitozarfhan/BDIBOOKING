@@ -14,15 +14,14 @@ class DatabaseSeeder extends Seeder
     {
         
         $this->call([
-            // EducationSeeder::class,
-            // EmployeeStatusSeeder::class,
-            // GenderSeeder::class,
-            // RankSeeder::class,
-            // ReligionSeeder::class,
-            // PositionTypeSeeder::class,
-            // PositionSeeder::class,
-            // EmployeeSeeder::class,
-
+            EducationSeeder::class,
+            EmployeeStatusSeeder::class,
+            GenderSeeder::class,
+            RankSeeder::class,
+            ReligionSeeder::class,
+            PositionTypeSeeder::class,
+            PositionSeeder::class,
+            EmployeeSeeder::class,
             
             LinkTypeSeeder::class,
             NavigationTypeSeeder::class,
@@ -33,6 +32,7 @@ class DatabaseSeeder extends Seeder
             ArticleTypeSeeder::class,
 
             ArticleSeeder::class,
+            NavigationSeeder::class,
         ]);
     }
 }

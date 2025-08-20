@@ -29,7 +29,7 @@ class ViewServiceProvider extends ServiceProvider
 
         View::composer(['layouts.partials.footer'], function ($view) {
             $view->with('footers', Navigation::scoped(['navigation_type_id' => NavigationType::Footer->value])
-                ->get()->toTree());
+                ->withDepth()->get()->toTree());
         });
     }
 }

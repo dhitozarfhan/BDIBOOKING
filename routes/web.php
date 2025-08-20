@@ -1,10 +1,11 @@
 <?php
 
-use App\Livewire\Home;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', Home::class)->name('home');
+Route::get('/',  App\Livewire\Home::class)->name('home');
 
+Route::get('/{article_type}', App\Livewire\Articles\Index::class)->name('articles.index');
+Route::get('/{article_type}/{slug}', App\Livewire\Articles\Show::class)->name('articles.show');
 /*
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\BlogController;

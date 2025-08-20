@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Enums\LinkType as EnumsLinkType;
 use Illuminate\Database\Eloquent\Model;
 use Kalnoy\Nestedset\NodeTrait;
 use Studio15\FilamentTree\Concerns\InteractsWithTree;
+use Illuminate\Support\Str;
 
 class Navigation extends Model
 {
@@ -20,9 +22,29 @@ class Navigation extends Model
 
     public function getLinkAttribute(): string
     {
-        return '';
-        // return $this->link_type_id == LinkType::Article->value ?;
+        return $this->link_type_id == EnumsLinkType::Article->value ? route('articles.show', ['slug' => Str::kebab($this->article->title).'-'.$this->article_id, 'article_type' => $this->article->articleType->slug]) : (
+            $this->link_type_id == EnumsLinkType::Internal->value ? url($this->path) :
+            ($this->link_type_id == EnumsLinkType::Empty->value ? '#' : $this->path)
+        );
     }
+
+    public function article() {
+        return $this->belongsTo(Article::class, 'article_id');
+    }
+
+    public function linkType() {
+        return $this->belongsTo(LinkType::class, 'link_type_id');
+    }
+
+    // public function linkType(): string
+    // {
+    //     return match ($this->link_type_id) {
+    //         EnumsLinkType::Article->value => 'article',
+    //         EnumsLinkType::Internal->value => 'internal',
+    //         EnumsLinkType::Empty->value => 'empty',
+    //         default => 'external',
+    //     };
+    // }
 
     public function getScopeAttributes(): array
     {

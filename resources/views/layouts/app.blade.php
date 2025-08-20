@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="corporate">
 
 <head>
     <meta charset="utf-8">
@@ -8,12 +8,7 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-
+    
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -22,11 +17,26 @@
 </head>
 
 <body class="font-sans antialiased bg-gray-100">
-    <x-banner />
+    <header class="bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-4">
+                <a href="{{ url('/') }}" class="flex items-center space-x-3" wire:navigate>
+                    <img class="h-16 w-auto" src="{{ asset('images/kemenperin.svg') }}" alt="Kementerian Perindustris RI - Balai Diklat Industri Yogyakarta">
+                    <img class="h-16" src="{{ asset('images/bdi-yogyakarta-corpu.svg') }}" alt="Balai Diklat Industri Yogyakarta">
+                </a>
 
-    <div id="nav-bar" class="sticky z-50 top-0">
-        @include('layouts.partials.header')
-    </div>
+                <a href="https://bdiyogyakarta.kemenperin.go.id/sidia" class="btn btn-primary">Login SIDIA</a>
+
+            </div>
+        </div>
+        <hr class="border-gray-200">
+        <div class="container mx-auto px-4">
+            @include('layouts.partials.header')
+        </div>
+    </header>
+    <!-- <div class="sticky z-50 top-0">
+        
+    </div> -->
 
     <div class="bg-white" style="background-image: url('{{ asset('images/background/bg-batik.png') }}'); background-size: contain;">
         @yield('carousel')
