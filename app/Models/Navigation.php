@@ -58,7 +58,7 @@ class Navigation extends Model
 
     public function getNameLocaleAttribute(): string
     {
-        return $this->name[app()->getLocale()] ?? '';
+        return $this->name[app()->getLocale()] ?? $this->name['id'];
     }
 
     // public function getTreeCaption(): ?string

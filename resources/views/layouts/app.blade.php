@@ -5,8 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title', config('app.name', 'BDI Yogyakarta'))</title>
 
     <script>
     (function () {
@@ -42,6 +41,7 @@
                 <div class="flex items-center space-x-4">
                     <a href="https://bdiyogyakarta.kemenperin.go.id/sidia" class="btn btn-primary">Login SIDIA</a>
                     <livewire:theme-switcher />
+                    <livewire:language-switcher />
                 </div>
             </div>
         </div>
@@ -51,9 +51,14 @@
         </div>
     </header>
 
-    <main>
-        {{ $slot }}
+    <main class="container mx-auto max-w-6xl p-4">
+        @if (isset($slot))
+            {{ $slot }}
+        @else
+            @yield('content')
+        @endif
     </main>
+
 
     @include('layouts.partials.footer')
 
@@ -111,6 +116,23 @@
                 document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
             }
             } catch (_) {}
+        });
+
+        Livewire.on('locale-changed', ({ locale }) => {
+            // window.location.reload();
+            const url = window.location.pathname + window.location.search + window.location.hash;
+
+            if (typeof Livewire.navigate === 'function') {
+                // Morph seluruh dokumen tanpa hard reload
+                Livewire.navigate(url, {
+                    replace: true,       // tidak menambah history baru
+                    scroll: false,       // pertahankan posisi scroll
+                    preserveScroll: true // alias keamanan
+                });
+            } else {
+                // Fallback bila navigate belum tersedia (mis. Livewire < v3)
+                window.location.reload();
+            }
         });
     });
     </script>
