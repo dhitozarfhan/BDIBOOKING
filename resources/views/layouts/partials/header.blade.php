@@ -1,7 +1,7 @@
 @php
 function renderMenu($items, $isRoot = true, $depth = 1) {
     $ulClass = $isRoot
-        ? 'menu menu-horizontal bg-base-100 rounded-box'
+        ? 'menu lg:menu-horizontal bg-base-100 rounded-box'
         : 'menu bg-base-100 rounded-box';
 
     echo '<ul class="'.$ulClass.'">';
@@ -44,13 +44,13 @@ function renderMenu($items, $isRoot = true, $depth = 1) {
 @endphp
 <div x-data="{ open: false }" class="border-b z-50 bg-base-100 relative">
     <!-- Desktop Menu -->
-    <div class="hidden md:flex justify-center">
+    <div class="hidden lg:flex justify-center">
         @php
             renderMenu($headers);
         @endphp
     </div>
     <!-- Mobile Menu Button -->
-    <div class="flex md:hidden items-center justify-between px-2 py-2">
+    <div class="flex lg:hidden items-center justify-between px-2 py-2">
         <span class="font-bold">MENU</span>
         <button @click="open = !open" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 focus:outline-none" aria-label="Open main menu">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,7 +59,7 @@ function renderMenu($items, $isRoot = true, $depth = 1) {
         </button>
     </div>
     <!-- Mobile Menu -->
-    <div x-show="open" x-transition class="md:hidden w-full">
+    <div x-show="open" x-transition class="lg:hidden w-full">
         @php
             renderMenu($headers, true, 1, true);
         @endphp

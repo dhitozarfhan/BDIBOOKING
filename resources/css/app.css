@@ -11,5 +11,6 @@
 }
 
 @plugin "daisyui" {
-  themes: corporate --default, business --prefersdark;
+  themes: light --default, dark --prefersdark;
 }
+@import "bootstrap-icons/font/bootstrap-icons";
