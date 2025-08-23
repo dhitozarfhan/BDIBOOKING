@@ -380,10 +380,13 @@
     "Your email address is unverified.": "Alamat surel Anda belum diverifikasi.",
 
     "Category": "Kategori",
+    "Categories": "Kategori",
     "Article": "Artikel",
     "All Articles": "Semua Artikel",
     "Type": "Tipe",
     "Article Type": "Tipe Artikel",
+    "Post": "Postingan",
+    "Popular Posts": "Postingan Populer",
     "News": "Berita",
     "Page": "Halaman",
     "Blog": "Blog",
@@ -435,6 +438,7 @@
 
 
 
+    ":article not found.": ":article yang Anda maksud tidak ditemukan.",
     "Contact Us": "Kontak Kami",
     "Telephone": "Telepon",
     "Footer About Message": "BDI Yogyakarta mempunyai tugas melaksanakan pendidikan dan pelatihan bagi sumber daya manusia industri melalui <b>Diklat 3-in-1</b> (Pelatihan-Sertifikasi Kompetensi-Penempatan Kerja) dan <b>inkubator bisnis untuk menumbuhkan wirausaha industri.</b>"

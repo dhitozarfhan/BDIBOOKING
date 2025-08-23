@@ -4,6 +4,5 @@
         @checked($mode==='prefersdark' ) />
 
     <i class="swap-off bi bi-brightness-high-fill text-yellow-500 text-2xl"></i>
-    <i class="swap-on bi bi-moon text-white text-2xl font-bold"></i>
-
+    <i class="swap-on bi bi-moon-stars-fill text-white text-2xl"></i>
 </label>

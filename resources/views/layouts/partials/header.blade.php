@@ -42,7 +42,7 @@ function renderMenu($items, $isRoot = true, $depth = 1) {
     echo '</ul>';
 }
 @endphp
-<div x-data="{ open: false }" class="border-b z-50 bg-base-100 relative">
+<div x-data="{ open: false }" class="z-50 bg-base-100 relative">
     <!-- Desktop Menu -->
     <div class="hidden lg:flex justify-center">
         @php

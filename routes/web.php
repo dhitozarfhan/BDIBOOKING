@@ -1,11 +1,44 @@
 <?php
 
+use App\Models\Article;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/',  App\Livewire\Home::class)->name('home');
 
 Route::get('/{article_type}', App\Livewire\Articles\Index::class)->name('articles.index');
 Route::get('/{article_type}/{slug}', App\Livewire\Articles\Show::class)->name('articles.show');
+Route::get('/articles/category/{category}', function (int $category) {
+    $articles = Article::query()
+        ->where('is_active', true)
+        ->whereNotNull('published_at')
+        ->where('published_at', '<=', now())
+        ->where('category_id', $category)
+        ->orderByDesc('published_at')->orderByDesc('id')
+        ->paginate(12);
+
+    return view('articles.list', [
+        'title' => "Kategori #{$category}",
+        'articles' => $articles,
+    ]);
+})->name('articles.byCategory');
+
+// Halaman arsip (year-month)
+Route::get('/articles/archive/{year}/{month}', function (int $year, int $month) {
+    $articles = Article::query()
+        ->where('is_active', true)
+        ->whereNotNull('published_at')
+        ->whereYear('published_at', $year)
+        ->whereMonth('published_at', $month)
+        ->orderByDesc('published_at')->orderByDesc('id')
+        ->paginate(12);
+
+    $label = \Illuminate\Support\Carbon::create($year, $month, 1)->isoFormat('MMMM YYYY');
+
+    return view('articles.list', [
+        'title' => "Arsip {$label}",
+        'articles' => $articles,
+    ]);
+})->name('articles.byArchive');
 /*
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\BlogController;

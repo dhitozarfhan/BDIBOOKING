@@ -50,13 +50,12 @@
                 </div>
             </div>
         </div>
-        <hr class="border-base-300">
-        <div class="container mx-auto px-4">
+        <div class="border-y border-base-300 mx-auto px-4">
             @include('layouts.partials.header')
         </div>
     </header>
 
-    <main class="container mx-auto max-w-6xl p-4">
+    <main>
         @if (isset($slot))
             {{ $slot }}
         @else

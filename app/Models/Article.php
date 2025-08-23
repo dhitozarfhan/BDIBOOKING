@@ -65,4 +65,36 @@ class Article extends Model
         });
 
     }
+    /**
+     * Ambil locale aktif: session('locale') → app()->getLocale() → 'id'
+     */
+    public static function currentLocale(): string
+    {
+        return session('locale', app()->getLocale() ?? 'id');
+    }
+
+    /**
+     * Helper ambil teks dari field JSON (title/summary/content) sesuai locale,
+     * dengan fallback id → en → nilai pertama yang ada.
+     */
+    public function t(string $field, ?string $locale = null): ?string
+    {
+        $locale = $locale ?: static::currentLocale();
+        $data   = $this->{$field}; // array or null
+        if (!is_array($data)) return null;
+
+        $candidates = array_unique([$locale, 'id', 'en', key($data)]);
+        foreach ($candidates as $key) {
+            if ($key !== null && array_key_exists($key, $data) && filled($data[$key])) {
+                return (string) $data[$key];
+            }
+        }
+        return null;
+    }
+
+    // Accessors nyaman dipakai di Blade:
+
+    public function getTitleTextAttribute(): ?string   { return $this->t('title'); }
+    public function getSummaryTextAttribute(): ?string { return $this->t('summary'); }
+    public function getContentTextAttribute(): ?string { return $this->t('content'); }
 }
