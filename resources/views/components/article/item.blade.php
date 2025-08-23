@@ -1,25 +1,29 @@
-@props(['article'])
-<article class="py-4">
-    <div class="flex gap-3">
-        <div class="w-40 h-30 rounded overflow-hidden bg-base-200 shrink-0">
-            <img src="{{ $article->image }}" alt="{{ $article->title }}" class="w-full h-full object-cover" loading="lazy">
+@props([
+    'article',
+    'articleType'
+])
+<article class="py-4 flex gap-4">
+    @if($article->image)
+    <a href="{{ url('/'.$articleType.'/'.$article->slug) }}" class="shrink-0 w-40 aspect-video overflow-hidden rounded-xl">
+        <img src="{{ Storage::url($article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover" loading="lazy">
+    </a>
+    @endif
+    <div class="min-w-0">
+        <a href="{{ url('/'.$articleType.'/'.$article->slug) }}" class="hover:link">
+            <h2 class="text-lg font-semibold line-clamp-2">{{ $article->title }}</h2>
+        </a>
+        <div class="mt-1 text-xs text-base-content/60 flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span>{{ optional($article->published_at)->translatedFormat('d M Y') }}</span>
+            @if($article->category)
+            <a class="hover:link"
+                href="{{ url('/'.$articleType) . '?category='.$article->category->slug }}">
+                #{{ $article->category->name }}
+            </a>
+            @endif
+            <span>👁️ {{ number_format($article->hit) }}</span>
         </div>
-        <div class="flex-1">
-            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
-                <div>
-                    <h3 class="text-lg font-semibold leading-snug">
-                        <a wire:navigate href="{{ route('articles.show', ['slug' => Str::kebab($article->title).'-'.$article->id, 'article_type' => $article->articleType->slug]) }}" class="link link-hover">
-                            {{ $article->title }}
-                        </a>
-                    </h3>
-                    <div class="mt-1 flex flex-wrap items-center gap-2 text-xs text-base-content/60">
-                        <span class="px-2 py-1 border rounded-lg">{{ Carbon\Carbon::parse($article->published_at)->translatedFormat('d M Y') }}</span>
-                        <span class="bg-secondary text-base-300 font-bold px-2 py-1 rounded-lg">{{ $article->category->name }}</span>
-                    </div>
-                </div>
-                <div class="mt-1 text-xs text-base-content/60">Dibaca: {{ number_format($article->hit) }}</div>
-            </div>
-            <p class="mt-2 text-base-content/80 text-sm">{{ Str::limit(strip_tags($article->summary ?? $article->content), 360) }}</p>
-        </div>
+        @if($article->summary)
+        <p class="mt-2 text-sm line-clamp-3">{{ $article->summary }}</p>
+        @endif
     </div>
 </article>

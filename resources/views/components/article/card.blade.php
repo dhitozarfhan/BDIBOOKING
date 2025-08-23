@@ -1,35 +1,33 @@
-@props(['article'])
-
-<article class="card bg-base-200 shadow-sm hover:shadow-md transition">
-    <figure>
-        @if(Storage::exists($article->image))
-            <img src="{{ Storage::url($article->image) }}" alt="{{ $article->title }}" />
-        @else
-            <img class="p-4" src="{{ asset('images/bdi-yogyakarta.svg') }}" alt="{{ $article->title }}" />
-        @endif
+@props([
+    'article',
+    'articleType'
+])
+<article class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
+    <figure class="aspect-video overflow-hidden">
+        <a href="{{ url('/'.$articleType.'/'.$article->slug) }}" class="w-full h-full block">
+            @if($article->image)
+            <img src="{{ Storage::url($article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover" loading="lazy">
+            @else
+            <div class="w-full h-full grid place-items-center bg-neutral-content">{{ __('No Image') }}</div>
+            @endif
+        </a>
     </figure>
-    <div class="card-body">
-        <div class="flex items-center gap-2 text-base-content/60">
-            <span class="px-2 py-1 border rounded-lg">
-                {{ Carbon\Carbon::parse($article->published_at)->translatedFormat('d M Y') }}
-            </span>
-            <span class="bg-secondary text-base-300 font-bold px-2 py-1 rounded-lg"><i class="bi bi-folder"></i> {{ $article->category->name }}</span>
-        </div>
-
-        <h2 class="card-title mt-1">
-            <a wire:navigate href="{{ route('articles.show', ['slug' => Str::kebab($article->title).'-'.$article->id, 'article_type' => $article->articleType->slug]) }}" class="link link-hover">
-                {{ $article->title }}
-            </a>
-        </h2>
-
-        <p class="text-base-content/80">
-            {{ Str::limit(strip_tags($article->summary ?? $article->content), 160) }}
+    <div class="card-body p-4">
+        <a href="{{ url('/'.$articleType.'/'.$article->slug) }}" class="hover:link">
+            <h2 class="card-title text-base line-clamp-2">{{ $article->title }}</h2>
+        </a>
+        <p class="text-base-content/80 line-clamp-6">
+            {{ Str::limit(strip_tags($article->summary ?? $article->content), 400) }}
         </p>
-
-        <div class="card-actions justify-end">
-            <a wire:navigate href="{{ route('articles.show', ['slug' => Str::kebab($article->title).'-'.$article->id, 'article_type' => $article->articleType->slug]) }}" class="link link-primary text-3xl">
-                <i class="bi bi-arrow-right-square-fill"></i>
+        <div class="text-xs text-base-content/60 flex flex-wrap items-center gap-2">
+            <span>{{ optional($article->published_at)->translatedFormat('d M Y') }}</span>
+            @if($article->category)
+            <a class="hover:link"
+                href="{{ url('/'.$articleType) . '?category='.$article->category->slug }}">
+                #{{ $article->category->name }}
             </a>
+            @endif
+            <span>👁️ {{ number_format($article->hit) }}</span>
         </div>
     </div>
 </article>

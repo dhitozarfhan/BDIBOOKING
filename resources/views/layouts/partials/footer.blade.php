@@ -21,7 +21,7 @@ echo '<ul>';
 }
 @endphp
 <footer class="footer sm:footer-horizontal bg-neutral text-neutral-content p-4">
-    <div class="container mx-auto px-4">
+    <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             <div class="py-3">
                 <img src="{{ asset('images/bdi-yogyakarta-white.svg') }}" alt="Balai Diklat Industri Yogyakarta" class="h-10">
@@ -80,8 +80,8 @@ echo '<ul>';
         </div>
     </div>
 </footer>
-<footer class="ooter sm:footer-horizontal footer-center bg-neutral text-neutral-content">
-    <div class="container mx-auto px-4 py-4 border-t border-neutral-700">
+<footer class="footer sm:footer-horizontal footer-center bg-neutral text-neutral-content">
+    <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 border-t border-neutral-700">
         <p class="text-white text-center text-sm">© 2025 BDI Yogyakarta Kementerian Perindustrian</p>
     </div>
 </footer>

@@ -1,11 +1,24 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ session('theme-mode', 'default') == 'default' ? 'light' : 'dark' }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', config('app.name', 'BDI Yogyakarta'))</title>
+    @php
+        $fallbackTitle = config('app.name', 'Balai Diklat Industri Yogyakarta');
+        // Jika Livewire render memberikan variable $title, pakai itu.
+        $runtimeTitle = isset($title) && trim($title) !== '' ? $title : null;
+    @endphp
+    <title>
+        @hasSection('title')
+            @yield('title')
+        @elseif($runtimeTitle)
+            {{ $runtimeTitle }}
+        @else
+            {{ $fallbackTitle }}
+        @endif
+    </title>
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('icons/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('icons/favicon-16x16.png') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('icons/apple-touch-icon.png') }}">
@@ -14,18 +27,24 @@
 
     <script>
     (function () {
-        try {
-            const saved = localStorage.getItem('theme-mode'); // 'default' | 'prefersdark'
-            let theme = 'light';
-            if (saved === 'prefersdark') {
-            theme = 'dark';
-            } else {
-            // default: ikut prefers-color-scheme
-            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            }
-            document.documentElement.setAttribute('data-theme', theme);
-        } catch (_) {}
-        })();
+      try {
+        // Server-side session (diset ThemeSwitcher@mount/setMode)
+        var serverMode = "{{ session('theme-mode', 'default') }}"; // 'default' | 'prefersdark'
+        // Client-side cache (tetap dipakai sebagai fallback)
+        var clientMode = null;
+        try { clientMode = localStorage.getItem('theme-mode'); } catch (_) {}
+        var mode = clientMode || serverMode || 'default';
+
+        var resolved = 'light';
+        if (mode === 'prefersdark') {
+          resolved = 'dark';
+        } else {
+          // default: ikut preferensi OS
+          resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.setAttribute('data-theme', resolved);
+      } catch (_) {}
+    })();
     </script>
     
     <!-- Scripts -->
@@ -35,12 +54,13 @@
     @livewireStyles
 </head>
 
-<body class="font-sans antialiased">
+<body>
     <header>
-        <div class="container mx-auto px-4">
+        <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between py-4">
                 <a href="{{ url('/') }}" class="flex items-center space-x-3" wire:navigate>
-                    <img id="kemenperin-logo" class="h-16" src="{{ asset('images/kemenperin.svg') }}" alt="Kementerian Perindustris RI - Balai Diklat Industri Yogyakarta">
+                    <!-- hidden on lower than md screen size -->
+                    <img id="kemenperin-logo" class="h-16 hidden md:inline-block" src="{{ asset('images/kemenperin.svg') }}" alt="Kementerian Perindustrian RI - Balai Diklat Industri Yogyakarta">
                     <img id="bdi-yogyakarta-logo" class="h-16" src="{{ asset('images/bdi-yogyakarta-corpu.svg') }}" alt="Balai Diklat Industri Yogyakarta">
                 </a>
                 <div class="flex items-center space-x-4">
@@ -123,19 +143,17 @@
         });
 
         Livewire.on('locale-changed', ({ locale }) => {
-            // window.location.reload();
-            const url = window.location.pathname + window.location.search + window.location.hash;
+            try {
+            // Update <html lang=".."> di sisi klien biar langsung akurat
+            document.documentElement.setAttribute('lang', (locale || 'id').replace('_','-'));
+            } catch (_) {}
 
+            // Pertahankan perilaku sekarang: re-morph / reload agar semua terjemahan tersetel dari server
+            const url = window.location.pathname + window.location.search + window.location.hash;
             if (typeof Livewire.navigate === 'function') {
-                // Morph seluruh dokumen tanpa hard reload
-                Livewire.navigate(url, {
-                    replace: true,       // tidak menambah history baru
-                    scroll: false,       // pertahankan posisi scroll
-                    preserveScroll: true // alias keamanan
-                });
+            Livewire.navigate(url, { replace: true, scroll: false, preserveScroll: true });
             } else {
-                // Fallback bila navigate belum tersedia (mis. Livewire < v3)
-                window.location.reload();
+            window.location.reload();
             }
         });
     });

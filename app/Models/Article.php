@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\ArticleType as EnumsArticleType;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Translatable\HasTranslations;
@@ -22,6 +24,77 @@ class Article extends Model
         'files' => 'array',
         'original_files' => 'json',
     ];
+    
+    protected $appends = ['slug']; // agar otomatis ikut saat toArray()
+
+    public function getSlugAttribute(): string
+    {
+        $locale = app()->getLocale();
+        $title = '';
+
+        // Prefer Spatie's getTranslation if available
+        if (method_exists($this, 'getTranslation')) {
+            try {
+                $title = (string) $this->getTranslation('title', $locale);
+            } catch (\Throwable $e) {
+                $title = '';
+            }
+        }
+
+        // Fallbacks if translation not available or empty
+        if ($title === '') {
+            // Try raw attributes (JSON stored)
+            if (isset($this->attributes['title'])) {
+                $raw = $this->attributes['title'];
+                if (is_string($raw)) {
+                    $decoded = json_decode($raw, true);
+                    if (is_array($decoded)) {
+                        $title = (string) ($decoded[$locale] ?? reset($decoded) ?? $raw);
+                    } else {
+                        $title = (string) $raw;
+                    }
+                } elseif (is_array($raw)) {
+                    $title = (string) ($raw[$locale] ?? reset($raw) ?? '');
+                } else {
+                    $title = (string) $raw;
+                }
+            } elseif (isset($this->title)) {
+                if (is_array($this->title)) {
+                    $title = (string) ($this->title[$locale] ?? reset($this->title) ?? '');
+                } else {
+                    $title = (string) $this->title;
+                }
+            }
+        }
+
+        $title = trim($title);
+        $id    = (string) ($this->attributes['id'] ?? $this->id ?? '');
+
+        if ($title === '') {
+            return $id !== '' ? $id : '';
+        }
+
+        return \Illuminate\Support\Str::slug($title) . ($id !== '' ? "-{$id}" : '');
+    }
+
+    /**
+     * Ambil ID artikel dari slug "something-123".
+     */
+    public static function idFromSlug(string $slug): ?int
+    {
+        // cara cepat: ambil token terakhir setelah '-'
+        $parts = explode('-', $slug);
+        $last  = end($parts);
+        return ctype_digit($last) ? (int) $last : null;
+    }
+
+    #[Scope]
+    public function published(Builder $query)
+    {
+        return $query->where('is_active', true)
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now());
+    }
 
     public function articleType() {
         return $this->belongsTo(ArticleType::class, 'article_type_id');
@@ -65,36 +138,4 @@ class Article extends Model
         });
 
     }
-    /**
-     * Ambil locale aktif: session('locale') → app()->getLocale() → 'id'
-     */
-    public static function currentLocale(): string
-    {
-        return session('locale', app()->getLocale() ?? 'id');
-    }
-
-    /**
-     * Helper ambil teks dari field JSON (title/summary/content) sesuai locale,
-     * dengan fallback id → en → nilai pertama yang ada.
-     */
-    public function t(string $field, ?string $locale = null): ?string
-    {
-        $locale = $locale ?: static::currentLocale();
-        $data   = $this->{$field}; // array or null
-        if (!is_array($data)) return null;
-
-        $candidates = array_unique([$locale, 'id', 'en', key($data)]);
-        foreach ($candidates as $key) {
-            if ($key !== null && array_key_exists($key, $data) && filled($data[$key])) {
-                return (string) $data[$key];
-            }
-        }
-        return null;
-    }
-
-    // Accessors nyaman dipakai di Blade:
-
-    public function getTitleTextAttribute(): ?string   { return $this->t('title'); }
-    public function getSummaryTextAttribute(): ?string { return $this->t('summary'); }
-    public function getContentTextAttribute(): ?string { return $this->t('content'); }
 }

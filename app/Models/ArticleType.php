@@ -17,4 +17,16 @@ class ArticleType extends Model
             )
         );
     }
+
+    public function getNameTranslationAttribute(): string
+    {
+        return match($this->id) {
+            EnumsArticleType::Blog->value => __('Blog'),
+            EnumsArticleType::News->value => __('News'),
+            EnumsArticleType::Gallery->value => __('Gallery'),
+            EnumsArticleType::Page->value => __('Page'),
+            EnumsArticleType::Information->value => __('Public Information'),
+            default => __('Article'),
+        };
+    }
 }
