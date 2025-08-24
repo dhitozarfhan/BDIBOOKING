@@ -11,6 +11,10 @@ class Index extends BaseWithSidebar
 {
     use WithPagination;
 
+    // 🔸 Tag terpilih (slug atau id) via ?tag=
+    #[Url(as: 'tag', keep: true)]
+    public ?string $tag = null;
+
     #[Url(as: 'category')]
     public ?string $categorySlug = null;
 
@@ -106,9 +110,52 @@ class Index extends BaseWithSidebar
             });
         }
 
-        $q->orderByDesc('published_at')->orderByDesc('id');
+        // dalam articles()
+        if ($this->tag) {
+            // Jika kamu punya Tag::idFromSlug, pakai itu; kalau tidak, coba parse int
+            $tagId = method_exists(\App\Models\Tag::class, 'idFromSlug')
+                ? \App\Models\Tag::idFromSlug($this->tag)
+                : (ctype_digit((string)$this->tag) ? (int)$this->tag : null);
 
-        return $q->paginate($this->perPage);
+            if ($tagId) {
+                $q->whereHas('tags', fn($qq) => $qq->where('tags.id', $tagId));
+            } else {
+                // fallback jika param berisi nama tag
+                $name = trim($this->tag);
+                if ($name !== '') {
+                    $q->whereHas('tags', fn($qq) => $qq->where('tags.name', $name));
+                }
+            }
+        }
+
+        // === buat paginator ===
+        $paginator = $q->orderByDesc('published_at')->orderByDesc('id')->paginate($this->perPage);
+
+        // 1) paksa base path ke route index artikel (BUKAN /livewire/update)
+        $basePath = route('articles.index', ['article_type' => $this->articleType]);
+        $paginator->withPath($basePath);
+
+        // 2) tambahkan query yang perlu dipertahankan
+        $paginator->appends($this->paginationQuery());
+
+        return $paginator;
+    }
+
+    /** Query yang dipertahankan di pagination (tanpa 'page') */
+    protected function paginationQuery(): array
+    {
+        $q = [
+            'category' => $this->categorySlug ?: null,
+            'year'     => $this->year ?: null,
+            'month'    => $this->month ?: null,
+            'tag'      => $this->tag ?: null,             // <— tag param terpisah
+            'q'        => trim($this->search) ?: null,
+            'view'     => in_array($this->viewMode, ['grid','list'], true) ? $this->viewMode : null,
+            'perPage'  => in_array($this->perPage, [6,9,12,15,18,24], true) ? $this->perPage : null,
+        ];
+
+        // buang null/kosong agar URL rapi
+        return array_filter($q, fn($v) => !is_null($v) && $v !== '');
     }
     
     public function render()

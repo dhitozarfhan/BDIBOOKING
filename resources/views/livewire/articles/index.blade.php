@@ -6,10 +6,13 @@
             <h1 class="text-2xl font-bold">
                 {{ $this->pageTitle() }}
             </h1>
-            @if($categorySlug || $year || strlen(trim($this->search)) >= 2)
+            @if($categorySlug || $tag || $year || strlen(trim($this->search)) >= 2)
                 <p class="text-sm text-base-content/60 mt-1">
                     @if($categorySlug)
                         {{ __('Category')}}: <span class="font-medium">{{ \Illuminate\Support\Str::headline(substr($categorySlug, 0, strrpos($categorySlug, '-'))) }}</span>
+                    @endif
+                    @if($tag)
+                        {{ __('Tag Name')}}: <span class="font-medium">{{ \Illuminate\Support\Str::headline(substr($tag, 0, strrpos($tag, '-'))) }}</span>
                     @endif
                     @if($year && $month)
                         <span class="me-2">{{ __('Archives')}}: {{ \Carbon\Carbon::createFromDate($year, $month, 1)->translatedFormat('F Y') }}</span>

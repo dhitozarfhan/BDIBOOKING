@@ -4,7 +4,7 @@
 ])
 <article class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
     <figure class="aspect-video overflow-hidden">
-        <a href="{{ url('/'.$articleType.'/'.$article->slug) }}" class="w-full h-full block">
+        <a wire:navigate href="{{ url('/'.$articleType.'/'.$article->slug) }}" class="w-full h-full block">
             @if($article->image)
             <img src="{{ Storage::url($article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover" loading="lazy">
             @else
@@ -13,7 +13,7 @@
         </a>
     </figure>
     <div class="card-body p-4">
-        <a href="{{ url('/'.$articleType.'/'.$article->slug) }}" class="hover:link">
+        <a wire:navigate href="{{ url('/'.$articleType.'/'.$article->slug) }}" class="hover:link">
             <h2 class="card-title text-base line-clamp-2">{{ $article->title }}</h2>
         </a>
         <p class="text-base-content/80 line-clamp-6">
@@ -22,9 +22,9 @@
         <div class="text-xs text-base-content/60 flex flex-wrap items-center gap-2">
             <span>{{ optional($article->published_at)->translatedFormat('d M Y') }}</span>
             @if($article->category)
-            <a class="hover:link"
-                href="{{ url('/'.$articleType) . '?category='.$article->category->slug }}">
-                #{{ $article->category->name }}
+            <a wire:navigate class="hover:link"
+                href="{{ url('/'.$articleType . '?category='.urlencode($article->category->slug)) }}">
+                <i class="bi bi-folder2-open"></i> {{ $article->category->name }}
             </a>
             @endif
             <span>👁️ {{ number_format($article->hit) }}</span>

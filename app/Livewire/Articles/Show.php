@@ -21,7 +21,11 @@ class Show extends BaseWithSidebar
         $this->article = Article::query()
             ->published()
             ->when($typeId, fn($q,$tid) => $q->where('article_type_id', $tid))
-            ->with(['category:id,name'])
+            ->with([
+                'category:id,name',
+                'tags:id,name',
+                'images:id,article_id,path,description'
+            ])
             ->select(['id','title','summary','content','image','category_id','article_type_id','is_active','published_at','hit'])
             ->findOrFail($id);
 

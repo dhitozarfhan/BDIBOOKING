@@ -5,6 +5,7 @@ namespace App\Livewire\Articles;
 use App\Enums\ArticleType;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Tag;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
@@ -159,5 +160,69 @@ abstract class BaseWithSidebar extends Component
                 ->selectRaw('EXTRACT(YEAR FROM published_at) as y, EXTRACT(MONTH FROM published_at) as m, COUNT(*) as total')
                 ->groupBy('y','m')->orderByDesc('y')->orderByDesc('m')->limit(12)->get();
         });
+    }
+
+    /** Palet warna DaisyUI untuk teks/badge (urutan bebas) */
+    protected array $tagPalette = [
+        'p-3 text-white bg-primary',
+        'p-3 text-white bg-error',
+        'p-3 text-white bg-info-content',
+        'p-3 text-white bg-success-content',
+        'p-3 text-white bg-warning-content',
+    ];
+
+    /** Warna stabil dari id (crc32 % palette) */
+    protected function colorClassForId(int $id): string
+    {
+        $n = count($this->tagPalette) ?: 1;
+        $idx = crc32((string) $id) % $n;
+        return $this->tagPalette[$idx];
+    }
+
+    /** Boleh dipanggil dari Blade: {{ $this->tagColor($tag->id) }} */
+    public function tagColor(int|string $id): string
+    {
+        return $this->colorClassForId((int) $id);
+    }
+
+    #[Computed]
+    public function tagsCloud()
+    {
+        $typeId = $this->articleTypeId();
+
+        // Ambil jumlah pemakaian tag di artikel yang published & active
+        $rows = Tag::query()
+            ->selectRaw('tags.id, tags.name, COUNT(*) as total')
+            ->join('article_tag', 'tags.id', '=', 'article_tag.tag_id')
+            ->join('articles', 'articles.id', '=', 'article_tag.article_id')
+            ->where('articles.is_active', true)
+            ->whereNotNull('articles.published_at')
+            ->where('articles.published_at', '<=', now())
+            ->when($typeId, fn($q,$id) => $q->where('articles.article_type_id', $id))
+            ->groupBy('tags.id','tags.name->'.app()->getLocale())
+            ->orderByDesc('total')
+            ->limit(30)
+            ->get();
+
+        // Siapkan nilai min/max untuk skala
+        $min = (int) ($rows->min('total') ?? 0);
+        $max = (int) ($rows->max('total') ?? 0);
+
+        return $rows->map(function ($t) use ($min, $max) {
+            $t->weight = $this->normalizeTagWeight((int) $t->total, $min, $max); // 1..5
+            $t->color  = $this->colorClassForId((int) $t->id);
+            return $t;
+        });
+    }
+
+    /**
+     * Konversi count → bobot 1..5 (untuk ukuran font/opacity).
+     */
+    protected function normalizeTagWeight(int $count, int $min, int $max): int
+    {
+        if ($max <= $min) return 3; // semua sama
+        $ratio = ($count - $min) / max(1, ($max - $min));
+        // bucket 1..5
+        return 1 + (int) floor($ratio * 4);
     }
 }
