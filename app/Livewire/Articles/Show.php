@@ -23,10 +23,11 @@ class Show extends BaseWithSidebar
             ->when($typeId, fn($q,$tid) => $q->where('article_type_id', $tid))
             ->with([
                 'category:id,name',
+                'author:id,name',
                 'tags:id,name',
                 'images:id,article_id,path,description'
             ])
-            ->select(['id','title','summary','content','image','category_id','article_type_id','is_active','published_at','hit'])
+            ->select(['id','title','summary','content','image','author_id','category_id','article_type_id','is_active','published_at','hit'])
             ->findOrFail($id);
 
         $this->article->increment('hit');

@@ -24,12 +24,15 @@ class ViewServiceProvider extends ServiceProvider
     {
         View::composer(['layouts.partials.header'], function ($view) {
             $view->with('headers', Navigation::scoped(['navigation_type_id' => NavigationType::Header->value])
-                ->get()->toTree());
+            ->where('is_active', true)
+            ->get()->toTree());
         });
 
         View::composer(['layouts.partials.footer'], function ($view) {
             $view->with('footers', Navigation::scoped(['navigation_type_id' => NavigationType::Footer->value])
-                ->withDepth()->get()->toTree());
+            ->where('is_active', true)
+            ->withDepth()
+            ->get()->toTree());
         });
     }
 }

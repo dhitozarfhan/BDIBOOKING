@@ -11,7 +11,9 @@ class Index extends BaseWithSidebar
 {
     use WithPagination;
 
-    // 🔸 Tag terpilih (slug atau id) via ?tag=
+    #[Url(as: 'author', keep: true)]
+    public ?string $author = null;
+
     #[Url(as: 'tag', keep: true)]
     public ?string $tag = null;
 
@@ -31,6 +33,11 @@ class Index extends BaseWithSidebar
     public int $perPage = 12;
 
     protected string $paginationTheme = 'tailwind';
+
+    public function updatedAuthor(): void
+    {
+        $this->resetPage();
+    }
 
     public function updatedCategorySlug(): void { $this->resetPage(); }
     public function updatedYear(): void { $this->resetPage(); }
@@ -110,7 +117,23 @@ class Index extends BaseWithSidebar
             });
         }
 
-        // dalam articles()
+        //FILTER AUTHOR
+        if ($this->author) {
+            $authorId = method_exists(\App\Models\Employee::class, 'idFromSlug')
+                ? \App\Models\Employee::idFromSlug($this->author)
+                : (ctype_digit((string)$this->author) ? (int)$this->author : null);
+
+            if ($authorId) {
+                $q->where('author_id', $authorId);
+            } else {
+                $authorName = trim($this->author);
+                if ($authorName !== '') {
+                    // fallback by name (case-insensitive LIKE)
+                    $term = '%' . str_replace(['%','_'], ['\%','\_'], $authorName) . '%';
+                    $q->whereHas('author', fn($qq) => $qq->where('name', 'like', $term));
+                }
+            }
+        }
         if ($this->tag) {
             // Jika kamu punya Tag::idFromSlug, pakai itu; kalau tidak, coba parse int
             $tagId = method_exists(\App\Models\Tag::class, 'idFromSlug')
@@ -148,7 +171,8 @@ class Index extends BaseWithSidebar
             'category' => $this->categorySlug ?: null,
             'year'     => $this->year ?: null,
             'month'    => $this->month ?: null,
-            'tag'      => $this->tag ?: null,             // <— tag param terpisah
+            'tag'      => $this->tag ?: null,
+            'author'   => $this->author ?: null,  
             'q'        => trim($this->search) ?: null,
             'view'     => in_array($this->viewMode, ['grid','list'], true) ? $this->viewMode : null,
             'perPage'  => in_array($this->perPage, [6,9,12,15,18,24], true) ? $this->perPage : null,
@@ -179,6 +203,17 @@ class Index extends BaseWithSidebar
         if ($cid = $this->categoryIdFromSlug($this->categorySlug)) {
             $name = optional(Category::select('id','name')->find($cid))->name;
             if ($name) $extra[] = __('Category') . ": " . $name;
+        }
+        if ($this->author) {
+            // tampilkan “Penulis: ...” (coba resolve nama ketika slug/id)
+            $authorName = null;
+            if (method_exists(\App\Models\Employee::class, 'idFromSlug')) {
+                if ($id = \App\Models\Employee::idFromSlug($this->author)) {
+                    $authorName = optional(\App\Models\Employee::select('id','name')->find($id))->name;
+                }
+            }
+            $authorName = $authorName ?: $this->author;
+            $extra[] = __('Author') . ": {$authorName}";
         }
         if ($this->year) {
             $extra[] = __('Archive') . ": " . \Carbon\Carbon::createFromDate($this->year, $this->month, 1)->translatedFormat('F Y');

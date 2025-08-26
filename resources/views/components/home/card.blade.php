@@ -11,18 +11,23 @@
     <div class="card-body">
         <div class="flex items-center gap-2 text-base-content/60">
             <span class="px-2 py-1 border rounded-lg">
-                {{ Carbon\Carbon::parse($article->published_at)->translatedFormat('d M Y') }}
+                <a wire:navigate href="{{ url('/'.$article->articleType->slug) . '?' . \Illuminate\Support\Arr::query(['year' => substr($article->published_at, 0, 4), 'month' => substr($article->published_at, 5, 2)]) }}">
+                    {{ Carbon\Carbon::parse($article->published_at)->translatedFormat('d M Y') }}
+                </a>
             </span>
-            <span class="bg-secondary text-base-300 font-bold px-2 py-1 rounded-lg"><i class="bi bi-folder"></i> {{ $article->category->name }}</span>
+            <span class="bg-secondary text-base-300 font-bold px-2 py-1 rounded-lg">
+                <a wire:navigate href="{{ url('/'.$article->articleType->slug . '?category='.urlencode($article->category->slug)) }}">
+                    <i class="bi bi-folder"></i> {{ $article->category->name }}</a>
+            </span>
         </div>
 
-        <h2 class="card-title mt-1">
+        <h2 class="card-title mt-1 line-clamp-2">
             <a wire:navigate href="{{ route('articles.show', ['slug' => Str::kebab($article->title).'-'.$article->id, 'article_type' => $article->articleType->slug]) }}" class="link link-hover">
                 {{ $article->title }}
             </a>
         </h2>
 
-        <p class="text-base-content/80">
+        <p class="text-base-content/80 line-clamp-4">
             {{ Str::limit(strip_tags($article->summary ?? $article->content), 160) }}
         </p>
 

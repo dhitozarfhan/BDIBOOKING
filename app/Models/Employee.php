@@ -31,6 +31,20 @@ class Employee extends Authenticatable implements RenewPasswordContract
         'password',
         'remember_token',
     ];
+    
+    protected $appends = ['slug']; // agar otomatis tersedia saat toArray()
+
+    public function getSlugAttribute(): string
+    {
+        return \Illuminate\Support\Str::slug($this->name) . ($this->id !== '' ? "-{$this->id}" : '');
+    }
+
+    public static function idFromSlug(string $slug): ?int
+    {
+        $parts = explode('-', $slug);
+        $last  = end($parts);
+        return ctype_digit($last) ? (int) $last : null;
+    }
 
     public function needRenewPassword(): bool
     {

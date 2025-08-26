@@ -58,9 +58,9 @@ abstract class BaseWithSidebar extends Component
     protected function baseArticleQuery()
     {
         return Article::query()
-            ->with(['category:id,name'])
+            ->with(['category:id,name', 'author:id,name'])
             ->select([
-                'id','title','summary','image',
+                'id','title','summary','image','author_id',
                 'category_id','article_type_id','is_active','published_at','hit'
             ])
             ->published();

@@ -129,7 +129,7 @@ function qs($params) { return \Illuminate\Support\Arr::query($params); }
     </section>
 
     {{-- Tag Cloud --}}
-    <section class="card bg-base-100 shadow-sm">
+    <section class="card bg-base-300 shadow-sm">
         <div class="card-body p-4">
             <h3 class="font-semibold">Tag Cloud</h3>
 

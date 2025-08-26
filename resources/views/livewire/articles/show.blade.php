@@ -1,4 +1,3 @@
-{{-- Livewire v3 --}}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     {{-- Breadcrumbs sederhana --}}
     <nav class="text-sm breadcrumbs mb-4">
@@ -31,15 +30,21 @@
             {{-- Judul --}}
             <header>
                 <h1 class="text-2xl md:text-3xl font-bold leading-tight">{{ $article->title }}</h1>
-
+                @if($article->author)
+                <div class="mt-2 text-sm text-base-content/70">
+                    <span class="font-medium">
+                        <a wire:navigate class="hover:link" href="{{ url('/'.$articleType) . '?author='.urlencode($article->author?->slug) }}"><i class="bi bi-person-fill"></i> {{ $article->author?->name }}</a>
+                    </span>
+                </div>
+                @endif
                 <div class="mt-2 text-sm text-base-content/60 flex flex-wrap items-center gap-x-3 gap-y-1">
-                    <time datetime="{{ optional($article->published_at)->toDateString() }}">
-                        {{ optional($article->published_at)->translatedFormat('d M Y') }}
+                    <time datetime="{{ Carbon\Carbon::parse($article->published_at)->toDateString() }}">
+                        <a wire:navigate class="hover:link" href="{{ url('/'.$articleType) . '?' . \Illuminate\Support\Arr::query(['year' => substr($article->published_at, 0, 4), 'month' => substr($article->published_at, 5, 2)]) }}">
+                            <i class="bi bi-calendar"></i> {{ Carbon\Carbon::parse($article->published_at)->translatedFormat('d F Y') }}
+                        </a>
                     </time>
                     @if($article->category)
-                        <a wire:navigate
-                           class="hover:link"
-                           href="{{ url('/'.$articleType . '?category='.urlencode($article->category->slug)) }}">
+                        <a wire:navigate class="hover:link" href="{{ url('/'.$articleType . '?category='.urlencode($article->category->slug)) }}">
                             <i class="bi bi-folder2-open"></i> {{ $article->category->name }}
                         </a>
                     @endif
