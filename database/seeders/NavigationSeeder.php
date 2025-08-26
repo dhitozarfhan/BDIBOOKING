@@ -50,6 +50,7 @@ class NavigationSeeder extends Seeder
                     ],
                     'path'              => $linkTypeId == LinkType::Article->value || $linkTypeId == LinkType::Empty->value ? null : $data['path'],
                     'target_blank'      => $data['target'] == '_blank',
+                    'is_active'         => $data['is_active'] == 'Y',
                 ]);
 
                 $navs[$k]['id'] = $nav->id;

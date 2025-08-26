@@ -9,19 +9,16 @@ class ArticleType extends Model
 {
     public function getTranslationAttribute(): string
     {
-        return $this->id == EnumsArticleType::Blog->value ? 'Blog' : (
-            $this->id == EnumsArticleType::News->value ? 'News' : (
+        return $this->id == EnumsArticleType::News->value ? 'News' : (
                 $this->id == EnumsArticleType::Gallery->value ? 'Gallery' : (
                     $this->id == EnumsArticleType::Page->value ? 'Page' : 'Public Information'
                 )
-            )
-        );
+            );
     }
 
     public function getNameTranslationAttribute(): string
     {
         return match($this->id) {
-            EnumsArticleType::Blog->value => __('Blog'),
             EnumsArticleType::News->value => __('News'),
             EnumsArticleType::Gallery->value => __('Gallery'),
             EnumsArticleType::Page->value => __('Page'),

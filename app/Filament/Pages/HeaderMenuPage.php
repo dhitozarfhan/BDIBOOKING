@@ -71,7 +71,6 @@ class HeaderMenuPage extends TreePage
                     ->join('article_types', 'articles.article_type_id', '=', 'article_types.id')
                     ->where('title', 'ILIKE', "%{$search}%")
                     ->whereIn('article_type_id', [
-                        ArticleType::Blog->value,
                         ArticleType::News->value,
                         ArticleType::Gallery->value,
                         ArticleType::Page->value,
@@ -107,8 +106,11 @@ class HeaderMenuPage extends TreePage
 
             Toggle::make('target_blank')
                 ->label(__('Open in new tab ?'))
-                ->default(false)
-                ->inline(false)
+                ->default(false),
+
+            Toggle::make('is_active')
+                ->label(__('Is Active ?'))
+                ->default(true)
 
         ]);
     }

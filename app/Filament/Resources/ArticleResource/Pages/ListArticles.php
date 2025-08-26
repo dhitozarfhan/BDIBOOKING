@@ -27,7 +27,7 @@ class ListArticles extends ListRecords
     {
         $tabs = [];
         $tabs[] = Tab::make(__('All Articles'))
-        ->badge(Article::whereIn('article_type_id', [ArticleType::News->value, ArticleType::Blog->value, ArticleType::Gallery->value, ArticleType::Page->value])->count())
+        ->badge(Article::whereIn('article_type_id', [ArticleType::News->value, ArticleType::Gallery->value, ArticleType::Page->value])->count())
         ->icon('heroicon-o-document-text');
 
         $tabs[] = Tab::make(__('News'))
@@ -36,14 +36,6 @@ class ListArticles extends ListRecords
             return $query->where('article_type_id', ArticleType::News->value);
         })
         ->icon('heroicon-o-newspaper')
-        ->badgeColor('primary');
-
-        $tabs[] = Tab::make(__('Blog'))
-        ->badge(Article::where('article_type_id', ArticleType::Blog->value)->count())
-        ->modifyQueryUsing(function ($query) {
-            return $query->where('article_type_id', ArticleType::Blog->value);
-        })
-        ->icon('heroicon-o-document-text')
         ->badgeColor('info');
 
         $tabs[] = Tab::make(__('Gallery'))
@@ -60,10 +52,10 @@ class ListArticles extends ListRecords
             return $query->where('article_type_id', ArticleType::Page->value);
         })
         ->icon('heroicon-o-document-text')
-        ->badgeColor('warning');
+        ->badgeColor('gray');
 
         $tabs[] = Tab::make(__('Not Active'))
-        ->badge(Article::where('is_active', false)->whereIn('article_type_id', [ArticleType::News->value, ArticleType::Blog->value, ArticleType::Gallery->value, ArticleType::Page->value])->count())
+        ->badge(Article::where('is_active', false)->whereIn('article_type_id', [ArticleType::News->value, ArticleType::Gallery->value, ArticleType::Page->value])->count())
         ->modifyQueryUsing(function ($query) {
             return $query->where('is_active', false);
         })

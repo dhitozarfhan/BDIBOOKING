@@ -83,7 +83,7 @@ class ArticleSeeder extends Seeder
         foreach ($datas as $data) {
             $article = [
                 'id' => $id++,
-                'article_type_id' => ArticleType::Blog->value,
+                'article_type_id' => ArticleType::News->value,
                 'category_id' => Category::where('name->id', DB::connection('second_db')->table('category')->where('category_id', $data->category_id)->where('type', 'blog')->pluck('id_name')->first())->pluck('id')->first() ?? $uncategorizedId,
                 'author_id' => Employee::where('username', $data->admin_id)->pluck('id')->first() ?? null,
                 'image' => null,

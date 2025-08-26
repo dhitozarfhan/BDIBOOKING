@@ -51,7 +51,7 @@ class ArticleResource extends Resource
                             Forms\Components\Radio::make('article_type_id', fn (Builder $query) => $query->orderBy('id'))
                                 ->columnSpan(2)
                                 ->label(__('Article Type'))
-                                ->options(ArticleType::whereIn('id', [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value, EnumsArticleType::Page->value])->pluck('name', 'id'))
+                                ->options(ArticleType::whereIn('id', [EnumsArticleType::News->value, EnumsArticleType::Gallery->value, EnumsArticleType::Page->value])->pluck('name', 'id'))
                                 ->inline()
                                 ->inlineLabel(false)
                                 ->required()
@@ -100,7 +100,7 @@ class ArticleResource extends Resource
                                 ->image()
                                 ->imageEditor()
                                 ->directory(config('services.disk.article.image'))
-                                ->required(fn (Get $get): bool => in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value])),
+                                ->required(fn (Get $get): bool => in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Gallery->value])),
 
                         Forms\Components\Select::make('author_id')
                             ->label(__('Author'))
@@ -110,8 +110,8 @@ class ArticleResource extends Resource
                         Forms\Components\Select::make('category_id')
                             ->label(__('Category'))
                             ->relationship('category', 'name', fn (Builder $query) => $query->where('category_type_id', CategoryType::Article->value)->orderBy('sort'))
-                            ->hidden(fn (Get $get): bool => !in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value])  || !$get('article_type_id') )
-                            ->required(fn (Get $get): bool => in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value])),
+                            ->hidden(fn (Get $get): bool => !in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Gallery->value])  || !$get('article_type_id') )
+                            ->required(fn (Get $get): bool => in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Gallery->value])),
                 
                         Forms\Components\CheckboxList::make('tags')
                             ->label(__('Tags'))
@@ -123,8 +123,8 @@ class ArticleResource extends Resource
                                 'xl' => 2,
                             ])
                             ->helperText(__('Select tags for this article'))
-                            ->hidden(fn (Get $get): bool => !in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value]) || !$get('article_type_id'))
-                            ->required(fn (Get $get): bool => in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value]))
+                            ->hidden(fn (Get $get): bool => !in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Gallery->value]) || !$get('article_type_id'))
+                            ->required(fn (Get $get): bool => in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Gallery->value]))
                             ->relationship('tags')
                             ->options(Tag::where('is_active', true)->orderBy('name->en')
                                 ->get()
@@ -191,6 +191,6 @@ class ArticleResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->whereIn('article_type_id', [EnumsArticleType::News->value, EnumsArticleType::Blog->value, EnumsArticleType::Gallery->value, EnumsArticleType::Page->value]);
+        return parent::getEloquentQuery()->whereIn('article_type_id', [EnumsArticleType::News->value, EnumsArticleType::Gallery->value, EnumsArticleType::Page->value]);
     }
 }

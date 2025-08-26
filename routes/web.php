@@ -6,11 +6,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', \App\Livewire\Home::class)->name('home');
 
 Route::get('/{article_type}', Index::class)
-    ->whereIn('article_type', ['news','blog','gallery','page','information'])
+    ->whereIn('article_type', ['news','gallery','page','information'])
     ->name('articles.index');
 
 Route::get('/{article_type}/{slug}', Show::class)
-    ->whereIn('article_type', ['news','blog','gallery','page','information'])
+    ->whereIn('article_type', ['news','gallery','page','information'])
     ->name('articles.show');
 
 /*

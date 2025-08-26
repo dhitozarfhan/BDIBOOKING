@@ -19,6 +19,7 @@ return new class extends Migration
             $table->json('name');
             $table->string('path')->nullable();
             $table->boolean('target_blank')->default(false);
+            $table->boolean('is_active')->default(true);
             $table->nestedSet();
             $table->timestamps();
         });

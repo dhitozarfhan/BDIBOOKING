@@ -5,12 +5,11 @@ namespace App\Enums;
 enum ArticleType: int
 {
     case News        = 1;
-    case Blog        = 2;
-    case Gallery     = 3;
-    case Page        = 4;
-    case Information = 5;
-    // case Question    = 6;
-    // case Request     = 7;
-    // case Wbs         = 8;
-    // case Service     = 9;
+    case Gallery     = 2;
+    case Page        = 3;
+    case Information = 4;
+    // case Question    = 5;
+    // case Request     = 6;
+    // case Wbs         = 7;
+    // case Service     = 8;
 }

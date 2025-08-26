@@ -6,7 +6,7 @@
 @endphp
 
 <li class="ps-4" data-id="{{ $row->getKey() }}">
-    <div class="flex flex-row items-center rounded-xl shadow-sm ring-1 dark:ring-gray-950/5 ring-gray-950/5 p-2">
+    <div class="flex flex-row items-center rounded-xl shadow-sm ring-1 dark:ring-gray-950/5 ring-gray-950/5 p-2 {{ $row->is_active ? '' : 'opacity-50' }}">
         <div class="tree-row-handler flex flex-row items-center ps-2">
             @if($row->children->isNotEmpty())
                 <span class="pe-2">

@@ -77,7 +77,6 @@ class SlideshowResource extends Resource
                                 ->join('article_types', 'articles.article_type_id', '=', 'article_types.id')
                                 ->where('title', 'ILIKE', "%{$search}%")
                                 ->whereIn('article_type_id', [
-                                    ArticleType::Blog->value,
                                     ArticleType::News->value,
                                     ArticleType::Gallery->value,
                                     ArticleType::Page->value,

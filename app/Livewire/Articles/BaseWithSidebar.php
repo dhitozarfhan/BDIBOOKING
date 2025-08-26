@@ -27,7 +27,7 @@ abstract class BaseWithSidebar extends Component
         // Normalisasi tipe dari route/segment
         $type = $article_type ?? request()->route('article_type') ?? request()->segment(1);
         $type = Str::of((string)$type)->lower()->toString();
-        $allowed = ['news','blog','gallery','page','information'];
+        $allowed = ['news','gallery','page','information'];
         $this->articleType = in_array($type, $allowed, true) ? $type : 'news';
     }
 
@@ -48,7 +48,6 @@ abstract class BaseWithSidebar extends Component
     {
         return match ($this->articleType) {
             'news' => ArticleType::News->value,
-            'blog' => ArticleType::Blog->value,
             'gallery' => ArticleType::Gallery->value,
             'page' => ArticleType::Page->value,
             'information' => ArticleType::Information->value,
@@ -77,7 +76,6 @@ abstract class BaseWithSidebar extends Component
     {
         return match ($this->articleType) {
             'news' => __('News'),
-            'blog' => __('Blog'),
             'gallery' => __('Gallery'),
             'page' => __('Page'),
             'information' => __('Public Information'),
