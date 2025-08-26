@@ -5,6 +5,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', \App\Livewire\Home::class)->name('home');
 
+Route::fallback(function () {
+    return response()->view('errors.404', [], 404);
+});
+
 Route::get('/{article_type}', Index::class)
     ->whereIn('article_type', ['news','gallery','page','information'])
     ->name('articles.index');
