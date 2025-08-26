@@ -35,6 +35,11 @@ class SlideshowResource extends Resource
     protected static ?string $model = Slideshow::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-photo';
+    
+    public static function getNavigationSort(): ?int
+    {
+        return 7;
+    }
 
     public static function getModelLabel(): string
     {

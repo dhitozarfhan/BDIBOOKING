@@ -25,6 +25,11 @@ class CategoryResource extends Resource
     protected static ?string $model = Category::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-folder-open';
+    
+    public static function getNavigationSort(): ?int
+    {
+        return 6;
+    }
 
     public static function getModelLabel(): string
     {

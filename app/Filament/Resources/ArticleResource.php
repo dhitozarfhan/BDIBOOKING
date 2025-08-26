@@ -31,6 +31,11 @@ class ArticleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
     
+    public static function getNavigationSort(): ?int
+    {
+        return 5;
+    }
+    
     public static function getModelLabel(): string
     {
         return __('Article');

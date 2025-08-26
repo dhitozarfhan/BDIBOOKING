@@ -28,6 +28,11 @@ class InformationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
     
+    public static function getNavigationSort(): ?int
+    {
+        return 11;
+    }
+    
     public static function getModelLabel(): string
     {
         return __('Public Information');
