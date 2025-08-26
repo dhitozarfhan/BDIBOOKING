@@ -22,6 +22,9 @@ class DatabaseSeeder extends Seeder
             PositionTypeSeeder::class,
             PositionSeeder::class,
             EmployeeSeeder::class,
+
+            PermissionSeeder::class,
+            RoleDefaultSeeder::class,
             
             LinkTypeSeeder::class,
             NavigationTypeSeeder::class,

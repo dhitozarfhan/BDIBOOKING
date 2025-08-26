@@ -9,13 +9,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Spatie\Permission\Traits\HasRoles;
 use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
 use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
 use Yebor974\Filament\RenewPassword\Traits\RenewPassword;
 
 class Employee extends Authenticatable implements RenewPasswordContract
 {
-    use Notifiable, HasFactory, RenewPassword, Notifiable;
+    use Notifiable, HasFactory, HasRoles, RenewPassword;
 
     protected $fillable = [
         'username', 'nip', 'nip_intranet', 'name',
@@ -233,5 +234,10 @@ class Employee extends Authenticatable implements RenewPasswordContract
     public function employeeStatus()
     {
         return $this->belongsTo(EmployeeStatus::class);
+    }
+
+    public function scopeHasRole($query, $role)
+    {
+        return in_array($role->id, $query->roles->pluck('id', 'id')->all());
     }
 }

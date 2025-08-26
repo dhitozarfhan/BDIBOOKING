@@ -219,7 +219,6 @@
     "Permanent Redirect": "Pengalihan permanen",
     "Permanently delete this team.": "Hapus permanen tim ini.",
     "Permanently delete your account.": "Hapus permanen akun Anda.",
-    "Permissions": "Izin",
     "Photo": "Foto",
     "Please click the button below to verify your email address.": "Silakan klik tombol di bawah untuk memverifikasi alamat surel Anda.",
     "Please confirm access to your account by entering one of your emergency recovery codes.": "Harap konfirmasi akses ke akun Anda dengan memasukkan satu dari kode pemulihan darurat Anda.",
@@ -257,7 +256,6 @@
     "Restore :name": "Pulihkan :name",
     "results": "hasil",
     "Retry With": "Coba lagi dengan",
-    "Role": "Peran",
     "Save": "Simpan",
     "Save & Close": "Simpan & Tutup",
     "Save & Return": "Simpan & Kembalikan",
@@ -379,6 +377,8 @@
     "You're logged in!": "Anda sudah masuk!",
     "Your email address is unverified.": "Alamat surel Anda belum diverifikasi.",
 
+
+    "Employee": "Pegawai",
     "Category": "Kategori",
     "Categories": "Kategori",
     "Archives": "Arsip",
@@ -455,5 +455,12 @@
     "Related": "Terkait",
     "Contact Us": "Kontak Kami",
     "Telephone": "Telepon",
+
+    "Manage Access Rights": "Kelola Hak Akses",
+    "Role": "Peran",
+    "Roles": "Peran",
+    "Permission": "Akses",
+    "Permissions": "Akses",
+
     "Footer About Message": "BDI Yogyakarta mempunyai tugas melaksanakan pendidikan dan pelatihan bagi sumber daya manusia industri melalui <b>Diklat 3-in-1</b> (Pelatihan-Sertifikasi Kompetensi-Penempatan Kerja) dan <b>inkubator bisnis untuk menumbuhkan wirausaha industri.</b>"
 }
