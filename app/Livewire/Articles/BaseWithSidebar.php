@@ -83,6 +83,13 @@ abstract class BaseWithSidebar extends Component
         };
     }
 
+    protected function articleTypeHasCategory(): bool
+    {
+        // pakai ID atau nama tipe yang sudah ada di proyekmu
+        // di contoh ini: id 4 = 'page'
+        return $this->articleTypeId() !== ArticleType::Page->value;
+    }
+
     /** ====== Sidebar data (shared) ====== */
 
     #[Computed]
@@ -116,6 +123,10 @@ abstract class BaseWithSidebar extends Component
     #[Computed]
     public function categories()
     {
+        if (!$this->articleTypeHasCategory()) {
+            return collect();
+        }
+
         $typeId = $this->articleTypeId();
 
         return Cache::remember($this->cacheKey('categories'), 600, function () use ($typeId) {
@@ -145,6 +156,9 @@ abstract class BaseWithSidebar extends Component
     #[Computed]
     public function archives()
     {
+        if (!$this->articleTypeHasCategory()) {
+            return collect();
+        }
         $typeId = $this->articleTypeId();
 
         return Cache::remember($this->cacheKey('archives'), 600, function () use ($typeId) {
@@ -186,6 +200,9 @@ abstract class BaseWithSidebar extends Component
     #[Computed]
     public function tagsCloud()
     {
+        if (!$this->articleTypeHasCategory()) {
+            return collect();
+        }
         $typeId = $this->articleTypeId();
 
         // Ambil jumlah pemakaian tag di artikel yang published & active

@@ -240,7 +240,7 @@
                                             <img src="{{ Storage::url($a->image) }}" alt="{{ $a->title }}"
                                                  class="w-full h-full object-cover" loading="lazy">
                                         @else
-                                            <div class="w-full h-full grid place-items-center bg-neutral-content">{{ __('No Image') }}</div>
+                                            <div class="w-full h-full grid place-items-center bg-primary-content text-neutral">{{ __('No Image') }}</div>
                                         @endif
                                     </a>
                                 </figure>

@@ -44,6 +44,8 @@ class Show extends BaseWithSidebar
     public function related()
     {
         if (!$this->article) return collect();
+        if (!$this->articleTypeHasCategory()) return collect();
+        
         $typeId = $this->articleTypeId();
 
         return $this->baseArticleQuery()
