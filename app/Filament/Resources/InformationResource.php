@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\ArticleType as EnumsArticleType;
 use App\Enums\CategoryType;
+use App\Enums\PermissionType;
 use App\Filament\Resources\InformationResource\Pages;
 use App\Models\Article;
 use App\Models\Category;
@@ -18,6 +19,8 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class InformationResource extends Resource
 {
@@ -36,6 +39,36 @@ class InformationResource extends Resource
     public static function getModelLabel(): string
     {
         return __('Public Information');
+    }
+
+    public static function canViewAny(): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ?? false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ?? false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ?? false;
     }
     
     public static function form(Form $form): Form

@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Enums\ArticleType as EnumsArticleType;
 use App\Enums\CategoryType;
+use App\Enums\PermissionType;
+use App\Enums\RoleDefault;
 use App\Filament\Resources\ArticleResource\Pages;
 use App\Filament\Resources\ArticleResource\RelationManagers\ImagesRelationManager;
 use App\Models\Article;
@@ -20,6 +22,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class ArticleResource extends Resource
@@ -35,6 +38,42 @@ class ArticleResource extends Resource
     {
         return 5;
     }
+
+    public static function canViewAny(): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::News->value) || Auth::user()->hasPermissionTo(PermissionType::Gallery->value) || Auth::user()->hasPermissionTo(PermissionType::Page->value) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::News->value) || Auth::user()->hasPermissionTo(PermissionType::Gallery->value) || Auth::user()->hasPermissionTo(PermissionType::Page->value) ?? false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return (Auth::user()->hasPermissionTo(PermissionType::News->value) && $record->article_type_id == EnumsArticleType::News->value) ||
+               (Auth::user()->hasPermissionTo(PermissionType::Gallery->value) && $record->article_type_id == EnumsArticleType::Gallery->value) ||
+               (Auth::user()->hasPermissionTo(PermissionType::Page->value) && $record->article_type_id == EnumsArticleType::Page->value) ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return (Auth::user()->hasPermissionTo(PermissionType::News->value) && $record->article_type_id == EnumsArticleType::News->value) ||
+               (Auth::user()->hasPermissionTo(PermissionType::Gallery->value) && $record->article_type_id == EnumsArticleType::Gallery->value) ||
+               (Auth::user()->hasPermissionTo(PermissionType::Page->value) && $record->article_type_id == EnumsArticleType::Page->value) ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return (Auth::user()->hasPermissionTo(PermissionType::News->value) && $record->article_type_id == EnumsArticleType::News->value) ||
+               (Auth::user()->hasPermissionTo(PermissionType::Gallery->value) && $record->article_type_id == EnumsArticleType::Gallery->value) ||
+               (Auth::user()->hasPermissionTo(PermissionType::Page->value) && $record->article_type_id == EnumsArticleType::Page->value) ?? false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::News->value) || Auth::user()->hasPermissionTo(PermissionType::Gallery->value) || Auth::user()->hasPermissionTo(PermissionType::Page->value) ?? false;
+    }
     
     public static function getModelLabel(): string
     {
@@ -43,6 +82,16 @@ class ArticleResource extends Resource
     
     public static function form(Form $form): Form
     {
+        $typeIds = [];
+        if(Auth::user()->hasPermissionTo(PermissionType::News->value)) {
+            $typeIds[] = EnumsArticleType::News->value;
+        }
+        if(Auth::user()->hasPermissionTo(PermissionType::Gallery->value)) {
+            $typeIds[] = EnumsArticleType::Gallery->value;
+        }
+        if(Auth::user()->hasPermissionTo(PermissionType::Page->value)) {
+            $typeIds[] = EnumsArticleType::Page->value;
+        }
         return $form
             ->columns(3)
             ->schema([
@@ -56,7 +105,7 @@ class ArticleResource extends Resource
                             Forms\Components\Radio::make('article_type_id', fn (Builder $query) => $query->orderBy('id'))
                                 ->columnSpan(2)
                                 ->label(__('Article Type'))
-                                ->options(ArticleType::whereIn('id', [EnumsArticleType::News->value, EnumsArticleType::Gallery->value, EnumsArticleType::Page->value])->pluck('name', 'id'))
+                                ->options(ArticleType::whereIn('id', $typeIds)->pluck('name', 'id'))
                                 ->inline()
                                 ->inlineLabel(false)
                                 ->required()
@@ -107,11 +156,16 @@ class ArticleResource extends Resource
                                 ->directory(config('services.disk.article.image'))
                                 ->required(fn (Get $get): bool => in_array($get('article_type_id'), [EnumsArticleType::News->value, EnumsArticleType::Gallery->value])),
 
-                        Forms\Components\Select::make('author_id')
-                            ->label(__('Author'))
-                            ->default(Auth::user()->id)
-                            ->relationship('author', 'name', fn (Builder $query) => $query->where('is_active', true)->orderBy('name'))
-                            ->required(),
+                        Auth::user()->hasRole(RoleDefault::PublicationAdministrator->value) ?
+                            Forms\Components\Select::make('author_id')
+                                ->label(__('Author'))
+                                ->default(Auth::user()->id)
+                                ->relationship('author', 'name', fn (Builder $query) => $query->where('is_active', true)->orderBy('name'))
+                                ->required() : 
+                            //set hidden value to Auth::user()->id
+                            Forms\Components\Hidden::make('author_id')
+                                ->default(Auth::user()->id),
+
                         Forms\Components\Select::make('category_id')
                             ->label(__('Category'))
                             ->relationship('category', 'name', fn (Builder $query) => $query->where('category_type_id', CategoryType::Article->value)->orderBy('sort'))
@@ -192,10 +246,5 @@ class ArticleResource extends Resource
             'create' => Pages\CreateArticle::route('/create'),
             'edit' => Pages\EditArticle::route('/{record}/edit'),
         ];
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->whereIn('article_type_id', [EnumsArticleType::News->value, EnumsArticleType::Gallery->value, EnumsArticleType::Page->value]);
     }
 }

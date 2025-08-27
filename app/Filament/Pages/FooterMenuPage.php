@@ -3,12 +3,19 @@
 namespace App\Filament\Pages;
 
 use App\Enums\NavigationType as EnumsNavigationType;
+use App\Enums\PermissionType;
 use App\Models\Navigation;
+use Illuminate\Support\Facades\Auth;
 use Kalnoy\Nestedset\QueryBuilder;
 use Studio15\FilamentTree\Components\TreePage;
 
 class FooterMenuPage extends TreePage
 {
+
+    public static function canAccess(): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::Menu->value);
+    }
 
     public function getTitle(): string
     {

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\CategoryType;
+use App\Enums\PermissionType;
 use App\Filament\Resources\CategoryResource\Pages;
 use App\Models\Category;
 use Filament\Forms\Components\Section;
@@ -16,6 +17,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryResource extends Resource
 {
@@ -34,6 +37,36 @@ class CategoryResource extends Resource
     public static function getModelLabel(): string
     {
         return __('Category');
+    }
+
+    public static function canViewAny(): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::ArticleCategory->value) ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::ArticleCategory->value) ?? false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::ArticleCategory->value) ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::ArticleCategory->value) ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::ArticleCategory->value) ?? false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::ArticleCategory->value) ?? false;
     }
 
     public static function form(Form $form): Form

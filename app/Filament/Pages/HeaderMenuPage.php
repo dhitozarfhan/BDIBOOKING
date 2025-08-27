@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Enums\ArticleType;
 use App\Enums\LinkType as EnumsLinkType;
 use App\Enums\NavigationType as EnumsNavigationType;
+use App\Enums\PermissionType;
 use App\Models\Article;
 use App\Models\LinkType;
 use App\Models\Navigation;
@@ -14,6 +15,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Get;
+use Illuminate\Support\Facades\Auth;
 use Kalnoy\Nestedset\QueryBuilder;
 use Studio15\FilamentTree\Components\TreePage;
 
@@ -21,6 +23,11 @@ class HeaderMenuPage extends TreePage
 {
     protected static ?string $navigationIcon = 'heroicon-o-queue-list';
 
+    public static function canAccess(): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::Menu->value);
+    }
+    
     public function getTitle(): string
     {
         return __('Header Navigation');
