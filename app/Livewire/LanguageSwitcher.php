@@ -8,13 +8,13 @@ class LanguageSwitcher extends Component
 {
     public string $locale = 'id';
     public array $available = [
-        'en' => 'English',
         'id' => 'Bahasa Indonesia',
+        'en' => 'English',
     ];
 
     public function mount()
     {
-        $this->locale = session('locale', 'en');
+        $this->locale = session('locale', 'id');
 
         // (opsional) baca preferensi user dari database
         // if (Auth::check() && Auth::user()->locale) {

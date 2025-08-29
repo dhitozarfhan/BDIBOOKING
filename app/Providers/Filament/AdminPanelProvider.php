@@ -66,6 +66,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->favicon(asset('favicon.ico'))
             ->authGuard('employee')
             ->sidebarCollapsibleOnDesktop()
             ->sidebarWidth('15rem')

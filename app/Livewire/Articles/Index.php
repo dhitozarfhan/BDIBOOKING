@@ -21,16 +21,16 @@ class Index extends BaseWithSidebar
     public ?string $categorySlug = null;
 
     #[Url(as: 'year')]
-    public ?int $year = null;
+    public string|int|null $year = null;
 
     #[Url(as: 'month')]
-    public ?int $month = null;
+    public string|int|null $month = null;
 
     #[Url(as: 'view', keep: true)]
     public string $viewMode = 'grid';
 
     #[Url(as: 'perPage', keep: true)]
-    public int $perPage = 12;
+    public string|int|null $perPage = 12;
 
     protected string $paginationTheme = 'tailwind';
 
@@ -74,6 +74,10 @@ class Index extends BaseWithSidebar
         // normalisasi
         $this->viewMode = in_array($this->viewMode, ['grid','list'], true) ? $this->viewMode : 'grid';
         $this->perPage  = in_array($this->perPage, [6,9,12,15,18,24], true) ? $this->perPage : 9;
+
+        //check if year integer
+        $this->year = is_numeric($this->year) ? (int) $this->year : date('Y');
+        $this->month = is_numeric($this->month) ? (in_array((int) $this->month, range(1, 12)) ? (int) $this->month : date('m')) : date('m');
     }
 
     /**

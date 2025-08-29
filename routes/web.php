@@ -1,6 +1,4 @@
 <?php
-use App\Livewire\Articles\Index;
-use App\Livewire\Articles\Show;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', \App\Livewire\Home::class)->name('home');
@@ -9,11 +7,13 @@ Route::fallback(function () {
     return response()->view('errors.404', [], 404);
 });
 
-Route::get('/{article_type}', Index::class)
-    ->whereIn('article_type', ['news','gallery','page','information'])
+Route::get('/information', App\Livewire\Articles\Information::class)->name('articles.information');
+
+Route::get('/{article_type}', App\Livewire\Articles\Index::class)
+    ->whereIn('article_type', ['news','gallery','page'])
     ->name('articles.index');
 
-Route::get('/{article_type}/{slug}', Show::class)
+Route::get('/{article_type}/{slug}', App\Livewire\Articles\Show::class)
     ->whereIn('article_type', ['news','gallery','page','information'])
     ->name('articles.show');
 

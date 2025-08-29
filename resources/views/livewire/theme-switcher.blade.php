@@ -1,8 +1,8 @@
-<label class="swap swap-rotate">
-    <input type="checkbox"
+<!-- //make align middle all of items -->
+<label class="flex cursor-pointer gap-3 items-center">
+    <i class="bi bi-brightness-high-fill text-warning text-xl"></i>
+    <input type="checkbox" class="toggle theme-controller"
         wire:click="toggle"
-        @checked($mode==='prefersdark' ) />
-
-    <i class="swap-off bi bi-brightness-high-fill text-yellow-500 text-2xl"></i>
-    <i class="swap-on bi bi-moon-stars-fill text-white text-2xl"></i>
+        @checked($mode==='prefersdark' ) />    
+    <i class="bi bi-moon-fill text-base-content text-xl"></i>
 </label>

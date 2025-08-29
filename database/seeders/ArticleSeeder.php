@@ -39,7 +39,7 @@ class ArticleSeeder extends Seeder
                 'id' => $id++,
                 'article_type_id' => ArticleType::News->value,
                 'category_id' => Category::where('name->id', DB::connection('second_db')->table('category')->where('category_id', $data->category_id)->where('type', 'news')->pluck('id_name')->first())->pluck('id')->first() ?? $uncategorizedId,
-                'author_id' => Employee::where('username', $data->admin_id)->pluck('id')->first() ?? null,
+                'author_id' => Employee::where('username', $data->admin_id)->pluck('id')->first() ?? Employee::where('username', 'tri')->pluck('id')->first(),
                 'image' => null,
                 'title' => [
                     'en' => $data->en_title,
@@ -85,7 +85,7 @@ class ArticleSeeder extends Seeder
                 'id' => $id++,
                 'article_type_id' => ArticleType::News->value,
                 'category_id' => Category::where('name->id', DB::connection('second_db')->table('category')->where('category_id', $data->category_id)->where('type', 'blog')->pluck('id_name')->first())->pluck('id')->first() ?? $uncategorizedId,
-                'author_id' => Employee::where('username', $data->admin_id)->pluck('id')->first() ?? null,
+                'author_id' => Employee::where('username', $data->admin_id)->pluck('id')->first() ?? Employee::where('username', 'tri')->pluck('id')->first(),
                 'image' => null,
                 'title' => [
                     'en' => $data->en_title,
@@ -130,7 +130,7 @@ class ArticleSeeder extends Seeder
                 'id' => $id++,
                 'article_type_id' => ArticleType::Gallery->value,
                 'category_id' => Category::where('name->id', DB::connection('second_db')->table('category')->where('category_id', $data->category_id)->where('type', 'gallery')->pluck('id_name')->first())->pluck('id')->first() ?? $uncategorizedId,
-                'author_id' => Employee::where('username', $data->admin_id)->pluck('id')->first() ?? null,
+                'author_id' => Employee::where('username', $data->admin_id)->pluck('id')->first() ?? Employee::where('username', 'tri')->pluck('id')->first(),
                 'image' => null,
                 'title' => [
                     'en' => $data->en_title,
@@ -198,7 +198,7 @@ class ArticleSeeder extends Seeder
                 'id' => $id++,
                 'article_type_id' => ArticleType::Page->value,
                 'category_id' => null,
-                'author_id' => Employee::where('username', $data->admin_id)->pluck('id')->first() ?? null,
+                'author_id' => Employee::where('username', $data->admin_id)->pluck('id')->first() ?? Employee::where('username', 'tri')->pluck('id')->first(),
                 'image' => null,
                 'title' => [
                     'en' => $data->en_title,
@@ -259,8 +259,10 @@ class ArticleSeeder extends Seeder
                 if($contents !== false){
                     Storage::put($file_path = config('services.disk.article.file').'/'.$file, $contents);
                     $article['files'][] = $file_path;
+                    //get extension
+                    $extension = pathinfo($file, PATHINFO_EXTENSION);
                     $origs[] = [
-                        $file_path  => $file
+                        $file  => $article['title']['id'].'.'.$extension
                     ];
                 }
                 $article['original_files'] = json_encode($origs);

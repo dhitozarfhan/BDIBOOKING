@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -119,12 +120,16 @@ class InformationResource extends Resource
                                 
                             ]),
 
-                        Forms\Components\Section::make(__('Material Files').' PDF, WORD, SPREASHEET, PRESENTATION, ZIP, MP4')->schema([
+                        Forms\Components\Section::make(__('Attachments').' JPG, PNG, PDF, WORD, SPREASHEET, PRESENTATION, ZIP, MP4')->schema([
                             Forms\Components\FileUpload::make('files')->label('')
                             ->directory(config('services.disk.lms.material'))
                             ->storeFileNamesIn('original_files')
                             // ->downloadable()->openable()
                             ->acceptedFileTypes([
+                                'image/jpg',
+                                'image/jpeg',
+                                'image/png',
+                                'image/x-png',
                                 'application/pdf',
                                 'application/vnd.oasis.opendocument.presentation',
                                 'application/vnd.oasis.opendocument.spreadsheet',
@@ -153,6 +158,7 @@ class InformationResource extends Resource
     {
         return $table
             ->defaultSort('sort', 'asc')
+            ->reorderable('sort')
             ->groups([
                 Group::make('category_id')->label(__('Public Information Type'))->titlePrefixedWithLabel(false)->getTitleFromRecordUsing(fn (Article $record): string => $record->category->name)->collapsible()
             ])
@@ -164,6 +170,23 @@ class InformationResource extends Resource
                 TextColumn::make('hit')->label(__('View Count')),
                 ToggleColumn::make('is_active')->label(__('Is Active ?'))
             ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('category_id')->label(__('Category'))
+                ->options(fn ($livewire) => Category::query()
+                    ->where('category_type_id', CategoryType::Information->value)               // kategori konten
+                    ->where('parent_id', $livewire->getActiveParentId())
+                    ->orderBy('sort')->orderBy('id')
+                    // gunakan accessor title/name lokal bila ada; contoh name->id
+                    ->pluck('name', 'id')
+                    ->toArray()
+                )
+                ->query(function (Builder $query, array $data) {
+                    if (!empty($data['value'])) {
+                        $query->where('category_id', (int) $data['value']);
+                    }
+                })
+                // ->options(Category::where('category_type_id', CategoryType::Information->value)->pluck('name', 'id')),
+            ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
