@@ -30,19 +30,19 @@ echo '<ul>';
                 </p>
                 <nav class="mt-4">
                     <div class="flex items-center gap-4">
-                        <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook" class="text-white hover:text-gray-400">
+                        <a href="https://www.tiktok.com/@bdiyogyakarta" target="_blank" rel="noopener" aria-label="TikTok" class="text-white hover:text-gray-400">
+                            <i class="bi bi-tiktok text-2xl"></i>
+                        </a>
+                        <a href="https://www.facebook.com/bdijogja" target="_blank" rel="noopener" aria-label="Facebook" class="text-white hover:text-gray-400">
                             <i class="bi bi-facebook text-2xl"></i>
                         </a>
-
-                        <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" class="text-white hover:text-gray-400">
+                        <a href="https://instagram.com/bdiyogyakarta" target="_blank" rel="noopener" aria-label="Instagram" class="text-white hover:text-gray-400">
                             <i class="bi bi-instagram text-2xl"></i>
                         </a>
-
-                        <a href="https://x.com" target="_blank" rel="noopener" aria-label="X (Twitter)" class="text-white hover:text-gray-400">
+                        <a href="https://x.com/BDIYogyakarta" target="_blank" rel="noopener" aria-label="X (Twitter)" class="text-white hover:text-gray-400">
                             <i class="bi bi-twitter-x text-2xl"></i>
                         </a>
-
-                        <a href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube" class="text-white hover:text-gray-400">
+                        <a href="https://youtube.com/@bdiyogyakartakementerianpe4089" target="_blank" rel="noopener" aria-label="YouTube" class="text-white hover:text-gray-400">
                             <i class="bi bi-youtube text-4xl"></i>
                         </a>
                     </div>
@@ -59,7 +59,7 @@ echo '<ul>';
                 <p class="font-bold text-xl text-white">{{ __('Contact Us') }}</p>
                 <ul class="text-white py-2 flex gap-2">
                     <i class="bi bi-geo-alt"></i>
-                    <p class="text-sm">Jalan Gedongkuning 140, Kotagede, Yogyakarta 5517</p>
+                    <p class="text-sm">Jalan Gedongkuning 140, Kotagede, Yogyakarta 55171</p>
                 </ul>
                 <ul class="text-white py-2 flex gap-2">
                     <i class="bi bi-telephone"></i>

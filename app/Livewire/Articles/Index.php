@@ -76,8 +76,8 @@ class Index extends BaseWithSidebar
         $this->perPage  = in_array($this->perPage, [6,9,12,15,18,24], true) ? $this->perPage : 9;
 
         //check if year integer
-        $this->year = is_numeric($this->year) ? (int) $this->year : date('Y');
-        $this->month = is_numeric($this->month) ? (in_array((int) $this->month, range(1, 12)) ? (int) $this->month : date('m')) : date('m');
+        $this->year = isset($this->year) && is_numeric($this->year) ? (int) $this->year : null;
+        $this->month = isset($this->month) && is_numeric($this->month) ? (in_array((int) $this->month, range(1, 12)) ? (int) $this->month : date('m')) : null;
     }
 
     /**
