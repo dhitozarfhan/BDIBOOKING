@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Enums\EmployeeStatusCode;
+use App\Enums\EmployeeStatus as Status;
 use App\Models\EmployeeStatus;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,11 +19,12 @@ class EmployeeStatusSeeder extends Seeder
 
         $datas = [
 
-            ['code' => EmployeeStatusCode::CPNS->value, 'description' => 'CPNS'],
-            ['code' => EmployeeStatusCode::PNS->value, 'description' => 'PNS'],
-            ['code' => EmployeeStatusCode::Pensiun->value, 'description' => 'Pensiun'],
-            ['code' => EmployeeStatusCode::PPPK->value, 'description' => 'PPPK'],
-            ['code' => EmployeeStatusCode::NonPNS->value, 'description' => 'Tenaga Kontrak/PPNPN']
+            ['id' => Status::CPNS->value, 'description' => 'CPNS'],
+            ['id' => Status::PNS->value, 'description' => 'PNS'],
+            ['id' => Status::Pensiun->value, 'description' => 'Pensiun'],
+            ['id' => Status::PPPK->value, 'description' => 'PPPK'],
+            ['id' => Status::Mutation->value, 'description' => 'Mutasi'],
+            ['id' => Status::NonPNS->value, 'description' => 'Tenaga Kontrak/PPNPN']
         ];
 
         foreach ($datas as $data) {

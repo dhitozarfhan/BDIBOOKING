@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use App\Enums\EmployeeStatusCode;
+use App\Enums\EmployeeStatus as EnumsEmployeeStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Enum;
 use Spatie\Permission\Traits\HasRoles;
 use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
 use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
@@ -148,7 +149,7 @@ class Employee extends Authenticatable implements RenewPasswordContract
 
     public function getCanModifyRankAttribute()
     {
-        return $this->can_edited && $this->status->code == EmployeeStatusCode::PNS->value;
+        return $this->can_edited && in_array($this->employee_status_id, [EnumsEmployeeStatus::CPNS->value, EnumsEmployeeStatus::PNS->value, EnumsEmployeeStatus::PPPK->value]);
     }
 
     public function getCanModifyPositionAttribute()
@@ -191,7 +192,7 @@ class Employee extends Authenticatable implements RenewPasswordContract
 
     public function getRankLatestAttribute()
     {
-        if ($this->status->code == EmployeeStatusCode::PNS->value) {
+        if (in_array($this->employee_status_id, [EnumsEmployeeStatus::CPNS->value, EnumsEmployeeStatus::PNS->value, EnumsEmployeeStatus::PPPK->value])) {
             return $this->rank->label . '/' . $this->rank->name;
 
         } else {

@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('employee_statuses', function (Blueprint $table) {
             $table->id();
-            $table->integer('code');
             $table->string('description', 20)->nullable();
             $table->timestamps();
         });
