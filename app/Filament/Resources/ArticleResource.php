@@ -20,6 +20,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -225,6 +226,20 @@ class ArticleResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('category_id')
+                    ->label(__('Category'))
+                    ->options(fn () => \App\Models\Category::where('category_type_id', CategoryType::Article->value)->orderBy('sort')->pluck('name', 'id'))
+                    ->placeholder(__('All Categories'))
+                    ->searchable(),
+                Tables\Filters\SelectFilter::make('author_id')
+                    ->label(__('Author'))
+                    ->options(
+                        \App\Models\Employee::whereIn('id', Article::pluck('author_id'))->orderBy('name')->pluck('name', 'id')
+                    )
+                    ->placeholder(__('All Authors'))
+                    ->searchable(),
+                ], layout: FiltersLayout::AboveContent)
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([
                 //     Tables\Actions\DeleteBulkAction::make(),

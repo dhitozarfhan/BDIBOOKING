@@ -88,6 +88,7 @@ function qs($params) { return \Illuminate\Support\Arr::query($params); }
     </section>
 
     {{-- Kategori --}}
+    @if($articleType !== 'page')
     <section class="card bg-base-200 shadow-sm">
         <div class="card-body p-4">
             <h3 class="font-semibold">{{ __('Categories') }}</h3>
@@ -129,7 +130,7 @@ function qs($params) { return \Illuminate\Support\Arr::query($params); }
     </section>
 
     {{-- Tag Cloud --}}
-    <section class="card bg-base-100 shadow-sm">
+    <section class="card bg-base-300 shadow-sm">
         <div class="card-body p-4">
             <h3 class="font-semibold">Tag Cloud</h3>
 
@@ -153,4 +154,5 @@ function qs($params) { return \Illuminate\Support\Arr::query($params); }
             </div>
         </div>
     </section>
+    @endif
 </div>

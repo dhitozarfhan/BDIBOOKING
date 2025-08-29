@@ -2,12 +2,21 @@
 
 namespace App\Livewire\Articles;
 
+use App\Enums\ArticleType;
+use App\Enums\CategoryType;
 use App\Models\Article;
+use App\Models\Category;
+use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Url;
 
 class Show extends BaseWithSidebar
 {
     public ?Article $article = null;
+    
+    /** Parent category id: -1|-2|-3|-4 (default: -1 “Informasi Berkala”) kunci hanya -1|-2|-3|-4 */
+    #[Url(as: 'parent', keep: true)]
+    public string|int|null $parentCategory = -1;
 
     public function mount(?string $article_type = null, ?string $slug = null): void
     {
@@ -22,14 +31,16 @@ class Show extends BaseWithSidebar
             ->published()
             ->when($typeId, fn($q,$tid) => $q->where('article_type_id', $tid))
             ->with([
-                'category:id,name',
+                'category:id,parent_id,name',
+                'author:id,name',
                 'tags:id,name',
                 'images:id,article_id,path,description'
             ])
-            ->select(['id','title','summary','content','image','category_id','article_type_id','is_active','published_at','hit'])
             ->findOrFail($id);
 
         $this->article->increment('hit');
+
+        $this->parentCategory = in_array((int) request()->query('parent', -1), [-1, -2, -3, -4]) ? (int) request()->query('parent', -1) : -1;
     }
 
     // Search di Show → redirect ke Index dengan ?q= (SPA)
@@ -43,6 +54,8 @@ class Show extends BaseWithSidebar
     public function related()
     {
         if (!$this->article) return collect();
+        if (!$this->articleTypeHasCategory()) return collect();
+        
         $typeId = $this->articleTypeId();
 
         return $this->baseArticleQuery()
@@ -54,6 +67,59 @@ class Show extends BaseWithSidebar
             ->get(['id','title','image','published_at']);
     }
 
+
+
+    /** Daftar kategori anak di bawah parent terpilih */
+    #[Computed]
+    public function childCategories(): Collection
+    {
+        return Category::query()
+            ->select(['id','name','parent_id','sort','is_active'])
+            ->where('category_type_id', CategoryType::Information->value)
+            ->where('parent_id', $this->parentCategory)
+            ->where('is_active', true)
+            ->orderBy('sort')
+            ->orderBy('id')
+            ->get();
+    }
+
+    /** Artikel bertipe information, dikelompokkan per category_id anak */
+    #[Computed]
+    public function groupedArticles(): Collection
+    {
+        $childIds = $this->childCategories->pluck('id');
+
+        if ($childIds->isEmpty()) {
+            return collect();
+        }
+
+        $items = Article::query()
+            ->with(['category:id,name,parent_id']) // optional
+            ->select([
+                'id',
+                'title',
+                'summary',
+                'image',
+                'category_id',
+                'article_type_id',
+                'is_active',
+                'published_at',
+                'hit',
+                'year',
+                'files',
+                'original_files',
+            ])
+            ->published()
+            ->where('article_type_id', ArticleType::Information->value)
+            ->whereIn('category_id', $childIds)
+            ->orderBy('sort')
+            ->orderByDesc('id')
+            ->get();
+
+        // groupBy category_id → [catId => Collection<Article>]
+        return $items->groupBy('category_id');
+    }
+
     protected function pageTitle(): string
     {
         return $this->article
@@ -63,13 +129,23 @@ class Show extends BaseWithSidebar
 
     public function render()
     {
-        return view('livewire.articles.show', [
-            'article'     => $this->article,
-            'latest'      => $this->latest,
-            'popular'     => $this->popular,
-            'categories'  => $this->categories,
-            'archives'    => $this->archives,
-            'related'     => $this->related,
-        ])->title($this->pageTitle());
+        if($this->articleTypeId() === ArticleType::Information->value) {
+            return view('livewire.articles.show', [
+                'article'   => $this->article,
+                'parents'  => Category::where('category_type_id', CategoryType::InformationType->value)->get(),
+                'children' => $this->childCategories,
+                'groups'   => $this->groupedArticles, // map[catId => Collection]
+            ])->title($this->pageTitle());
+        }
+        else {
+            return view('livewire.articles.show', [
+                'article'     => $this->article,
+                'latest'      => $this->latest,
+                'popular'     => $this->popular,
+                'categories'  => $this->categories,
+                'archives'    => $this->archives,
+                'related'     => $this->related,
+            ])->title($this->pageTitle());
+        }
     }
 }
