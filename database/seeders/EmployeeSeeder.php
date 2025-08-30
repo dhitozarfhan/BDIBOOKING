@@ -53,11 +53,11 @@ class EmployeeSeeder extends Seeder
                 'email'         => $data->email,
                 'image'         => null,
                 'thumbnail'     => null,
-                'password'      => Hash::make($data->id_pegawai),
+                'password'      => Hash::make(\Illuminate\Support\Str::random(10)),
                 'can_edited'    => in_array($data->id_status_pegawai, [1,2,3,4]) == false,
                 'is_active'     => $data->aktif == 'Y',
-                'last_sync_at'  => null,
-                'force_renew_password'  => true
+                'last_sync_at'  => date('Y-m-d H:i:s'),
+                'force_renew_password'  => false
             ]);
         }
     }

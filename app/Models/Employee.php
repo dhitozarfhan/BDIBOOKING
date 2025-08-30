@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\EmployeeStatus as EnumsEmployeeStatus;
 use Carbon\Carbon;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -15,7 +17,7 @@ use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
 use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
 use Yebor974\Filament\RenewPassword\Traits\RenewPassword;
 
-class Employee extends Authenticatable implements RenewPasswordContract
+class Employee extends Authenticatable implements RenewPasswordContract, FilamentUser
 {
     use Notifiable, HasFactory, HasRoles, RenewPassword;
 
@@ -33,6 +35,11 @@ class Employee extends Authenticatable implements RenewPasswordContract
         'password',
         'remember_token',
     ];
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->is_active === true;
+    }
     
     protected $appends = ['slug']; // agar otomatis tersedia saat toArray()
 

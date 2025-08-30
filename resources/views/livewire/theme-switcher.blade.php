@@ -3,5 +3,5 @@
         wire:click="toggle"
         @checked($mode==='prefersdark' ) />
     <i class="swap-off bi bi-brightness-high-fill text-warning text-2xl"></i>
-    <i class="swap-on bi bi-moon text-content-base text-2xl font-bold"></i>
+    <i class="swap-on bi bi-moon-fill text-content-base text-2xl font-bold"></i>
 </label>

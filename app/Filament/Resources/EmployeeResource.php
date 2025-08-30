@@ -15,6 +15,7 @@ use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -61,7 +62,7 @@ class EmployeeResource extends Resource
 
             Forms\Components\TextInput::make('nip')->label(__('NIP'))
             ->hidden(fn (Get $get): bool => in_array($get('employee_status_id'), [5, 6])  || !$get('employee_status_id') )
-            ->length(18)->requiredIf('employee_status_id', [1,2,3,4])
+            ->length(18)->requiredIf('employee_status_id', [1,2,3,100])
             ->validationMessages([
                 'required_if' => 'NIP wajib diisi.',
             ]),
@@ -90,19 +91,19 @@ class EmployeeResource extends Resource
                 Forms\Components\Select::make('education_id')->label(__('Education'))->relationship('education', 'name', fn (Builder $query) => $query->orderBy('id'))->required(),
                 Forms\Components\Select::make('rank_id')->label(__('Rank'))->relationship('rank', 'name', fn (Builder $query) => $query->orderBy('id'))
                 ->hidden(fn (Get $get): bool => in_array($get('employee_status_id'), [5, 6])  || !$get('employee_status_id') )
-                ->requiredIf('employee_status_id', [1,2,3,4])
+                ->requiredIf('employee_status_id', [1,2,3,100])
                 ->validationMessages([
                     'required_if' => 'Pangkat wajib diisi.',
                 ]),
                 Forms\Components\DatePicker::make('tmt_rank')->label(__('TMT Rank'))->native(false)->displayFormat('j F Y')
                 ->hidden(fn (Get $get): bool => in_array($get('employee_status_id'), [5, 6])  || !$get('employee_status_id') )
-                ->requiredIf('employee_status_id', [1,2,3,4])
+                ->requiredIf('employee_status_id', [1,2,3,100])
                 ->validationMessages([
                     'required_if' => 'TMT Pangkat wajib diisi.',
                 ]),
                 Forms\Components\Select::make('position_id')->label(__('Position'))->relationship('position', 'name', fn (Builder $query) => $query->orderBy('id'))
                 ->hidden(fn (Get $get): bool => in_array($get('employee_status_id'), [5, 6])  || !$get('employee_status_id') )
-                ->requiredIf('employee_status_id', [1,2,3,4])
+                ->requiredIf('employee_status_id', [1,2,3,100])
                 ->validationMessages([
                     'required_if' => 'Jabatan wajib diisi.',
                 ]),
@@ -154,6 +155,7 @@ class EmployeeResource extends Resource
                 TextColumn::make('rank.name')->label(__('Rank'))->sortable()->searchable(),
                 TextColumn::make('position.name')->label(__('Position'))->sortable()->searchable(),
                 TextColumn::make('employeeStatus.description')->label(__('Employee Status'))->sortable()->searchable(),
+                ToggleColumn::make('is_active')->label(__('Is Active ?'))->sortable()->searchable(),
                 TextColumn::make('roles.name')->label(__('Roles'))->searchable()->badge(),
             ])
             ->defaultSort('name', 'asc')

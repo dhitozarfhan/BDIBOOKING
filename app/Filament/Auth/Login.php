@@ -48,5 +48,4 @@ class Login extends BaseAuth
             'data.login' => __('filament-panels::pages/auth/login.messages.failed'),
         ]);
     }
-
 }
