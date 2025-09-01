@@ -160,6 +160,10 @@ class EmployeeResource extends Resource
             ])
             ->defaultSort('name', 'asc')
             ->filters([
+                Tables\Filters\SelectFilter::make('is_active')->label(__('Is Active ?'))->options([
+                    1 => __('Yes'),
+                    0 => __('No'),
+                ]), 
                 Tables\Filters\SelectFilter::make('employee_status_id')->label(__('Employee Status'))->options(EmployeeStatus::pluck('description', 'id')),
                 Tables\Filters\SelectFilter::make('rank_id')->label(__('Rank'))->options(Rank::pluck('name', 'id')),
                 Tables\Filters\SelectFilter::make('position_id')->label(__('Position'))->options(Position::pluck('name', 'id')),

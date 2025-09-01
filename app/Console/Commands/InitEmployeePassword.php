@@ -101,7 +101,7 @@ class InitEmployeePassword extends Command
         //get all employee with status as cpns, pns, pppk or nonpns then reset password. the plain password send to them with wablas library
         $employees = Employee::whereIn('employee_status_id', [EmployeeStatus::CPNS->value, EmployeeStatus::PNS->value, EmployeeStatus::PPPK->value, EmployeeStatus::NonPNS->value])->get();
         foreach ($employees as $employee) {
-            if(!empty($employee->mobile)){
+            if(!empty($employee->mobile) && $employee->is_active){
                 //ambil password secara acak dari array cities
                 $plainPassword = $cities[array_rand($cities)];
                 $employee->update(['password' => Hash::make($plainPassword)]);
