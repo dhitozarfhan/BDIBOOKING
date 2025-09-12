@@ -1,0 +1,107 @@
+erDiagram
+  %% =======================
+  %% ENTITAS
+  %% =======================
+  folder {
+    int id PK
+    int classification_id FK
+    int location_id FK
+    text description
+    datetime created_at
+    datetime updated_at
+  }
+
+  document {
+    int id PK
+    int folder_id FK
+    int segment_id FK
+    string file_path
+    string description
+    date published_at
+    string active_retention
+    string inactive_retention
+    boolean condition
+    datetime created_at
+    datetime updated_at
+  }
+
+  classification {
+    int id PK
+    string code
+    string name
+    datetime created_at
+    datetime updated_at
+  }
+
+  location {
+    bigint id PK
+    string code
+    string name
+    datetime created_at
+    datetime updated_at
+  }
+
+  segment {
+    int id PK
+    string code
+    string name
+    datetime created_at
+    datetime updated_at
+  }
+
+  account {
+    int id PK
+    string code
+    string name
+    datetime created_at
+    datetime updated_at
+  }
+
+  account_document {
+    int id PK
+    int account_id FK
+    int document_id FK
+    datetime created_at
+    datetime updated_at
+  }
+
+
+  %% Pivot peminjaman (M:N) + atribut transaksi
+  document_employee {
+    int id PK
+    int document_id FK
+    int employee_id FK
+    date borrow_date
+    date due_date
+    date return_date
+    string status         
+%% requested | approved | borrowed | returned | overdue | lost
+    string needs          
+%% alasan/kebutuhan peminjaman
+    string token
+    string notes
+    datetime created_at
+    datetime updated_at
+  }
+
+  %% =======================
+  %% RELASI
+  %% =======================
+  %% Klasifikasi & lokasi untuk folder
+  classification ||--o{ folder : classifies
+  location ||--o{ folder : located_in
+
+  %% Folder berisi banyak dokumen
+  folder ||--o{ document : contains
+
+  %% Segmentasi dokumen
+  segment ||--o{ document : segments
+
+  %% Tagging/akun ke dokumen (M:N via pivot)
+  document ||--o{ account_document : has
+  account ||--o{ account_document : has
+
+  %% Peminjaman dokumen (M:N via pivot)
+  document ||--o{ document_employee : "loan_items"
+  employee ||--o{ document_employee : "borrower"
+
