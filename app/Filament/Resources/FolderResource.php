@@ -3,6 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\FolderResource\Pages;
+use App\Filament\Forms\Components\TreeSelect;
+use App\Filament\Filters\TreeSelectFilter;
+use App\Filament\Tables\Columns\HierarchyColumn;
 use App\Models\Folder;
 use App\Models\Classification;
 use App\Models\Location;
@@ -48,18 +51,12 @@ class FolderResource extends Resource
                     ->columns(1)
                     ->schema([
                         
-                        Forms\Components\Select::make('classification_id')
+                        TreeSelect::make('classification_id')
                             ->label(__('Classification'))
-                            ->relationship('classification', 'code')
-                            ->searchable()
-                            ->preload()
                             ->required(),
 
-                        Forms\Components\Select::make('location_id')
+                        TreeSelect::make('location_id')
                             ->label(__('Location'))
-                            ->relationship('location', 'code')
-                            ->searchable()
-                            ->preload()
                             ->required(),
 
                         Forms\Components\Textarea::make('description')
@@ -73,12 +70,12 @@ class FolderResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('classification.code')
+                HierarchyColumn::make('classification.code')
                     ->label(__('Classification'))
                     ->sortable()
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('location.code')
+                HierarchyColumn::make('location.code')
                     ->label(__('Location'))
                     ->sortable()
                     ->searchable(),
@@ -94,17 +91,11 @@ class FolderResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('classification_id')
-                    ->label(__('Classification'))
-                    ->relationship('classification', 'code')
-                    ->searchable()
-                    ->preload(),
+                TreeSelectFilter::make('classification_id')
+                    ->label(__('Classification')),
 
-                Tables\Filters\SelectFilter::make('location_id')
-                    ->label(__('Location'))
-                    ->relationship('location', 'code')
-                    ->searchable()
-                    ->preload(),
+                TreeSelectFilter::make('location_id')
+                    ->label(__('Location')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
