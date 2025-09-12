@@ -52,6 +52,11 @@ class AdminPanelProvider extends PanelProvider
                 ->forceRenewPassword(),
             ])
             ->spa()
+            ->spaUrlExceptions(fn (): array => [
+                config('app.url').'/admin/header-menu-page',
+                config('app.url').'/admin/footer-menu-page',
+                config('app.url').'/admin/location-page',
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
