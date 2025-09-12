@@ -262,4 +262,19 @@ class Employee extends Authenticatable implements RenewPasswordContract, Filamen
     {
         return in_array($role->id, $query->roles->pluck('id', 'id')->all());
     }
+
+    public function borrowedDocuments()
+    {
+        return $this->belongsToMany(Document::class, 'document_employee')
+                    ->withPivot([
+                        'borrow_date',
+                        'due_date',
+                        'return_date',
+                        'status',
+                        'needs',
+                        'token',
+                        'notes'
+                    ])
+                    ->withTimestamps();
+    }
 }
