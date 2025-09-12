@@ -29,7 +29,7 @@ class Slideshow extends Model
 
     public function getLinkAttribute(): string
     {
-        return $this->link_type_id == EnumsLinkType::Article->value ? route('articles.show', ['slug' => Str::kebab($this->article->title).'-'.$this->article_id, 'article_type' => $this->article->articleType->slug]) : (
+        return $this->link_type_id == EnumsLinkType::Article->value ? route('articles.show', ['slug' => $this->article->slug, 'article_type' => $this->article->articleType->slug]) : (
             $this->link_type_id == EnumsLinkType::Internal->value ? url($this->path) :
             ($this->link_type_id == EnumsLinkType::Empty->value ? '#' : $this->path)
         );

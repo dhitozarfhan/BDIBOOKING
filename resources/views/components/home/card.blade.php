@@ -22,7 +22,7 @@
         </div>
 
         <h2 class="card-title mt-1 line-clamp-2">
-            <a wire:navigate href="{{ route('articles.show', ['slug' => Str::kebab($article->title).'-'.$article->id, 'article_type' => $article->articleType->slug]) }}" class="link link-hover">
+            <a wire:navigate href="{{ route('articles.show', ['slug' => $article->slug, 'article_type' => $article->articleType->slug]) }}" class="link link-hover">
                 {{ $article->title }}
             </a>
         </h2>
@@ -32,7 +32,7 @@
         </p>
 
         <div class="card-actions justify-end">
-            <a wire:navigate href="{{ route('articles.show', ['slug' => Str::kebab($article->title).'-'.$article->id, 'article_type' => $article->articleType->slug]) }}" class="link link-primary text-3xl">
+            <a wire:navigate href="{{ route('articles.show', ['slug' => $article->slug, 'article_type' => $article->articleType->slug]) }}" class="link link-primary text-3xl">
                 <i class="bi bi-arrow-right-square-fill"></i>
             </a>
         </div>
