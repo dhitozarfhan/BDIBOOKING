@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('segments', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique();
+            $table->string('code');
             $table->string('name');
             $table->boolean('is_active')->default(true);
             $table->nestedSet();

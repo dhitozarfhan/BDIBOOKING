@@ -3,9 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Kalnoy\Nestedset\NodeTrait;
+use Studio15\FilamentTree\Concerns\InteractsWithTree;
 
 class Segment extends Model
 {
+    use NodeTrait;
+    use InteractsWithTree;
+
     protected $fillable = [
         'code',
         'name',
@@ -13,7 +18,6 @@ class Segment extends Model
     ];
 
     protected $casts = [
-        'name' => 'array',
         'is_active' => 'boolean',
     ];
 
@@ -25,15 +29,12 @@ class Segment extends Model
         return $this->hasMany(Document::class);
     }
 
-    /**
-     * Get the readable name attribute.
-     */
-    public function getReadableNameAttribute()
+    public static function getTreeLabelAttribute() : string
     {
-        $name = $this->name;
-        if (is_array($name)) {
-            return $name['id'] ?? $name['en'] ?? reset($name);
-        }
-        return $name;
+        return 'code_name';
+    }
+    public function getCodeNameAttribute(): string
+    {
+        return $this->code. ' '. $this->name;
     }
 }
