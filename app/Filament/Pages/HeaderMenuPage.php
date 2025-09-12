@@ -125,7 +125,7 @@ class HeaderMenuPage extends TreePage
     public static function getEditForm(): array
     {
         return static::getCreateForm();
-    }
+    }    
 
     public static function getInfolistColumns(): array
     {

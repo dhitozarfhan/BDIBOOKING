@@ -2,15 +2,22 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Location;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Kalnoy\Nestedset\QueryBuilder;
 use Studio15\FilamentTree\Components\TreePage;
 
 class LocationPage extends TreePage
 {
+    
+    protected static ?string $navigationIcon = 'heroicon-o-map-pin';
+
     public static function getModel(): string|QueryBuilder
     {
-        return \App\Models\Location::class;
+        // Menggunakan scoped query untuk memastikan semua node berada dalam scope yang sama
+        // Ini akan memungkinkan pembuatan/penyimpanan child node secara otomatis
+        return Location::scoped([]);
     }
 
     public static function getCreateForm(): array
@@ -21,7 +28,6 @@ class LocationPage extends TreePage
                 ->maxLength(255)
                 ->required(),
 
-
             TextInput::make('name')
                 ->label('Nama Lokasi')
                 ->maxLength(255)
@@ -31,9 +37,7 @@ class LocationPage extends TreePage
 
     public static function getEditForm(): array
     {
-        return [
-            //
-        ];
+        return static::getCreateForm();
     }
 
     public static function getInfolistColumns(): array
@@ -41,5 +45,25 @@ class LocationPage extends TreePage
         return [
             //
         ];
+    }
+    
+    public function getTitle(): string
+    {
+        return ('Locations');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return ('Locations');
+    }
+    
+    public static function getNavigationGroup(): ?string
+    {
+        return ('Kearsipan');
+    }
+    
+    public static function getNavigationSort(): ?int
+    {
+        return 20;
     }
 }

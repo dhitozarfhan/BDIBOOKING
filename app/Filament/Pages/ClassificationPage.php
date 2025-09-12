@@ -2,16 +2,23 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Classification;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Kalnoy\Nestedset\QueryBuilder;
 use Studio15\FilamentTree\Components\TreePage;
 
+
 class ClassificationPage extends TreePage
 {
+
+    protected static ?string $navigationIcon = 'heroicon-o-folder-open';
+
     public static function getModel(): string|QueryBuilder
     {
-        // TODO: Set tree model
-        return \App\Models\Classification::class;
+        // Menggunakan scoped query untuk memastikan semua node berada dalam scope yang sama
+        // Ini akan memungkinkan pembuatan/penyimpanan child node secara otomatis
+        return Classification::scoped([]);
     }
 
     public static function getCreateForm(): array
@@ -22,7 +29,6 @@ class ClassificationPage extends TreePage
                 ->maxLength(255)
                 ->required(),
 
-
             TextInput::make('name')
                 ->label('Nama Klasifikasi')
                 ->maxLength(255)
@@ -32,9 +38,7 @@ class ClassificationPage extends TreePage
 
     public static function getEditForm(): array
     {
-        return [
-            //
-        ];
+        return static::getCreateForm();
     }
 
     public static function getInfolistColumns(): array
@@ -42,5 +46,25 @@ class ClassificationPage extends TreePage
         return [
             //
         ];
+    }
+    
+    public function getTitle(): string
+    {
+        return ('Classifications');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return ('Classifications');
+    }
+    
+    public static function getNavigationGroup(): ?string
+    {
+        return ('Kearsipan');
+    }
+    
+    public static function getNavigationSort(): ?int
+    {
+        return 10;
     }
 }
