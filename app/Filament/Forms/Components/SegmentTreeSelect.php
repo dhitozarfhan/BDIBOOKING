@@ -2,18 +2,15 @@
 
 namespace App\Filament\Forms\Components;
 
-use App\Models\Classification;
-use App\Models\Location;
-use App\Models\Folder;
+use App\Models\Segment;
 use Closure;
 use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class TreeSelect extends Select
+class SegmentTreeSelect extends Select
 {
     protected string $titleAttribute = 'code_name';
-    protected Model | Closure | string | null $model = null;
     
     public static function make(string $name): static
     {
@@ -33,41 +30,8 @@ class TreeSelect extends Select
         return $this;
     }
     
-    public function model(Model | Closure | string | null $model = null): static
-    {
-        $this->model = $model;
-        return $this;
-    }
-    
-    protected function getModelClass(): string
-    {
-        if ($this->model) {
-            $model = $this->evaluate($this->model);
-            return is_string($model) ? $model : get_class($model);
-        }
-        
-        // Auto-detect based on field name
-        return match($this->getName()) {
-            'location_id' => Location::class,
-            'folder_id' => Folder::class,
-            default => Classification::class, // Default to Classification for classification_id and other cases
-        };
-    }
-    
     public function getTreeOptions(): array
     {
-        $modelClass = $this->getModelClass();
-        
-        // Special handling for Folder model (not hierarchical)
-        if ($modelClass === Folder::class) {
-            return $modelClass::query()
-                ->get(['id'])
-                ->mapWithKeys(fn (Model $item): array => [
-                    $item->getKey() => "Folder #{$item->id}",
-                ])
-                ->all();
-        }
-        
         $buildTitle = function (Model $item): string {
             // Handle the code_name accessor properly
             if ($this->titleAttribute === 'code_name') {
@@ -86,7 +50,7 @@ class TreeSelect extends Select
             return trim("{$prefix} {$title}");
         };
         
-        return $modelClass::query()
+        return Segment::query()
             ->withDepth()
             ->defaultOrder()
             ->get(['id', 'code', 'name', '_lft', '_rgt', 'parent_id']) // Select necessary columns

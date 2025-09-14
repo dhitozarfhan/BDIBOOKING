@@ -3,6 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\DocumentResource\Pages;
+use App\Filament\Forms\Components\TreeSelect;
+use App\Filament\Forms\Components\SegmentTreeSelect;
 use App\Models\Document;
 use App\Models\Folder;
 use App\Models\Segment;
@@ -47,18 +49,12 @@ class DocumentResource extends Resource
                 Forms\Components\Section::make()
                     ->columns(1)
                     ->schema([
-                        Forms\Components\Select::make('folder_id')
+                        TreeSelect::make('folder_id')
                             ->label(__('Folder'))
-                            ->relationship('folder', 'id')
-                            ->searchable()
-                            ->preload()
                             ->required(),
 
-                        Forms\Components\Select::make('segment_id')
+                        SegmentTreeSelect::make('segment_id')
                             ->label(__('Segment'))
-                            ->relationship('segment', 'code')
-                            ->searchable()
-                            ->preload()
                             ->required(),
 
                         Forms\Components\TextInput::make('file_path')
@@ -94,12 +90,12 @@ class DocumentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('folder.id')
+                \App\Filament\Tables\Columns\FolderHierarchyColumn::make('folder.id')
                     ->label(__('Folder'))
                     ->sortable()
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('segment.code')
+                \App\Filament\Tables\Columns\SegmentHierarchyColumn::make('segment.code')
                     ->label(__('Segment'))
                     ->sortable()
                     ->searchable(),
@@ -117,25 +113,21 @@ class DocumentResource extends Resource
                 Tables\Columns\TextColumn::make('published_at')
                     ->label(__('Published At'))
                     ->date()
+                    ->searchable()
                     ->sortable(),
 
                 Tables\Columns\IconColumn::make('condition')
                     ->label(__('Condition'))
                     ->boolean()
+                    ->searchable()
                     ->sortable(),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('folder_id')
-                    ->label(__('Folder'))
-                    ->relationship('folder', 'id')
-                    ->searchable()
-                    ->preload(),
+                \App\Filament\Filters\FolderTreeSelectFilter::make('folder_id')
+                    ->label(__('Folder')),
 
-                Tables\Filters\SelectFilter::make('segment_id')
-                    ->label(__('Segment'))
-                    ->relationship('segment', 'code')
-                    ->searchable()
-                    ->preload(),
+                \App\Filament\Filters\SegmentTreeSelectFilter::make('segment_id')
+                    ->label(__('Segment')),
 
                 Tables\Filters\Filter::make('condition')
                     ->label(__('Condition'))
