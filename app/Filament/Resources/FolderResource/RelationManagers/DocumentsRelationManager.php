@@ -33,20 +33,20 @@ class DocumentsRelationManager extends RelationManager
                             ->searchable()
                             ->preload(),
 
-                        Forms\Components\TextInput::make('file_path')
+                        Forms\Components\FileUpload::make('file_path')
                             ->label(__('File Path'))
-                            ->maxLength(255),
+                            ->required()
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->maxSize(10240), // 10MB
 
                         Forms\Components\DatePicker::make('published_at')
                             ->label(__('Published At')),
 
                         Forms\Components\TextInput::make('active_retention')
-                            ->label(__('Active Retention'))
-                            ->numeric(),
+                            ->label(__('Active Retention')),
 
                         Forms\Components\TextInput::make('inactive_retention')
-                            ->label(__('Inactive Retention'))
-                            ->numeric(),
+                            ->label(__('Inactive Retention')),
 
                         Forms\Components\Toggle::make('condition')
                             ->label(__('Condition')),
