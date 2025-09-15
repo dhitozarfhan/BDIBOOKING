@@ -9,6 +9,7 @@ use App\Models\Document;
 use App\Models\Folder;
 use App\Models\Segment;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -57,10 +58,16 @@ class DocumentResource extends Resource
                             ->label(__('Segment'))
                             ->required(),
 
-                        Forms\Components\TextInput::make('file_path')
-                            ->label(__('File Path'))
+                        Forms\Components\TextInput::make('name')
+                            ->label(__('Name'))
                             ->required()
                             ->maxLength(255),
+
+                        FileUpload::make('file_path')
+                            ->label(__('File Path'))
+                            ->required()
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->maxSize(10240), // 10MB
 
                         Forms\Components\Textarea::make('description')
                             ->label(__('Description'))
@@ -90,6 +97,11 @@ class DocumentResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
+                    ->searchable()
+                    ->sortable(),
+
                 \App\Filament\Tables\Columns\FolderHierarchyColumn::make('folder.id')
                     ->label(__('Folder'))
                     ->sortable()

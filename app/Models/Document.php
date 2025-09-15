@@ -9,6 +9,7 @@ class Document extends Model
     protected $fillable = [
         'folder_id',
         'segment_id',
+        'name',
         'file_path',
         'description',
         'published_at',
@@ -43,7 +44,7 @@ class Document extends Model
      */
     public function accounts()
     {
-        return $this->belongsToMany(Account::class, 'account_document');
+        return $this->belongsToMany(Account::class, 'account_document')->using(AccountDocument::class);
     }
 
     /**

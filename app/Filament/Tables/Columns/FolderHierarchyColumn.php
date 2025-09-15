@@ -26,15 +26,55 @@ class FolderHierarchyColumn extends TextColumn
             $relationshipName = Str::before($this->getName(), '.');
             
             // Get the related model
-            $relatedModel = $record->{$relationshipName};
+            $folder = $record->{$relationshipName};
             
-            if (!$relatedModel) {
+            if (!$folder) {
                 return '';
             }
             
-            // For folder, we'll display the ID directly since it doesn't have a hierarchical structure
-            // like classification or location
-            return $relatedModel->id;
+            // Load classification and location with ancestors if not already loaded
+            $folder->loadMissing(['classification.ancestors', 'location.ancestors']);
+            
+            // Build classification path
+            $classificationPath = $this->buildHierarchyPath($folder->classification, 'code');
+            
+            // Build location path
+            $locationPath = $this->buildHierarchyPath($folder->location, 'code');
+            
+            // Format: classification-->location
+            if ($classificationPath && $locationPath) {
+                return "{$classificationPath}-->{$locationPath}";
+            } elseif ($classificationPath) {
+                return $classificationPath;
+            } elseif ($locationPath) {
+                return $locationPath;
+            } else {
+                return "Folder #{$folder->id}";
+            }
         });
+    }
+    
+    protected function buildHierarchyPath(?Model $model, string $attribute): string
+    {
+        if (!$model) {
+            return '';
+        }
+        
+        // Get ancestors ordered from root to parent
+        $ancestors = $model->ancestors()->defaultOrder()->get();
+        
+        // Build the hierarchical path
+        $path = [];
+        
+        // Add ancestors codes
+        foreach ($ancestors as $ancestor) {
+            $path[] = $ancestor->{$attribute};
+        }
+        
+        // Add the current item's code
+        $path[] = $model->{$attribute};
+        
+        // Join with dots
+        return implode('.', $path);
     }
 }

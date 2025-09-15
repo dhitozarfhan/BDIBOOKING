@@ -50,7 +50,6 @@ class FolderResource extends Resource
                 Forms\Components\Section::make()
                     ->columns(1)
                     ->schema([
-                        
                         TreeSelect::make('classification_id')
                             ->label(__('Classification'))
                             ->required(),
@@ -73,12 +72,30 @@ class FolderResource extends Resource
                 HierarchyColumn::make('classification.code')
                     ->label(__('Classification'))
                     ->sortable()
-                    ->searchable(),
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('classification', function ($query) use ($search) {
+                            $query->where('code', 'ilike', "%{$search}%")
+                                ->orWhere('name', 'ilike', "%{$search}%")
+                                ->orWhereHas('ancestors', function ($query) use ($search) {
+                                    $query->where('code', 'ilike', "%{$search}%")
+                                        ->orWhere('name', 'ilike', "%{$search}%");
+                                });
+                        });
+                    }),
 
                 HierarchyColumn::make('location.code')
                     ->label(__('Location'))
                     ->sortable()
-                    ->searchable(),
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('location', function ($query) use ($search) {
+                            $query->where('code', 'ilike', "%{$search}%")
+                                ->orWhere('name', 'ilike', "%{$search}%")
+                                ->orWhereHas('ancestors', function ($query) use ($search) {
+                                    $query->where('code', 'ilike', "%{$search}%")
+                                        ->orWhere('name', 'ilike', "%{$search}%");
+                                });
+                        });
+                    }),
 
                 Tables\Columns\TextColumn::make('description')
                     ->label(__('Description'))

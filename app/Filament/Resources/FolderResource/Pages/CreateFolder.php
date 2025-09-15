@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateFolder extends CreateRecord
 {
     protected static string $resource = FolderResource::class;
+    
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

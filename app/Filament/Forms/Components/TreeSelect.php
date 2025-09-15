@@ -58,12 +58,12 @@ class TreeSelect extends Select
     {
         $modelClass = $this->getModelClass();
         
-        // Special handling for Folder model (not hierarchical)
+        // Special handling for Folder model (show hierarchical information)
         if ($modelClass === Folder::class) {
-            return $modelClass::query()
-                ->get(['id'])
+            return $modelClass::with(['classification.ancestors', 'location.ancestors'])
+                ->get(['id', 'classification_id', 'location_id', 'description'])
                 ->mapWithKeys(fn (Model $item): array => [
-                    $item->getKey() => "Folder #{$item->id}",
+                    $item->getKey() => $this->formatFolderTitle($item),
                 ])
                 ->all();
         }
@@ -94,6 +94,41 @@ class TreeSelect extends Select
                 $item->getKey() => $buildTitle($item),
             ])
             ->all();
+    }
+    
+    protected function formatFolderTitle(Model $folder): string
+    {
+        $classificationPath = $this->buildHierarchyPath($folder->classification, 'code');
+        $locationPath = $this->buildHierarchyPath($folder->location, 'code');
+        $description = $folder->description ?? '';
+        
+        // Format: Classification--Location--Description
+        $parts = array_filter([$classificationPath, $locationPath, $description]);
+        return implode('--', $parts) ?: "Folder #{$folder->id}";
+    }
+    
+    protected function buildHierarchyPath(?Model $model, string $attribute): string
+    {
+        if (!$model) {
+            return '';
+        }
+        
+        // Get ancestors ordered from root to parent
+        $ancestors = $model->ancestors()->defaultOrder()->get();
+        
+        // Build the hierarchical path
+        $path = [];
+        
+        // Add ancestors codes
+        foreach ($ancestors as $ancestor) {
+            $path[] = $ancestor->{$attribute};
+        }
+        
+        // Add the current item's code
+        $path[] = $model->{$attribute};
+        
+        // Join with dots
+        return implode('.', $path);
     }
     
     public function setUp(): void

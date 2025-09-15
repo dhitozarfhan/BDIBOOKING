@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('folder_id')->constrained()->onDelete('cascade');
             $table->foreignId('segment_id')->constrained()->onDelete('cascade');
+            $table->string('name')->nullable();
             $table->string('file_path')->nullable();
             $table->text('description')->nullable();
             $table->date('published_at')->nullable();
