@@ -53,11 +53,15 @@ class FolderResource extends Resource
                     ->schema([
                         TreeSelect::make('classification_id')
                             ->label(__('Classification'))
-                            ->required(),
+                            ->required()
+                            ->depth(2)
+                            ->restrictDepthSelection(),
 
                         TreeSelect::make('location_id')
                             ->label(__('Location'))
-                            ->required(),
+                            ->required()
+                            ->depth(1)
+                            ->restrictDepthSelection(),
 
                         Forms\Components\Textarea::make('description')
                             ->label(__('Description'))

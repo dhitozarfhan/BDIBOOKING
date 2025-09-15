@@ -14,6 +14,8 @@ class TreeSelect extends Select
 {
     protected string $titleAttribute = 'code_name';
     protected Model | Closure | string | null $model = null;
+    protected int | Closure | null $depth = null;
+    protected bool $restrictDepthSelection = false;
     
     public static function make(string $name): static
     {
@@ -37,6 +39,28 @@ class TreeSelect extends Select
     {
         $this->model = $model;
         return $this;
+    }
+    
+    public function depth(int | Closure | null $depth = null): static
+    {
+        $this->depth = $depth;
+        return $this;
+    }
+    
+    public function restrictDepthSelection(bool | Closure $condition = true): static
+    {
+        $this->restrictDepthSelection = $condition;
+        return $this;
+    }
+    
+    protected function getDepth()
+    {
+        return $this->evaluate($this->depth);
+    }
+    
+    protected function shouldRestrictDepthSelection()
+    {
+        return $this->evaluate($this->restrictDepthSelection);
     }
     
     protected function getModelClass(): string
@@ -86,14 +110,28 @@ class TreeSelect extends Select
             return trim("{$prefix} {$title}");
         };
         
-        return $modelClass::query()
-            ->withDepth()
-            ->defaultOrder()
+        $query = $modelClass::query()->withDepth()->defaultOrder();
+        
+        $items = $query
             ->get(['id', 'code', 'name', '_lft', '_rgt', 'parent_id']) // Select necessary columns
-            ->mapWithKeys(fn (Model $item): array => [
-                $item->getKey() => $buildTitle($item),
-            ])
+            ->mapWithKeys(function (Model $item) use ($buildTitle) {
+                return [$item->getKey() => $buildTitle($item)];
+            })
             ->all();
+
+        // Jika restrictDepthSelection aktif dan depth ditentukan, nonaktifkan opsi yang tidak sesuai
+        if ($this->shouldRestrictDepthSelection() && $this->getDepth() !== null) {
+            $allowedIds = $modelClass::query()
+                ->withDepth()
+                ->whereRaw('(select count(1) - 1 from ' . (new $modelClass)->getTable() . ' as d where ' . (new $modelClass)->getTable() . '._lft between d._lft and d._rgt) = ?', [$this->getDepth()])
+                ->pluck('id')
+                ->toArray();
+                
+            // Nonaktifkan opsi yang tidak sesuai
+            $this->disableOptionWhen(fn (string $value): bool => !in_array((int) $value, $allowedIds));
+        }
+
+        return $items;
     }
     
     protected function formatFolderTitle(Model $folder): string
