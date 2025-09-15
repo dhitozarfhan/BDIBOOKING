@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\FolderResource\Pages;
+use App\Filament\Resources\FolderResource\RelationManagers\DocumentsRelationManager;
 use App\Filament\Forms\Components\TreeSelect;
 use App\Filament\Filters\TreeSelectFilter;
 use App\Filament\Tables\Columns\HierarchyColumn;
@@ -127,7 +128,7 @@ class FolderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            DocumentsRelationManager::class,
         ];
     }
 
