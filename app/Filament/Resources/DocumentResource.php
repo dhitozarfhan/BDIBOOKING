@@ -56,7 +56,9 @@ class DocumentResource extends Resource
 
                         SegmentTreeSelect::make('segment_id')
                             ->label(__('Segment'))
-                            ->required(),
+                            ->required()
+                            ->depth(5)
+                            ->restrictDepthSelection(),
 
                         Forms\Components\TextInput::make('name')
                             ->label(__('Name'))

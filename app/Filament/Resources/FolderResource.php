@@ -60,7 +60,7 @@ class FolderResource extends Resource
                         TreeSelect::make('location_id')
                             ->label(__('Location'))
                             ->required()
-                            ->depth(1)
+                            ->depth(2)
                             ->restrictDepthSelection(),
 
                         Forms\Components\Textarea::make('description')
