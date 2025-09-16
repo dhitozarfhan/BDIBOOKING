@@ -50,12 +50,12 @@ class ClassificationPage extends TreePage
     
     public function getTitle(): string
     {
-        return ('Classifications');
+        return __('Classifications');
     }
 
     public static function getNavigationLabel(): string
     {
-        return ('Classifications');
+        return __('Classifications');
     }
     
     public static function getNavigationGroup(): ?string

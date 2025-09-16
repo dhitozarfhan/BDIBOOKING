@@ -51,6 +51,10 @@ class FolderResource extends Resource
                 Forms\Components\Section::make()
                     ->columns(1)
                     ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label(__('Name'))
+                            ->required()
+                            ->maxLength(65535),
                         TreeSelect::make('classification_id')
                             ->label(__('Classification'))
                             ->required()
@@ -62,10 +66,6 @@ class FolderResource extends Resource
                             ->required()
                             ->depth(2)
                             ->restrictDepthSelection(),
-
-                        Forms\Components\Textarea::make('description')
-                            ->label(__('Description'))
-                            ->columnSpanFull(),
                     ]),
             ]);
     }
@@ -102,10 +102,10 @@ class FolderResource extends Resource
                         });
                     }),
 
-                Tables\Columns\TextColumn::make('description')
-                    ->label(__('Description'))
-                    ->searchable()
-                    ->limit(50),
+                Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
+                    ->sortable()
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('documents_count')
                     ->label(__('Documents'))

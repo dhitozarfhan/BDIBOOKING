@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('folders', function (Blueprint $table) {
             $table->id();
+            $table->text('name')->nullable();
             $table->foreignId('classification_id')->constrained()->onDelete('cascade');
             $table->foreignId('location_id')->constrained()->onDelete('cascade');
-            $table->text('description')->nullable();
             $table->timestamps();
         });
     }
