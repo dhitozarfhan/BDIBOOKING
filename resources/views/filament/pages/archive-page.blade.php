@@ -1,5 +1,6 @@
 <x-filament-panels::page>
     <div class="space-y-6">
+        
 
         <div class="bg-white rounded-lg shadow overflow-hidden">
             <div class="overflow-x-auto">
@@ -27,11 +28,9 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Segment') }}
                             </th>
-
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Akun') }}
                             </th>
-                            
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Uraian Item Arsip') }}
                             </th>
@@ -79,7 +78,7 @@
                                             @endphp
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" rowspan="{{ $folder->documents->count() }}">
-                                            {{ $folder->documents->count() }} {{ $folder->type ?? 'berkas' }}
+                                            {{ $folder->documents->count() }} {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
                                         </td>
                                     @endif
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -93,7 +92,6 @@
                                             {{ $account->code }}@if(!$loop->last), @endif
                                         @endforeach
                                     </td>
-                                    
                                     <td class="px-6 py-4 text-sm text-gray-500">
                                         {{ $document->name }}
                                     </td>
@@ -122,9 +120,8 @@
                                         @endphp
                                         {{ $boxFile }}
                                     </td>
-                                    
                                     <td class="px-6 py-4 text-sm text-gray-500">
-                                        {{ $document->description }}
+                                        {{ $document->information ?? '' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $document->active_retention ?? '' }}
@@ -133,7 +130,13 @@
                                         {{ $document->inactive_retention ?? '' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $document->information ?? '' }}
+                                        @php
+                                        if ($document->condition == '0') { 
+                                            echo ' Musnah';
+                                        } elseif ($document->condition == '1') {
+                                            echo 'Tidak Musnah';
+                                        }
+                                        @endphp
                                     </td>
                                 </tr>
                             @empty
@@ -157,7 +160,7 @@
                                         @endphp
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        0 {{ $folder->type ?? 'berkas' }}
+                                        0 {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500" colspan="10">
                                         {{ __('Tidak ada dokumen dalam folder ini.') }}
