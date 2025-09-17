@@ -26,10 +26,10 @@
                                 {{ __('No Item Arsip') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Akun') }}
+                                {{ __('Segment') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Segment') }}
+                                {{ __('Akun') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Uraian Item Arsip') }}
@@ -85,12 +85,12 @@
                                         {{ $document->id }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $document->segment->name ?? '' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         @foreach($document->accounts as $account)
                                             {{ $account->code }}@if(!$loop->last), @endif
                                         @endforeach
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $document->segment->name ?? '' }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500">
                                         {{ $document->name }}
