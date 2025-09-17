@@ -47,9 +47,15 @@ class DocumentsRelationManager extends RelationManager
 
                         Forms\Components\TextInput::make('inactive_retention')
                             ->label(__('Inactive Retention')),
+                        Forms\Components\TextInput::make('information')
+                            ->label(__('Information'))
+                            ->maxLength(255),
+                        Forms\Components\Toggle::make('access')
+                            ->label(__('Access (Publik/Rahasia)'))
+                            ->default(false),
 
                         Forms\Components\Toggle::make('condition')
-                            ->label(__('Condition')),
+                            ->label(__('Condition (Musnah/Tidak Musnah)')),
 
                         Forms\Components\Textarea::make('description')
                             ->label(__('Description'))
@@ -85,6 +91,13 @@ class DocumentsRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('inactive_retention')
                     ->label(__('Inactive Retention')),
+                Tables\Columns\TextColumn::make('information')
+                    ->label(__('Information'))
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\IconColumn::make('access')
+                    ->label(__('Access'))
+                    ->boolean(),
 
                 Tables\Columns\IconColumn::make('condition')
                     ->label(__('Condition'))
