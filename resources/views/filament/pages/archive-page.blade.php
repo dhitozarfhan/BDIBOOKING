@@ -8,7 +8,7 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Kode Klasifikasi') }}
+                                {{ __('Kode Klasifikasi (Hierarchical Path)') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Uraian Berkas') }}
@@ -26,7 +26,7 @@
                                 {{ __('No Item Arsip') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Segment') }}
+                                {{ __('Segment (Hierarchical Path)') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Akun') }}
@@ -60,7 +60,28 @@
                                 <tr>
                                     @if($index === 0)
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" rowspan="{{ $folder->documents->count() }}">
-                                            {{ $folder->classification->code ?? '' }}
+                                            @php
+                                                if ($folder->classification) {
+                                                    // Get ancestors ordered from root to parent
+                                                    $ancestors = $folder->classification->ancestors()->defaultOrder()->get();
+                                                    
+                                                    // Build the hierarchical path
+                                                    $path = [];
+                                                    
+                                                    // Add ancestors codes
+                                                    foreach ($ancestors as $ancestor) {
+                                                        $path[] = $ancestor->code;
+                                                    }
+                                                    
+                                                    // Add the current classification's code
+                                                    $path[] = $folder->classification->code;
+                                                    
+                                                    // Join with dots and display
+                                                    echo implode('.', $path);
+                                                } else {
+                                                    echo '';
+                                                }
+                                            @endphp
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-500" rowspan="{{ $folder->documents->count() }}">
                                             {{ $folder->name }}
@@ -85,7 +106,28 @@
                                         {{ $document->id }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $document->segment->name ?? '' }}
+                                        @php
+                                            if ($document->segment) {
+                                                // Get ancestors ordered from root to parent
+                                                $ancestors = $document->segment->ancestors()->defaultOrder()->get();
+                                                
+                                                // Build the hierarchical path
+                                                $path = [];
+                                                
+                                                // Add ancestors codes
+                                                foreach ($ancestors as $ancestor) {
+                                                    $path[] = $ancestor->code;
+                                                }
+                                                
+                                                // Add the current segment's code
+                                                $path[] = $document->segment->code;
+                                                
+                                                // Join with dots and display
+                                                echo implode('.', $path);
+                                            } else {
+                                                echo '';
+                                            }
+                                        @endphp
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         @foreach($document->accounts as $account)
@@ -142,7 +184,28 @@
                             @empty
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $folder->classification->code ?? '' }}
+                                        @php
+                                            if ($folder->classification) {
+                                                // Get ancestors ordered from root to parent
+                                                $ancestors = $folder->classification->ancestors()->defaultOrder()->get();
+                                                
+                                                // Build the hierarchical path
+                                                $path = [];
+                                                
+                                                // Add ancestors codes
+                                                foreach ($ancestors as $ancestor) {
+                                                    $path[] = $ancestor->code;
+                                                }
+                                                
+                                                // Add the current classification's code
+                                                $path[] = $folder->classification->code;
+                                                
+                                                // Join with dots and display
+                                                echo implode('.', $path);
+                                            } else {
+                                                echo '';
+                                            }
+                                        @endphp
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500">
                                         {{ $folder->name }}
