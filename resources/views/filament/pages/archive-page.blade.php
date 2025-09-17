@@ -78,7 +78,7 @@
                                             @endphp
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" rowspan="{{ $folder->documents->count() }}">
-                                            {{ $folder->documents->count() }} {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
+                                            {{ $folder->documents->count() }} {{ $folder->type ?? 'berkas' }}
                                         </td>
                                     @endif
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -162,7 +162,7 @@
                                         @endphp
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        0 {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
+                                        0 {{ $folder->type ?? 'berkas' }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500" colspan="10">
                                         {{ __('Tidak ada dokumen dalam folder ini.') }}
