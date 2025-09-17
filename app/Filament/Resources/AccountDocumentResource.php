@@ -35,7 +35,7 @@ class AccountDocumentResource extends Resource
 
     public static function getPluralModelLabel(): string
     {
-        return __('Account Documents');
+        return __('Dokumen Akun');
     }
 
     public static function form(Form $form): Form

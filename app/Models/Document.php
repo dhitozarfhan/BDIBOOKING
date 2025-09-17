@@ -15,6 +15,8 @@ class Document extends Model
         'published_at',
         'active_retention',
         'inactive_retention',
+        'information',
+        'access',
         'condition',
     ];
 

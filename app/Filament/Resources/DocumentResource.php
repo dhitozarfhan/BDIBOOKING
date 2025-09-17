@@ -40,7 +40,7 @@ class DocumentResource extends Resource
 
     public static function getPluralModelLabel(): string
     {
-        return __('Documents');
+        return __('Dokumen');
     }
 
     public static function form(Form $form): Form
@@ -87,9 +87,15 @@ class DocumentResource extends Resource
                         Forms\Components\TextInput::make('inactive_retention')
                             ->label(__('Inactive Retention'))
                             ->maxLength(255),
+                        Forms\Components\TextInput::make('information')
+                            ->label(__('Information'))
+                            ->maxLength(255),
+                        Forms\Components\Toggle::make('access')
+                            ->label(__('Access (Publik/Rahasia)'))
+                            ->default(false),
 
                         Forms\Components\Toggle::make('condition')
-                            ->label(__('Condition'))
+                            ->label(__('Condition (Musnah/Tidak Musnah)'))
                             ->default(true),
                     ]),
             ]);

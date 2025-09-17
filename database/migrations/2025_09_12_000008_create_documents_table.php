@@ -21,6 +21,8 @@ return new class extends Migration
             $table->date('published_at')->nullable();
             $table->string('active_retention')->nullable();
             $table->string('inactive_retention')->nullable();
+            $table->string('information')->nullable();
+            $table->boolean('access')->default(false);
             $table->boolean('condition')->default(true);
             $table->timestamps();
         });

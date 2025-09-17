@@ -49,12 +49,12 @@ class LocationPage extends TreePage
     
     public function getTitle(): string
     {
-        return ('Locations');
+        return ('Lokasi');
     }
 
     public static function getNavigationLabel(): string
     {
-        return ('Locations');
+        return ('Lokasi');
     }
     
     public static function getNavigationGroup(): ?string
