@@ -55,6 +55,13 @@ class FolderResource extends Resource
                             ->label(__('Name'))
                             ->required()
                             ->maxLength(65535),
+                        Forms\Components\Select::make('type')
+                            ->label(__('Type'))
+                            ->options([
+                                'bundle' => __('Bundle'),
+                                'lembar' => __('Lembar'),
+                            ])
+                            ->required(),
                         TreeSelect::make('classification_id')
                             ->label(__('Classification'))
                             ->required()
@@ -66,6 +73,7 @@ class FolderResource extends Resource
                             ->required()
                             ->depth(2)
                             ->restrictDepthSelection(),
+                        
                     ]),
             ]);
     }
@@ -107,6 +115,15 @@ class FolderResource extends Resource
                     ->sortable()
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('type')
+                    ->label(__('Type'))
+                    ->sortable()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'bundle' => __('Bundle'),
+                        'lembar' => __('Lembar'),
+                        default => $state,
+                    }),
+
                 Tables\Columns\TextColumn::make('documents_count')
                     ->label(__('Documents'))
                     ->counts('documents')
@@ -118,6 +135,13 @@ class FolderResource extends Resource
 
                 TreeSelectFilter::make('location_id')
                     ->label(__('Location')),
+
+                Tables\Filters\SelectFilter::make('type')
+                    ->label(__('Type'))
+                    ->options([
+                        'bundle' => __('Bundle'),
+                        'lembar' => __('Lembar'),
+                    ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
