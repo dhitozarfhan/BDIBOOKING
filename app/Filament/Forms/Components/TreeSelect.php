@@ -85,7 +85,7 @@ class TreeSelect extends Select
         // Special handling for Folder model (show hierarchical information)
         if ($modelClass === Folder::class) {
             return $modelClass::with(['classification.ancestors', 'location.ancestors'])
-                ->get(['id', 'classification_id', 'location_id', 'description'])
+                ->get(['id', 'classification_id', 'location_id', 'name'])
                 ->mapWithKeys(fn (Model $item): array => [
                     $item->getKey() => $this->formatFolderTitle($item),
                 ])
