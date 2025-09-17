@@ -1,6 +1,5 @@
 <x-filament-panels::page>
     <div class="space-y-6">
-        
 
         <div class="bg-white rounded-lg shadow overflow-hidden">
             <div class="overflow-x-auto">
@@ -28,9 +27,11 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Segment') }}
                             </th>
+
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Akun') }}
                             </th>
+                            
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Uraian Item Arsip') }}
                             </th>
@@ -92,6 +93,7 @@
                                             {{ $account->code }}@if(!$loop->last), @endif
                                         @endforeach
                                     </td>
+                                    
                                     <td class="px-6 py-4 text-sm text-gray-500">
                                         {{ $document->name }}
                                     </td>
@@ -121,7 +123,7 @@
                                         {{ $boxFile }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500">
-                                        {{ $document->information ?? '' }}
+                                        {{ $document->description }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $document->active_retention ?? '' }}
@@ -130,15 +132,7 @@
                                         {{ $document->inactive_retention ?? '' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        @php
-                                            if ($document->condition == '0') {
-                                                echo 'Musnah';
-                                            } elseif ($document->condition == '1') {
-                                                echo 'Tidak Musnah';
-                                            } else {
-                                                echo $document->condition ?? '';
-                                            }
-                                        @endphp
+                                        {{ $document->information ?? '' }}
                                     </td>
                                 </tr>
                             @empty
