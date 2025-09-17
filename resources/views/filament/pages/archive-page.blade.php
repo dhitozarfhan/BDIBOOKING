@@ -8,7 +8,7 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Kode Klasifikasi (Hierarchical Path)') }}
+                                {{ __('Kode Klasifikasi') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Uraian Berkas') }}
@@ -26,7 +26,7 @@
                                 {{ __('No Item Arsip') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Segment (Hierarchical Path)') }}
+                                {{ __('Segment') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Akun') }}
