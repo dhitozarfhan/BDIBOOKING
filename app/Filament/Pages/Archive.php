@@ -27,7 +27,8 @@ class Archive extends Page
         $folders = Folder::with([
             'classification',
             'location',
-            'documents.segment'
+            'documents.segment',
+            'documents.accounts'
         ])->get();
 
         return [

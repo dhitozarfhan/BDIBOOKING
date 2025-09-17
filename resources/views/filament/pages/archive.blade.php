@@ -22,6 +22,9 @@
                                 {{ __('No Item Arsip') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{ __('AKUN') }}
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Segment') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -63,6 +66,11 @@
                                         {{ $document->id }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        @foreach($document->accounts as $account)
+                                            {{ $account->code }}@if(!$loop->last), @endif
+                                        @endforeach
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $document->segment->name ?? '' }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500">
@@ -95,7 +103,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         0 {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500" colspan="8">
+                                    <td class="px-6 py-4 text-sm text-gray-500" colspan="9">
                                         {{ __('Tidak ada dokumen dalam folder ini.') }}
                                     </td>
                                 </tr>

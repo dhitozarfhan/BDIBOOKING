@@ -39,20 +39,20 @@ class ArchivePage extends Page implements HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(Folder::query()->with([
-                'classification',
-                'location',
-                'location.children',
-                'location.children.children',
-                'documents' => function ($query) {
-                    $query->with(['segment', 'accounts']);
-                }
+            ->query(Document::query()->with([
+                'folder',
+                'folder.classification',
+                'folder.location',
+                'folder.location.children',
+                'folder.location.children.children',
+                'segment',
+                'accounts'
             ]))
             ->columns([
-                HierarchyColumn::make('classification.code')
+                TextColumn::make('folder.classification.code')
                     ->label(__('Kode Klasifikasi'))
                     ->searchable(query: function ($query, $search) {
-                        return $query->whereHas('classification', function ($query) use ($search) {
+                        return $query->whereHas('folder.classification', function ($query) use ($search) {
                             $query->where('code', 'ilike', "%{$search}%")
                                 ->orWhere('name', 'ilike', "%{$search}%")
                                 ->orWhereHas('ancestors', function ($query) use ($search) {
@@ -64,59 +64,67 @@ class ArchivePage extends Page implements HasTable
                 
                 // Group column for Uraian Informasi Berkas Arsip
                 ColumnGroup::make(__('Uraian Informasi Berkas Arsip'), [
-                    TextColumn::make('name')
+                    TextColumn::make('folder.name')
                         ->label(__('Uraian Berkas')),
-                    TextColumn::make('latest_document_date')
+                    TextColumn::make('folder_latest_date')
                         ->label(__('Tanggal'))
                         ->formatStateUsing(function (?Model $record) {
-                            $latestDate = $record->documents->max('published_at');
+                            $latestDate = $record->folder->documents->max('published_at');
                             return $latestDate ? $latestDate->format('d/m/Y') : '-';
                         }),
-                    TextColumn::make('year')
+                    TextColumn::make('folder_year')
                         ->label(__('Kurun Waktu'))
                         ->formatStateUsing(function (?Model $record) {
-                            $latestDate = $record->documents->max('published_at');
+                            $latestDate = $record->folder->documents->max('published_at');
                             return $latestDate ? $latestDate->format('Y') : '-';
                         }),
-                    TextColumn::make('documents_count')
+                    TextColumn::make('folder_count')
                         ->label(__('Jumlah Berkas'))
-                        ->counts('documents')
-                        ->formatStateUsing(fn ($state) => $state . ' Berkas'),
+                        ->formatStateUsing(function (?Model $record) {
+                            $count = $record->folder->documents->count();
+                            $type = $record->folder->type ?? 'berkas';
+                            $label = $type === 'lembar' ? 'Lembar' : 'Berkas';
+                            return $count . ' ' . $label;
+                        }),
                 ]),
                 
                 // Group column for Uraian Informasi Item Arsip
                 ColumnGroup::make(__('Uraian Informasi Item Arsip'), [
-                    TextColumn::make('documents.number')
+                    TextColumn::make('id')
                         ->label(__('Nomor Item Arsip'))
                         ->formatStateUsing(function ($state, $record, $rowLoop) {
                             return $rowLoop->iteration;
                         }),
-                    TextColumn::make('documents.segment.code')
-                        ->label(__('Segment'))
-                        ->formatStateUsing(fn (Model $record) => $record->segment ? 
-                            "({$record->segment->code}) {$record->segment->name}" : '-'),
-                    TextColumn::make('documents.accounts')
+                    TextColumn::make('accounts')
                         ->label(__('Akun'))
-                        ->formatStateUsing(function (Model $record) {
+                        ->formatStateUsing(function (?Model $record) {
+                            if (!$record->accounts) return '-';
                             $accounts = $record->accounts->pluck('code')->toArray();
                             return count($accounts) > 0 ? implode(', ', $accounts) : '-';
                         }),
-                    TextColumn::make('documents.name')
+                    
+                    TextColumn::make('segment')
+                        ->label(__('Segment'))
+                        ->formatStateUsing(function (?Model $record) {
+                            if (!$record->segment) return '-';
+                            return "({$record->segment->code}) {$record->segment->name}";
+                        }),
+                    TextColumn::make('name')
                         ->label(__('Uraian Arsip')),
-                    TextColumn::make('documents.published_at')
+                    TextColumn::make('published_at')
                         ->label(__('Tanggal'))
                         ->date('d/m/Y'),
                 ]),
                 
                 // Group column for Lokasi Simpan
                 ColumnGroup::make(__('Lokasi Simpan'), [
-                    TextColumn::make('location_subchild')
+                    TextColumn::make('folder.location')
                         ->label(__('File/Folder'))
                         ->formatStateUsing(function (?Model $record) {
-                            if (!$record->location) return '-';
+                            if (!$record->folder || !$record->folder->location) return '-';
                             
                             // Get the sub-child (grandchild) of the location
-                            $location = $record->location;
+                            $location = $record->folder->location;
                             $children = $location->children;
                             
                             if ($children->count() > 0) {
@@ -129,13 +137,13 @@ class ArchivePage extends Page implements HasTable
                             
                             return '-';
                         }),
-                    TextColumn::make('location_child')
+                    TextColumn::make('folder.location')
                         ->label(__('Box File'))
                         ->formatStateUsing(function (?Model $record) {
-                            if (!$record->location) return '-';
+                            if (!$record->folder || !$record->folder->location) return '-';
                             
                             // Get the child of the location
-                            $location = $record->location;
+                            $location = $record->folder->location;
                             $children = $location->children;
                             
                             if ($children->count() > 0) {
@@ -146,11 +154,11 @@ class ArchivePage extends Page implements HasTable
                         }),
                 ]),
                 
-                TextColumn::make('documents.active_retention')
+                TextColumn::make('active_retention')
                     ->label(__('Retensi Arsip Aktif')),
-                TextColumn::make('documents.inactive_retention')
+                TextColumn::make('inactive_retention')
                     ->label(__('Retensi Arsip Inaktif')),
-                TextColumn::make('documents.condition')
+                TextColumn::make('condition')
                     ->label(__('Nasib Akhir Arsip'))
                     ->formatStateUsing(fn ($state) => $state ? 'Tidak Musnah' : 'Musnah'),
             ])
