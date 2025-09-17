@@ -96,7 +96,7 @@ class DocumentResource extends Resource
                                 ->label(__('Akun'))
                                 ->multiple()
                                 ->relationship('accounts', 'code')
-                                ->getOptionLabelFromRecordUsing(fn (Account $record) => "{$record->code} - {$record->name}")
+                                ->getOptionLabelFromRecordUsing(fn (Account $record) => "{$record->name} - {$record->code}")
                                 ->preload(),
                                 
                             TreeSelect::make('folder_id')

@@ -27,7 +27,7 @@ class SegmentTreeSelectFilter extends SelectFilter
             $depth = $item->getAttribute('depth') ?? 0;
             
             $prefix = Str::repeat(
-                string: '— ',
+                string: '—',
                 times: $depth,
             );
             
