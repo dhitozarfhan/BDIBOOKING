@@ -121,7 +121,7 @@
                                         {{ $boxFile }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500">
-                                        {{ $document->description }}
+                                        {{ $document->information ?? '' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $document->active_retention ?? '' }}
@@ -130,7 +130,15 @@
                                         {{ $document->inactive_retention ?? '' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $document->information ?? '' }}
+                                        @php
+                                            if ($document->condition == '0') {
+                                                echo 'Musnah';
+                                            } elseif ($document->condition == '1') {
+                                                echo 'Tidak Musnah';
+                                            } else {
+                                                echo $document->condition ?? '';
+                                            }
+                                        @endphp
                                     </td>
                                 </tr>
                             @empty
