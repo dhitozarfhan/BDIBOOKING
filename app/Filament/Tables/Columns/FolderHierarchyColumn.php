@@ -41,9 +41,9 @@ class FolderHierarchyColumn extends TextColumn
             // Build location path
             $locationPath = $this->buildHierarchyPath($folder->location, 'code');
             
-            // Format: classification-->location
+            // Format: classification - location
             if ($classificationPath && $locationPath) {
-                return "{$classificationPath}-->{$locationPath}";
+                return "{$classificationPath} - {$locationPath}";
             } elseif ($classificationPath) {
                 return $classificationPath;
             } elseif ($locationPath) {

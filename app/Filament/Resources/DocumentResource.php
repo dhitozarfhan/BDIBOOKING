@@ -146,6 +146,13 @@ class DocumentResource extends Resource
                     ->sortable()
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('accounts.code')
+                    ->label(__('Accounts'))
+                    ->badge()
+                    ->separator(',')
+                    ->searchable()
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('file_path')
                     ->label(__('File Path'))
                     ->searchable()
@@ -159,6 +166,27 @@ class DocumentResource extends Resource
                 Tables\Columns\TextColumn::make('published_at')
                     ->label(__('Published At'))
                     ->date()
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('active_retention')
+                    ->label(__('Active Retention'))
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('inactive_retention')
+                    ->label(__('Inactive Retention'))
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('information')
+                    ->label(__('Information'))
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\IconColumn::make('access')
+                    ->label(__('Access'))
+                    ->boolean()
                     ->searchable()
                     ->sortable(),
 
