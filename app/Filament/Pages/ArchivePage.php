@@ -9,6 +9,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\ColumnGroup;
 use Filament\Tables\Columns\TextColumn;
+use App\Filament\Tables\Columns\HierarchyColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Model;
@@ -48,10 +49,18 @@ class ArchivePage extends Page implements HasTable
                 }
             ]))
             ->columns([
-                TextColumn::make('classification_info')
+                HierarchyColumn::make('classification.code')
                     ->label(__('Kode Klasifikasi'))
-                    ->formatStateUsing(fn (?Model $record) => $record?->classification ? 
-                        "({$record->classification->code}) {$record->classification->name}" : '-'),
+                    ->searchable(query: function ($query, $search) {
+                        return $query->whereHas('classification', function ($query) use ($search) {
+                            $query->where('code', 'ilike', "%{$search}%")
+                                ->orWhere('name', 'ilike', "%{$search}%")
+                                ->orWhereHas('ancestors', function ($query) use ($search) {
+                                    $query->where('code', 'ilike', "%{$search}%")
+                                        ->orWhere('name', 'ilike', "%{$search}%");
+                                });
+                        });
+                    }),
                 
                 // Group column for Uraian Informasi Berkas Arsip
                 ColumnGroup::make(__('Uraian Informasi Berkas Arsip'), [
