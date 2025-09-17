@@ -35,10 +35,7 @@
                                 {{ __('Uraian Item Arsip') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('File/Folder') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Box File') }}
+                                {{ __('Lokasi') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Keterangan') }}
@@ -139,28 +136,29 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         @php
-                                            // Get the sub-child (grandchild) of the location
+                                            // Get the location tree (ancestors and current location)
                                             $location = $folder->location;
-                                            $fileFolder = '-';
-                                            if ($location && $location->children->count() > 0) {
-                                                $firstChild = $location->children->first();
-                                                if ($firstChild->children->count() > 0) {
-                                                    $fileFolder = $firstChild->children->first()->code ?? '-';
+                                            if ($location) {
+                                                // Get ancestors ordered from root to parent
+                                                $ancestors = $location->ancestors()->defaultOrder()->get();
+                                                
+                                                // Build the hierarchical path
+                                                $path = [];
+                                                
+                                                // Add ancestors codes
+                                                foreach ($ancestors as $ancestor) {
+                                                    $path[] = $ancestor->code;
                                                 }
+                                                
+                                                // Add the current location's code
+                                                $path[] = $location->code;
+                                                
+                                                // Join with dots and display
+                                                echo implode('.', $path);
+                                            } else {
+                                                echo '-';
                                             }
                                         @endphp
-                                        {{ $fileFolder }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        @php
-                                            // Get the child of the location
-                                            $location = $folder->location;
-                                            $boxFile = '-';
-                                            if ($location && $location->children->count() > 0) {
-                                                $boxFile = $location->children->first()->code ?? '-';
-                                            }
-                                        @endphp
-                                        {{ $boxFile }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500">
                                         {{ $document->information ?? '' }}
@@ -225,7 +223,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         0 {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500" colspan="10">
+                                    <td class="px-6 py-4 text-sm text-gray-500" colspan="9">
                                         {{ __('Tidak ada dokumen dalam folder ini.') }}
                                     </td>
                                 </tr>
