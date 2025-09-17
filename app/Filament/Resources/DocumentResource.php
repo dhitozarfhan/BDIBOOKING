@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\DocumentResource\Pages;
 use App\Filament\Forms\Components\TreeSelect;
 use App\Filament\Forms\Components\SegmentTreeSelect;
+use App\Models\Account;
 use App\Models\Document;
 use App\Models\Folder;
 use App\Models\Segment;
@@ -47,57 +48,82 @@ class DocumentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make()
-                    ->columns(1)
-                    ->schema([
-                        TreeSelect::make('folder_id')
-                            ->label(__('Folder'))
-                            ->required(),
+                Forms\Components\Grid::make([
+                    'default' => 1,
+                    'md' => 2,
+                ])
+                ->schema([
+                    Forms\Components\Section::make()
+                        ->columnSpan(1)
+                        ->schema([
 
-                        SegmentTreeSelect::make('segment_id')
-                            ->label(__('Segment'))
-                            ->required()
-                            ->depth(5)
-                            ->restrictDepthSelection(),
+                            FileUpload::make('file_path')
+                                ->label(__('File'))
+                                ->required()
+                                ->directory('documents')
+                                ->maxSize(10240) // 10 MB
+                                ->preserveFilenames()
+                                ->visibility('private')
+                                ->helperText(__('Maximum file size: 10 MB.')),
 
-                        Forms\Components\TextInput::make('name')
-                            ->label(__('Name'))
-                            ->required()
-                            ->maxLength(255),
+                            Forms\Components\TextInput::make('name')
+                                ->label(__('Name'))
+                                ->required()
+                                ->maxLength(255),
 
-                        FileUpload::make('file_path')
-                            ->label(__('File Path'))
-                            ->required()
-                            ->acceptedFileTypes(['application/pdf'])
-                            ->maxSize(10240), // 10MB
+                            Forms\Components\Textarea::make('description')
+                                ->label(__('Deskripsi'))
+                                ->columnSpanFull(),
 
-                        Forms\Components\Textarea::make('description')
-                            ->label(__('Description'))
-                            ->columnSpanFull(),
+                            Forms\Components\DatePicker::make('published_at')
+                                ->label(__('Tanggal Terbit'))
+                                ->native(false)
+                                ->displayFormat('d F Y'),
+                            
+                            Forms\Components\Toggle::make('condition')
+                                ->label(__('Kondisi (Musnah/Tidak Musnah)'))
+                                ->default(true),
 
-                        Forms\Components\DatePicker::make('published_at')
-                            ->label(__('Published At'))
-                            ->native(false)
-                            ->displayFormat('d F Y'),
+                            Forms\Components\Toggle::make('access')
+                                ->label(__('Akses (Publik/Rahasia)'))
+                                ->default(false),
+                        ]),
 
-                        Forms\Components\TextInput::make('active_retention')
-                            ->label(__('Active Retention'))
-                            ->maxLength(255),
+                    Forms\Components\Section::make()
+                        ->columnSpan(1)
+                        ->schema([
+                            Forms\Components\Select::make('accounts')
+                                ->label(__('Akun'))
+                                ->multiple()
+                                ->relationship('accounts', 'code')
+                                ->getOptionLabelFromRecordUsing(fn (Account $record) => "{$record->code} - {$record->name}")
+                                ->preload(),
+                                
+                            TreeSelect::make('folder_id')
+                                ->label(__('Folder'))
+                                ->required(),
 
-                        Forms\Components\TextInput::make('inactive_retention')
-                            ->label(__('Inactive Retention'))
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('information')
-                            ->label(__('Information'))
-                            ->maxLength(255),
-                        Forms\Components\Toggle::make('access')
-                            ->label(__('Access (Publik/Rahasia)'))
-                            ->default(false),
+                            SegmentTreeSelect::make('segment_id')
+                                ->label(__('Segment'))
+                                ->required()
+                                ->depth(5)
+                                ->restrictDepthSelection(),
 
-                        Forms\Components\Toggle::make('condition')
-                            ->label(__('Condition (Musnah/Tidak Musnah)'))
-                            ->default(true),
-                    ]),
+                            Forms\Components\TextInput::make('active_retention')
+                                ->label(__('Retention Aktif'))
+                                ->maxLength(255),
+
+                            Forms\Components\TextInput::make('inactive_retention')
+                                ->label(__('Retention Tidak Aktif'))
+                                ->maxLength(255),
+                                
+                            Forms\Components\TextInput::make('information')
+                                ->label(__('Keterangan'))
+                                ->maxLength(255),
+                            
+
+                        ]),
+                ]),
             ]);
     }
 
