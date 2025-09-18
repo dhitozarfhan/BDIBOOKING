@@ -168,9 +168,9 @@
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             >
                                 <option value="">{{ __('Semua Lokasi') }}</option>
-                                @foreach($locations as $location)
-                                    <option value="{{ $location->id }}" {{ (isset($locationId) && $locationId == $location->id) ? 'selected' : '' }}>
-                                        {{ $location->code }} - {{ $location->getReadableNameAttribute() }}
+                                @foreach($locations as $id => $label)
+                                    <option value="{{ $id }}" {{ (isset($locationId) && $locationId == $id) ? 'selected' : '' }}>
+                                        {{ $label }}
                                     </option>
                                 @endforeach
                             </select>

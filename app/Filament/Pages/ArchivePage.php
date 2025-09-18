@@ -394,7 +394,13 @@ class ArchivePage extends Page
             return [$item->getKey() => trim("{$prefix} {$title}")];
         })->all();
 
-        $locations = Location::orderBy('code')->get();
+        // Get locations with hierarchy for filter dropdowns
+        $locations = Location::withDepth()->defaultOrder()->get()->mapWithKeys(function (Location $item) {
+            $title = $item->code . ' ' . $item->getReadableNameAttribute();
+            $depth = $item->getAttribute('depth') ?? 0;
+            $prefix = str_repeat('- ', $depth);
+            return [$item->getKey() => trim("{$prefix} {$title}")];
+        })->all();
 
         return [
             'folders' => $folders,
