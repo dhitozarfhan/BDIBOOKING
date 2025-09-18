@@ -14,7 +14,7 @@
                                 {{ __('Uraian Berkas') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Tanggal') }}
+                                {{ __('Tanggal Berkas') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Kurun Waktu') }}
@@ -23,7 +23,7 @@
                                 {{ __('Jumlah Berkas') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('No Item Arsip') }}
+                                {{ __('No. Item Arsip') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Segment') }}
@@ -103,7 +103,7 @@
                                         </td>
                                     @endif
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $document->id }}
+                                        {{ $index + 1 }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         @php
