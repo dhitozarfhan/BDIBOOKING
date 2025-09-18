@@ -4,6 +4,8 @@ namespace App\Filament\Pages;
 
 use App\Models\Folder;
 use App\Models\Document;
+use App\Models\Classification;
+use App\Models\Location;
 use Filament\Pages\Page;
 
 class ArchivePage extends Page
@@ -17,8 +19,27 @@ class ArchivePage extends Page
     protected static ?int $navigationSort = 13;
 
     public $search = '';
+    public $classificationId = '';
+    public $locationId = '';
+    public $startDate = '';
+    public $endDate = '';
 
-    protected $queryString = ['search'];
+    protected $queryString = [
+        'search',
+        'classificationId',
+        'locationId',
+        'startDate',
+        'endDate'
+    ];
+
+    public function mount()
+    {
+        $this->search = request()->query('search', $this->search);
+        $this->classificationId = request()->query('classificationId', $this->classificationId);
+        $this->locationId = request()->query('locationId', $this->locationId);
+        $this->startDate = request()->query('startDate', $this->startDate);
+        $this->endDate = request()->query('endDate', $this->endDate);
+    }
 
     public function getTitle(): string
     {
@@ -33,6 +54,15 @@ class ArchivePage extends Page
     public function updatedSearch()
     {
         $this->dispatchBrowserEvent('search-updated', ['search' => $this->search]);
+    }
+
+    public function resetFilters()
+    {
+        $this->search = '';
+        $this->classificationId = '';
+        $this->locationId = '';
+        $this->startDate = '';
+        $this->endDate = '';
     }
 
     public function getViewData(): array
@@ -63,11 +93,43 @@ class ArchivePage extends Page
             });
         }
 
+        // Filter by classification
+        if ($this->classificationId) {
+            $query->where('classification_id', $this->classificationId);
+        }
+
+        // Filter by location
+        if ($this->locationId) {
+            $query->where('location_id', $this->locationId);
+        }
+
+        // Filter by date range
+        if ($this->startDate || $this->endDate) {
+            $query->whereHas('documents', function ($q) {
+                if ($this->startDate) {
+                    $q->where('published_at', '>=', $this->startDate);
+                }
+                if ($this->endDate) {
+                    $q->where('published_at', '<=', $this->endDate);
+                }
+            });
+        }
+
         $folders = $query->get();
+
+        // Get classifications and locations for filter dropdowns
+        $classifications = Classification::orderBy('code')->get();
+        $locations = Location::orderBy('code')->get();
 
         return [
             'folders' => $folders,
             'search' => $this->search,
+            'classifications' => $classifications,
+            'locations' => $locations,
+            'classificationId' => $this->classificationId,
+            'locationId' => $this->locationId,
+            'startDate' => $this->startDate,
+            'endDate' => $this->endDate,
         ];
     }
 }

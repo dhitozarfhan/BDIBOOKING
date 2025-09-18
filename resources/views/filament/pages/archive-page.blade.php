@@ -1,36 +1,230 @@
 <x-filament-panels::page>
+    <style>
+        #filterButton {
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        #filterButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        #filterButton:active {
+            transform: translateY(0);
+        }
+        
+        .filter-indicator {
+            position: relative;
+        }
+        
+        .filter-dot {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 12px;
+            height: 12px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+    </style>
     <div class="space-y-6">
         <!-- Search Form -->
         <div class="bg-white rounded-lg shadow p-6">
             <form method="GET">
-                <div class="flex items-center space-x-4">
-                    <div class="flex-1">
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="flex-grow min-w-[200px]">
                         <input 
                             type="text" 
                             name="search" 
                             value="{{ $search ?? '' }}"
                             placeholder="{{ __('Cari arsip...') }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            @if(isset($search)) value="{{ $search }}" @endif
                         >
                     </div>
-                    <button 
-                        type="submit" 
-                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    >
-                        {{ __('Cari') }}
-                    </button>
-                    @if(isset($search) && $search)
-                        <a 
-                            href="{{ request()->url() }}" 
-                            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                    <div class="flex flex-wrap gap-2">
+                        <button 
+                            type="submit" 
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center font-medium whitespace-nowrap"
                         >
-                            {{ __('Reset') }}
-                        </a>
-                    @endif
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                            </svg>
+                            {{ __('Cari') }}
+                        </button>
+                        <button 
+                            type="button" 
+                            id="filterButton"
+                            class="px-4 py-2 {{ ((isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate)) ? 'bg-blue-600' : 'bg-gray-600' }} text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center font-medium shadow-lg relative whitespace-nowrap"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+                            </svg>
+                            {{ __('Filter') }}
+                            @if((isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate))
+                                <div class="filter-dot"></div>
+                            @endif
+                        </button>
+                        @if((isset($search) && $search) || (isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate))
+                            <a 
+                                href="{{ request()->url() }}" 
+                                class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 flex items-center font-medium whitespace-nowrap"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                                {{ __('Reset') }}
+                            </a>
+                        @endif
+                    </div>
+                </div>
+                
+                <!-- Filter Dropdown -->
+                <div id="filterDropdown" class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm transition-all duration-300 ease-in-out {{ ((isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate)) ? '' : 'hidden' }}">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Classification Filter -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Klasifikasi') }}</label>
+                            <select 
+                                name="classificationId" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            >
+                                <option value="">{{ __('Semua Klasifikasi') }}</option>
+                                @foreach($classifications as $classification)
+                                    <option value="{{ $classification->id }}" {{ (isset($classificationId) && $classificationId == $classification->id) ? 'selected' : '' }}>
+                                        {{ $classification->code }} - {{ $classification->getReadableNameAttribute() }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <!-- Location Filter -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Lokasi') }}</label>
+                            <select 
+                                name="locationId" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            >
+                                <option value="">{{ __('Semua Lokasi') }}</option>
+                                @foreach($locations as $location)
+                                    <option value="{{ $location->id }}" {{ (isset($locationId) && $locationId == $location->id) ? 'selected' : '' }}>
+                                        {{ $location->code }} - {{ $location->getReadableNameAttribute() }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <!-- Date Range Filter -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Rentang Waktu') }}</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs text-gray-500 mb-1">{{ __('Tanggal Mulai') }}</label>
+                                    <input 
+                                        type="date" 
+                                        name="startDate" 
+                                        value="{{ $startDate ?? '' }}"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    >
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-500 mb-1">{{ __('Tanggal Selesai') }}</label>
+                                    <input 
+                                        type="date" 
+                                        name="endDate" 
+                                        value="{{ $endDate ?? '' }}"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex justify-end space-x-3">
+                        <button 
+                            type="button" 
+                            id="cancelFilter"
+                            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 flex items-center font-medium"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                            {{ __('Batal') }}
+                        </button>
+                        <button 
+                            type="submit" 
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center font-medium"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            {{ __('Terapkan Filter') }}
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const filterButton = document.getElementById('filterButton');
+                const filterDropdown = document.getElementById('filterDropdown');
+                const cancelFilter = document.getElementById('cancelFilter');
+                
+                // Add click effect to filter button
+                filterButton.addEventListener('click', function() {
+                    // Add visual feedback
+                    filterButton.classList.add('transform', 'scale-95');
+                    setTimeout(() => {
+                        filterButton.classList.remove('transform', 'scale-95');
+                    }, 100);
+                    
+                    // Toggle hidden class
+                    filterDropdown.classList.toggle('hidden');
+                    
+                    // Add animation effect
+                    if (!filterDropdown.classList.contains('hidden')) {
+                        filterDropdown.style.opacity = '0';
+                        filterDropdown.style.transform = 'translateY(-10px)';
+                        
+                        // Trigger reflow
+                        void filterDropdown.offsetWidth;
+                        
+                        // Animate in
+                        filterDropdown.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                        filterDropdown.style.opacity = '1';
+                        filterDropdown.style.transform = 'translateY(0)';
+                    }
+                });
+                
+                // Cancel filter
+                cancelFilter.addEventListener('click', function() {
+                    filterDropdown.classList.add('hidden');
+                });
+                
+                // Hide dropdown when clicking outside
+                document.addEventListener('click', function(event) {
+                    const isClickInside = filterButton.contains(event.target) || filterDropdown.contains(event.target);
+                    if (!isClickInside && !filterDropdown.classList.contains('hidden')) {
+                        filterDropdown.classList.add('hidden');
+                    }
+                });
+            });
+        </script>
 
         <div class="bg-white rounded-lg shadow overflow-hidden">
             <div class="overflow-x-auto">
