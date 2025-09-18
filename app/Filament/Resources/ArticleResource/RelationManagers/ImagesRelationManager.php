@@ -5,7 +5,6 @@ namespace App\Filament\Resources\ArticleResource\RelationManagers;
 use App\Enums\ArticleType;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\Concerns\Translatable;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
@@ -16,7 +15,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ImagesRelationManager extends RelationManager
 {
-    use Translatable;
     protected static string $relationship = 'images';
 
     public function form(Form $form): Form
@@ -57,7 +55,6 @@ class ImagesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\LocaleSwitcher::make(),
                 Tables\Actions\CreateAction::make()
             ])
             ->actions([
