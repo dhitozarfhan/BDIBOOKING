@@ -16,6 +16,7 @@ return new class extends Migration
             $table->text('name')->nullable();
             $table->foreignId('classification_id')->constrained()->onDelete('cascade');
             $table->foreignId('location_id')->constrained()->onDelete('cascade');
+            $table->enum('type', ['bundle', 'lembar'])->default('bundle');
             $table->timestamps();
         });
     }
