@@ -17,6 +17,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class FinanceDocumentResource extends Resource
 {
@@ -42,6 +43,11 @@ class FinanceDocumentResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return __('Finance Documents');
+    }
+
+    public static function canAccess(): bool
+    {
+        return Auth::user()->hasPermissionTo(\App\Enums\PermissionType::Finance->value);
     }
 
     public static function form(Form $form): Form

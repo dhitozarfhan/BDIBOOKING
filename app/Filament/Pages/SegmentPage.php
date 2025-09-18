@@ -4,7 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Models\Segment;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
+use Illuminate\Support\Facades\Auth;
 use Kalnoy\Nestedset\QueryBuilder;
 use Studio15\FilamentTree\Components\TreePage;
 
@@ -12,6 +12,11 @@ class SegmentPage extends TreePage
 {
     
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+
+    public static function canAccess(): bool
+    {
+        return Auth::user()->hasPermissionTo(\App\Enums\PermissionType::Finance->value);
+    }
 
     public static function getModel(): string|QueryBuilder
     {
