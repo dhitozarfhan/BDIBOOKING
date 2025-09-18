@@ -104,8 +104,30 @@ class DocumentsRelationManager extends RelationManager
                     ->label(__('Name'))
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('segment.name')
+                Tables\Columns\TextColumn::make('segment')
                     ->label(__('Segment'))
+                    ->formatStateUsing(function ($state, Document $record) {
+                        if ($record->segment) {
+                            // Get ancestors ordered from root to parent
+                            $ancestors = $record->segment->ancestors()->defaultOrder()->get();
+                            
+                            // Build the hierarchical path
+                            $path = [];
+                            
+                            // Add ancestors codes
+                            foreach ($ancestors as $ancestor) {
+                                $path[] = $ancestor->code;
+                            }
+                            
+                            // Add the current segment's code
+                            $path[] = $record->segment->code;
+                            
+                            // Join with dots and display
+                            return implode('.', $path);
+                        }
+                        
+                        return '';
+                    })
                     ->searchable()
                     ->sortable(),
 

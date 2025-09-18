@@ -28,7 +28,7 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Segment') }}
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style="width: 120px;">
                                 {{ __('Akun') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -126,9 +126,9 @@
                                             }
                                         @endphp
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 text-sm text-gray-500" style="width: 120px; white-space: normal; word-wrap: break-word;">
                                         @foreach($document->accounts as $account)
-                                            {{ $account->code }}@if(!$loop->last), @endif
+                                            {{ $account->code }}@if(!$loop->last)<br style="margin-bottom: 1rem;">@endif
                                         @endforeach
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500">
