@@ -1,6 +1,36 @@
 <x-filament-panels::page>
     <div class="space-y-6">
-        
+        <!-- Search Form -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <form method="GET">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-1">
+                        <input 
+                            type="text" 
+                            name="search" 
+                            value="{{ $search ?? '' }}"
+                            placeholder="{{ __('Cari arsip...') }}"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            @if(isset($search)) value="{{ $search }}" @endif
+                        >
+                    </div>
+                    <button 
+                        type="submit" 
+                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    >
+                        {{ __('Cari') }}
+                    </button>
+                    @if(isset($search) && $search)
+                        <a 
+                            href="{{ request()->url() }}" 
+                            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                        >
+                            {{ __('Reset') }}
+                        </a>
+                    @endif
+                </div>
+            </form>
+        </div>
 
         <div class="bg-white rounded-lg shadow overflow-hidden">
             <div class="overflow-x-auto">
@@ -189,7 +219,7 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         @if($document->file_path)
-                                            <a href="{{ asset($document->file_path) }}" target="_blank" class="text-blue-600 hover:text-blue-900">
+                                            <a href="{{ Storage::url($document->file_path) }}" target="_blank" class="text-blue-600 hover:text-blue-900">
                                                 {{ __('Download') }}
                                             </a>
                                         @else
@@ -250,6 +280,12 @@
                     </tbody>
                 </table>
             </div>
+            
+            @if(isset($search) && $search && $folders->count() == 0)
+                <div class="p-6 text-center text-gray-500">
+                    {{ __('Tidak ada hasil ditemukan untuk pencarian: ') }} <strong>"{{ $search }}"</strong>
+                </div>
+            @endif
         </div>
     </div>
 </x-filament-panels::page>
