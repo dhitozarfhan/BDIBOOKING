@@ -26,7 +26,7 @@ class DocumentResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('Kearsipan');
+        return __('Archives');
     }
 
     public static function getNavigationSort(): ?int
@@ -41,7 +41,7 @@ class DocumentResource extends Resource
 
     public static function getPluralModelLabel(): string
     {
-        return __('Dokumen');
+        return __('Documents');
     }
 
     public static function form(Form $form): Form

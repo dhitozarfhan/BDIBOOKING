@@ -3,11 +3,10 @@
 namespace App\Filament\Pages;
 
 use App\Models\Folder;
-use App\Models\Document;
 use App\Models\Classification;
 use App\Models\Location;
 use Filament\Pages\Page;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -36,6 +35,12 @@ class ArchivePage extends Page
         'startDate',
         'endDate'
     ];
+    
+    //canAccess
+    public static function canAccess(): bool
+    {
+        return Auth::user()->hasPermissionTo(\App\Enums\PermissionType::Archives->value);
+    }
 
     public function mount()
     {
@@ -48,12 +53,12 @@ class ArchivePage extends Page
 
     public function getTitle(): string
     {
-        return __('Arsip');
+        return __('Archives');
     }
 
     public static function getNavigationLabel(): string
     {
-        return __('Arsip');
+        return __('Archives');
     }
 
     public function updatedSearch()

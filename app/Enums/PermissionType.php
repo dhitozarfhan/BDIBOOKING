@@ -15,4 +15,6 @@ enum PermissionType : string
     case PublicInformationCategory = 'kelola kategori informasi publik';
     case Tag = 'kelola tag';
     case Menu = 'kelola menu';
+    case Archives = 'kelola arsip';
+    case Finance = 'kelola keuangan';
 }

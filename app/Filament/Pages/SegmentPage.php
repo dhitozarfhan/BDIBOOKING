@@ -49,17 +49,17 @@ class SegmentPage extends TreePage
     
     public function getTitle(): string
     {
-        return ('Segments');
+        return __('Segments');
     }
 
     public static function getNavigationLabel(): string
     {
-        return ('Segments');
+        return __('Segments');
     }
     
     public static function getNavigationGroup(): ?string
     {
-        return ('Kearsipan');
+        return __('Archives');
     }
     
     public static function getNavigationSort(): ?int
