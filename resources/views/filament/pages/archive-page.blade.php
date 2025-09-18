@@ -152,9 +152,9 @@
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             >
                                 <option value="">{{ __('Semua Klasifikasi') }}</option>
-                                @foreach($classifications as $classification)
-                                    <option value="{{ $classification->id }}" {{ (isset($classificationId) && $classificationId == $classification->id) ? 'selected' : '' }}>
-                                        {{ $classification->code }} - {{ $classification->getReadableNameAttribute() }}
+                                @foreach($classifications as $id => $label)
+                                    <option value="{{ $id }}" {{ (isset($classificationId) && $classificationId == $id) ? 'selected' : '' }}>
+                                        {{ $label }}
                                     </option>
                                 @endforeach
                             </select>

@@ -386,8 +386,14 @@ class ArchivePage extends Page
 
         $folders = $query->get();
 
-        // Get classifications and locations for filter dropdowns
-        $classifications = Classification::orderBy('code')->get();
+        // Get classifications with hierarchy for filter dropdowns
+        $classifications = Classification::withDepth()->defaultOrder()->get()->mapWithKeys(function (Classification $item) {
+            $title = $item->code . ' ' . $item->getReadableNameAttribute();
+            $depth = $item->getAttribute('depth') ?? 0;
+            $prefix = str_repeat('- ', $depth);
+            return [$item->getKey() => trim("{$prefix} {$title}")];
+        })->all();
+
         $locations = Location::orderBy('code')->get();
 
         return [
