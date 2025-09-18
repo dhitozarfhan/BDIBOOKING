@@ -52,6 +52,9 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Nasib Akhir Arsip') }}
                             </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{ __('Download') }}
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -184,6 +187,15 @@
                                         }
                                         @endphp
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        @if($document->file_path)
+                                            <a href="{{ asset($document->file_path) }}" target="_blank" class="text-blue-600 hover:text-blue-900">
+                                                {{ __('Download') }}
+                                            </a>
+                                        @else
+                                            <span class="text-gray-400">{{ __('Tidak tersedia') }}</span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
@@ -229,7 +241,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         0 {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500" colspan="10">
+                                    <td class="px-6 py-4 text-sm text-gray-500" colspan="9">
                                         {{ __('Tidak ada dokumen dalam folder ini.') }}
                                     </td>
                                 </tr>
