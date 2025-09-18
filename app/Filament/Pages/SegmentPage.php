@@ -13,6 +13,8 @@ class SegmentPage extends TreePage
     
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
+    protected static ?int $navigationSort = 22;
+
     public static function canAccess(): bool
     {
         return Auth::user()->hasPermissionTo(\App\Enums\PermissionType::Finance->value);
@@ -29,12 +31,12 @@ class SegmentPage extends TreePage
     {
         return [
             TextInput::make('code')
-                ->label('Kode Segment')
+                ->label(__('Code'))
                 ->maxLength(255)
                 ->required(),
 
             TextInput::make('name')
-                ->label('Nama Segment')
+                ->label(__('Name'))
                 ->maxLength(255)
                 ->required()
         ];
@@ -65,10 +67,5 @@ class SegmentPage extends TreePage
     public static function getNavigationGroup(): ?string
     {
         return __('Archives');
-    }
-    
-    public static function getNavigationSort(): ?int
-    {
-        return 21;
     }
 }

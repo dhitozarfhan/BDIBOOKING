@@ -46,20 +46,20 @@ class DocumentsRelationManager extends RelationManager
                                 ->maxLength(255),
 
                             Forms\Components\Textarea::make('description')
-                                ->label(__('Deskripsi'))
+                                ->label(__('Description'))
                                 ->columnSpanFull(),
 
                             Forms\Components\DatePicker::make('published_at')
-                                ->label(__('Tanggal Terbit'))
+                                ->label(__('Published Date'))
                                 ->native(false)
                                 ->displayFormat('d F Y'),
                             
                             Forms\Components\Toggle::make('condition')
-                                ->label(__('Kondisi (Musnah/Tidak Musnah)'))
+                                ->label(__('Condition (Destroyed/Not Destroyed)'))
                                 ->default(true),
 
                             Forms\Components\Toggle::make('access')
-                                ->label(__('Akses (Publik/Rahasia)'))
+                                ->label(__('Access (Public/Secret)'))
                                 ->default(false),
                         ]),
 
@@ -73,22 +73,22 @@ class DocumentsRelationManager extends RelationManager
                                 ->restrictDepthSelection(),
 
                             Forms\Components\Select::make('accounts')
-                                ->label(__('Akun'))
+                                ->label(__('Accounts'))
                                 ->multiple()
                                 ->relationship('accounts', 'code')
                                 ->getOptionLabelFromRecordUsing(fn (Account $record) => "{$record->name} - {$record->code}")
                                 ->preload(),
 
                             Forms\Components\TextInput::make('active_retention')
-                                ->label(__('Retention Aktif'))
+                                ->label(__('Active Retention'))
                                 ->maxLength(255),
 
                             Forms\Components\TextInput::make('inactive_retention')
-                                ->label(__('Retention Tidak Aktif'))
+                                ->label(__('Inactive Retention'))
                                 ->maxLength(255),
                                 
                             Forms\Components\TextInput::make('information')
-                                ->label(__('Keterangan'))
+                                ->label(__('Information'))
                                 ->maxLength(255),
                         ]),
                 ]),

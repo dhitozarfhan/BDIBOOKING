@@ -24,14 +24,11 @@ class FolderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-folder';
 
+    protected static ?int $navigationSort = 23;
+
     public static function getNavigationGroup(): ?string
     {
         return __('Archives');
-    }
-
-    public static function getNavigationSort(): ?int
-    {
-        return 11;
     }
 
     public static function getModelLabel(): string
@@ -59,7 +56,7 @@ class FolderResource extends Resource
                             ->label(__('Type'))
                             ->options([
                                 'bundle' => __('Bundle'),
-                                'lembar' => __('Lembar'),
+                                'sheet' => __('Sheet'),
                             ])
                             ->required(),
                         TreeSelect::make('classification_id')
@@ -120,7 +117,7 @@ class FolderResource extends Resource
                     ->sortable()
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'bundle' => __('Bundle'),
-                        'lembar' => __('Lembar'),
+                        'sheet' => __('Sheet'),
                         default => $state,
                     }),
 
@@ -140,7 +137,7 @@ class FolderResource extends Resource
                     ->label(__('Type'))
                     ->options([
                         'bundle' => __('Bundle'),
-                        'lembar' => __('Lembar'),
+                        'sheet' => __('Sheet'),
                     ]),
             ])
             ->actions([

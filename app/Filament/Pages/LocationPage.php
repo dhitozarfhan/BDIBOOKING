@@ -14,6 +14,8 @@ class LocationPage extends TreePage
     
     protected static ?string $navigationIcon = 'heroicon-o-map-pin';
 
+    protected static ?int $navigationSort = 21;
+
     public static function canAccess(): bool
     {
         return Auth::user()->hasPermissionTo(\App\Enums\PermissionType::Archives->value);
@@ -30,12 +32,12 @@ class LocationPage extends TreePage
     {
         return [
             TextInput::make('code')
-                ->label('Kode Lokasi')
+                ->label(__('Code'))
                 ->maxLength(255)
                 ->required(),
 
             TextInput::make('name')
-                ->label('Nama Lokasi')
+                ->label(__('Name'))
                 ->maxLength(255)
                 ->required()
         ];
@@ -55,21 +57,16 @@ class LocationPage extends TreePage
     
     public function getTitle(): string
     {
-        return ('Location');
+        return __('Location');
     }
 
     public static function getNavigationLabel(): string
     {
-        return ('Location');
+        return __('Location');
     }
     
     public static function getNavigationGroup(): ?string
     {
         return __('Archives');
-    }
-    
-    public static function getNavigationSort(): ?int
-    {
-        return 20;
     }
 }

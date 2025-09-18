@@ -14,7 +14,7 @@ class ClassificationPage extends TreePage
 
     protected static ?string $navigationIcon = 'heroicon-o-folder-open';
 
-    
+    protected static ?int $navigationSort = 20;
     
     //canAccess
     public static function canAccess(): bool
@@ -33,12 +33,12 @@ class ClassificationPage extends TreePage
     {
         return [
             TextInput::make('code')
-                ->label('Kode Klasifikasi')
+                ->label(__('Code'))
                 ->maxLength(255)
                 ->required(),
 
             TextInput::make('name')
-                ->label('Nama Klasifikasi')
+                ->label(__('Name'))
                 ->maxLength(255)
                 ->required()
         ];
@@ -69,10 +69,5 @@ class ClassificationPage extends TreePage
     public static function getNavigationGroup(): ?string
     {
         return __('Archives');
-    }
-    
-    public static function getNavigationSort(): ?int
-    {
-        return 10;
     }
 }

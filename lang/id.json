@@ -506,7 +506,26 @@
     "Back to Top": "Kembali ke Atas",
 
     "Classification": "Klasifikasi",
-    
+    "Archive Recaps": "Rekap Arsip",
+    "Access": "Akses",
+    "Accounts": "Akun",
+    "Active Retention": "Retensi Aktif",
+    "Access (Public/Secret)": "Akses (Publik/Rahasia)",
+    "Bundle": "Berkas",
+    "Condition": "Kondisi",
+    "Documents": "Dokumen",
+    "File Path": "Jalur Berkas",
+    "Finance Document": "Dokumen Keuangan",
+    "Finance Documents": "Dokumen Keuangan",
+    "Folder": "Folder",
+    "Folders": "Folder",
+    "Inactive Retention": "Retensi Inaktif",
+    "Note": "Keterangan",
+    "Condition (Destroyed/Not Destroyed)": "Kondisi (Musnah/Tidak Musnah)",
+    "Sheet": "Lembar",
+    "Segment": "Mata Anggaran Kegiatan",
+    "Segments": "Mata Anggaran Kegiatan",
+    "Published Date": "Tanggal Terbit",
 
     "Footer About Message": "BDI Yogyakarta mempunyai tugas melaksanakan pendidikan dan pelatihan bagi sumber daya manusia industri melalui <b>Diklat 3-in-1</b> (Pelatihan-Sertifikasi Kompetensi-Penempatan Kerja) dan <b>inkubator bisnis untuk menumbuhkan wirausaha industri.</b>"
 }

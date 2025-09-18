@@ -18,9 +18,7 @@ class ArchivePage extends Page
 
     protected static string $view = 'filament.pages.archive-page';
 
-    protected static ?string $navigationGroup = 'Kearsipan';
-
-    protected static ?int $navigationSort = 13;
+    protected static ?int $navigationSort = 28;
 
     public $search = '';
     public $classificationId = '';
@@ -53,10 +51,15 @@ class ArchivePage extends Page
 
     public function getTitle(): string
     {
-        return __('Archives');
+        return __('Archive Recaps');
     }
 
     public static function getNavigationLabel(): string
+    {
+        return __('Archive Recaps');
+    }
+    
+    public static function getNavigationGroup(): ?string
     {
         return __('Archives');
     }

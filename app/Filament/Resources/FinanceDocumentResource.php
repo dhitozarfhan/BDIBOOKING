@@ -24,15 +24,12 @@ class FinanceDocumentResource extends Resource
     protected static ?string $model = Document::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    
+    protected static ?int $navigationSort = 24;
 
     public static function getNavigationGroup(): ?string
     {
         return __('Archives');
-    }
-
-    public static function getNavigationSort(): ?int
-    {
-        return 12;
     }
 
     public static function getModelLabel(): string
@@ -78,20 +75,20 @@ class FinanceDocumentResource extends Resource
                                 ->maxLength(255),
 
                             Forms\Components\Textarea::make('description')
-                                ->label(__('Deskripsi'))
+                                ->label(__('Description'))
                                 ->columnSpanFull(),
 
                             Forms\Components\DatePicker::make('published_at')
-                                ->label(__('Tanggal Terbit'))
+                                ->label(__('Published Date'))
                                 ->native(false)
                                 ->displayFormat('d F Y'),
                             
                             Forms\Components\Toggle::make('condition')
-                                ->label(__('Kondisi (Musnah/Tidak Musnah)'))
+                                ->label(__('Condition (Destroyed/Not Destroyed)'))
                                 ->default(true),
 
                             Forms\Components\Toggle::make('access')
-                                ->label(__('Akses (Publik/Rahasia)'))
+                                ->label(__('Access (Public/Secret)'))
                                 ->default(false),
                         ]),
 
@@ -99,7 +96,7 @@ class FinanceDocumentResource extends Resource
                         ->columnSpan(1)
                         ->schema([
                             Forms\Components\Select::make('accounts')
-                                ->label(__('Akun'))
+                                ->label(__('Accounts'))
                                 ->multiple()
                                 ->relationship('accounts', 'code')
                                 ->getOptionLabelFromRecordUsing(fn (Account $record) => "{$record->name} - {$record->code}")
@@ -116,15 +113,15 @@ class FinanceDocumentResource extends Resource
                                 ->restrictDepthSelection(),
 
                             Forms\Components\TextInput::make('active_retention')
-                                ->label(__('Retention Aktif'))
+                                ->label(__('Active Retention'))
                                 ->maxLength(255),
 
                             Forms\Components\TextInput::make('inactive_retention')
-                                ->label(__('Retention Tidak Aktif'))
+                                ->label(__('Inactive Retention'))
                                 ->maxLength(255),
                                 
                             Forms\Components\TextInput::make('information')
-                                ->label(__('Keterangan'))
+                                ->label(__('Information'))
                                 ->maxLength(255),
                             
 
