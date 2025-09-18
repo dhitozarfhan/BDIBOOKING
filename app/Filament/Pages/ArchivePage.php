@@ -72,9 +72,62 @@ class ArchivePage extends Page
 
     public function exportToExcel()
     {
-        // Get filtered data
-        $data = $this->getViewData();
-        $folders = $data['folders'];
+        // Initialize filter parameters from request query
+        $search = request()->query('search', $this->search);
+        $classificationId = request()->query('classificationId', $this->classificationId);
+        $locationId = request()->query('locationId', $this->locationId);
+        $startDate = request()->query('startDate', $this->startDate);
+        $endDate = request()->query('endDate', $this->endDate);
+
+        // Get all folders with their relationships
+        $query = Folder::with([
+            'classification',
+            'location',
+            'location.children',
+            'location.children.children',
+            'documents.segment',
+            'documents.accounts'
+        ]);
+
+        if ($search) {
+            // Filter folders based on search term
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhereHas('classification', function ($q2) use ($search) {
+                      $q2->where('code', 'like', '%' . $search . '%')
+                        ->orWhere('name', 'like', '%' . $search . '%');
+                  })
+                  ->orWhereHas('documents', function ($q2) use ($search) {
+                      $q2->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('description', 'like', '%' . $search . '%')
+                        ->orWhere('information', 'like', '%' . $search . '%');
+                  });
+            });
+        }
+
+        // Filter by classification
+        if ($classificationId) {
+            $query->where('classification_id', $classificationId);
+        }
+
+        // Filter by location
+        if ($locationId) {
+            $query->where('location_id', $locationId);
+        }
+
+        // Filter by date range
+        if ($startDate || $endDate) {
+            $query->whereHas('documents', function ($q) use ($startDate, $endDate) {
+                if ($startDate) {
+                    $q->where('published_at', '>=', $startDate);
+                }
+                if ($endDate) {
+                    $q->where('published_at', '<=', $endDate);
+                }
+            });
+        }
+
+        $folders = $query->get();
 
         // Create new Spreadsheet object
         $spreadsheet = new Spreadsheet();

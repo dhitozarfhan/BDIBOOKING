@@ -102,16 +102,31 @@
                                 <div class="filter-dot"></div>
                             @endif
                         </button>
-                        <a 
-                            href="{{ route('archive.export') }}?search={{ urlencode($search ?? '') }}&classificationId={{ urlencode($classificationId ?? '') }}&locationId={{ urlencode($locationId ?? '') }}&startDate={{ urlencode($startDate ?? '') }}&endDate={{ urlencode($endDate ?? '') }}"
-                            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center font-medium whitespace-nowrap"
-                            title="{{ __('Export ke Excel') }}"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
-                            </svg>
-                            {{ __('Export') }}
-                        </a>
+                        <div class="flex flex-col items-start relative group">
+                            <a 
+                                href="{{ route('archive.export') }}?search={{ urlencode(request()->query('search', '')) }}&classificationId={{ urlencode(request()->query('classificationId', '')) }}&locationId={{ urlencode(request()->query('locationId', '')) }}&startDate={{ urlencode(request()->query('startDate', '')) }}&endDate={{ urlencode(request()->query('endDate', '')) }}"
+                                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center font-medium whitespace-nowrap export-button"
+                                title="{{ __('Export ke Excel (hanya data terfilter)') }}"
+                                data-search="{{ request()->query('search', '') }}"
+                                data-classification="{{ request()->query('classificationId', '') }}"
+                                data-location="{{ request()->query('locationId', '') }}"
+                                data-start="{{ request()->query('startDate', '') }}"
+                                data-end="{{ request()->query('endDate', '') }}"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                                {{ __('Export') }}
+                            </a>
+                            <span class="text-xs text-gray-500 mt-1">{{ __('Export data terfilter') }}</span>
+                            <!-- Tooltip -->
+                            <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50">
+                                <div class="text-center">
+                                    {{ __('Hanya mengekspor data yang sesuai dengan filter yang aktif') }}
+                                </div>
+                                <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                            </div>
+                        </div>
                         @if((isset($search) && $search) || (isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate))
                             <a 
                                 href="{{ request()->url() }}" 
@@ -265,6 +280,37 @@
                         }
                     }
                 });
+                
+                // Handle export button click to preserve filter parameters
+                const exportButton = document.querySelector('.export-button');
+                if (exportButton) {
+                    exportButton.addEventListener('click', function(e) {
+                        // Prevent default behavior
+                        e.preventDefault();
+                        
+                        // Get current filter parameters
+                        const search = this.getAttribute('data-search');
+                        const classificationId = this.getAttribute('data-classification');
+                        const locationId = this.getAttribute('data-location');
+                        const startDate = this.getAttribute('data-start');
+                        const endDate = this.getAttribute('data-end');
+                        
+                        // Build URL with parameters
+                        let exportUrl = "{{ route('archive.export') }}?";
+                        const params = [];
+                        
+                        if (search) params.push("search=" + encodeURIComponent(search));
+                        if (classificationId) params.push("classificationId=" + encodeURIComponent(classificationId));
+                        if (locationId) params.push("locationId=" + encodeURIComponent(locationId));
+                        if (startDate) params.push("startDate=" + encodeURIComponent(startDate));
+                        if (endDate) params.push("endDate=" + encodeURIComponent(endDate));
+                        
+                        exportUrl += params.join("&");
+                        
+                        // Open export URL in new tab
+                        window.open(exportUrl, '_blank');
+                    });
+                }
             });
         </script>
 
@@ -522,6 +568,18 @@
                     {{ __('Tidak ada hasil ditemukan untuk pencarian: ') }} <strong>"{{ $search }}"</strong>
                 </div>
             @endif
+            
+            <!-- Informasi tambahan tentang export -->
+            <div class="p-4 bg-blue-50 rounded-lg border border-blue-200 mt-4">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    </svg>
+                    <p class="text-sm text-blue-700">
+                        {{ __('Catatan: Fitur export ke Excel hanya akan mengekspor data yang sesuai dengan filter yang sedang aktif. Pastikan filter sudah disetel sesuai kebutuhan sebelum melakukan export.') }}
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </x-filament-panels::page>
