@@ -1,17 +1,32 @@
 <x-filament-panels::page>
     <style>
-        #filterButton {
+        .filter-button {
             transition: all 0.2s ease;
             position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            min-width: 100px; /* Ensure minimum width for visibility */
+            font-weight: 600; /* Make text bolder for better visibility */
         }
         
-        #filterButton:hover {
+        .filter-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         
-        #filterButton:active {
+        .filter-button:active {
             transform: translateY(0);
+        }
+        
+        .reset-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px; /* Ensure minimum width for visibility */
+            font-weight: 600; /* Make text bolder for better visibility */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add subtle shadow for better visibility */
         }
         
         .filter-indicator {
@@ -28,6 +43,7 @@
             border-radius: 50%;
             border: 2px solid white;
             animation: pulse 2s infinite;
+            z-index: 11;
         }
         
         @keyframes pulse {
@@ -40,6 +56,13 @@
             100% {
                 box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
             }
+        }
+        
+        /* Ensure buttons are always visible */
+        .btn-visible {
+            visibility: visible !important;
+            opacity: 1 !important;
+            display: inline-flex !important; /* Force display as flex */
         }
     </style>
     <div class="space-y-6">
@@ -56,7 +79,7 @@
                             class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         >
                     </div>
-                    <div class="flex flex-wrap gap-2">
+                    <div class="flex flex-wrap gap-2 items-center">
                         <button 
                             type="submit" 
                             class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center font-medium whitespace-nowrap"
@@ -69,7 +92,7 @@
                         <button 
                             type="button" 
                             id="filterButton"
-                            class="px-4 py-2 {{ ((isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate)) ? 'bg-blue-600' : 'bg-gray-600' }} text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center font-medium shadow-lg relative whitespace-nowrap"
+                            class="filter-button px-4 py-2 {{ ((isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate)) ? 'bg-blue-600' : 'bg-gray-600' }} text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center font-medium shadow-lg relative whitespace-nowrap btn-visible transition-colors duration-200 ease-in-out"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
@@ -79,10 +102,20 @@
                                 <div class="filter-dot"></div>
                             @endif
                         </button>
+                        <a 
+                            href="{{ route('archive.export') }}?search={{ urlencode($search ?? '') }}&classificationId={{ urlencode($classificationId ?? '') }}&locationId={{ urlencode($locationId ?? '') }}&startDate={{ urlencode($startDate ?? '') }}&endDate={{ urlencode($endDate ?? '') }}"
+                            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center font-medium whitespace-nowrap"
+                            title="{{ __('Export ke Excel') }}"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                            {{ __('Export') }}
+                        </a>
                         @if((isset($search) && $search) || (isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate))
                             <a 
                                 href="{{ request()->url() }}" 
-                                class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 flex items-center font-medium whitespace-nowrap"
+                                class="reset-button px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 flex items-center font-medium whitespace-nowrap btn-visible transition-colors duration-200 ease-in-out"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -94,7 +127,7 @@
                 </div>
                 
                 <!-- Filter Dropdown -->
-                <div id="filterDropdown" class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm transition-all duration-300 ease-in-out {{ ((isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate)) ? '' : 'hidden' }}">
+                <div id="filterDropdown" class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm transition-all duration-300 ease-in-out {{ ((isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate)) ? '' : 'hidden' }}" style="z-index: 20;">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <!-- Classification Filter -->
                         <div>
@@ -185,42 +218,51 @@
                 const filterDropdown = document.getElementById('filterDropdown');
                 const cancelFilter = document.getElementById('cancelFilter');
                 
-                // Add click effect to filter button
-                filterButton.addEventListener('click', function() {
-                    // Add visual feedback
-                    filterButton.classList.add('transform', 'scale-95');
-                    setTimeout(() => {
-                        filterButton.classList.remove('transform', 'scale-95');
-                    }, 100);
-                    
-                    // Toggle hidden class
-                    filterDropdown.classList.toggle('hidden');
-                    
-                    // Add animation effect
-                    if (!filterDropdown.classList.contains('hidden')) {
-                        filterDropdown.style.opacity = '0';
-                        filterDropdown.style.transform = 'translateY(-10px)';
+                // Ensure elements exist before adding event listeners
+                if (filterButton && filterDropdown) {
+                    // Add click effect to filter button
+                    filterButton.addEventListener('click', function() {
+                        // Add visual feedback
+                        filterButton.classList.add('transform', 'scale-95');
+                        setTimeout(() => {
+                            filterButton.classList.remove('transform', 'scale-95');
+                        }, 100);
                         
-                        // Trigger reflow
-                        void filterDropdown.offsetWidth;
+                        // Toggle hidden class
+                        filterDropdown.classList.toggle('hidden');
                         
-                        // Animate in
-                        filterDropdown.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                        filterDropdown.style.opacity = '1';
-                        filterDropdown.style.transform = 'translateY(0)';
-                    }
-                });
+                        // Add animation effect
+                        if (!filterDropdown.classList.contains('hidden')) {
+                            filterDropdown.style.opacity = '0';
+                            filterDropdown.style.transform = 'translateY(-10px)';
+                            
+                            // Trigger reflow
+                            void filterDropdown.offsetWidth;
+                            
+                            // Animate in
+                            filterDropdown.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                            filterDropdown.style.opacity = '1';
+                            filterDropdown.style.transform = 'translateY(0)';
+                        }
+                    });
+                }
                 
                 // Cancel filter
-                cancelFilter.addEventListener('click', function() {
-                    filterDropdown.classList.add('hidden');
-                });
+                if (cancelFilter) {
+                    cancelFilter.addEventListener('click', function() {
+                        if (filterDropdown) {
+                            filterDropdown.classList.add('hidden');
+                        }
+                    });
+                }
                 
                 // Hide dropdown when clicking outside
                 document.addEventListener('click', function(event) {
-                    const isClickInside = filterButton.contains(event.target) || filterDropdown.contains(event.target);
-                    if (!isClickInside && !filterDropdown.classList.contains('hidden')) {
-                        filterDropdown.classList.add('hidden');
+                    if (filterButton && filterDropdown) {
+                        const isClickInside = filterButton.contains(event.target) || filterDropdown.contains(event.target);
+                        if (!isClickInside && !filterDropdown.classList.contains('hidden')) {
+                            filterDropdown.classList.add('hidden');
+                        }
                     }
                 });
             });

@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use App\Filament\Pages\ArchivePage;
 
 Route::get('/', \App\Livewire\Home::class)->name('home');
 
@@ -16,6 +17,9 @@ Route::get('/{article_type}', App\Livewire\Articles\Index::class)
 Route::get('/{article_type}/{slug}', App\Livewire\Articles\Show::class)
     ->whereIn('article_type', ['news','gallery','page','information'])
     ->name('articles.show');
+
+// Archive export route
+Route::get('/archive/export', [ArchivePage::class, 'exportToExcel'])->name('archive.export');
 
 /*
 use App\Http\Controllers\ArchiveController;
