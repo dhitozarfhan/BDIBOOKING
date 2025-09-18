@@ -35,6 +35,9 @@
                                 {{ __('Uraian Item Arsip') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{ __('Tanggal Item') }}
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ __('Lokasi') }}
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -135,6 +138,9 @@
                                         {{ $document->name }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $document->published_at ? $document->published_at->format('d/m/Y') : '-' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         @php
                                             // Get the location tree (ancestors and current location)
                                             $location = $folder->location;
@@ -223,7 +229,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         0 {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500" colspan="9">
+                                    <td class="px-6 py-4 text-sm text-gray-500" colspan="10">
                                         {{ __('Tidak ada dokumen dalam folder ini.') }}
                                     </td>
                                 </tr>
