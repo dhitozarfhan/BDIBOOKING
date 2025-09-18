@@ -1,90 +1,452 @@
 <x-filament-panels::page>
     <style>
-        .filter-button {
+        :root {
+            --primary-50: #eff6ff;
+            --primary-100: #dbeafe;
+            --primary-200: #bfdbfe;
+            --primary-300: #93c5fd;
+            --primary-400: #60a5fa;
+            --primary-500: #3b82f6;
+            --primary-600: #2563eb;
+            --primary-700: #1d4ed8;
+            --primary-800: #1e40af;
+            --primary-900: #1e3a8a;
+            
+            --secondary-50: #f8fafc;
+            --secondary-100: #f1f5f9;
+            --secondary-200: #e2e8f0;
+            --secondary-300: #cbd5e1;
+            --secondary-400: #94a3b8;
+            --secondary-500: #64748b;
+            --secondary-600: #475569;
+            --secondary-700: #334155;
+            --secondary-800: #1e293b;
+            --secondary-900: #0f172a;
+            
+            --success-500: #10b981;
+            --warning-500: #f59e0b;
+            --danger-500: #ef4444;
+        }
+        
+        .archive-container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        .search-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-input {
+            border: 2px solid var(--secondary-200);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
             transition: all 0.2s ease;
-            position: relative;
+            font-size: 0.875rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-400);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        
+        .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            z-index: 10;
-            min-width: 100px; /* Ensure minimum width for visibility */
-            font-weight: 600; /* Make text bolder for better visibility */
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border: none;
+            position: relative;
         }
         
-        .filter-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        .btn-primary {
+            background-color: var(--primary-600);
+            color: white;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
         }
         
-        .filter-button:active {
+        .btn-primary:hover {
+            background-color: var(--primary-700);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .btn-primary:active {
             transform: translateY(0);
         }
         
-        .reset-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 100px; /* Ensure minimum width for visibility */
-            font-weight: 600; /* Make text bolder for better visibility */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add subtle shadow for better visibility */
+        .btn-secondary {
+            background-color: var(--secondary-100);
+            color: var(--secondary-700);
         }
         
-        .filter-indicator {
+        .btn-secondary:hover {
+            background-color: var(--secondary-200);
+        }
+        
+        .btn-success {
+            background-color: var(--success-500);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #059669;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-500);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .filter-btn {
             position: relative;
         }
         
-        .filter-dot {
+        .filter-indicator {
             position: absolute;
             top: -4px;
             right: -4px;
             width: 12px;
             height: 12px;
-            background-color: #ef4444;
+            background-color: var(--danger-500);
             border-radius: 50%;
             border: 2px solid white;
             animation: pulse 2s infinite;
-            z-index: 11;
+            z-index: 10;
         }
         
         @keyframes pulse {
             0% {
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
             }
             70% {
-                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+                box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
             }
             100% {
                 box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
             }
         }
         
-        /* Ensure buttons are always visible */
-        .btn-visible {
-            visibility: visible !important;
-            opacity: 1 !important;
-            display: inline-flex !important; /* Force display as flex */
+        .filter-dropdown {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .filter-dropdown.hidden {
+            display: none;
+        }
+        
+        .filter-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--secondary-800);
+            margin-bottom: 1rem;
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+        
+        .filter-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--secondary-700);
+            margin-bottom: 0.5rem;
+        }
+        
+        .filter-select, .filter-date {
+            width: 100%;
+            border: 2px solid var(--secondary-200);
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+        
+        .filter-select:focus, .filter-date:focus {
+            outline: none;
+            border-color: var(--primary-400);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        
+        .filter-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--secondary-200);
+        }
+        
+        .data-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            background-color: var(--secondary-50);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--secondary-200);
+        }
+        
+        .table-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--secondary-800);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .archive-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .archive-table th {
+            background-color: var(--secondary-50);
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--secondary-600);
+            border-bottom: 1px solid var(--secondary-200);
+        }
+        
+        .archive-table td {
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            color: var(--secondary-700);
+            border-bottom: 1px solid var(--secondary-100);
+        }
+        
+        .archive-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .archive-table tr:hover td {
+            background-color: var(--primary-50);
+        }
+        
+        .classification-code {
+            font-weight: 600;
+            color: var(--primary-700);
+        }
+        
+        .document-name {
+            font-weight: 500;
+        }
+        
+        .date-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background-color: var(--secondary-100);
+            color: var(--secondary-700);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-inactive {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .download-link {
+            color: var(--primary-600);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        
+        .download-link:hover {
+            text-decoration: underline;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: var(--secondary-500);
+        }
+        
+        .no-data-icon {
+            margin-bottom: 1rem;
+            color: var(--secondary-300);
+        }
+        
+        .export-info {
+            background-color: var(--primary-50);
+            border: 1px solid var(--primary-200);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .export-info-icon {
+            color: var(--primary-500);
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+        
+        .export-info-text {
+            font-size: 0.875rem;
+            color: var(--primary-800);
+            line-height: 1.5;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--secondary-800);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 0.5rem;
+            position: absolute;
+            z-index: 100;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--secondary-800) transparent transparent transparent;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .search-card {
+                padding: 1rem;
+            }
+            
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn {
+                padding: 0.625rem 0.875rem;
+                font-size: 0.8125rem;
+            }
+            
+            .archive-table th, .archive-table td {
+                padding: 0.75rem 1rem;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .search-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .filter-actions {
+                flex-direction: column;
+            }
+            
+            .filter-actions .btn {
+                width: 100%;
+            }
         }
     </style>
-    <div class="space-y-6">
+    
+    <div class="archive-container">
         <!-- Search Form -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div class="search-card">
             <form method="GET">
-                <div class="flex flex-wrap items-center gap-3">
-                    <div class="flex-grow min-w-[200px]">
+                <div class="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+                    <div class="flex-grow">
                         <input 
                             type="text" 
                             name="search" 
                             value="{{ $search ?? '' }}"
                             placeholder="{{ __('Cari arsip...') }}"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            class="search-input w-full"
                         >
                     </div>
-                    <div class="flex flex-wrap gap-2 items-center">
+                    <div class="search-actions flex flex-wrap gap-2">
                         <button 
                             type="submit" 
-                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center font-medium whitespace-nowrap"
+                            class="btn btn-primary"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                             </svg>
                             {{ __('Cari') }}
@@ -92,20 +454,20 @@
                         <button 
                             type="button" 
                             id="filterButton"
-                            class="filter-button px-4 py-2 {{ ((isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate)) ? 'bg-blue-600' : 'bg-gray-600' }} text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center font-medium shadow-lg relative whitespace-nowrap btn-visible transition-colors duration-200 ease-in-out"
+                            class="btn btn-secondary filter-btn"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
                             </svg>
                             {{ __('Filter') }}
                             @if((isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate))
-                                <div class="filter-dot"></div>
+                                <div class="filter-indicator"></div>
                             @endif
                         </button>
-                        <div class="flex flex-col items-start relative group">
+                        <div class="tooltip">
                             <a 
                                 href="{{ route('archive.export') }}?search={{ urlencode(request()->query('search', '')) }}&classificationId={{ urlencode(request()->query('classificationId', '')) }}&locationId={{ urlencode(request()->query('locationId', '')) }}&startDate={{ urlencode(request()->query('startDate', '')) }}&endDate={{ urlencode(request()->query('endDate', '')) }}"
-                                class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center font-medium whitespace-nowrap export-button"
+                                class="btn btn-success export-button"
                                 title="{{ __('Export ke Excel (hanya data terfilter)') }}"
                                 data-search="{{ request()->query('search', '') }}"
                                 data-classification="{{ request()->query('classificationId', '') }}"
@@ -113,26 +475,19 @@
                                 data-start="{{ request()->query('startDate', '') }}"
                                 data-end="{{ request()->query('endDate', '') }}"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
                                 {{ __('Export') }}
                             </a>
-                            <span class="text-xs text-gray-500 mt-1">{{ __('Export data terfilter') }}</span>
-                            <!-- Tooltip -->
-                            <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-50">
-                                <div class="text-center">
-                                    {{ __('Hanya mengekspor data yang sesuai dengan filter yang aktif') }}
-                                </div>
-                                <div class="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-                            </div>
+                            <span class="tooltip-text">{{ __('Hanya mengekspor data yang sesuai dengan filter yang aktif') }}</span>
                         </div>
                         @if((isset($search) && $search) || (isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate))
                             <a 
                                 href="{{ request()->url() }}" 
-                                class="reset-button px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 flex items-center font-medium whitespace-nowrap btn-visible transition-colors duration-200 ease-in-out"
+                                class="btn btn-danger"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
                                 {{ __('Reset') }}
@@ -142,14 +497,15 @@
                 </div>
                 
                 <!-- Filter Dropdown -->
-                <div id="filterDropdown" class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm transition-all duration-300 ease-in-out {{ ((isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate)) ? '' : 'hidden' }}" style="z-index: 20;">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div id="filterDropdown" class="filter-dropdown {{ ((isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate)) ? '' : 'hidden' }}">
+                    <h3 class="filter-title">{{ __('Filter Arsip') }}</h3>
+                    <div class="filter-grid">
                         <!-- Classification Filter -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Klasifikasi') }}</label>
+                        <div class="filter-group">
+                            <label class="filter-label">{{ __('Klasifikasi') }}</label>
                             <select 
                                 name="classificationId" 
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                class="filter-select"
                             >
                                 <option value="">{{ __('Semua Klasifikasi') }}</option>
                                 @foreach($classifications as $id => $label)
@@ -161,11 +517,11 @@
                         </div>
                         
                         <!-- Location Filter -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Lokasi') }}</label>
+                        <div class="filter-group">
+                            <label class="filter-label">{{ __('Lokasi') }}</label>
                             <select 
                                 name="locationId" 
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                class="filter-select"
                             >
                                 <option value="">{{ __('Semua Lokasi') }}</option>
                                 @foreach($locations as $id => $label)
@@ -177,8 +533,8 @@
                         </div>
                         
                         <!-- Date Range Filter -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('Rentang Waktu') }}</label>
+                        <div class="filter-group">
+                            <label class="filter-label">{{ __('Rentang Waktu') }}</label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-xs text-gray-500 mb-1">{{ __('Tanggal Mulai') }}</label>
@@ -186,7 +542,7 @@
                                         type="date" 
                                         name="startDate" 
                                         value="{{ $startDate ?? '' }}"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        class="filter-date"
                                     >
                                 </div>
                                 <div>
@@ -195,29 +551,29 @@
                                         type="date" 
                                         name="endDate" 
                                         value="{{ $endDate ?? '' }}"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        class="filter-date"
                                     >
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="mt-6 flex justify-end space-x-3">
+                    <div class="filter-actions">
                         <button 
                             type="button" 
                             id="cancelFilter"
-                            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 flex items-center font-medium"
+                            class="btn btn-secondary"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                             </svg>
                             {{ __('Batal') }}
                         </button>
                         <button 
                             type="submit" 
-                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center font-medium"
+                            class="btn btn-primary"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                             </svg>
                             {{ __('Terapkan Filter') }}
@@ -237,12 +593,6 @@
                 if (filterButton && filterDropdown) {
                     // Add click effect to filter button
                     filterButton.addEventListener('click', function() {
-                        // Add visual feedback
-                        filterButton.classList.add('transform', 'scale-95');
-                        setTimeout(() => {
-                            filterButton.classList.remove('transform', 'scale-95');
-                        }, 100);
-                        
                         // Toggle hidden class
                         filterDropdown.classList.toggle('hidden');
                         
@@ -314,67 +664,38 @@
             });
         </script>
 
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+        <div class="data-card">
+            <div class="table-header">
+                <h3 class="table-title">{{ __('Data Arsip') }}</h3>
+            </div>
+            <div class="table-container">
+                <table class="archive-table">
+                    <thead>
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Kode Klasifikasi') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Uraian Berkas') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Tanggal Berkas') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Kurun Waktu') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Jumlah Berkas') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('No. Item Arsip') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Segment') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" style="width: 120px;">
-                                {{ __('Akun') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Uraian Item Arsip') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Tanggal Item') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Lokasi') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Keterangan') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Retensi Arsip Aktif') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Retensi Arsip Inaktif') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Nasib Akhir Arsip') }}
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ __('Download') }}
-                            </th>
+                            <th>{{ __('Kode Klasifikasi') }}</th>
+                            <th>{{ __('Uraian Berkas') }}</th>
+                            <th>{{ __('Tanggal Berkas') }}</th>
+                            <th>{{ __('Kurun Waktu') }}</th>
+                            <th>{{ __('Jumlah Berkas') }}</th>
+                            <th>{{ __('No. Item Arsip') }}</th>
+                            <th>{{ __('Segment') }}</th>
+                            <th style="width: 120px;">{{ __('Akun') }}</th>
+                            <th>{{ __('Uraian Item Arsip') }}</th>
+                            <th>{{ __('Tanggal Item') }}</th>
+                            <th>{{ __('Lokasi') }}</th>
+                            <th>{{ __('Keterangan') }}</th>
+                            <th>{{ __('Retensi Arsip Aktif') }}</th>
+                            <th>{{ __('Retensi Arsip Inaktif') }}</th>
+                            <th>{{ __('Nasib Akhir Arsip') }}</th>
+                            <th>{{ __('Download') }}</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody>
                         @foreach($folders as $folder)
                             @forelse($folder->documents as $index => $document)
                                 <tr>
                                     @if($index === 0)
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" rowspan="{{ $folder->documents->count() }}">
+                                        <td class="classification-code" rowspan="{{ $folder->documents->count() }}">
                                             @php
                                                 if ($folder->classification) {
                                                     // Get ancestors ordered from root to parent
@@ -398,29 +719,29 @@
                                                 }
                                             @endphp
                                         </td>
-                                        <td class="px-6 py-4 text-sm text-gray-500" rowspan="{{ $folder->documents->count() }}">
+                                        <td class="document-name" rowspan="{{ $folder->documents->count() }}">
                                             {{ $folder->name }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" rowspan="{{ $folder->documents->count() }}">
+                                        <td rowspan="{{ $folder->documents->count() }}">
                                             @php
                                                 $latestDate = $folder->documents->max('published_at');
                                                 echo $latestDate ? $latestDate->format('d/m/Y') : '-';
                                             @endphp
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" rowspan="{{ $folder->documents->count() }}">
+                                        <td rowspan="{{ $folder->documents->count() }}">
                                             @php
                                                 $latestDate = $folder->documents->max('published_at');
                                                 echo $latestDate ? $latestDate->format('Y') : '-';
                                             @endphp
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" rowspan="{{ $folder->documents->count() }}">
+                                        <td rowspan="{{ $folder->documents->count() }}">
                                             {{ $folder->documents->count() }} {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
                                         </td>
                                     @endif
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td>
                                         {{ $index + 1 }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td>
                                         @php
                                             if ($document->segment) {
                                                 // Get ancestors ordered from root to parent
@@ -444,18 +765,18 @@
                                             }
                                         @endphp
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500" style="width: 120px; white-space: normal; word-wrap: break-word;">
+                                    <td style="width: 120px; white-space: normal; word-wrap: break-word;">
                                         @foreach($document->accounts as $account)
                                             {{ $account->code }}@if(!$loop->last)<br style="margin-bottom: 1rem;">@endif
                                         @endforeach
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">
+                                    <td class="document-name">
                                         {{ $document->name }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td>
                                         {{ $document->published_at ? $document->published_at->format('d/m/Y') : '-' }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td>
                                         @php
                                             // Get the location tree (ancestors and current location)
                                             $location = $folder->location;
@@ -481,27 +802,29 @@
                                             }
                                         @endphp
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">
+                                    <td>
                                         {{ $document->information ?? '' }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td>
                                         {{ $document->active_retention ?? '' }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td>
                                         {{ $document->inactive_retention ?? '' }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td>
                                         @php
                                         if ($document->condition == '0') { 
-                                            echo ' Musnah';
+                                            echo '<span class="status-badge status-inactive">Musnah</span>';
                                         } elseif ($document->condition == '1') {
-                                            echo 'Tidak Musnah';
+                                            echo '<span class="status-badge status-active">Tidak Musnah</span>';
+                                        } else {
+                                            echo '-';
                                         }
                                         @endphp
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td>
                                         @if($document->file_path)
-                                            <a href="{{ Storage::url($document->file_path) }}" target="_blank" class="text-blue-600 hover:text-blue-900">
+                                            <a href="{{ Storage::url($document->file_path) }}" target="_blank" class="download-link">
                                                 {{ __('Download') }}
                                             </a>
                                         @else
@@ -511,7 +834,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="classification-code">
                                         @php
                                             if ($folder->classification) {
                                                 // Get ancestors ordered from root to parent
@@ -535,51 +858,58 @@
                                             }
                                         @endphp
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">
+                                    <td class="document-name">
                                         {{ $folder->name }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td>
                                         @php
                                             $latestDate = $folder->documents->max('published_at');
                                             echo $latestDate ? $latestDate->format('d/m/Y') : '-';
                                         @endphp
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td>
                                         @php
                                             $latestDate = $folder->documents->max('published_at');
                                             echo $latestDate ? $latestDate->format('Y') : '-';
                                         @endphp
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td>
                                         0 {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500" colspan="9">
+                                    <td colspan="11" class="text-center text-gray-500 py-8">
                                         {{ __('Tidak ada dokumen dalam folder ini.') }}
                                     </td>
                                 </tr>
                             @endforelse
                         @endforeach
+                        
+                        @if(isset($search) && $search && $folders->count() == 0)
+                            <tr>
+                                <td colspan="16" class="no-data">
+                                    <div class="no-data-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <p>{{ __('Tidak ada hasil ditemukan untuk pencarian: ') }} <strong>"{{ $search }}"</strong></p>
+                                </td>
+                            </tr>
+                        @endif
                     </tbody>
                 </table>
             </div>
-            
-            @if(isset($search) && $search && $folders->count() == 0)
-                <div class="p-6 text-center text-gray-500">
-                    {{ __('Tidak ada hasil ditemukan untuk pencarian: ') }} <strong>"{{ $search }}"</strong>
-                </div>
-            @endif
-            
-            <!-- Informasi tambahan tentang export -->
-            <div class="p-4 bg-blue-50 rounded-lg border border-blue-200 mt-4">
-                <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                    </svg>
-                    <p class="text-sm text-blue-700">
-                        {{ __('Catatan: Fitur export ke Excel hanya akan mengekspor data yang sesuai dengan filter yang sedang aktif. Pastikan filter sudah disetel sesuai kebutuhan sebelum melakukan export.') }}
-                    </p>
-                </div>
+        </div>
+        
+        <!-- Informasi tambahan tentang export -->
+        <div class="export-info">
+            <div class="export-info-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                </svg>
             </div>
+            <p class="export-info-text">
+                {{ __('Catatan: Fitur export ke Excel hanya akan mengekspor data yang sesuai dengan filter yang sedang aktif. Pastikan filter sudah disetel sesuai kebutuhan sebelum melakukan export.') }}
+            </p>
         </div>
     </div>
 </x-filament-panels::page>
