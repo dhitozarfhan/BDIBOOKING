@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DocumentResource\Pages;
+use App\Filament\Resources\FinanceDocumentResource\Pages;
 use App\Filament\Forms\Components\TreeSelect;
 use App\Filament\Forms\Components\SegmentTreeSelect;
 use App\Models\Account;
@@ -18,7 +18,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class DocumentResource extends Resource
+class FinanceDocumentResource extends Resource
 {
     protected static ?string $model = Document::class;
 
@@ -36,12 +36,12 @@ class DocumentResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('Document');
+        return __('Finance Document');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('Documents');
+        return __('Finance Documents');
     }
 
     public static function form(Form $form): Form
