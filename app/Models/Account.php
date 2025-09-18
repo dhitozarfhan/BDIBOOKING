@@ -21,6 +21,7 @@ class Account extends Model
 
     /**
      * Get the documents for the account.
+     * 
      */
     public function documents()
     {

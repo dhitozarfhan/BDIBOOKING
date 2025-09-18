@@ -49,7 +49,7 @@ class FolderResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make()
-                    ->columns(1)
+                    ->columns(2)
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->label(__('Name'))
@@ -71,7 +71,7 @@ class FolderResource extends Resource
                         TreeSelect::make('location_id')
                             ->label(__('Location'))
                             ->required()
-                            ->depth(2)
+                            ->depth(3)
                             ->restrictDepthSelection(),
                         
                     ]),

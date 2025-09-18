@@ -67,7 +67,7 @@ class SegmentTreeSelect extends Select
             $depth = $item->getAttribute('depth') ?? 0;
             
             $prefix = Str::repeat(
-                string: '— ',
+                string: '- ',
                 times: $depth,
             );
             
