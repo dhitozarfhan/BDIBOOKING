@@ -100,7 +100,16 @@ class FinanceDocumentResource extends Resource
                                 ->multiple()
                                 ->relationship('accounts', 'code')
                                 ->getOptionLabelFromRecordUsing(fn (Account $record) => "{$record->name} - {$record->code}")
-                                ->preload(),
+                                ->preload()
+                                ->createOptionForm([
+                                    Forms\Components\TextInput::make('code')->label(__('Account Code'))
+                                        ->unique()
+                                        ->numeric()
+                                        ->required()
+                                        ->length(6),
+                                    Forms\Components\TextInput::make('name')->label(__('Account Name'))
+                                        ->required()
+                                ]),
                                 
                             TreeSelect::make('folder_id')
                                 ->label(__('Folder'))
