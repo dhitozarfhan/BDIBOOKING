@@ -673,11 +673,9 @@
                             <th>{{ __('Tanggal Berkas') }}</th>
                             <th>{{ __('Kurun Waktu') }}</th>
                             <th>{{ __('Jumlah Berkas') }}</th>
-                            <th>{{ __('No. Item Arsip') }}</th>
+                            <th>{{ __('Lokasi') }}</th>
                             <th>{{ __('Segment') }}</th>
                             <th style="width: 120px;">{{ __('Akun') }}</th>
-                            
-                            <th>{{ __('Lokasi') }}</th>
                             <th>{{ __('Keterangan') }}</th>
                             <th>{{ __('Retensi Arsip Aktif') }}</th>
                             <th>{{ __('Retensi Arsip Inaktif') }}</th>
@@ -734,7 +732,30 @@
                                         </td>
                                     @endif
                                     <td>
-                                        {{ $index + 1 }}
+                                        @php
+                                            // Get the location tree (ancestors and current location)
+                                            $location = $folder->location;
+                                            if ($location) {
+                                                // Get ancestors ordered from root to parent
+                                                $ancestors = $location->ancestors()->defaultOrder()->get();
+                                                
+                                                // Build the hierarchical path
+                                                $path = [];
+                                                
+                                                // Add ancestors codes
+                                                foreach ($ancestors as $ancestor) {
+                                                    $path[] = $ancestor->code;
+                                                }
+                                                
+                                                // Add the current location's code
+                                                $path[] = $location->code;
+                                                
+                                                // Join with dots and display
+                                                echo implode('.', $path);
+                                            } else {
+                                                echo '-';
+                                            }
+                                        @endphp
                                     </td>
                                     <td>
                                         @php
@@ -764,33 +785,6 @@
                                         @foreach($document->accounts as $account)
                                             {{ $account->code }}@if(!$loop->last)<br style="margin-bottom: 1rem;">@endif
                                         @endforeach
-                                    </td>
-                                    
-                                    <td>
-                                        @php
-                                            // Get the location tree (ancestors and current location)
-                                            $location = $folder->location;
-                                            if ($location) {
-                                                // Get ancestors ordered from root to parent
-                                                $ancestors = $location->ancestors()->defaultOrder()->get();
-                                                
-                                                // Build the hierarchical path
-                                                $path = [];
-                                                
-                                                // Add ancestors codes
-                                                foreach ($ancestors as $ancestor) {
-                                                    $path[] = $ancestor->code;
-                                                }
-                                                
-                                                // Add the current location's code
-                                                $path[] = $location->code;
-                                                
-                                                // Join with dots and display
-                                                echo implode('.', $path);
-                                            } else {
-                                                echo '-';
-                                            }
-                                        @endphp
                                     </td>
                                     <td>
                                         {{ $document->information ?? '' }}
@@ -866,7 +860,7 @@
                                     <td>
                                         0 {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
                                     </td>
-                                    <td colspan="9" class="text-center text-gray-500 py-8">
+                                    <td colspan="8" class="text-center text-gray-500 py-8">
                                         {{ __('Tidak ada dokumen dalam folder ini.') }}
                                     </td>
                                 </tr>
@@ -875,7 +869,7 @@
                         
                         @if(isset($search) && $search && $folders->count() == 0)
                             <tr>
-                                <td colspan="14" class="no-data">
+                                <td colspan="13" class="no-data">
                                     <div class="no-data-icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
