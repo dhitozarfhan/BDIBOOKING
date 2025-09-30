@@ -676,8 +676,7 @@
                             <th>{{ __('No. Item Arsip') }}</th>
                             <th>{{ __('Segment') }}</th>
                             <th style="width: 120px;">{{ __('Akun') }}</th>
-                            <th>{{ __('Uraian Item Arsip') }}</th>
-                            <th>{{ __('Tanggal Item') }}</th>
+                            
                             <th>{{ __('Lokasi') }}</th>
                             <th>{{ __('Keterangan') }}</th>
                             <th>{{ __('Retensi Arsip Aktif') }}</th>
@@ -766,12 +765,7 @@
                                             {{ $account->code }}@if(!$loop->last)<br style="margin-bottom: 1rem;">@endif
                                         @endforeach
                                     </td>
-                                    <td class="document-name">
-                                        {{ $document->name }}
-                                    </td>
-                                    <td>
-                                        {{ $document->published_at ? $document->published_at->format('d/m/Y') : '-' }}
-                                    </td>
+                                    
                                     <td>
                                         @php
                                             // Get the location tree (ancestors and current location)
@@ -872,7 +866,7 @@
                                     <td>
                                         0 {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
                                     </td>
-                                    <td colspan="11" class="text-center text-gray-500 py-8">
+                                    <td colspan="9" class="text-center text-gray-500 py-8">
                                         {{ __('Tidak ada dokumen dalam folder ini.') }}
                                     </td>
                                 </tr>
@@ -881,7 +875,7 @@
                         
                         @if(isset($search) && $search && $folders->count() == 0)
                             <tr>
-                                <td colspan="16" class="no-data">
+                                <td colspan="14" class="no-data">
                                     <div class="no-data-icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
