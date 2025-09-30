@@ -35,10 +35,10 @@ class DocumentsRelationManager extends RelationManager
                                 ->label(__('File'))
                                 ->required()
                                 ->directory('documents')
-                                ->maxSize(10240) // 10 MB
+                                ->maxSize(51200) // 50 MB
                                 ->preserveFilenames()
                                 ->visibility('private')
-                                ->helperText(__('Maximum file size: 10 MB.')),
+                                ->helperText(__('Maximum file size: 50 MB.')),
 
                             Forms\Components\TextInput::make('name')
                                 ->label(__('Name'))
