@@ -52,13 +52,6 @@ class FolderResource extends Resource
                             ->label(__('Name'))
                             ->required()
                             ->maxLength(65535),
-                        Forms\Components\Select::make('type')
-                            ->label(__('Type'))
-                            ->options([
-                                'bundle' => __('Bundle'),
-                                'sheet' => __('Sheet'),
-                            ])
-                            ->required(),
                         TreeSelect::make('classification_id')
                             ->label(__('Classification'))
                             ->required()
@@ -68,7 +61,7 @@ class FolderResource extends Resource
                         TreeSelect::make('location_id')
                             ->label(__('Location'))
                             ->required()
-                            ->depth(3)
+                            ->depth(2)
                             ->restrictDepthSelection(),
                         
                     ]),
