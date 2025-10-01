@@ -17,15 +17,25 @@ class AccountResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationLabel = 'Akun Keuangan';
+    // protected static ?string $navigationLabel = 'Akun Keuangan';
 
-    protected static ?string $pluralModelLabel = 'Akun Keuangan';
+    // protected static ?string $pluralModelLabel = 'Akun Keuangan';
 
     protected static ?int $navigationSort = 23;
 
     public static function getNavigationGroup(): ?string
     {
-        return __('Arsip');
+        return __('Archives');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('Finance Account');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Finance Accounts');
     }
 
     public static function form(Form $form): Form
