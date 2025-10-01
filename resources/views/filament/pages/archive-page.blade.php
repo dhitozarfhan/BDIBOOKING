@@ -673,7 +673,7 @@
                             <th>{{ __('Deskripsi') }}</th>
                             <th>{{ __('Tanggal Dokumen') }}</th>
                             <th>{{ __('Kurun Waktu') }}</th>
-                            <th>{{ __('Tipe Dokumen') }}</th>
+                            <th>{{ __('Jumlah Dokumen') }}</th>
                             <th>{{ __('Lokasi') }}</th>
                             <th>{{ __('Segment') }}</th>
                             <th style="width: 120px;">{{ __('Akun') }}</th>
@@ -725,7 +725,7 @@
                                         {{ $document->published_at ? $document->published_at->format('Y') : '-' }}
                                     </td>
                                     <td>
-                                        {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
+                                        1 Berkas
                                     </td>
                                     <td>
                                         @php
@@ -851,7 +851,7 @@
                                         -
                                     </td>
                                     <td>
-                                        {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
+                                        1 Berkas
                                     </td>
                                     <td>
                                         @php

@@ -98,13 +98,16 @@ class FinanceDocumentResource extends Resource
                             Forms\Components\Select::make('accounts')
                                 ->label(__('Accounts'))
                                 ->multiple()
+                                ->distinct()
                                 ->relationship('accounts', 'code')
                                 ->getOptionLabelFromRecordUsing(fn (Account $record) => "{$record->name} - {$record->code}")
                                 ->preload()
+                                
                                 ->createOptionForm([
                                     Forms\Components\TextInput::make('code')->label(__('Account Code'))
                                         ->numeric()
                                         ->required()
+                                        ->unique()
                                         ->length(6),
                                     Forms\Components\TextInput::make('name')->label(__('Account Name'))
                                         ->required()
