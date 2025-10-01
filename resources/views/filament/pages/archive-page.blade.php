@@ -669,10 +669,11 @@
                     <thead>
                         <tr>
                             <th>{{ __('Kode Klasifikasi') }}</th>
-                            <th>{{ __('Uraian Berkas') }}</th>
-                            <th>{{ __('Tanggal Berkas') }}</th>
+                            <th>{{ __('Nama Dokumen') }}</th>
+                            <th>{{ __('Deskripsi') }}</th>
+                            <th>{{ __('Tanggal Dokumen') }}</th>
                             <th>{{ __('Kurun Waktu') }}</th>
-                            <th>{{ __('Jumlah Berkas') }}</th>
+                            <th>{{ __('Tipe Dokumen') }}</th>
                             <th>{{ __('Lokasi') }}</th>
                             <th>{{ __('Segment') }}</th>
                             <th style="width: 120px;">{{ __('Akun') }}</th>
@@ -687,50 +688,45 @@
                         @foreach($folders as $folder)
                             @forelse($folder->documents as $index => $document)
                                 <tr>
-                                    @if($index === 0)
-                                        <td class="classification-code" rowspan="{{ $folder->documents->count() }}">
-                                            @php
-                                                if ($folder->classification) {
-                                                    // Get ancestors ordered from root to parent
-                                                    $ancestors = $folder->classification->ancestors()->defaultOrder()->get();
-                                                    
-                                                    // Build the hierarchical path
-                                                    $path = [];
-                                                    
-                                                    // Add ancestors codes
-                                                    foreach ($ancestors as $ancestor) {
-                                                        $path[] = $ancestor->code;
-                                                    }
-                                                    
-                                                    // Add the current classification's code
-                                                    $path[] = $folder->classification->code;
-                                                    
-                                                    // Join with dots and display
-                                                    echo implode('.', $path);
-                                                } else {
-                                                    echo '';
+                                    <td class="classification-code">
+                                        @php
+                                            if ($folder->classification) {
+                                                // Get ancestors ordered from root to parent
+                                                $ancestors = $folder->classification->ancestors()->defaultOrder()->get();
+                                                
+                                                // Build the hierarchical path
+                                                $path = [];
+                                                
+                                                // Add ancestors codes
+                                                foreach ($ancestors as $ancestor) {
+                                                    $path[] = $ancestor->code;
                                                 }
-                                            @endphp
-                                        </td>
-                                        <td class="document-name" rowspan="{{ $folder->documents->count() }}">
-                                            {{ $folder->name }}
-                                        </td>
-                                        <td rowspan="{{ $folder->documents->count() }}">
-                                            @php
-                                                $latestDate = $folder->documents->max('published_at');
-                                                echo $latestDate ? $latestDate->format('d/m/Y') : '-';
-                                            @endphp
-                                        </td>
-                                        <td rowspan="{{ $folder->documents->count() }}">
-                                            @php
-                                                $latestDate = $folder->documents->max('published_at');
-                                                echo $latestDate ? $latestDate->format('Y') : '-';
-                                            @endphp
-                                        </td>
-                                        <td rowspan="{{ $folder->documents->count() }}">
-                                            {{ $folder->documents->count() }} {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
-                                        </td>
-                                    @endif
+                                                
+                                                // Add the current classification's code
+                                                $path[] = $folder->classification->code;
+                                                
+                                                // Join with dots and display
+                                                echo implode('.', $path);
+                                            } else {
+                                                echo '';
+                                            }
+                                        @endphp
+                                    </td>
+                                    <td class="document-name">
+                                        {{ $document->name }}
+                                    </td>
+                                    <td>
+                                        {{ $document->description ?? '' }}
+                                    </td>
+                                    <td>
+                                        {{ $document->published_at ? $document->published_at->format('d/m/Y') : '-' }}
+                                    </td>
+                                    <td>
+                                        {{ $document->published_at ? $document->published_at->format('Y') : '-' }}
+                                    </td>
+                                    <td>
+                                        {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
+                                    </td>
                                     <td>
                                         @php
                                             // Get the location tree (ancestors and current location)
@@ -843,25 +839,66 @@
                                         @endphp
                                     </td>
                                     <td class="document-name">
-                                        {{ $folder->name }}
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
                                     </td>
                                     <td>
                                         @php
-                                            $latestDate = $folder->documents->max('published_at');
-                                            echo $latestDate ? $latestDate->format('d/m/Y') : '-';
+                                            // Get the location tree (ancestors and current location)
+                                            $location = $folder->location;
+                                            if ($location) {
+                                                // Get ancestors ordered from root to parent
+                                                $ancestors = $location->ancestors()->defaultOrder()->get();
+                                                
+                                                // Build the hierarchical path
+                                                $path = [];
+                                                
+                                                // Add ancestors codes
+                                                foreach ($ancestors as $ancestor) {
+                                                    $path[] = $ancestor->code;
+                                                }
+                                                
+                                                // Add the current location's code
+                                                $path[] = $location->code;
+                                                
+                                                // Join with dots and display
+                                                echo implode('.', $path);
+                                            } else {
+                                                echo '-';
+                                            }
                                         @endphp
                                     </td>
                                     <td>
-                                        @php
-                                            $latestDate = $folder->documents->max('published_at');
-                                            echo $latestDate ? $latestDate->format('Y') : '-';
-                                        @endphp
+                                        -
+                                    </td>
+                                    <td style="width: 120px; white-space: normal; word-wrap: break-word;">
+                                        -
                                     </td>
                                     <td>
-                                        0 {{ $folder->type === 'lembar' ? 'lembar' : 'berkas' }}
+                                        -
                                     </td>
-                                    <td colspan="8" class="text-center text-gray-500 py-8">
-                                        {{ __('Tidak ada dokumen dalam folder ini.') }}
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
+                                    </td>
+                                    <td>
+                                        -
                                     </td>
                                 </tr>
                             @endforelse
@@ -869,7 +906,7 @@
                         
                         @if(isset($search) && $search && $folders->count() == 0)
                             <tr>
-                                <td colspan="13" class="no-data">
+                                <td colspan="14" class="no-data">
                                     <div class="no-data-icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

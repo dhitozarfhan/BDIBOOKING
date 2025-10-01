@@ -33,12 +33,12 @@ class FolderResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('Folder');
+        return __('Finance Document');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('Folders');
+        return __('Finance Documents');
     }
 
     public static function form(Form $form): Form

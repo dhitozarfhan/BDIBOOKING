@@ -34,12 +34,12 @@ class FinanceDocumentResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('Finance Document');
+        return __('Note / Upload');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('Finance Documents');
+        return __('Note / Upload');
     }
 
     public static function canAccess(): bool
