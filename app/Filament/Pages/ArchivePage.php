@@ -152,16 +152,14 @@ class ArchivePage extends Page
         // Set column headers
         $headers = [
             'Kode Klasifikasi',
-            'Uraian Berkas',
-            'Tanggal Berkas',
+            'Nama Dokumen',
+            'Deskripsi',
+            'Tanggal Dokumen',
             'Kurun Waktu',
-            'Jumlah Berkas',
-            'No. Item Arsip',
-            'Segment',
-            'Akun',
-            'Uraian Item Arsip',
-            'Tanggal Item',
+            'Jumlah Dokumen',
             'Lokasi',
+            'Mata Anggaran Kegiatan',
+            'Akun',
             'Keterangan',
             'Retensi Arsip Aktif',
             'Retensi Arsip Inaktif',
@@ -176,7 +174,7 @@ class ArchivePage extends Page
         }
 
         // Style headers
-        $sheet->getStyle('A1:O1')->applyFromArray([
+        $sheet->getStyle('A1:M1')->applyFromArray([
             'font' => [
                 'bold' => true,
             ],
@@ -201,10 +199,9 @@ class ArchivePage extends Page
         $row = 2;
         foreach ($folders as $folder) {
             $documents = $folder->documents;
-            $folderRowSpan = $documents->count();
 
-            if ($folderRowSpan > 0) {
-                foreach ($documents as $index => $document) {
+            if ($documents->count() > 0) {
+                foreach ($documents as $document) {
                     // Get classification path
                     $classificationPath = '';
                     if ($folder->classification) {
@@ -245,29 +242,19 @@ class ArchivePage extends Page
                     // Get account codes
                     $accountCodes = $document->accounts->pluck('code')->implode("\n");
 
-                    // Get latest document date for folder
-                    $latestDate = $folder->documents->max('published_at');
-
-                    // Write data
-                    if ($index === 0) {
-                        // First row of folder - include folder data
-                        $sheet->setCellValue('A' . $row, $classificationPath);
-                        $sheet->setCellValue('B' . $row, $folder->name);
-                        $sheet->setCellValue('C' . $row, $latestDate ? $latestDate->format('d/m/Y') : '-');
-                        $sheet->setCellValue('D' . $row, $latestDate ? $latestDate->format('Y') : '-');
-                        $sheet->setCellValue('E' . $row, $folder->documents->count() . ' ' . ($folder->type === 'lembar' ? 'lembar' : 'berkas'));
-                    }
-
-                    // Document-specific data
-                    $sheet->setCellValue('F' . $row, $index + 1);
-                    $sheet->setCellValue('G' . $row, $segmentPath);
-                    $sheet->setCellValue('H' . $row, $accountCodes);
-                    $sheet->setCellValue('I' . $row, $document->name);
-                    $sheet->setCellValue('J' . $row, $document->published_at ? $document->published_at->format('d/m/Y') : '-');
-                    $sheet->setCellValue('K' . $row, $locationPath);
-                    $sheet->setCellValue('L' . $row, $document->information ?? '');
-                    $sheet->setCellValue('M' . $row, $document->active_retention ?? '');
-                    $sheet->setCellValue('N' . $row, $document->inactive_retention ?? '');
+                    // Write data - each document gets its own row
+                    $sheet->setCellValue('A' . $row, $classificationPath);
+                    $sheet->setCellValue('B' . $row, $document->name);
+                    $sheet->setCellValue('C' . $row, $document->description ?? '');
+                    $sheet->setCellValue('D' . $row, $document->published_at ? $document->published_at->format('d/m/Y') : '-');
+                    $sheet->setCellValue('E' . $row, $document->published_at ? $document->published_at->format('Y') : '-');
+                    $sheet->setCellValue('F' . $row, '1 Berkas');
+                    $sheet->setCellValue('G' . $row, $locationPath);
+                    $sheet->setCellValue('H' . $row, $segmentPath);
+                    $sheet->setCellValue('I' . $row, $accountCodes);
+                    $sheet->setCellValue('J' . $row, $document->information ?? '');
+                    $sheet->setCellValue('K' . $row, $document->active_retention ?? '');
+                    $sheet->setCellValue('L' . $row, $document->inactive_retention ?? '');
                     
                     // Nasib Akhir Arsip
                     $nasibAkhir = '';
@@ -276,7 +263,7 @@ class ArchivePage extends Page
                     } elseif ($document->condition == '1') {
                         $nasibAkhir = 'Tidak Musnah';
                     }
-                    $sheet->setCellValue('O' . $row, $nasibAkhir);
+                    $sheet->setCellValue('M' . $row, $nasibAkhir);
 
                     $row++;
                 }
@@ -293,35 +280,31 @@ class ArchivePage extends Page
                     $classificationPath = implode('.', $path);
                 }
 
-                $latestDate = $folder->documents->max('published_at');
-
                 $sheet->setCellValue('A' . $row, $classificationPath);
-                $sheet->setCellValue('B' . $row, $folder->name);
-                $sheet->setCellValue('C' . $row, $latestDate ? $latestDate->format('d/m/Y') : '-');
-                $sheet->setCellValue('D' . $row, $latestDate ? $latestDate->format('Y') : '-');
-                $sheet->setCellValue('E' . $row, '0 ' . ($folder->type === 'lembar' ? 'lembar' : 'berkas'));
-                $sheet->setCellValue('F' . $row, '');
-                $sheet->setCellValue('G' . $row, '');
-                $sheet->setCellValue('H' . $row, '');
-                $sheet->setCellValue('I' . $row, __('Tidak ada dokumen dalam folder ini.'));
-                $sheet->setCellValue('J' . $row, '');
-                $sheet->setCellValue('K' . $row, '');
-                $sheet->setCellValue('L' . $row, '');
-                $sheet->setCellValue('M' . $row, '');
-                $sheet->setCellValue('N' . $row, '');
-                $sheet->setCellValue('O' . $row, '');
+                $sheet->setCellValue('B' . $row, '-');
+                $sheet->setCellValue('C' . $row, '-');
+                $sheet->setCellValue('D' . $row, '-');
+                $sheet->setCellValue('E' . $row, '-');
+                $sheet->setCellValue('F' . $row, '1 Berkas');
+                $sheet->setCellValue('G' . $row, '-');
+                $sheet->setCellValue('H' . $row, '-');
+                $sheet->setCellValue('I' . $row, '-');
+                $sheet->setCellValue('J' . $row, '-');
+                $sheet->setCellValue('K' . $row, '-');
+                $sheet->setCellValue('L' . $row, '-');
+                $sheet->setCellValue('M' . $row, '-');
 
                 $row++;
             }
         }
 
         // Auto-size columns
-        foreach (range('A', 'O') as $col) {
+        foreach (range('A', 'M') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
         // Set alignment for all cells
-        $sheet->getStyle('A1:O' . ($row - 1))->applyFromArray([
+        $sheet->getStyle('A1:M' . ($row - 1))->applyFromArray([
             'alignment' => [
                 'vertical' => Alignment::VERTICAL_TOP,
                 'wrapText' => true,
