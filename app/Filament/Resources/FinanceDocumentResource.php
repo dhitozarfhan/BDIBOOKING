@@ -103,7 +103,6 @@ class FinanceDocumentResource extends Resource
                                 ->preload()
                                 ->createOptionForm([
                                     Forms\Components\TextInput::make('code')->label(__('Account Code'))
-                                        ->unique()
                                         ->numeric()
                                         ->required()
                                         ->length(6),
