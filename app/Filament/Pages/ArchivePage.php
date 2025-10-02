@@ -106,15 +106,15 @@ class ArchivePage extends Page
             ]);
 
             $documentQuery->where(function ($q) use ($search, $matchingClassificationIds) {
-                $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('description', 'like', '%' . $search . '%')
-                  ->orWhere('information', 'like', '%' . $search . '%')
+                $q->where('name', 'ilike', '%' . $search . '%')
+                  ->orWhere('description', 'ilike', '%' . $search . '%')
+                  ->orWhere('information', 'ilike', '%' . $search . '%')
                   ->orWhereHas('folder.classification', function ($q2) use ($search, $matchingClassificationIds) {
-                      $q2->where('code', 'like', '%' . $search . '%')
-                        ->orWhere('name', 'like', '%' . $search . '%')
+                      $q2->where('code', 'ilike', '%' . $search . '%')
+                        ->orWhere('name', 'ilike', '%' . $search . '%')
                         ->orWhereHas('ancestors', function ($q3) use ($search) {
-                            $q3->where('code', 'like', '%' . $search . '%')
-                              ->orWhere('name', 'like', '%' . $search . '%');
+                            $q3->where('code', 'ilike', '%' . $search . '%')
+                              ->orWhere('name', 'ilike', '%' . $search . '%');
                         });
                       
                       // If we found matching classification IDs based on hierarchical path, include those too
@@ -123,8 +123,8 @@ class ArchivePage extends Page
                       }
                   })
                   ->orWhereHas('accounts', function ($q2) use ($search) {
-                      $q2->where('code', 'like', '%' . $search . '%')
-                        ->orWhere('name', 'like', '%' . $search . '%');
+                      $q2->where('code', 'ilike', '%' . $search . '%')
+                        ->orWhere('name', 'ilike', '%' . $search . '%');
                   });
             });
 
@@ -408,20 +408,20 @@ class ArchivePage extends Page
             ]);
 
             $documentQuery->where(function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('description', 'like', '%' . $this->search . '%')
-                  ->orWhere('information', 'like', '%' . $this->search . '%')
+                $q->where('name', 'ilike', '%' . $this->search . '%')
+                  ->orWhere('description', 'ilike', '%' . $this->search . '%')
+                  ->orWhere('information', 'ilike', '%' . $this->search . '%')
                   ->orWhereHas('folder.classification', function ($q2) {
-                      $q2->where('code', 'like', '%' . $this->search . '%')
-                        ->orWhere('name', 'like', '%' . $this->search . '%')
+                      $q2->where('code', 'ilike', '%' . $this->search . '%')
+                        ->orWhere('name', 'ilike', '%' . $this->search . '%')
                         ->orWhereHas('ancestors', function ($q3) {
-                            $q3->where('code', 'like', '%' . $this->search . '%')
-                              ->orWhere('name', 'like', '%' . $this->search . '%');
+                            $q3->where('code', 'ilike', '%' . $this->search . '%')
+                              ->orWhere('name', 'ilike', '%' . $this->search . '%');
                         });
                   })
                   ->orWhereHas('accounts', function ($q2) {
-                      $q2->where('code', 'like', '%' . $this->search . '%')
-                        ->orWhere('name', 'like', '%' . $this->search . '%');
+                      $q2->where('code', 'ilike', '%' . $this->search . '%')
+                        ->orWhere('name', 'ilike', '%' . $this->search . '%');
                   });
             });
             
