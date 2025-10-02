@@ -105,13 +105,22 @@ class ArchivePage extends Page
                 'accounts'
             ]);
 
-            $documentQuery->where(function ($q) use ($search) {
+            $documentQuery->where(function ($q) use ($search, $matchingClassificationIds) {
                 $q->where('name', 'like', '%' . $search . '%')
                   ->orWhere('description', 'like', '%' . $search . '%')
                   ->orWhere('information', 'like', '%' . $search . '%')
-                  ->orWhereHas('folder.classification', function ($q2) use ($search) {
+                  ->orWhereHas('folder.classification', function ($q2) use ($search, $matchingClassificationIds) {
                       $q2->where('code', 'like', '%' . $search . '%')
-                        ->orWhere('name', 'like', '%' . $search . '%');
+                        ->orWhere('name', 'like', '%' . $search . '%')
+                        ->orWhereHas('ancestors', function ($q3) use ($search) {
+                            $q3->where('code', 'like', '%' . $search . '%')
+                              ->orWhere('name', 'like', '%' . $search . '%');
+                        });
+                      
+                      // If we found matching classification IDs based on hierarchical path, include those too
+                      if (!empty($matchingClassificationIds)) {
+                          $q2->orWhereIn('id', $matchingClassificationIds);
+                      }
                   })
                   ->orWhereHas('accounts', function ($q2) use ($search) {
                       $q2->where('code', 'like', '%' . $search . '%')
@@ -404,13 +413,25 @@ class ArchivePage extends Page
                   ->orWhere('information', 'like', '%' . $this->search . '%')
                   ->orWhereHas('folder.classification', function ($q2) {
                       $q2->where('code', 'like', '%' . $this->search . '%')
-                        ->orWhere('name', 'like', '%' . $this->search . '%');
+                        ->orWhere('name', 'like', '%' . $this->search . '%')
+                        ->orWhereHas('ancestors', function ($q3) {
+                            $q3->where('code', 'like', '%' . $this->search . '%')
+                              ->orWhere('name', 'like', '%' . $this->search . '%');
+                        });
                   })
                   ->orWhereHas('accounts', function ($q2) {
                       $q2->where('code', 'like', '%' . $this->search . '%')
                         ->orWhere('name', 'like', '%' . $this->search . '%');
                   });
             });
+            
+            // Additional search: find classification IDs that match the hierarchical path
+            $matchingClassificationIds = $this->getMatchingClassificationIds($this->search);
+            if (!empty($matchingClassificationIds)) {
+                $documentQuery->orWhereHas('folder.classification', function ($q) use ($matchingClassificationIds) {
+                    $q->whereIn('id', $matchingClassificationIds);
+                });
+            }
 
             // Apply filters
             if ($this->classificationId) {
@@ -524,5 +545,45 @@ class ArchivePage extends Page
             'startDate' => $this->startDate,
             'endDate' => $this->endDate,
         ];
+    }
+    
+    /**
+     * Get classification IDs that match the search term in their hierarchical path
+     */
+    private function getMatchingClassificationIds($search)
+    {
+        // If search is too short, don't perform hierarchical search
+        if (strlen($search) < 2) {
+            return [];
+        }
+        
+        $classificationIds = [];
+        
+        // Get all classifications with ancestors in a single query using nested set model
+        $allClassifications = \App\Models\Classification::with('ancestors')->get();
+        
+        foreach ($allClassifications as $classification) {
+            // Build the hierarchical path
+            $path = [];
+            
+            // Add ancestors codes (ordered from root to parent)
+            $ancestors = $classification->ancestors()->defaultOrder()->get();
+            foreach ($ancestors as $ancestor) {
+                $path[] = $ancestor->code;
+            }
+            
+            // Add the current classification's code
+            $path[] = $classification->code;
+            
+            // Join with dots
+            $fullPath = implode('.', $path);
+            
+            // Check if the search term matches the full hierarchical path
+            if (stripos($fullPath, $search) !== false) {
+                $classificationIds[] = $classification->id;
+            }
+        }
+        
+        return $classificationIds;
     }
 }
