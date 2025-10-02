@@ -815,12 +815,16 @@
                                                 $path[] = $folder->classification->code;
                                                 
                                                 // Join with dots
-                                                $classificationPath = implode('.', $path);
+                                                $pathEscaped = [];
+                                                foreach ($path as $code) {
+                                                    $pathEscaped[] = e($code);  // Escape each code individually
+                                                }
+                                                $classificationPath = implode('.', $pathEscaped);
                                                 
                                                 // Highlight search terms if search exists
                                                 if (isset($search) && $search) {
-                                                    $highlightedPath = str_ireplace($search, '<span class="search-term-highlight">' . e($search) . '</span>', e($classificationPath));
-                                                    echo $highlightedPath;
+                                                    $highlightedPath = str_ireplace(e($search), '<span class="search-term-highlight">' . e($search) . '</span>', $classificationPath);
+                                                    echo $highlightedPath;  // Use {!! !!} to render HTML
                                                 } else {
                                                     echo $classificationPath;
                                                 }
@@ -835,14 +839,14 @@
                                     </td>
                                     <td class="document-name">
                                         @if(isset($search) && $search)
-                                            {!! str_ireplace($search, '<span class="search-term-highlight">' . e($search) . '</span>', e($document->name)) !!}
+                                            {!! str_ireplace(e($search), '<span class="search-term-highlight">' . e($search) . '</span>', e($document->name)) !!}
                                         @else
                                             {{ $document->name }}
                                         @endif
                                     </td>
                                     <td>
                                         @if(isset($search) && $search)
-                                            {!! $document->description ? str_ireplace($search, '<span class="search-term-highlight">' . e($search) . '</span>', e($document->description)) : '' !!}
+                                            {!! $document->description ? str_ireplace(e($search), '<span class="search-term-highlight">' . e($search) . '</span>', e($document->description)) : '' !!}
                                         @else
                                             {{ $document->description ?? '' }}
                                         @endif
@@ -911,10 +915,10 @@
                                             @php
                                                 $accountCodes = [];
                                                 foreach($document->accounts as $account) {
-                                                    $accountCodes[] = $account->code;
+                                                    $accountCodes[] = e($account->code); // Escape each code individually
                                                 }
                                                 $accountCodesString = implode('<br style="margin-bottom: 1rem;">', $accountCodes);
-                                                $highlightedAccountCodes = str_ireplace($search, '<span class="search-term-highlight">' . e($search) . '</span>', e($accountCodesString));
+                                                $highlightedAccountCodes = str_ireplace(e($search), '<span class="search-term-highlight">' . e($search) . '</span>', $accountCodesString);
                                                 echo $highlightedAccountCodes;
                                             @endphp
                                         @else
@@ -925,7 +929,7 @@
                                     </td>
                                     <td>
                                         @if(isset($search) && $search)
-                                            {!! $document->information ? str_ireplace($search, '<span class="search-term-highlight">' . e($search) . '</span>', e($document->information)) : '' !!}
+                                            {!! $document->information ? str_ireplace(e($search), '<span class="search-term-highlight">' . e($search) . '</span>', e($document->information)) : '' !!}
                                         @else
                                             {{ $document->information ?? '' }}
                                         @endif
@@ -977,12 +981,16 @@
                                                 $path[] = $folder->classification->code;
                                                 
                                                 // Join with dots
-                                                $classificationPath = implode('.', $path);
+                                                $pathEscaped = [];
+                                                foreach ($path as $code) {
+                                                    $pathEscaped[] = e($code);  // Escape each code individually
+                                                }
+                                                $classificationPath = implode('.', $pathEscaped);
                                                 
                                                 // Highlight search terms if search exists
                                                 if (isset($search) && $search) {
-                                                    $highlightedPath = str_ireplace($search, '<span class="search-term-highlight">' . e($search) . '</span>', e($classificationPath));
-                                                    echo $highlightedPath;
+                                                    $highlightedPath = str_ireplace(e($search), '<span class="search-term-highlight">' . e($search) . '</span>', $classificationPath);
+                                                    echo $highlightedPath;  // Use {!! !!} to render HTML
                                                 } else {
                                                     echo $classificationPath;
                                                 }
@@ -997,7 +1005,7 @@
                                     </td>
                                     <td class="document-name">
                                         @if(isset($search) && $search)
-                                            <span class="search-term-highlight">-</span>
+                                            {!! str_ireplace(e($search), '<span class="search-term-highlight">' . e($search) . '</span>', e('-')) !!}
                                         @else
                                             -
                                         @endif
@@ -1056,7 +1064,7 @@
                                     </td>
                                     <td>
                                         @if(isset($search) && $search)
-                                            <span class="search-term-highlight">-</span>
+                                            {!! str_ireplace(e($search), '<span class="search-term-highlight">' . e($search) . '</span>', e('-')) !!}
                                         @else
                                             -
                                         @endif
