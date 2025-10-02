@@ -318,11 +318,6 @@
             color: var(--secondary-500);
         }
         
-        .no-data-icon {
-            margin-bottom: 1rem;
-            color: var(--secondary-300);
-        }
-        
         .export-info {
             background-color: var(--primary-50);
             border: 1px solid var(--primary-200);
@@ -344,6 +339,13 @@
             font-size: 0.875rem;
             color: var(--primary-800);
             line-height: 1.5;
+        }
+        
+        .search-term-highlight {
+            background-color: #fef08a; /* Yellow-200 */
+            padding: 0.125rem 0.25rem; /* px-1 py-0.5 equivalent */
+            border-radius: 0.25rem; /* rounded-md */
+            font-weight: 500; /* medium */
         }
         
         .tooltip {
@@ -812,18 +814,38 @@
                                                 // Add the current classification's code
                                                 $path[] = $folder->classification->code;
                                                 
-                                                // Join with dots and display
-                                                echo implode('.', $path);
+                                                // Join with dots
+                                                $classificationPath = implode('.', $path);
+                                                
+                                                // Highlight search terms if search exists
+                                                if (isset($search) && $search) {
+                                                    $highlightedPath = str_ireplace($search, '<span class="search-term-highlight">' . e($search) . '</span>', e($classificationPath));
+                                                    echo $highlightedPath;
+                                                } else {
+                                                    echo $classificationPath;
+                                                }
                                             } else {
-                                                echo '';
+                                                if (isset($search) && $search) {
+                                                    echo '<span class="search-term-highlight"></span>';
+                                                } else {
+                                                    echo '';
+                                                }
                                             }
                                         @endphp
                                     </td>
                                     <td class="document-name">
-                                        {{ $document->name }}
+                                        @if(isset($search) && $search)
+                                            {!! str_ireplace($search, '<span class="search-term-highlight">' . e($search) . '</span>', e($document->name)) !!}
+                                        @else
+                                            {{ $document->name }}
+                                        @endif
                                     </td>
                                     <td>
-                                        {{ $document->description ?? '' }}
+                                        @if(isset($search) && $search)
+                                            {!! $document->description ? str_ireplace($search, '<span class="search-term-highlight">' . e($search) . '</span>', e($document->description)) : '' !!}
+                                        @else
+                                            {{ $document->description ?? '' }}
+                                        @endif
                                     </td>
                                     <td>
                                         {{ $document->published_at ? $document->published_at->format('d/m/Y') : '-' }}
@@ -885,12 +907,28 @@
                                         @endphp
                                     </td>
                                     <td style="width: 120px; white-space: normal; word-wrap: break-word;">
-                                        @foreach($document->accounts as $account)
-                                            {{ $account->code }}@if(!$loop->last)<br style="margin-bottom: 1rem;">@endif
-                                        @endforeach
+                                        @if(isset($search) && $search)
+                                            @php
+                                                $accountCodes = [];
+                                                foreach($document->accounts as $account) {
+                                                    $accountCodes[] = $account->code;
+                                                }
+                                                $accountCodesString = implode('<br style="margin-bottom: 1rem;">', $accountCodes);
+                                                $highlightedAccountCodes = str_ireplace($search, '<span class="search-term-highlight">' . e($search) . '</span>', e($accountCodesString));
+                                                echo $highlightedAccountCodes;
+                                            @endphp
+                                        @else
+                                            @foreach($document->accounts as $account)
+                                                {{ $account->code }}@if(!$loop->last)<br style="margin-bottom: 1rem;">@endif
+                                            @endforeach
+                                        @endif
                                     </td>
                                     <td>
-                                        {{ $document->information ?? '' }}
+                                        @if(isset($search) && $search)
+                                            {!! $document->information ? str_ireplace($search, '<span class="search-term-highlight">' . e($search) . '</span>', e($document->information)) : '' !!}
+                                        @else
+                                            {{ $document->information ?? '' }}
+                                        @endif
                                     </td>
                                     <td>
                                         {{ $document->active_retention ?? '' }}
@@ -938,18 +976,38 @@
                                                 // Add the current classification's code
                                                 $path[] = $folder->classification->code;
                                                 
-                                                // Join with dots and display
-                                                echo implode('.', $path);
+                                                // Join with dots
+                                                $classificationPath = implode('.', $path);
+                                                
+                                                // Highlight search terms if search exists
+                                                if (isset($search) && $search) {
+                                                    $highlightedPath = str_ireplace($search, '<span class="search-term-highlight">' . e($search) . '</span>', e($classificationPath));
+                                                    echo $highlightedPath;
+                                                } else {
+                                                    echo $classificationPath;
+                                                }
                                             } else {
-                                                echo '';
+                                                if (isset($search) && $search) {
+                                                    echo '<span class="search-term-highlight"></span>';
+                                                } else {
+                                                    echo '';
+                                                }
                                             }
                                         @endphp
                                     </td>
                                     <td class="document-name">
-                                        -
+                                        @if(isset($search) && $search)
+                                            <span class="search-term-highlight">-</span>
+                                        @else
+                                            -
+                                        @endif
                                     </td>
                                     <td>
-                                        -
+                                        @if(isset($search) && $search)
+                                            <span class="search-term-highlight">-</span>
+                                        @else
+                                            -
+                                        @endif
                                     </td>
                                     <td>
                                         -
@@ -990,10 +1048,18 @@
                                         -
                                     </td>
                                     <td style="width: 120px; white-space: normal; word-wrap: break-word;">
-                                        -
+                                        @if(isset($search) && $search)
+                                            <span class="search-term-highlight">-</span>
+                                        @else
+                                            -
+                                        @endif
                                     </td>
                                     <td>
-                                        -
+                                        @if(isset($search) && $search)
+                                            <span class="search-term-highlight">-</span>
+                                        @else
+                                            -
+                                        @endif
                                     </td>
                                     <td>
                                         -
@@ -1014,11 +1080,6 @@
                         @if(isset($search) && $search && $folders->count() == 0)
                             <tr>
                                 <td colspan="14" class="no-data">
-                                    <div class="no-data-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                    </div>
                                     <p>{{ __('Tidak ada hasil ditemukan untuk pencarian: ') }} <strong>"{{ $search }}"</strong></p>
                                 </td>
                             </tr>
