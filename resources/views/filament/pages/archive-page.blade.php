@@ -561,8 +561,6 @@
                     </div>
                 </div>
                 
-                <!-- Hidden input for account ID to maintain state after form submission -->
-                <input type="hidden" name="accountId" value="{{ request()->query('accountId', '') }}">
                 
                 <!-- Filter Dropdown -->
                 <div id="filterDropdown" class="filter-dropdown {{ ((isset($classificationId) && $classificationId) || (isset($locationId) && $locationId) || (isset($accountId) && $accountId) || (isset($startDate) && $startDate) || (isset($endDate) && $endDate)) ? '' : 'hidden' }}">
@@ -603,52 +601,19 @@
                         <!-- Account Code Filter -->
                         <div class="filter-group">
                             <label class="filter-label">{{ __('Kode Akun') }}</label>
-                            <div class="relative">
-                                <input 
-                                    type="text" 
-                                    id="accountSearch" 
-                                    placeholder="{{ __('Pilih kode akun...') }}"
-                                    class="filter-select"
-                                    value="{{ isset($accountId) && $accountId !== '' && isset($accounts) && isset($accounts[$accountId]) ? $accounts[$accountId] : '' }}"
-                                    readonly
-                                >
-                                <input 
-                                    type="hidden" 
-                                    name="accountId" 
-                                    id="selectedAccountId" 
-                                    value="{{ $accountId ?? '' }}"
-                                >
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                                
-                                <!-- Dropdown options -->
-                                <div id="accountDropdown" class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto hidden">
-                                    <div class="p-2">
-                                        <input 
-                                            type="text" 
-                                            id="accountFilter" 
-                                            placeholder="{{ __('Cari kode akun...') }}"
-                                            class="w-full p-2 border border-gray-300 rounded filter-select text-sm"
-                                        >
-                                    </div>
-                                    <div id="accountOptions" class="max-h-40 overflow-y-auto">
-                                        <div class="account-option p-3 hover:bg-gray-100 cursor-pointer flex items-center" data-value="" data-label="{{ __('Semua Kode Akun') }}">
-                                            <span>{{ __('Semua Kode Akun') }}</span>
-                                        </div>
-                                        @if(isset($accounts))
-                                            @foreach($accounts as $id => $label)
-                                                <div class="account-option p-3 hover:bg-gray-100 cursor-pointer flex items-center" 
-                                                     data-value="{{ $id }}" 
-                                                     data-label="{{ $label }}"
-                                                     data-initial-selected="{{ $id == ($accountId ?? '') ? 'true' : 'false' }}">
-                                                    <span>{{ $label }}</span>
-                                                </div>
-                                            @endforeach
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
+                            <select 
+                                name="accountId" 
+                                class="filter-select"
+                            >
+                                <option value="">{{ __('Semua Kode Akun') }}</option>
+                                @if(isset($accounts))
+                                    @foreach($accounts as $id => $label)
+                                        <option value="{{ $id }}" {{ (isset($accountId) && $accountId == $id) ? 'selected' : '' }}>
+                                            {{ $label }}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
                         </div>
                         
                         <!-- Date Range Filter -->
@@ -794,104 +759,12 @@
                 document.addEventListener('click', window.exportButtonListener);
             }
             
-            // Function to initialize searchable dropdown for account filter
-            function initializeAccountFilter() {
-                const accountSearch = document.getElementById('accountSearch');
-                const accountDropdown = document.getElementById('accountDropdown');
-                const accountFilter = document.getElementById('accountFilter');
-                const accountOptions = document.querySelectorAll('.account-option');
-                const selectedAccountIdInput = document.getElementById('selectedAccountId');
-                
-                if (!accountSearch) return;
-                
-                // Toggle dropdown visibility when clicking the input
-                accountSearch.addEventListener('click', function() {
-                    accountDropdown.classList.toggle('hidden');
-                    if (!accountDropdown.classList.contains('hidden')) {
-                        accountFilter.focus();
-                    }
-                });
-                
-                // Close dropdown when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (!accountSearch.contains(e.target) && !accountDropdown.contains(e.target)) {
-                        accountDropdown.classList.add('hidden');
-                    }
-                });
-                
-                // Filter options based on search input
-                accountFilter.addEventListener('input', function() {
-                    const searchTerm = this.value.toLowerCase();
-                    accountOptions.forEach(option => {
-                        const label = option.getAttribute('data-label').toLowerCase();
-                        if (label.includes(searchTerm)) {
-                            option.style.display = 'block';
-                        } else {
-                            option.style.display = 'none';
-                        }
-                    });
-                });
-                
-                // Handle option selection
-                accountOptions.forEach(option => {
-                    option.addEventListener('click', function() {
-                        const value = this.getAttribute('data-value');
-                        const label = this.getAttribute('data-label');
-                        
-                        // Update the hidden input value
-                        selectedAccountIdInput.value = value;
-                        
-                        // Update the display input
-                        if (value) {
-                            accountSearch.value = label;
-                        } else {
-                            accountSearch.value = '{{ __('Pilih kode akun...') }}';
-                        }
-                        
-                        // Close the dropdown
-                        accountDropdown.classList.add('hidden');
-                    });
-                });
-                
-                // Set initial value if one exists
-                if (selectedAccountIdInput.value) {
-                    const selectedOption = Array.from(accountOptions).find(option => 
-                        option.getAttribute('data-value') === selectedAccountIdInput.value
-                    );
-                    if (selectedOption) {
-                        accountSearch.value = selectedOption.getAttribute('data-label');
-                    }
-                } else {
-                    // Check for initial selection based on data attribute
-                    const initialSelected = Array.from(accountOptions).find(option => 
-                        option.getAttribute('data-initial-selected') === 'true'
-                    );
-                    if (initialSelected) {
-                        const value = initialSelected.getAttribute('data-value');
-                        const label = initialSelected.getAttribute('data-label');
-                        selectedAccountIdInput.value = value;
-                        if (value) {
-                            accountSearch.value = label;
-                        } else {
-                            accountSearch.value = '{{ __('Pilih kode akun...') }}';
-                        }
-                    }
-                }
-            }
-            
             // Initialize on DOMContentLoaded
             document.addEventListener('DOMContentLoaded', initializeFilterFunctionality);
             
             // Initialize when Livewire components finish loading/hydrating
             document.addEventListener('livewire:navigated', initializeFilterFunctionality);
             document.addEventListener('livewire:updated', initializeFilterFunctionality);
-            
-            // Initialize account filter on DOMContentLoaded
-            document.addEventListener('DOMContentLoaded', initializeAccountFilter);
-            
-            // Reinitialize account filter on Livewire events
-            document.addEventListener('livewire:navigated', initializeAccountFilter);
-            document.addEventListener('livewire:updated', initializeAccountFilter);
         </script>
 
         <div class="data-card">

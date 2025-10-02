@@ -506,9 +506,11 @@ class ArchivePage extends Page
         })->all();
 
         // Get accounts for filter dropdown
-        $accounts = \App\Models\Account::all()->mapWithKeys(function ($item) {
+        $accounts = \App\Models\Account::orderBy('code')->get()->mapWithKeys(function ($item) {
             return [$item->getKey() => $item->code . ' - ' . $item->name];
         })->all();
+
+        // dd($accounts);
 
         return [
             'folders' => $folders,

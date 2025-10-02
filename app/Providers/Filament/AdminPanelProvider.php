@@ -55,7 +55,10 @@ class AdminPanelProvider extends PanelProvider
             ->spaUrlExceptions(fn (): array => [
                 config('app.url').'/admin/header-menu-page',
                 config('app.url').'/admin/footer-menu-page',
+                config('app.url').'/admin/classification-page',
                 config('app.url').'/admin/location-page',
+                config('app.url').'/admin/segment-page',
+                config('app.url').'/admin/archive-page',
             ])
             ->middleware([
                 EncryptCookies::class,

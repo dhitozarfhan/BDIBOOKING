@@ -77,30 +77,7 @@ class AccountResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Name'))
                     ->searchable()
-                    ->sortable(),
-                
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('Created At'))
-                    ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->label(__('Updated At'))
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
