@@ -63,6 +63,7 @@ class FinanceDocumentResource extends Resource
                         ->schema([
                             AdvancedFileUpload::make('file_path')
                                 ->label(__('Upload PDF'))
+                                ->acceptedFileTypes(['application/pdf'])
                                 ->required()
                                 ->maxSize(51200) // 50 MB
                                 ->directory('documents')
