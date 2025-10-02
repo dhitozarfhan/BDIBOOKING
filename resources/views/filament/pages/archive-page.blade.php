@@ -904,10 +904,26 @@
                                                 // Add the current location's code
                                                 $path[] = $location->code;
                                                 
-                                                // Join with dots and display
-                                                echo implode('.', $path);
+                                                // Join with dots
+                                                $pathEscaped = [];
+                                                foreach ($path as $code) {
+                                                    $pathEscaped[] = e($code);  // Escape each code individually
+                                                }
+                                                $locationPath = implode('.', $pathEscaped);
+                                                
+                                                // Highlight search terms if search exists
+                                                if (isset($search) && $search) {
+                                                    $highlightedPath = str_ireplace(e($search), '<span class="search-term-highlight">' . e($search) . '</span>', $locationPath);
+                                                    echo $highlightedPath;  // Use {!! !!} to render HTML
+                                                } else {
+                                                    echo $locationPath;
+                                                }
                                             } else {
-                                                echo '-';
+                                                if (isset($search) && $search) {
+                                                    echo '<span class="search-term-highlight">-</span>';
+                                                } else {
+                                                    echo '-';
+                                                }
                                             }
                                         @endphp
                                     </td>
@@ -1070,10 +1086,26 @@
                                                 // Add the current location's code
                                                 $path[] = $location->code;
                                                 
-                                                // Join with dots and display
-                                                echo implode('.', $path);
+                                                // Join with dots
+                                                $pathEscaped = [];
+                                                foreach ($path as $code) {
+                                                    $pathEscaped[] = e($code);  // Escape each code individually
+                                                }
+                                                $locationPath = implode('.', $pathEscaped);
+                                                
+                                                // Highlight search terms if search exists
+                                                if (isset($search) && $search) {
+                                                    $highlightedPath = str_ireplace(e($search), '<span class="search-term-highlight">' . e($search) . '</span>', $locationPath);
+                                                    echo $highlightedPath;  // Use {!! !!} to render HTML
+                                                } else {
+                                                    echo $locationPath;
+                                                }
                                             } else {
-                                                echo '-';
+                                                if (isset($search) && $search) {
+                                                    echo '<span class="search-term-highlight">-</span>';
+                                                } else {
+                                                    echo '-';
+                                                }
                                             }
                                         @endphp
                                     </td>

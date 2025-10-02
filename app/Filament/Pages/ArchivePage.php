@@ -105,7 +105,11 @@ class ArchivePage extends Page
                 'accounts'
             ]);
 
-            $documentQuery->where(function ($q) use ($search, $matchingClassificationIds) {
+            // Find matching classification and location IDs for hierarchical path searching
+            $matchingClassificationIds = $this->getMatchingClassificationIds($search);
+            $matchingLocationIds = $this->getMatchingLocationIds($search);
+            
+            $documentQuery->where(function ($q) use ($search, $matchingClassificationIds, $matchingLocationIds) {
                 $q->where('name', 'ilike', '%' . $search . '%')
                   ->orWhere('description', 'ilike', '%' . $search . '%')
                   ->orWhere('information', 'ilike', '%' . $search . '%')
@@ -120,6 +124,19 @@ class ArchivePage extends Page
                       // If we found matching classification IDs based on hierarchical path, include those too
                       if (!empty($matchingClassificationIds)) {
                           $q2->orWhereIn('id', $matchingClassificationIds);
+                      }
+                  })
+                  ->orWhereHas('folder.location', function ($q2) use ($search, $matchingLocationIds) {
+                      $q2->where('code', 'ilike', '%' . $search . '%')
+                        ->orWhere('name', 'ilike', '%' . $search . '%')
+                        ->orWhereHas('ancestors', function ($q3) use ($search) {
+                            $q3->where('code', 'ilike', '%' . $search . '%')
+                              ->orWhere('name', 'ilike', '%' . $search . '%');
+                        });
+                      
+                      // If we found matching location IDs based on hierarchical path, include those too
+                      if (!empty($matchingLocationIds)) {
+                          $q2->orWhereIn('id', $matchingLocationIds);
                       }
                   })
                   ->orWhereHas('accounts', function ($q2) use ($search) {
@@ -419,6 +436,14 @@ class ArchivePage extends Page
                               ->orWhere('name', 'ilike', '%' . $this->search . '%');
                         });
                   })
+                  ->orWhereHas('folder.location', function ($q2) {
+                      $q2->where('code', 'ilike', '%' . $this->search . '%')
+                        ->orWhere('name', 'ilike', '%' . $this->search . '%')
+                        ->orWhereHas('ancestors', function ($q3) {
+                            $q3->where('code', 'ilike', '%' . $this->search . '%')
+                              ->orWhere('name', 'ilike', '%' . $this->search . '%');
+                        });
+                  })
                   ->orWhereHas('accounts', function ($q2) {
                       $q2->where('code', 'ilike', '%' . $this->search . '%')
                         ->orWhere('name', 'ilike', '%' . $this->search . '%');
@@ -430,6 +455,14 @@ class ArchivePage extends Page
             if (!empty($matchingClassificationIds)) {
                 $documentQuery->orWhereHas('folder.classification', function ($q) use ($matchingClassificationIds) {
                     $q->whereIn('id', $matchingClassificationIds);
+                });
+            }
+            
+            // Additional search: find location IDs that match the hierarchical path
+            $matchingLocationIds = $this->getMatchingLocationIds($this->search);
+            if (!empty($matchingLocationIds)) {
+                $documentQuery->orWhereHas('folder.location', function ($q) use ($matchingLocationIds) {
+                    $q->whereIn('id', $matchingLocationIds);
                 });
             }
 
@@ -585,5 +618,45 @@ class ArchivePage extends Page
         }
         
         return $classificationIds;
+    }
+    
+    /** 
+     * Get location IDs that match the search term in their hierarchical path
+     */
+    private function getMatchingLocationIds($search)
+    {
+        // If search is too short, don't perform hierarchical search
+        if (strlen($search) < 2) {
+            return [];
+        }
+        
+        $locationIds = [];
+        
+        // Get all locations with ancestors in a single query using nested set model
+        $allLocations = \App\Models\Location::with('ancestors')->get();
+        
+        foreach ($allLocations as $location) {
+            // Build the hierarchical path
+            $path = [];
+            
+            // Add ancestors codes (ordered from root to parent)
+            $ancestors = $location->ancestors()->defaultOrder()->get();
+            foreach ($ancestors as $ancestor) {
+                $path[] = $ancestor->code;
+            }
+            
+            // Add the current location's code
+            $path[] = $location->code;
+            
+            // Join with dots
+            $fullPath = implode('.', $path);
+            
+            // Check if the search term matches the full hierarchical path
+            if (stripos($fullPath, $search) !== false) {
+                $locationIds[] = $location->id;
+            }
+        }
+        
+        return $locationIds;
     }
 }
