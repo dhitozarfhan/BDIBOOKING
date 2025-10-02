@@ -62,6 +62,7 @@ class DocumentsRelationManager extends RelationManager
                             Forms\Components\DatePicker::make('published_at')
                                 ->label(__('Published Date'))
                                 ->native(false)
+                                ->required()
                                 ->displayFormat('d F Y'),
                             
                             Forms\Components\Toggle::make('condition')
@@ -85,6 +86,7 @@ class DocumentsRelationManager extends RelationManager
                             Forms\Components\Select::make('accounts')
                                 ->label(__('Accounts'))
                                 ->multiple()
+                                ->required()
                                 ->relationship('accounts', 'code')
                                 ->getOptionLabelFromRecordUsing(fn (Account $record) => "{$record->name} - {$record->code}")
                                 ->preload(),
