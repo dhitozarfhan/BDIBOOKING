@@ -88,6 +88,7 @@ class FinanceDocumentResource extends Resource
 
                             Forms\Components\DatePicker::make('published_at')
                                 ->label(__('Published Date'))
+                                ->required()
                                 ->native(false)
                                 ->displayFormat('d F Y'),
                             
@@ -174,11 +175,6 @@ class FinanceDocumentResource extends Resource
                     ->separator(',')
                     ->searchable()
                     ->sortable(),
-
-                Tables\Columns\TextColumn::make('file_path')
-                    ->label(__('File Path'))
-                    ->searchable()
-                    ->limit(30),
 
                 Tables\Columns\TextColumn::make('description')
                     ->label(__('Description'))
