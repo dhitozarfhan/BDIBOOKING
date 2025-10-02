@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Account;
 use App\Models\Folder;
 use App\Models\Classification;
 use App\Models\Location;
@@ -23,6 +24,7 @@ class ArchivePage extends Page
     public $search = '';
     public $classificationId = '';
     public $locationId = '';
+    public $accountId = '';
     public $startDate = '';
     public $endDate = '';
 
@@ -30,6 +32,7 @@ class ArchivePage extends Page
         'search',
         'classificationId',
         'locationId',
+        'accountId',
         'startDate',
         'endDate'
     ];
@@ -45,6 +48,7 @@ class ArchivePage extends Page
         $this->search = request()->query('search', $this->search);
         $this->classificationId = request()->query('classificationId', $this->classificationId);
         $this->locationId = request()->query('locationId', $this->locationId);
+        $this->accountId = request()->query('accountId', $this->accountId);
         $this->startDate = request()->query('startDate', $this->startDate);
         $this->endDate = request()->query('endDate', $this->endDate);
     }
@@ -74,6 +78,7 @@ class ArchivePage extends Page
         $this->search = '';
         $this->classificationId = '';
         $this->locationId = '';
+        $this->accountId = '';
         $this->startDate = '';
         $this->endDate = '';
     }
@@ -84,58 +89,111 @@ class ArchivePage extends Page
         $search = request()->query('search', $this->search);
         $classificationId = request()->query('classificationId', $this->classificationId);
         $locationId = request()->query('locationId', $this->locationId);
+        $accountId = request()->query('accountId', $this->accountId);
         $startDate = request()->query('startDate', $this->startDate);
         $endDate = request()->query('endDate', $this->endDate);
 
-        // Get all folders with their relationships
-        $query = Folder::with([
-            'classification',
-            'location',
-            'location.children',
-            'location.children.children',
-            'documents.segment',
-            'documents.accounts'
-        ]);
-
+        // If there's a search term, we need to approach this differently
         if ($search) {
-            // Filter folders based on search term
-            $query->where(function ($q) use ($search) {
+            // When searching, get documents that match the search and include their folder info
+            $documentQuery = \App\Models\Document::with([
+                'folder.classification',
+                'folder.location',
+                'folder.location.children',
+                'folder.location.children.children',
+                'segment',
+                'accounts'
+            ]);
+
+            $documentQuery->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhereHas('classification', function ($q2) use ($search) {
+                  ->orWhere('description', 'like', '%' . $search . '%')
+                  ->orWhere('information', 'like', '%' . $search . '%')
+                  ->orWhereHas('folder.classification', function ($q2) use ($search) {
                       $q2->where('code', 'like', '%' . $search . '%')
                         ->orWhere('name', 'like', '%' . $search . '%');
                   })
-                  ->orWhereHas('documents', function ($q2) use ($search) {
-                      $q2->where('name', 'like', '%' . $search . '%')
-                        ->orWhere('description', 'like', '%' . $search . '%')
-                        ->orWhere('information', 'like', '%' . $search . '%');
+                  ->orWhereHas('accounts', function ($q2) use ($search) {
+                      $q2->where('code', 'like', '%' . $search . '%')
+                        ->orWhere('name', 'like', '%' . $search . '%');
                   });
             });
-        }
 
-        // Filter by classification
-        if ($classificationId) {
-            $query->where('classification_id', $classificationId);
-        }
+            // Apply filters
+            if ($classificationId) {
+                $documentQuery->whereHas('folder', function ($q) use ($classificationId) {
+                    $q->where('classification_id', $classificationId);
+                });
+            }
 
-        // Filter by location
-        if ($locationId) {
-            $query->where('location_id', $locationId);
-        }
+            if ($locationId) {
+                $documentQuery->whereHas('folder', function ($q) use ($locationId) {
+                    $q->where('location_id', $locationId);
+                });
+            }
 
-        // Filter by date range
-        if ($startDate || $endDate) {
-            $query->whereHas('documents', function ($q) use ($startDate, $endDate) {
+            if ($accountId) {
+                $documentQuery->whereHas('accounts', function ($q) use ($accountId) {
+                    $q->where('accounts.id', $accountId);
+                });
+            }
+
+            if ($startDate || $endDate) {
                 if ($startDate) {
-                    $q->where('published_at', '>=', $startDate);
+                    $documentQuery->where('published_at', '>=', $startDate);
                 }
                 if ($endDate) {
-                    $q->where('published_at', '<=', $endDate);
+                    $documentQuery->where('published_at', '<=', $endDate);
                 }
-            });
-        }
+            }
 
-        $folders = $query->get();
+            $documents = $documentQuery->get();
+
+            // Group documents by folder for processing
+            $folders = $documents->groupBy('folder_id')->map(function ($groupedDocuments, $folderId) {
+                $folder = $groupedDocuments->first()->folder;
+                $folder->documents = $groupedDocuments;
+                return $folder;
+            })->values();
+        } else {
+            // Standard approach when not searching
+            $query = Folder::with([
+                'classification',
+                'location',
+                'location.children',
+                'location.children.children',
+                'documents.segment',
+                'documents.accounts'
+            ]);
+
+            // Apply filters
+            if ($classificationId) {
+                $query->where('classification_id', $classificationId);
+            }
+
+            if ($locationId) {
+                $query->where('location_id', $locationId);
+            }
+
+            if ($accountId) {
+                $query->whereHas('documents.accounts', function ($q) use ($accountId) {
+                    $q->where('accounts.id', $accountId);
+                });
+            }
+
+            if ($startDate || $endDate) {
+                $query->whereHas('documents', function ($q) use ($startDate, $endDate) {
+                    if ($startDate) {
+                        $q->where('published_at', '>=', $startDate);
+                    }
+                    if ($endDate) {
+                        $q->where('published_at', '<=', $endDate);
+                    }
+                });
+            }
+
+            $folders = $query->get();
+        }
 
         // Create new Spreadsheet object
         $spreadsheet = new Spreadsheet();
@@ -327,55 +385,109 @@ class ArchivePage extends Page
 
     public function getViewData(): array
     {
-        // Get all folders with their relationships
-        $query = Folder::with([
-            'classification',
-            'location',
-            'location.children',
-            'location.children.children',
-            'documents.segment',
-            'documents.accounts'
-        ]);
-
+        // If there's a search term, we need to approach this differently
         if ($this->search) {
-            // Filter folders based on search term
-            $query->where(function ($q) {
+            // When searching, especially for account codes, we should get documents
+            // that match the search and group them by their parent folder
+            $documentQuery = \App\Models\Document::with([
+                'folder.classification',
+                'folder.location',
+                'folder.location.children',
+                'folder.location.children.children',
+                'segment',
+                'accounts'
+            ]);
+
+            $documentQuery->where(function ($q) {
                 $q->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhereHas('classification', function ($q2) {
+                  ->orWhere('description', 'like', '%' . $this->search . '%')
+                  ->orWhere('information', 'like', '%' . $this->search . '%')
+                  ->orWhereHas('folder.classification', function ($q2) {
                       $q2->where('code', 'like', '%' . $this->search . '%')
                         ->orWhere('name', 'like', '%' . $this->search . '%');
                   })
-                  ->orWhereHas('documents', function ($q2) {
-                      $q2->where('name', 'like', '%' . $this->search . '%')
-                        ->orWhere('description', 'like', '%' . $this->search . '%')
-                        ->orWhere('information', 'like', '%' . $this->search . '%');
+                  ->orWhereHas('accounts', function ($q2) {
+                      $q2->where('code', 'like', '%' . $this->search . '%')
+                        ->orWhere('name', 'like', '%' . $this->search . '%');
                   });
             });
-        }
 
-        // Filter by classification
-        if ($this->classificationId) {
-            $query->where('classification_id', $this->classificationId);
-        }
+            // Apply filters
+            if ($this->classificationId) {
+                $documentQuery->whereHas('folder', function ($q) {
+                    $q->where('classification_id', $this->classificationId);
+                });
+            }
 
-        // Filter by location
-        if ($this->locationId) {
-            $query->where('location_id', $this->locationId);
-        }
+            if ($this->locationId) {
+                $documentQuery->whereHas('folder', function ($q) {
+                    $q->where('location_id', $this->locationId);
+                });
+            }
 
-        // Filter by date range
-        if ($this->startDate || $this->endDate) {
-            $query->whereHas('documents', function ($q) {
+            if ($this->accountId) {
+                $documentQuery->whereHas('accounts', function ($q) {
+                    $q->where('accounts.id', $this->accountId);
+                });
+            }
+
+            if ($this->startDate || $this->endDate) {
                 if ($this->startDate) {
-                    $q->where('published_at', '>=', $this->startDate);
+                    $documentQuery->where('published_at', '>=', $this->startDate);
                 }
                 if ($this->endDate) {
-                    $q->where('published_at', '<=', $this->endDate);
+                    $documentQuery->where('published_at', '<=', $this->endDate);
                 }
-            });
-        }
+            }
 
-        $folders = $query->get();
+            $documents = $documentQuery->get();
+
+            // Group documents by folder
+            $folders = $documents->groupBy('folder_id')->map(function ($groupedDocuments, $folderId) {
+                // Get the folder with its relationships
+                $folder = $groupedDocuments->first()->folder;
+                $folder->documents = $groupedDocuments;
+                return $folder;
+            })->values();
+        } else {
+            // Standard approach when not searching
+            $query = Folder::with([
+                'classification',
+                'location',
+                'location.children',
+                'location.children.children',
+                'documents.segment',
+                'documents.accounts'
+            ]);
+
+            // Apply filters
+            if ($this->classificationId) {
+                $query->where('classification_id', $this->classificationId);
+            }
+
+            if ($this->locationId) {
+                $query->where('location_id', $this->locationId);
+            }
+
+            if ($this->accountId) {
+                $query->whereHas('documents.accounts', function ($q) {
+                    $q->where('accounts.id', $this->accountId);
+                });
+            }
+
+            if ($this->startDate || $this->endDate) {
+                $query->whereHas('documents', function ($q) {
+                    if ($this->startDate) {
+                        $q->where('published_at', '>=', $this->startDate);
+                    }
+                    if ($this->endDate) {
+                        $q->where('published_at', '<=', $this->endDate);
+                    }
+                });
+            }
+
+            $folders = $query->get();
+        }
 
         // Get classifications with hierarchy for filter dropdowns
         $classifications = Classification::withDepth()->defaultOrder()->get()->mapWithKeys(function (Classification $item) {
@@ -393,13 +505,20 @@ class ArchivePage extends Page
             return [$item->getKey() => trim("{$prefix} {$title}")];
         })->all();
 
+        // Get accounts for filter dropdown
+        $accounts = \App\Models\Account::all()->mapWithKeys(function ($item) {
+            return [$item->getKey() => $item->code . ' - ' . $item->name];
+        })->all();
+
         return [
             'folders' => $folders,
             'search' => $this->search,
             'classifications' => $classifications,
             'locations' => $locations,
+            'accounts' => $accounts,
             'classificationId' => $this->classificationId,
             'locationId' => $this->locationId,
+            'accountId' => $this->accountId,
             'startDate' => $this->startDate,
             'endDate' => $this->endDate,
         ];
