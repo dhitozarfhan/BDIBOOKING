@@ -6,6 +6,8 @@ use App\Filament\Forms\Components\SegmentTreeSelect;
 use App\Filament\Forms\Components\TreeSelect;
 use App\Models\Account;
 use App\Models\Document;
+use Asmit\FilamentUpload\Enums\PdfViewFit;
+use Asmit\FilamentUpload\Forms\Components\AdvancedFileUpload;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -31,14 +33,21 @@ class DocumentsRelationManager extends RelationManager
                         ->columnSpan(1)
                         ->schema([
 
-                            Forms\Components\FileUpload::make('file_path')
-                                ->label(__('File'))
+                            AdvancedFileUpload::make('file_path')
+                                ->label(__('Upload PDF'))
                                 ->required()
-                                ->directory('documents')
                                 ->maxSize(51200) // 50 MB
+                                ->directory('documents')
                                 ->preserveFilenames()
                                 ->visibility('private')
-                                ->helperText(__('Maximum file size: 50 MB.')),
+                                ->helperText(__('Maximum file size: 50 MB.'))
+
+                                ->pdfPreviewHeight(400) // Customize preview height
+                                ->pdfDisplayPage(1) // Set default page
+                                ->pdfToolbar(true) // Enable toolbar
+                                ->pdfZoomLevel(100) // Set zoom level
+                                ->pdfFitType(PdfViewFit::FIT) // Set fit type
+                                ->pdfNavPanes(true),
 
                             Forms\Components\TextInput::make('name')
                                 ->label(__('Name'))
