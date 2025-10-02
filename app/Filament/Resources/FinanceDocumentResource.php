@@ -9,6 +9,8 @@ use App\Models\Account;
 use App\Models\Document;
 use App\Models\Folder;
 use App\Models\Segment;
+use Asmit\FilamentUpload\Enums\PdfViewFit;
+use Asmit\FilamentUpload\Forms\Components\AdvancedFileUpload;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
@@ -59,15 +61,21 @@ class FinanceDocumentResource extends Resource
                     Forms\Components\Section::make()
                         ->columnSpan(1)
                         ->schema([
-
-                            FileUpload::make('file_path')
-                                ->label(__('File'))
+                            AdvancedFileUpload::make('file_path')
+                                ->label(__('Upload PDF'))
                                 ->required()
+                                ->maxSize(51200) // 50 MB
                                 ->directory('documents')
-                                ->maxSize(51200) // 10 MB
                                 ->preserveFilenames()
                                 ->visibility('private')
-                                ->helperText(__('Maximum file size: 50 MB.')),
+                                ->helperText(__('Maximum file size: 50 MB.'))
+
+                                ->pdfPreviewHeight(400) // Customize preview height
+                                ->pdfDisplayPage(1) // Set default page
+                                ->pdfToolbar(true) // Enable toolbar
+                                ->pdfZoomLevel(100) // Set zoom level
+                                ->pdfFitType(PdfViewFit::FIT) // Set fit type
+                                ->pdfNavPanes(true),
 
                             Forms\Components\TextInput::make('name')
                                 ->label(__('Name'))
@@ -102,7 +110,7 @@ class FinanceDocumentResource extends Resource
                                 ->relationship('accounts', 'code')
                                 ->getOptionLabelFromRecordUsing(fn (Account $record) => "{$record->name} - {$record->code}")
                                 ->preload()
-                                
+                                ->required()
                                 ->createOptionForm([
                                     Forms\Components\TextInput::make('code')->label(__('Account Code'))
                                         ->numeric()

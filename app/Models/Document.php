@@ -46,7 +46,7 @@ class Document extends Model
      */
     public function accounts()
     {
-        return $this->belongsToMany(Account::class, 'account_document')->using(AccountDocument::class);
+        return $this->belongsToMany(Account::class, 'account_document')->using(AccountDocument::class)->orderBy('code');
     }
 
     /**
