@@ -846,9 +846,34 @@
                                     </td>
                                     <td>
                                         @if(isset($search) && $search)
-                                            {!! $document->description ? str_ireplace(e($search), '<span class="search-term-highlight">' . e($search) . '</span>', e($document->description)) : '' !!}
+                                            @php
+                                                $description = $document->description;
+                                                if ($description) {
+                                                    $words = explode(' ', $description);
+                                                    if (count($words) > 10) {
+                                                        $truncated = implode(' ', array_slice($words, 0, 10)) . '...';
+                                                    } else {
+                                                        $truncated = $description;
+                                                    }
+                                                    echo str_ireplace(e($search), '<span class="search-term-highlight">' . e($search) . '</span>', e($truncated));
+                                                } else {
+                                                    echo '';
+                                                }
+                                            @endphp
                                         @else
-                                            {{ $document->description ?? '' }}
+                                            @php
+                                                $description = $document->description;
+                                                if ($description) {
+                                                    $words = explode(' ', $description);
+                                                    if (count($words) > 10) {
+                                                        echo implode(' ', array_slice($words, 0, 10)) . '...';
+                                                    } else {
+                                                        echo $description;
+                                                    }
+                                                } else {
+                                                    echo '';
+                                                }
+                                            @endphp
                                         @endif
                                     </td>
                                     <td>
