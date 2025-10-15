@@ -18,7 +18,10 @@ Route::get('/{article_type}/{slug}', App\Livewire\Articles\Show::class)
     ->whereIn('article_type', ['news','gallery','page','information'])
     ->name('articles.show');
 
-// Archive export route
+//VirtualTour
+Route::get('/virtualtour', \App\Livewire\VirtualTour::class)->name('virtualtour');
+
+// Archive export route ///filament perlu cek di bawah ini karena ekspos URL
 Route::get('/archive/export', [ArchivePage::class, 'exportToExcel'])->name('archive.export');
 
 /*
@@ -86,10 +89,6 @@ Route::get('/gratification', [GratificationController::class, 'index'])->name('g
 Route::get('/wbs', [WBSController::class, 'index'])->name('wbs.index');
 Route::post('/submit-form', [QuestionController::class, 'submit'])->name('question.submit');
 
-//VirtualTour
-Route::get('/virtualtour', function() {
-    return view('virtualtour.index');
-});
 
 Route::middleware([
     'auth:sanctum',
