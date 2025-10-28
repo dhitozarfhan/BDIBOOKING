@@ -41,6 +41,14 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'sidia' => [
+        'url' => env('SIDIA_API_URL'),
+        'username' => env('SIDIA_API_USERNAME'),
+        'password' => env('SIDIA_API_PASSWORD'),
+        'key' => env('SIDIA_API_KEY'),
+        'key_name' => env('SIDIA_API_KEY_NAME', 'SRV-KEY'),
+    ],
+
     'disk'  => [
         'employee'  => [
             'image'     => 'employee/images',
