@@ -1,73 +1,155 @@
 <div class="container mx-auto px-4 py-8">
-    <div wire:loading class="w-full text-center py-10">
-        <div class="flex justify-center items-center">
-            <svg class="animate-spin -ml-1 mr-3 h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <span class="text-lg font-semibold text-gray-700">Memuat detail diklat...</span>
-        </div>
+    {{-- Loading State --}}
+    <div wire:loading class="w-full flex justify-center items-center py-10">
+        <span class="loading loading-lg loading-spinner text-primary"></span>
+        <span class="text-lg font-semibold text-base-content/80 ml-4">Memuat detail diklat...</span>
     </div>
 
+    {{-- Content --}}
     <div wire:loading.remove>
         @if($error)
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md" role="alert">
-                <p class="font-bold">Terjadi Kesalahan</p>
-                <p>{{ $error }}</p>
+            <div role="alert" class="alert alert-error">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <div>
+                    <h3 class="font-bold">Terjadi Kesalahan!</h3>
+                    <div class="text-xs">{{ $error }}</div>
+                </div>
             </div>
         @elseif(empty($training))
-             <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md" role="alert">
-                <p class="font-bold">Informasi</p>
-                <p>Detail diklat tidak dapat ditemukan.</p>
+            <div role="alert" class="alert alert-info">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div>
+                    <h3 class="font-bold">Informasi</h3>
+                    <div class="text-xs">Detail diklat tidak dapat ditemukan.</div>
+                </div>
             </div>
         @else
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div class="p-6 sm:p-8">
-                    <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800 mb-3">
-                        {{ $training['jenis_diklat'] }}
-                    </span>
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">{{ $training['nama_lengkap'] }}</h1>
-                    
-
-                    <div class="mt-6 sm:mt-8 border-t border-gray-200 pt-6">
-                        <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                            <div class="sm:col-span-1">
-                                <dt class="text-sm font-medium text-gray-500">Jadwal Pelaksanaan</dt>
-                                <dd class="mt-1 text-sm text-gray-900 font-semibold">{{ \Carbon\Carbon::parse($training['tgl_mulai'])->isoFormat('D MMMM YYYY') }} - {{ \Carbon\Carbon::parse($training['tgl_selesai'])->isoFormat('D MMMM YYYY') }}</dd>
-                            </div>
-                            <div class="sm:col-span-1">
-                                <dt class="text-sm font-medium text-gray-500">Lokasi</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ $training['tempat'] }}</dd>
-                            </div>
-                            <div class="sm:col-span-1">
-                                <dt class="text-sm font-medium text-gray-500">Penyelenggara</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ $training['penyelenggara'] }}</dd>
-                            </div>
-                            <div class="sm:col-span-1">
-                                <dt class="text-sm font-medium text-gray-500">Angkatan</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ $training['angkatan'] }}</dd>
-                            </div>
-                             <div class="md:col-span-2">
-                                <dt class="text-sm font-medium text-gray-500">Skema</dt>
-                                <dd class="mt-1 text-sm text-gray-900">{{ $training['uraian_skema'] }}</dd>
-                            </div>
-                        </dl>
+            {{-- Hero section for the training title --}}
+            <div class="hero bg-base-200 rounded-lg py-10">
+                <div class="hero-content text-center">
+                    <div class="max-w-2xl">
+                        <div class="badge badge-accent mb-2">{{ $training['jenis_diklat'] }}</div>
+                        <h1 class="text-4xl font-bold">{{ $training['nama_lengkap'] }}</h1>
                     </div>
                 </div>
-                <div class="bg-gray-50 px-6 py-4 sm:px-8 sm:py-5 flex items-center justify-end">
-                     @if($training['allowed_reg'] == 'Y')
-                        <a href="{{ $training['register_url'] . $training['id_diklat'] }}" target="_blank" class="inline-flex items-center px-6 py-3 bg-blue-600 border border-transparent rounded-md font-semibold text-base text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-md">
-                            Daftar Sekarang
-                        </a>
-                    @else
-                        <span class="px-4 py-3 inline-flex text-sm leading-5 font-semibold rounded-full bg-gray-200 text-gray-800">
-                            Pendaftaran Sudah Ditutup
-                        </span>
-                    @endif
+            </div>
+
+            {{-- Details Card --}}
+            <div class="card lg:card-side bg-base-100 shadow-xl mt-8">
+                <div class="card-body">
+                    <h2 class="card-title">Detail Informasi</h2>
+                    <div class="divider my-0"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <div class="font-bold text-sm text-base-content/60">Jadwal Pelaksanaan</div>
+                            <div>{{ \Carbon\Carbon::parse($training['tgl_mulai'])->isoFormat('D MMMM YYYY') }} - {{ \Carbon\Carbon::parse($training['tgl_selesai'])->isoFormat('D MMMM YYYY') }}</div>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-base-content/60">Lokasi</div>
+                            <div>{{ $training['tempat'] }}</div>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-base-content/60">Penyelenggara</div>
+                            <div>{{ $training['penyelenggara'] }}</div>
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm text-base-content/60">Angkatan</div>
+                            <div>{{ $training['angkatan'] }}</div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <div class="font-bold text-sm text-base-content/60">Skema</div>
+                            <div>{{ $training['uraian_skema'] }}</div>
+                        </div>
+                    </div>
+                    <div class="card-actions justify-end mt-6">
+                        @if($training['allowed_reg'] == 'Y')
+                            <a href="{{ route('training.register', ['id_diklat' => $training['id_diklat']]) }}" wire:navigate class="btn btn-primary">
+                                Daftar Sekarang
+                            </a>
+                        @else
+                            <div class="badge badge-lg badge-neutral">Pendaftaran Ditutup</div>
+                        @endif
+                    </div>
                 </div>
             </div>
-             <div class="mt-8 text-center">
-                <a href="/register" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+
+            {{-- Participants Table --}}
+            @if(!empty($participants))
+                <div class="card bg-base-100 shadow-xl mt-8">
+                    <div class="card-body">
+                        <h2 class="card-title">Peserta yang Terdaftar</h2>
+                        <div class="divider my-0"></div>
+                        <div class="overflow-x-auto mt-4">
+                            <table class="table table-zebra w-full">
+                                <thead>
+                                    <tr>
+                                        <th>Nama</th>
+                                        <th>Umur</th>
+                                        <th>L/P</th>
+                                        <th>Pendidikan</th>
+                                        @if($training['jenis'] == 'sdmi')
+                                            <th>Penempatan</th>
+                                            <th>KTP</th>
+                                            <th>TUK</th>
+                                            <th>Lulus UK</th>
+                                        @elseif($training['jenis'] == 'sdma')
+                                            <th>Asal Satker</th>
+                                            <th>NIP</th>
+                                            <th>Jabatan</th>
+                                            <th>Pangkat</th>
+                                        @elseif($training['jenis'] == 'infrastruktur_kompetensi')
+                                            <th>Nomor Reg Asesor</th>
+                                            <th>LSP Induk</th>
+                                            <th>Skema yang Dipilih</th>
+                                            <th>Instansi Tempat Bekerja</th>
+                                        @endif
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($participants as $participant)
+                                        <tr>
+                                            <td>{{ $participant['nama'] }}</td>
+                                            <td>{{ $participant['umur'] }}</td>
+                                            <td>{{ $participant['kelamin'] }}</td>
+                                            <td>{{ $participant['pendidikan'] }}</td>
+                                            @if($training['jenis'] == 'sdmi')
+                                                <td>{{ $participant['penempatan'] }}</td>
+                                                <td>{{ $participant['ktp'] }}</td>
+                                                <td>{{ $participant['tuk'] }}</td>
+                                                <td>{{ $participant['ukom'] }}</td>
+                                            @elseif($training['jenis'] == 'sdma')
+                                                <td>{{ $participant['satker'] }}</td>
+                                                <td>{{ $participant['nip'] }}</td>
+                                                <td>{{ $participant['jabatan'] }}</td>
+                                                <td>{{ $participant['pangkat'] }}</td>
+                                            @elseif($training['jenis'] == 'infrastruktur_kompetensi')
+                                                <td>{{ $participant['nomor_reg_asesor'] }}</td>
+                                                <td>{{ $participant['lsp'] }}</td>
+                                                <td>{{ $participant['skema'] }}</td>
+                                                <td>{{ $participant['instansi'] }}</td>
+                                            @endif
+                                            <td>
+                                                <div class="badge 
+                                                    @switch($participant['status'])
+                                                        @case('Diterima') badge-success @break
+                                                        @case('Ditolak') badge-error @break
+                                                        @case('Direview') badge-warning @break
+                                                        @default badge-ghost @endswitch
+                                                ">{{ $participant['status'] }}</div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            {{-- Back Button --}}
+            <div class="mt-8 text-center">
+                <a href="{{ route('register') }}" wire:navigate class="btn btn-ghost">
                     &larr; Kembali ke daftar diklat
                 </a>
             </div>

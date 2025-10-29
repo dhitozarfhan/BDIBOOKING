@@ -23,6 +23,10 @@ Route::get('/virtualtour', \App\Livewire\VirtualTour::class)->name('virtualtour'
 
 Route::get('/register', \App\Livewire\Register::class)->name('register');
 
+Route::get('/training/detail/{id_diklat}', \App\Livewire\TrainingDetail::class)->name('training.detail');
+
+Route::get('/register/training/{id_diklat}', \App\Livewire\TrainingRegistration::class)->name('training.register');
+
 // Archive export route ///filament perlu cek di bawah ini karena ekspos URL
 Route::get('/archive/export', [ArchivePage::class, 'exportToExcel'])->name('archive.export');
 

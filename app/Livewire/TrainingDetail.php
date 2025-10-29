@@ -9,6 +9,7 @@ use Livewire\Component;
 class TrainingDetail extends Component
 {
     public ?array $training = null;
+    public array $participants = [];
     public string $error = '';
     public $id_diklat;
 
@@ -55,6 +56,62 @@ class TrainingDetail extends Component
 
                 if (empty($this->training)) {
                     $this->error = 'Data diklat tidak ditemukan atau tidak valid.';
+                } else {
+                    // Now, fetch participants
+                    try {
+                        $participantResponse = Http::withBasicAuth($credentials['username'], $credentials['password'])
+                            ->post(config('services.sidia.url') . '/register/training/peserta', [
+                                $credentials['key_name'] => $credentials['key'],
+                                'id_diklat'              => $this->id_diklat,
+                            ]);
+
+                        if ($participantResponse->successful()) {
+                            $rawParticipantBody = $participantResponse->body();
+                            $decodedParticipantBody = json_decode($rawParticipantBody, true);
+
+                            $participantData = null;
+                            if (json_last_error() === JSON_ERROR_NONE && is_string($decodedParticipantBody)) {
+                                $participantData = json_decode($decodedParticipantBody, true);
+                            } elseif (is_array($decodedParticipantBody)) {
+                                $participantData = $decodedParticipantBody;
+                            }
+
+                            if (isset($participantData['data']['peserta']) && is_array($participantData['data']['peserta'])) {
+                                $statusOptions = ['' => 'Semua', 'accept' => 'Diterima', 'deny' => 'Ditolak', 'pending' => 'Direview'];
+                                
+                                foreach ($participantData['data']['peserta'] as $dt) {
+                                    $this->participants[] = [
+                                        'nama'      => $dt['nama'],
+                                        'umur'      => $dt['umur'],
+                                        'kelamin'   => $dt['id_kelamin'],
+                                        'pendidikan'=> $dt['pendidikan'],
+                                        'penempatan'=> $dt['penempatan'],
+                                        'ktp'       => isset($dt['ktp']) ? substr($dt['ktp'], 0, -6).'******' : '-',
+                                        'tuk'       => $dt['tuk'],
+                                        'ukom'      => $dt['ukom'],
+                                        'satker'    => $dt['satker'],
+                                        'nip'       => $dt['nip'],
+                                        'jabatan'   => $dt['jabatan'],
+                                        'pangkat'   => $dt['uraian_pangkat'],
+                                        'nomor_reg_asesor'=> $dt['nomor_reg_asesor'],
+                                        'lsp'       => $dt['lsp'],
+                                        'skema'     => $dt['skema'],
+                                        'instansi'  => $dt['instansi_nama'],
+                                        'status'    => $statusOptions[$dt['status']] ?? $dt['status']
+                                    ];
+                                }
+                            }
+                        } else {
+                            // Don't treat this as a fatal error, maybe just log it
+                            Log::warning('SIDIA API request failed for training participants', [
+                                'status'    => $participantResponse->status(),
+                                'response'  => $participantResponse->body(),
+                                'id_diklat' => $this->id_diklat,
+                            ]);
+                        }
+                    } catch (\Exception $e) {
+                        Log::error('SIDIA API request exception for training participants: ' . $e->getMessage(), ['id_diklat' => $this->id_diklat]);
+                    }
                 }
 
             } else {

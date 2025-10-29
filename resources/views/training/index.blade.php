@@ -1,118 +1,116 @@
 <x-app-layout>
-    <div class="bg-white p-8 rounded-lg shadow-md w-full mt-6 mb-16">
-        <h1 class="text-3xl font-bold mb-2">Diklat 3-in-1</h1>
-        <h2 class="text-xl font-semibold mb-4">Pelatihan, Sertifikasi, & Penempatan Kerja</h2>
-        <hr class="mb-4">
-        <p class="text-gray-700 mb-6 text-justify">
-            Pelatihan yang dilakukan oleh Balai Diklat Industri (BDI) menggunakan sistem
-            <em>three in one</em> atau dapat disingkat <strong>3 in 1</strong>, yaitu pelatihan,
-            sertifikasi kompetensi dan penempatan kerja. Pelatihan dilakukan dengan menggunakan
-            kurikulum dan modul yang mengacu pada kebutuhan industri agar terbentuk
-            <em>link and match</em> antara lembaga pelatihan dengan perusahaan industri untuk
-            menghasilkan lulusan pelatihan yang kompeten dan siap kerja. Pada akhir pelatihan
-            dilakukan sertifikasi kompetensi terhadap peserta pelatihan, yang bertujuan untuk
-            memastikan bahwa lulusan pelatihan telah kompeten. Untuk memudahkan proses sertifikasi
-            maka BDI membentuk Tempat Uji Kompetensi (TUK), Lembaga Sertifikasi Profesi (LSP), dan
-            menyiapkan perangkat terkait. Setelah proses penyelenggaraan pelatihan dan sertifikasi
-            dilakukan, maka proses terakhir adalah penempatan lulusan berdasarkan kerja sama yang
-            telah disepakati dengan pihak industri.
-        </p>
-        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
-                <path
-                    d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z" />
-            </svg>
-            Daftar Sekarang
-        </button>
+    {{-- Hero Section --}}
+    <div class="hero min-h-[60vh] bg-base-200">
+        <div class="hero-content text-center">
+            <div class="max-w-3xl">
+                <h1 class="text-5xl font-bold">Diklat 3-in-1</h1>
+                <h2 class="text-2xl font-semibold mt-2 mb-4">Pelatihan, Sertifikasi, & Penempatan Kerja</h2>
+                <p class="py-6 text-justify">
+                    Pelatihan yang dilakukan oleh Balai Diklat Industri (BDI) menggunakan sistem
+                    <strong>3-in-1</strong>: pelatihan, sertifikasi kompetensi, dan penempatan kerja.
+                    Kurikulum dan modul dirancang mengacu pada kebutuhan industri untuk menciptakan
+                    <em>link and match</em> yang kuat. Lulusan pelatihan yang kompeten dan siap kerja dijamin
+                    melalui sertifikasi di akhir program. Untuk memfasilitasi ini, BDI telah membentuk
+                    Tempat Uji Kompetensi (TUK) dan Lembaga Sertifikasi Profesi (LSP). Proses diakhiri
+                    dengan penempatan kerja bagi lulusan, sesuai kesepakatan dengan mitra industri.
+                </p>
+                <a href="{{ route('register') }}" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5 mr-2">
+                        <path d="M10 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM3.465 14.493a1.23 1.23 0 0 0 .41 1.412A9.957 9.957 0 0 0 10 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 0 0-13.074.003Z" />
+                    </svg>
+                    Daftar Sekarang
+                </a>
+            </div>
+        </div>
     </div>
 
-    <section class="bg-gray-100">
-        <div class="container relative mx-auto px-4 mb-16">
-            <!-- SVG decoration START -->
-            <figure class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <svg>
-                    <path class="fill-white opacity-40" d="m496 22.999c0 10.493-8.506 18.999-18.999 18.999s-19-8.506-19-18.999 8.507-18.999 19-18.999 18.999 8.506 18.999 18.999z"></path>
-                    <path class="fill-white opacity-40" d="m775 102.5c0 5.799-4.701 10.5-10.5 10.5-5.798 0-10.499-4.701-10.499-10.5 0-5.798 4.701-10.499 10.499-10.499 5.799 0 10.5 4.701 10.5 10.499z"></path>
-                    <path class="fill-white opacity-40" d="m192 102c0 6.626-5.373 11.999-12 11.999s-11.999-5.373-11.999-11.999c0-6.628 5.372-12 11.999-12s12 5.372 12 12z"></path>
-                    <path class="fill-white opacity-40" d="m20.499 10.25c0 5.66-4.589 10.249-10.25 10.249-5.66 0-10.249-4.589-10.249-10.249-0-5.661 4.589-10.25 10.249-10.25 5.661-0 10.25 4.589 10.25 10.25z"></path>
-                </svg>
-            </figure>
-            <!-- SVG decoration END -->
-
-            <div class="grid grid-cols-1">
-                <div class="col-span-1">
-                    <div class="bg-blue-500 p-6 rounded-xl">
-                        <div class="relative">
-                            <!-- SVG decoration -->
-                            <figure class="fill-white opacity-10 absolute top-1/2 left-0 transform -translate-y-1/2">
-                                <svg width="141px" height="141px">
-                                    <path d="M140.520,70.258 C140.520,109.064 109.062,140.519 70.258,140.519 C31.454,140.519 -0.004,109.064 -0.004,70.258 C-0.004,31.455 31.454,-0.003 70.258,-0.003 C109.062,-0.003 140.520,31.455 140.520,70.258 Z"></path>
-                                </svg>
-                            </figure>
-
-                            <!-- Action box -->
-                            <div class="mx-auto relative">
-                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                                    <div class="col flex items-start">
-                                        <h1 class="flex-shrink-0 my-1 mr-3 bg-blue-700 text-white text-2xl font-bold rounded-full py-1 px-3">1</h1>
-                                        <h4 class="my-1 text-white text-3xl font-bold">Pelatihan Industri Berbasis Kompetensi</h4>
-                                    </div>
-                                    <div class="col flex items-start">
-                                        <h1 class="flex-shrink-0 my-1 mr-3 bg-green-700 text-white text-2xl rounded-full py-1 px-3">2</h1>
-                                        <h4 class="my-1 text-white text-3xl font-bold">Sertifikat Kompetensi</h4>
-                                    </div>
-                                    <div class="col flex items-start">
-                                        <h1 class="flex-shrink-0 my-1 mr-3 bg-red-700 text-white text-2xl rounded-full py-1 px-3">3</h1>
-                                        <h4 class="my-1 text-white text-3xl font-bold">Penempatan Kerja</h4>
-                                    </div>
-                                </div>
-                            </div>
+    {{-- Steps Section --}}
+    <section class="py-20 bg-base-100">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold">Proses 3-in-1</h2>
+                <p class="text-lg mt-2 text-base-content/80">Tiga langkah utama untuk memastikan lulusan siap kerja.</p>
+            </div>
+            <div class="flex justify-center">
+                <ul class="steps steps-vertical lg:steps-horizontal">
+                    <li class="step step-primary">
+                        <div class="step-content text-left lg:text-center lg:w-64">
+                            <h4 class="font-bold text-lg">Pelatihan Industri</h4>
+                            <p class="text-sm">Berbasis kompetensi sesuai kebutuhan industri.</p>
                         </div>
+                    </li>
+                    <li class="step step-primary">
+                        <div class="step-content text-left lg:text-center lg:w-64">
+                            <h4 class="font-bold text-lg">Sertifikasi Kompetensi</h4>
+                            <p class="text-sm">Uji kompetensi oleh LSP untuk menjamin keahlian.</p>
+                        </div>
+                    </li>
+                    <li class="step step-primary">
+                        <div class="step-content text-left lg:text-center lg:w-64">
+                            <h4 class="font-bold text-lg">Penempatan Kerja</h4>
+                            <p class="text-sm">Jaminan penempatan di perusahaan mitra.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    {{-- Detailed Cards Section --}}
+    <section class="py-20 bg-base-200">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {{-- Card 1: Pelatihan --}}
+                <div class="card bg-base-100 shadow-xl transform-gpu transition-all duration-300 hover:-translate-y-2">
+                    <div class="card-body items-center text-center">
+                        <div class="p-4 bg-primary rounded-full">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary-content" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <h2 class="card-title mt-4">Pelatihan Industri</h2>
+                        <ul class="list-disc text-left p-4 text-base-content/80">
+                            <li>Jenis pelatihan sesuai kebutuhan industri.</li>
+                            <li>Kurikulum mengacu pada standar kompetensi.</li>
+                            <li>Didukung workshop dengan peralatan modern.</li>
+                            <li>Pelaksanaan in-house maupun on-site.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                {{-- Card 2: Sertifikasi --}}
+                <div class="card bg-base-100 shadow-xl transform-gpu transition-all duration-300 hover:-translate-y-2">
+                    <div class="card-body items-center text-center">
+                        <div class="p-4 bg-primary rounded-full">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary-content" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h2 class="card-title mt-4">Sertifikasi Kompetensi</h2>
+                        <ul class="list-disc text-left p-4 text-base-content/80">
+                            <li>Uji kompetensi di akhir pelatihan.</li>
+                            <li>Tempat Uji Kompetensi (TUK) terstandarisasi.</li>
+                            <li>Mendapatkan sertifikat kompetensi dan diklat.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                {{-- Card 3: Penempatan --}}
+                <div class="card bg-base-100 shadow-xl transform-gpu transition-all duration-300 hover:-translate-y-2">
+                    <div class="card-body items-center text-center">
+                        <div class="p-4 bg-primary rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary-content" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01" />
+                            </svg>
+                        </div>
+                        <h2 class="card-title mt-4">Penempatan Kerja</h2>
+                        <ul class="list-disc text-left p-4 text-base-content/80">
+                            <li>MoU dengan berbagai perusahaan industri.</li>
+                            <li>Jaminan penempatan kerja bagi seluruh lulusan.</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <section class="bg-gray-100">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
-            <div class="bg-white rounded-lg shadow-md">
-                <div class="bg-blue-600 text-white rounded-t-lg p-4 flex items-center">
-                    <i class="fas fa-chalkboard-teacher mr-2"></i>
-                    <h2 class="font-semibold">Pelatihan Industri Berbasis Kompetensi</h2>
-                </div>
-                <div class="p-4">
-                    <ul class="list-disc text-gray-700">
-                        <li>Jenis pelatihan sesuai dengan kebutuhan industri.</li>
-                        <li>Kurikulum dirancang bersama dengan industri dan mengacu standar kompetensi.</li>
-                        <li>Penyelenggaraan didukung workshop dengan mesin dan peralatan sesuai kondisi industri.</li>
-                        <li>Dapat dilaksanakan oleh lembaga diklat secara in-house maupun on-site.</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow-md">
-                <div class="bg-green-500 text-white rounded-t-lg p-4 flex items-center">
-                    <i class="fas fa-user-check mr-2"></i>
-                    <h2 class="font-semibold">Sertifikasi Kompetensi</h2>
-                </div>
-                <div class="p-4">
-                    <ul class="list-disc text-gray-700">
-                        <li>Dilakukan uji kompetensi.</li>
-                        <li>Tempat Uji Kompetensi (TUK) berada di lembaga diklat atau di tempat kerja.</li>
-                        <li>Peserta mendapatkan sertifikat kompetensi dan sertifikat diklat.</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow-md">
-                <div class="bg-red-500 text-white rounded-t-lg p-4 flex items-center">
-                    <i class="fas fa-briefcase mr-2"></i>
-                    <h2 class="font-semibold">Penempatan Kerja</h2>
-                </div>
-                <div class="p-4">
-                    <ul class="list-disc text-gray-700">
-                        <li>MoU dengan perusahaan industri.</li>
-                        <li>Jaminan penempatan kerja bagi seluruh lulusan diklat.</li>
-                    </ul>
-                </div>
-            </div>
     </section>
 </x-app-layout>
