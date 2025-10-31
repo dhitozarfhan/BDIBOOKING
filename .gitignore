@@ -5,6 +5,7 @@
 /public/storage
 /storage/*.key
 /vendor
+/bdiyk-lama
 .env
 .env.backup
 .env.production
