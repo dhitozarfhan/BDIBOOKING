@@ -186,6 +186,19 @@ class TrainingRegistration extends Component
         $this->selectedKecamatan = '';
         $this->desa = [];
         $this->selectedDesa = '';
+
+        if (empty($provinsiId)) {
+            return;
+        }
+
+        $wilayah = $this->fetchWilayah('provinsi', $provinsiId);
+
+        $this->kota = array_map(static function ($item) {
+            return [
+                'id_kota' => $item['value'],
+                'kota' => $item['name'],
+            ];
+        }, $wilayah);
     }
 
     public function updatedSelectedKota($kotaId)
@@ -194,12 +207,38 @@ class TrainingRegistration extends Component
         $this->selectedKecamatan = '';
         $this->desa = [];
         $this->selectedDesa = '';
+
+        if (empty($kotaId)) {
+            return;
+        }
+
+        $wilayah = $this->fetchWilayah('kota', $kotaId);
+
+        $this->kecamatan = array_map(static function ($item) {
+            return [
+                'id_kecamatan' => $item['value'],
+                'kecamatan' => $item['name'],
+            ];
+        }, $wilayah);
     }
     
     public function updatedSelectedKecamatan($kecamatanId)
     {
         $this->desa = [];
         $this->selectedDesa = '';
+
+        if (empty($kecamatanId)) {
+            return;
+        }
+
+        $wilayah = $this->fetchWilayah('kecamatan', $kecamatanId);
+
+        $this->desa = array_map(static function ($item) {
+            return [
+                'id_desa' => $item['value'],
+                'desa' => $item['name'],
+            ];
+        }, $wilayah);
     }
 
     public function submit()
@@ -302,5 +341,58 @@ class TrainingRegistration extends Component
     public function render()
     {
         return view('livewire.training.registration')->title('Form Pendaftaran Diklat');
+    }
+
+    /**
+     * Fetch wilayah data from SIDIA API based on the provided level.
+     */
+    private function fetchWilayah(string $wilayah, string $idWilayah): array
+    {
+        if (empty($idWilayah)) {
+            return [];
+        }
+
+        $credentials = [
+            'username' => config('services.sidia.username'),
+            'password' => config('services.sidia.password'),
+            'key'      => config('services.sidia.key'),
+            'key_name' => config('services.sidia.key_name'),
+        ];
+
+        if (empty($credentials['username']) || empty($credentials['password']) || empty($credentials['key']) || empty($credentials['key_name'])) {
+            Log::warning('SIDIA credentials incomplete when fetching wilayah data.', ['wilayah' => $wilayah]);
+            return [];
+        }
+
+        try {
+            $response = Http::withBasicAuth($credentials['username'], $credentials['password'])
+                ->post(config('services.sidia.url') . '/fetch/wilayah', [
+                    $credentials['key_name'] => $credentials['key'],
+                    'id_wilayah' => $idWilayah,
+                    'wilayah' => $wilayah,
+                ]);
+
+            if (!$response->successful()) {
+                Log::warning('Failed to fetch wilayah data from SIDIA.', ['wilayah' => $wilayah, 'status' => $response->status()]);
+                return [];
+            }
+
+            $result = $response->json();
+            if (is_string($result)) {
+                $result = json_decode($result, true);
+            }
+
+            if (($result['status'] ?? null) != 1 || !isset($result['data']['wilayah']) || !is_array($result['data']['wilayah'])) {
+                Log::warning('Unexpected response structure when fetching wilayah data from SIDIA.', ['wilayah' => $wilayah, 'payload' => $result]);
+                return [];
+            }
+
+            return array_values(array_filter($result['data']['wilayah'], static function ($item) {
+                return !empty($item['value']) && !empty($item['name']);
+            }));
+        } catch (\Exception $e) {
+            Log::error('SIDIA API exception when fetching wilayah data: ' . $e->getMessage(), ['wilayah' => $wilayah, 'id_wilayah' => $idWilayah]);
+            return [];
+        }
     }
 }

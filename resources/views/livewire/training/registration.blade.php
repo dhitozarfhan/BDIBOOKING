@@ -181,7 +181,45 @@
                                     </select>
                                     @error('selectedProvinsi') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                                 </label>
-                                {{-- NOTE: Dependent dropdowns for city, district, village need API implementation in component --}}
+                                <label class="form-control w-full">
+                                    <div class="label"><span class="label-text">Kabupaten / Kota <span class="text-error">*</span></span></div>
+                                    <select wire:model.live="selectedKota" @class(['select select-bordered', 'select-error' => $errors->has('selectedKota')]) @disabled(empty($kota))>
+                                        <option value="">{{ empty($kota) ? 'Pilih provinsi terlebih dahulu' : '-- Pilih Kabupaten / Kota --' }}</option>
+                                        @foreach($kota as $item)
+                                            <option value="{{ $item['id_kota'] }}">{{ $item['kota'] }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div wire:loading wire:target="selectedProvinsi" class="label">
+                                        <span class="label-text-alt text-primary">Memuat data kabupaten/kota...</span>
+                                    </div>
+                                    @error('selectedKota') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                </label>
+                                <label class="form-control w-full">
+                                    <div class="label"><span class="label-text">Kecamatan <span class="text-error">*</span></span></div>
+                                    <select wire:model.live="selectedKecamatan" @class(['select select-bordered', 'select-error' => $errors->has('selectedKecamatan')]) @disabled(empty($kecamatan))>
+                                        <option value="">{{ empty($kecamatan) ? 'Pilih kabupaten/kota terlebih dahulu' : '-- Pilih Kecamatan --' }}</option>
+                                        @foreach($kecamatan as $item)
+                                            <option value="{{ $item['id_kecamatan'] }}">{{ $item['kecamatan'] }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div wire:loading wire:target="selectedKota" class="label">
+                                        <span class="label-text-alt text-primary">Memuat data kecamatan...</span>
+                                    </div>
+                                    @error('selectedKecamatan') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                </label>
+                                <label class="form-control w-full">
+                                    <div class="label"><span class="label-text">Desa / Kelurahan <span class="text-error">*</span></span></div>
+                                    <select wire:model.live="selectedDesa" @class(['select select-bordered', 'select-error' => $errors->has('selectedDesa')]) @disabled(empty($desa))>
+                                        <option value="">{{ empty($desa) ? 'Pilih kecamatan terlebih dahulu' : '-- Pilih Desa / Kelurahan --' }}</option>
+                                        @foreach($desa as $item)
+                                            <option value="{{ $item['id_desa'] }}">{{ $item['desa'] }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div wire:loading wire:target="selectedKecamatan" class="label">
+                                        <span class="label-text-alt text-primary">Memuat data desa/kelurahan...</span>
+                                    </div>
+                                    @error('selectedDesa') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                </label>
                                 <label class="form-control w-full">
                                     <div class="label"><span class="label-text">Dusun, Nama Jalan, dsb. <span class="text-error">*</span></span></div>
                                     <input type="text" wire:model.lazy="dusun" @class(['input input-bordered w-full', 'input-error' => $errors->has('dusun')]) />
