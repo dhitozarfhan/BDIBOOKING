@@ -92,6 +92,45 @@ class TrainingRegistration extends Component
     
     public string $error = '';
 
+    protected $validationAttributes = [
+        'nama' => 'Nama Lengkap',
+        'tempat_lahir' => 'Tempat Lahir',
+        'tanggal_lahir' => 'Tanggal Lahir',
+        'id_kelamin' => 'Jenis Kelamin',
+        'id_agama' => 'Agama',
+        'id_pendidikan' => 'Pendidikan',
+        'pendidikan_jurusan' => 'Jurusan',
+        'pendidikan_tamat' => 'Tahun Ijazah',
+        'ktp' => 'Nomor KTP / NIK',
+        'mobile' => 'Nomor Handphone',
+        'email' => 'Email',
+        'selectedProvinsi' => 'Provinsi',
+        'selectedKota' => 'Kota',
+        'selectedKecamatan' => 'Kecamatan',
+        'selectedDesa' => 'Desa',
+        'dusun' => 'Dusun/Jalan',
+        'approval' => 'Persetujuan',
+        'nip' => 'NIP',
+        'id_pangkat' => 'Pangkat',
+        'jabatan' => 'Jabatan',
+        'id_satker' => 'Satuan Kerja',
+        'id_lsp' => 'LSP Induk',
+        'id_skema' => 'Skema Sertifikasi',
+        'instansi_nama' => 'Nama Instansi',
+        'instansi_jabatan' => 'Jabatan di Instansi',
+        'instansi_alamat' => 'Alamat Instansi',
+        'instansi_telepon' => 'Telepon Instansi',
+    ];
+
+    protected $messages = [
+        'approval.accepted' => 'Anda harus menyetujui syarat dan ketentuan yang berlaku.',
+        'mobile.regex' => 'Format Nomor Handphone tidak valid. Contoh: 081234567890',
+        'ktp.digits' => ':attribute harus 16 digit.',
+        'pendidikan_tamat.digits' => ':attribute harus 4 digit.',
+        'nip.digits' => ':attribute harus 18 digit.',
+        'email.email' => 'Format :attribute tidak valid.',
+    ];
+
     public function mount($id_diklat)
     {
         $this->id_diklat = $id_diklat;
