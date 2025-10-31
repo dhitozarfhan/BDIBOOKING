@@ -50,7 +50,7 @@
                                 <td>{{ $training['tempat'] }}</td>
                                 <td>
                                      @if($training['allowed_reg'] == 'Y')
-                                        <a href="{{ $training['register_url'] . $training['id_diklat'] }}" target="_blank" class="btn btn-primary btn-sm">
+                                        <a href="{{ $training['register_url'] . $training['id_diklat'] }}" wire:navigate class="btn btn-primary btn-sm">
                                             Daftar
                                         </a>
                                     @else

@@ -49,6 +49,46 @@ class TrainingRegistration extends Component
     public string $telepon = '';
     public string $mobile = '';
     public string $email = '';
+
+    // SDMA fields
+    public string $nip = '';
+    public string $id_pangkat = '';
+    public string $jabatan = '';
+    public string $id_satker_jenis = '';
+    public string $id_provinsi_satker = '';
+    public string $id_kota_satker = '';
+    public string $id_satker = '';
+    public bool $from_kemenperin = false;
+
+    // Infrastruktur Kompetensi fields
+    public string $nomor_reg_asesor = '';
+    public string $id_lsp = '';
+    public string $id_skema = '';
+    public string $instansi_nama = '';
+    public string $instansi_jabatan = '';
+    public string $instansi_alamat = '';
+    public string $instansi_telepon = '';
+    public string $instansi_fax = '';
+    public string $instansi_email = '';
+
+    // BigData fields
+    public string $id_pekerjaan_sebelumnya = '';
+    public string $id_penghasilan_sebelumnya = '';
+    public string $id_status_nikah = '';
+    public string $tanggal_lahir_pasangan = '';
+    public string $id_pekerjaan_pasangan = '';
+    public string $id_penghasilan_pasangan = '';
+    public string $jumlah_anak = '';
+    public string $id_status_hidup_ibu = '';
+    public string $tanggal_lahir_ibu = '';
+    public string $id_pekerjaan_ibu = '';
+    public string $id_status_hidup_ayah = '';
+    public string $tanggal_lahir_ayah = '';
+    public string $id_pekerjaan_ayah = '';
+    public string $id_penghasilan_ortu = '';
+
+    // Approval
+    public bool $approval = false;
     
     public string $error = '';
 
@@ -77,7 +117,6 @@ class TrainingRegistration extends Component
             if ($response->successful()) {
                 $data = $response->json();
                 
-                // The actual data might be in a double-encoded JSON string
                 if (is_string($data)) {
                     $data = json_decode($data, true);
                 }
@@ -100,11 +139,8 @@ class TrainingRegistration extends Component
         }
     }
     
-    // Placeholder for cascading dropdown logic
     public function updatedSelectedProvinsi($provinsiId)
     {
-        // This would typically make an API call to get cities based on province ID
-        // For now, it just resets the dependent dropdowns.
         $this->kota = [];
         $this->selectedKota = '';
         $this->kecamatan = [];
@@ -115,7 +151,6 @@ class TrainingRegistration extends Component
 
     public function updatedSelectedKota($kotaId)
     {
-        // API call to get districts based on city ID
         $this->kecamatan = [];
         $this->selectedKecamatan = '';
         $this->desa = [];
@@ -124,18 +159,105 @@ class TrainingRegistration extends Component
     
     public function updatedSelectedKecamatan($kecamatanId)
     {
-        // API call to get villages based on district ID
         $this->desa = [];
         $this->selectedDesa = '';
     }
 
     public function submit()
     {
-        // Validation logic would go here
-        
-        // API call to submit the form data would go here
+        $rules = [
+            'nama' => 'required|string|max:50',
+            'tempat_lahir' => 'required|string|max:50',
+            'tanggal_lahir' => 'required|date',
+            'id_kelamin' => 'required',
+            'id_agama' => 'required',
+            'id_pendidikan' => 'required',
+            'pendidikan_jurusan' => 'required|string|max:200',
+            'pendidikan_tamat' => 'required|numeric|digits:4',
+            'ktp' => [
+                'required',
+                'numeric',
+                'digits:16',
+                function ($attribute, $value, $fail) {
+                    $credentials = [
+                        'username' => config('services.sidia.username'),
+                        'password' => config('services.sidia.password'),
+                        'key'      => config('services.sidia.key'),
+                        'key_name' => config('services.sidia.key_name'),
+                    ];
+                    try {
+                        $response = Http::withBasicAuth($credentials['username'], $credentials['password'])
+                            ->post(config('services.sidia.url') . '/register/is_allowed', [
+                                $credentials['key_name'] => $credentials['key'],
+                                'ktp' => $value,
+                                'id_diklat' => $this->id_diklat,
+                            ]);
+                        
+                        $result = $response->json();
+                        if (is_string($result)) {
+                            $result = json_decode($result, true);
+                        }
 
-        // Redirect to a success page or show a success message
+                        if (isset($result['data']['allowed']) && !$result['data']['allowed']) {
+                            $fail('Nomor KTP atau biodata peserta yang Anda masukkan sudah ada sebelumnya.');
+                        }
+                    } catch (\Exception $e) {
+                        $fail('Terjadi kesalahan dalam memvalidasi KTP via API.');
+                    }
+                },
+            ],
+            'mobile' => ['required', 'string', 'max:30', 'regex:/^[0]{1}[1-9]{1}[0-9]{7,15}$/'],
+            'email' => 'required|email|max:70',
+            'selectedProvinsi' => 'required',
+            'selectedKota' => 'required',
+            'selectedKecamatan' => 'required',
+            'selectedDesa' => 'required',
+            'dusun' => 'required|string|max:100',
+            'rt' => 'nullable|numeric|min:1',
+            'rw' => 'nullable|numeric|min:1',
+            'approval' => 'accepted',
+        ];
+
+        if ($this->diklat['jenis'] == 'sdma') {
+            $rules['nip'] = 'required|numeric|digits:18';
+            $rules['id_pangkat'] = 'required';
+            $rules['jabatan'] = 'required|string|max:200';
+            $rules['id_satker'] = 'required';
+        }
+
+        if ($this->diklat['jenis'] == 'infrastruktur_kompetensi') {
+            $rules['id_lsp'] = 'required';
+            $rules['id_skema'] = 'required';
+            $rules['instansi_nama'] = 'required|string|max:200';
+            $rules['instansi_jabatan'] = 'required|string|max:200';
+            $rules['instansi_alamat'] = 'required|string|max:300';
+            $rules['instansi_telepon'] = 'required|string|max:30';
+        }
+        
+        if ($this->diklat['bigdata'] == 'Y') {
+            $rules['id_pekerjaan_sebelumnya'] = 'required';
+            $rules['id_penghasilan_sebelumnya'] = 'required';
+            $rules['id_status_nikah'] = 'required';
+            $rules['id_status_hidup_ibu'] = 'required';
+            $rules['tanggal_lahir_ibu'] = 'required|date';
+            $rules['id_pekerjaan_ibu'] = 'required';
+            $rules['id_status_hidup_ayah'] = 'required';
+            $rules['tanggal_lahir_ayah'] = 'required|date';
+            $rules['id_pekerjaan_ayah'] = 'required';
+            $rules['id_penghasilan_ortu'] = 'required';
+
+            if ($this->id_status_nikah == 'M') { // Assuming 'M' means 'Married'
+                $rules['tanggal_lahir_pasangan'] = 'required|date';
+                $rules['id_pekerjaan_pasangan'] = 'required';
+                $rules['id_penghasilan_pasangan'] = 'required';
+                $rules['jumlah_anak'] = 'required|numeric|min:0|max:100';
+            }
+        }
+
+        $this->validate($rules);
+
+        // Validation passed, handle submission...
+        Log::info('Registration form validated successfully.');
     }
 
     public function render()
