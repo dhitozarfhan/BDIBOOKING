@@ -52,6 +52,7 @@ class TrainingRegistration extends Component
     public string $telepon = '';
     public string $mobile = '';
     public string $email = '';
+    public string $ttd = '';
 
     // SDMA fields
     public string $nip = '';
@@ -123,6 +124,7 @@ class TrainingRegistration extends Component
         'instansi_jabatan' => 'Jabatan di Instansi',
         'instansi_alamat' => 'Alamat Instansi',
         'instansi_telepon' => 'Telepon Instansi',
+        'ttd' => 'Tanda Tangan',
         'scan_foto' => 'Scan Foto',
         'scan_ktp' => 'Scan KTP',
         'scan_ijazah' => 'Scan Ijazah',
@@ -451,6 +453,7 @@ class TrainingRegistration extends Component
             'ma' => null,
             'mpa_mkva' => null,
             'mma_mapa' => null,
+            'ttd' => null,
         ];
 
         if (empty($this->diklat)) {
@@ -503,6 +506,13 @@ class TrainingRegistration extends Component
             }
 
             $files[$config['destination']] = $result;
+        }
+
+        if (!empty($this->ttd)) {
+            $ttdData = $this->extractBase64Data($this->ttd);
+            if ($ttdData !== null) {
+                $files['ttd'] = $ttdData;
+            }
         }
 
         return $files;
@@ -630,6 +640,16 @@ class TrainingRegistration extends Component
         }
 
         return $payload;
+    }
+
+    private function extractBase64Data(?string $dataUrl): ?string
+    {
+        if (empty($dataUrl)) {
+            return null;
+        }
+
+        $parts = explode(',', $dataUrl, 2);
+        return $parts[1] ?? $parts[0] ?? null;
     }
 
     private function getSidiaCredentials(): ?array

@@ -78,7 +78,7 @@
                     <div class="space-y-8">
                         {{-- Biodata Card --}}
                         <div class="card bg-base-100 shadow-xl border border-base-200">
-                            <div class="card-body space-y-6">
+                            <div class="card-body">
                                 <div class="space-y-2">
                                     <h2 class="card-title">Biodata Peserta</h2>
                                     <div class="divider mt-2"></div>
@@ -162,7 +162,7 @@
 
                         {{-- Pendidikan Card --}}
                         <div class="card bg-base-100 shadow-xl border border-base-200">
-                            <div class="card-body space-y-6">
+                            <div class="card-body">
                                 <div class="space-y-2">
                                     <h2 class="card-title">Pendidikan Terakhir</h2>
                                     <div class="divider mt-2"></div>
@@ -206,7 +206,7 @@
                     <div class="space-y-8">
                         @if($diklat['bigdata'] == 'Y')
                         <div class="card bg-base-100 shadow-xl border border-base-200">
-                            <div class="card-body space-y-6">
+                            <div class="card-body">
                                 <div class="space-y-2">
                                     <h2 class="card-title">Pekerjaan Sebelumnya</h2>
                                     <div class="divider mt-2"></div>
@@ -221,7 +221,7 @@
                         @endif
 
                         <div class="card bg-base-100 shadow-xl border border-base-200">
-                            <div class="card-body space-y-6">
+                            <div class="card-body">
                                 <div class="space-y-2">
                                     <h2 class="card-title">Detail Alamat</h2>
                                     <div class="divider mt-2"></div>
@@ -310,7 +310,7 @@
                         </div>
 
                         <div class="card bg-base-100 shadow-xl border border-base-200">
-                            <div class="card-body space-y-6">
+                            <div class="card-body">
                                 <div class="space-y-2">
                                     <h2 class="card-title">Kontak</h2>
                                     <div class="divider mt-2"></div>
@@ -338,10 +338,79 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="card bg-base-100 shadow-xl border border-base-200">
+                            <div class="card-body">
+                                <div class="space-y-2">
+                                    <h2 class="card-title">Tanda Tangan Peserta</h2>
+                                    <div class="divider mt-2"></div>
+                                </div>
+                                <p class="text-sm text-base-content/70">Gunakan mouse atau layar sentuh untuk memberikan tanda tangan digital Anda.</p>
+                                <div
+                                    class="rounded-xl border border-dashed border-base-300 bg-base-200/60 p-3"
+                                    wire:ignore
+                                    x-data="{
+                                        signaturePad: null,
+                                        signature: @entangle('ttd').defer,
+                                        init() {
+                                            const canvas = this.$refs.canvas;
+                                            this.signaturePad = new SignaturePad(canvas);
+
+                                            const resizeCanvas = () => {
+                                                const ratio = Math.max(window.devicePixelRatio || 1, 1);
+                                                const data = this.signaturePad.toData();
+                                                canvas.width = canvas.offsetWidth * ratio;
+                                                canvas.height = canvas.offsetHeight * ratio;
+                                                canvas.getContext('2d').scale(ratio, ratio);
+                                                this.signaturePad.fromData(data);
+                                            }
+
+                                            window.addEventListener('resize', resizeCanvas);
+                                            resizeCanvas();
+
+                                            if (this.signature) {
+                                                this.signaturePad.fromDataURL(this.signature);
+                                            }
+
+                                            this.signaturePad.onEnd = () => {
+                                                if(this.signaturePad.isEmpty()){
+                                                    this.signature = null
+                                                    return
+                                                }
+                                                this.signature = this.signaturePad.toDataURL();
+                                            };
+                                        },
+                                        undo() {
+                                            data = this.signaturePad.toData();
+                                            if (data) {
+                                                data.pop();
+                                                this.signaturePad.fromData(data);
+                                            }
+                                        },
+                                        clear() {
+                                            this.signaturePad.clear();
+                                            this.signature = null;
+                                        }
+                                    }"
+                                    x-init="init()"
+                                >
+                                    <canvas x-ref="canvas" class="w-full h-48 bg-base-100 rounded-lg"></canvas>
+
+                                    <div class="flex flex-wrap items-center gap-3 mt-3">
+                                        <button type="button" x-on:click.prevent="undo()" class="btn btn-xs btn-warning">
+                                            Batalkan Coretan
+                                        </button>
+                                        <button type="button" x-on:click.prevent="clear()" class="btn btn-outline btn-xs btn-error">
+                                            Bersihkan Semua
+                                        </button>
+                                    </div>
+                                </div>
+                                @error('ttd') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                            </div>
+                        </div>
 
                         @if($diklat['bigdata'] == 'Y')
                         <div class="card bg-base-100 shadow-xl border border-base-200">
-                            <div class="card-body space-y-6">
+                            <div class="card-body">
                                 <div class="space-y-2">
                                     <h2 class="card-title">Data Keluarga</h2>
                                     <div class="divider mt-2"></div>
@@ -356,7 +425,7 @@
 
                         @if($diklat['jenis'] == 'sdma' || $diklat['jenis'] == 'infrastruktur_kompetensi')
                         <div class="card bg-base-100 shadow-xl border border-base-200">
-                            <div class="card-body space-y-6">
+                            <div class="card-body">
                                 <div class="space-y-2">
                                     @if($diklat['jenis'] == 'sdma')
                                     <h2 class="card-title">Informasi Satuan Kerja</h2>
@@ -410,3 +479,7 @@
         @endif
     </div>
 </div>
+
+@pushonce('scripts')
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@5.1.1/dist/signature_pad.umd.min.js"></script>
+@endpushonce
