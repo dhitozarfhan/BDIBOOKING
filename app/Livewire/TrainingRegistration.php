@@ -398,7 +398,8 @@ class TrainingRegistration extends Component
                 }
 
                 if (($result['status'] ?? null) == 1) {
-                    $message = 'Anda telah terdaftar pada "' . ($this->diklat['nama_lengkap'] ?? $this->diklat['nama'] ?? 'diklat ini') . '".';
+                    $diklatName = $this->diklat['nama_lengkap'] ?? $this->diklat['nama'] ?? 'diklat ini';
+                    $message = 'Pendaftaran Anda pada "' . $diklatName . '" sudah kami terima, silakan menunggu verifikasi dari admin diklat kami.';
                     session()->flash('success', $message);
                     Log::info('Training registration submitted successfully.', [
                         'id_diklat' => $this->id_diklat,

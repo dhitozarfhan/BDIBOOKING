@@ -12,10 +12,12 @@ class TrainingDetail extends Component
     public array $participants = [];
     public string $error = '';
     public $id_diklat;
+    public ?string $successMessage = null;
 
     public function mount($id_diklat)
     {
         $this->id_diklat = $id_diklat;
+        $this->successMessage = session()->get('success');
 
         $credentials = [
             'username' => config('services.sidia.username'),
@@ -81,12 +83,12 @@ class TrainingDetail extends Component
                                 
                                 foreach ($participantData['data']['peserta'] as $dt) {
                                     $this->participants[] = [
-                                        'nama'      => $dt['nama'],
+                                        'nama'      => preg_replace_callback('/\b(\w{3})(\w+)\b/', fn($m) => $m[1] . str_repeat('*', strlen($m[2])), $dt['nama']),
                                         'umur'      => $dt['umur'],
                                         'kelamin'   => $dt['id_kelamin'],
                                         'pendidikan'=> $dt['pendidikan'],
                                         'penempatan'=> $dt['penempatan'],
-                                        'ktp'       => isset($dt['ktp']) ? substr($dt['ktp'], 0, -6).'******' : '-',
+                                        'ktp'       => isset($dt['ktp']) ? substr($dt['ktp'], 0, -8).'********' : '-',
                                         'tuk'       => $dt['tuk'],
                                         'ukom'      => $dt['ukom'],
                                         'satker'    => $dt['satker'],

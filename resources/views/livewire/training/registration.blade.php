@@ -11,16 +11,44 @@
                 <span>{{ $error }}</span>
             </div>
         @elseif($diklat)
-            <div class="hero bg-base-200 rounded-lg shadow mb-8">
-                <div class="hero-content text-center">
-                    <div class="max-w-4xl">
-                        <h1 class="text-3xl font-bold">Pendaftaran: {{ $diklat['nama_lengkap'] }}</h1>
-                        <p class="py-2 text-sm text-base-content/70">di {{ $diklat['tempat'] }}</p>
+            <div class="hero rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/10 to-primary/5 py-10 shadow-lg border border-base-200">
+                <div class="hero-content flex-col lg:flex-row lg:items-center lg:justify-between w-full gap-8">
+                    <div class="max-w-3xl space-y-4 text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-semibold uppercase tracking-wide">
+                            <svg class="w-3 h-3 fill-current" viewBox="0 0 16 16" aria-hidden="true">
+                                <path d="M12 4H9.5l-.7-1.4A1 1 0 0 0 7.9 2h-2a1 1 0 0 0-.9.6L4.3 4H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1ZM7 11l-3-3h2V6h2v2h2l-3 3Z"/>
+                            </svg>
+                            Form Pendaftaran Peserta
+                        </div>
+                        <h1 class="text-3xl md:text-4xl font-bold leading-tight text-base-content">
+                            {{ $diklat['nama_lengkap'] ?? 'Diklat' }}
+                        </h1>
+                        <p class="text-base-content/70">
+                            Lokasi penyelenggaraan: <span class="font-semibold text-base-content">{{ $diklat['tempat'] ?? '-' }}</span>
+                        </p>
+                    </div>
+                    <div class="card bg-base-100 shadow-md border border-base-200">
+                        <div class="card-body px-6 py-5">
+                            <span class="text-xs font-semibold uppercase text-base-content/60">Ringkasan</span>
+                            <div class="mt-2 space-y-2 text-sm">
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-primary" viewBox="0 0 20 20" fill="currentColor"><path d="M6 2a1 1 0 0 1 1 1v1h6V3a1 1 0 1 1 2 0v1h1a2 2 0 0 1 2 2v2H2V6a2 2 0 0 1 2-2h1V3a1 1 0 1 1 2 0v1Zm12 7H2v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Zm-11 3a1 1 0 0 1 2 0v2a1 1 0 1 1-2 0v-2Zm5 0a1 1 0 0 1 2 0v2a1 1 0 1 1-2 0v-2Z"/></svg>
+                                    <span>{{ \Carbon\Carbon::parse($diklat['tgl_mulai'])->isoFormat('D MMM YYYY') }} - {{ \Carbon\Carbon::parse($diklat['tgl_selesai'])->isoFormat('D MMM YYYY') }}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-primary" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 0 1 9.9 9.9l-4.243 4.243a1 1 0 0 1-1.414 0L5.05 13.95a7 7 0 0 1 0-9.9Zm4.95 5.95a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" clip-rule="evenodd"/></svg>
+                                    <span>{{ $diklat['jenis_diklat'] ?? '-' }}</span>
+                                </div>
+                            </div>
+                            <a href="{{ route('training.detail', ['id_diklat' => $diklat['id_diklat']]) }}" wire:navigate class="btn btn-ghost btn-sm mt-4">
+                                Lihat Detail Diklat
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div role="alert" class="alert alert-warning mb-8 shadow-sm">
+            <div role="alert" class="alert alert-warning my-8 shadow-sm">
                 <div class="flex-1">
                     <h3 class="font-bold">Informasi Penting!</h3>
                     <ul class="list-decimal list-inside text-sm mt-2 space-y-1">
@@ -31,12 +59,25 @@
                 </div>
             </div>
 
-            <form wire:submit.prevent="submit" class="space-y-8">
+            <form wire:submit.prevent="submit" class="space-y-10">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div class="space-y-1">
+                        <h2 class="text-2xl font-semibold text-base-content">Lengkapi Data Pendaftaran</h2>
+                        <p class="text-sm text-base-content/60">Pastikan seluruh data diisi dengan benar sesuai dokumen resmi.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <a href="{{ route('training.detail', ['id_diklat' => $diklat['id_diklat']]) }}" wire:navigate class="btn btn-outline btn-sm">
+                            Kembali ke Detail Diklat
+                        </a>
+                        <span class="badge badge-primary badge-outline">{{ $diklat['angkatan'] ?? 'Angkatan' }}</span>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {{-- Left Column --}}
                     <div class="space-y-8">
                         {{-- Biodata Card --}}
-                        <div class="card bg-base-100 shadow-xl">
+                        <div class="card bg-base-100 shadow-xl border border-base-200">
                             <div class="card-body space-y-6">
                                 <div class="space-y-2">
                                     <h2 class="card-title">Biodata Peserta</h2>
@@ -120,7 +161,7 @@
                         </div>
 
                         {{-- Pendidikan Card --}}
-                        <div class="card bg-base-100 shadow-xl">
+                        <div class="card bg-base-100 shadow-xl border border-base-200">
                             <div class="card-body space-y-6">
                                 <div class="space-y-2">
                                     <h2 class="card-title">Pendidikan Terakhir</h2>
@@ -164,7 +205,7 @@
                     {{-- Right Column --}}
                     <div class="space-y-8">
                         @if($diklat['bigdata'] == 'Y')
-                        <div class="card bg-base-100 shadow-xl">
+                        <div class="card bg-base-100 shadow-xl border border-base-200">
                             <div class="card-body space-y-6">
                                 <div class="space-y-2">
                                     <h2 class="card-title">Pekerjaan Sebelumnya</h2>
@@ -179,7 +220,7 @@
                         </div>
                         @endif
 
-                        <div class="card bg-base-100 shadow-xl">
+                        <div class="card bg-base-100 shadow-xl border border-base-200">
                             <div class="card-body space-y-6">
                                 <div class="space-y-2">
                                     <h2 class="card-title">Detail Alamat</h2>
@@ -268,7 +309,7 @@
                             </div>
                         </div>
 
-                        <div class="card bg-base-100 shadow-xl">
+                        <div class="card bg-base-100 shadow-xl border border-base-200">
                             <div class="card-body space-y-6">
                                 <div class="space-y-2">
                                     <h2 class="card-title">Kontak</h2>
@@ -299,7 +340,7 @@
                         </div>
 
                         @if($diklat['bigdata'] == 'Y')
-                        <div class="card bg-base-100 shadow-xl">
+                        <div class="card bg-base-100 shadow-xl border border-base-200">
                             <div class="card-body space-y-6">
                                 <div class="space-y-2">
                                     <h2 class="card-title">Data Keluarga</h2>
@@ -314,7 +355,7 @@
                         @endif
 
                         @if($diklat['jenis'] == 'sdma' || $diklat['jenis'] == 'infrastruktur_kompetensi')
-                        <div class="card bg-base-100 shadow-xl">
+                        <div class="card bg-base-100 shadow-xl border border-base-200">
                             <div class="card-body space-y-6">
                                 <div class="space-y-2">
                                     @if($diklat['jenis'] == 'sdma')
@@ -355,7 +396,10 @@
                     @error('approval') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                 </div>
 
-                <div class="card-actions justify-center mt-8">
+                <div class="card-actions justify-between items-center mt-10">
+                    <a href="{{ route('training.detail', ['id_diklat' => $diklat['id_diklat']]) }}" wire:navigate class="btn btn-warning">
+                        Kembali ke Detail Diklat
+                    </a>
                     <button type="submit" class="btn btn-primary btn-lg">
                         <span wire:loading.remove wire:target="submit">Kirim Pendaftaran</span>
                         <span wire:loading wire:target="submit" class="loading loading-spinner"></span>

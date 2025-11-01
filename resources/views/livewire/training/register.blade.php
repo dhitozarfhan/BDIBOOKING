@@ -24,7 +24,7 @@
                 </div>
             </div>
         @else
-            <h1 class="text-4xl font-bold mb-6">Pendaftaran Diklat Tersedia</h1>
+            <h1 class="text-4xl font-bold mb-6">Diklat yang Tersedia Saat Ini</h1>
             <div class="overflow-x-auto rounded-lg shadow-lg">
                 <table class="table table-zebra w-full">
                     {{-- head --}}

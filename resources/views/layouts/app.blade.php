@@ -66,6 +66,7 @@
                     <img id="bdi-yogyakarta-logo" class="h-16" src="{{ asset('images/bdi-yogyakarta-corpu.svg') }}" alt="Balai Diklat Industri Yogyakarta">
                 </a>
                 <div class="flex items-center space-x-4">
+                    <a href="{{ route('register') }}" class="btn btn-accent">Pendaftaran Peserta Diklat</a>
                     <a href="https://bdiyogyakarta.kemenperin.go.id/sidia" class="btn btn-primary">Login SIDIA</a>
                     <livewire:language-switcher />
                     <livewire:theme-switcher />
