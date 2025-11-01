@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Training;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -8,7 +8,7 @@ use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 
-class TrainingRegistration extends Component
+class Registration extends Component
 {
     use WithFileUploads;
 
@@ -143,6 +143,8 @@ class TrainingRegistration extends Component
         'scan_foto.mimes' => 'Format berkas foto harus JPG atau JPEG.',
         'scan_ktp.mimes' => 'Format berkas KTP harus JPG atau JPEG.',
         'scan_ijazah.mimes' => 'Format berkas ijazah harus JPG atau JPEG.',
+        'ttd.required' => 'Tanda tangan wajib dibubuhkan pada form ini.',
+        'ttd.min' => 'Tanda tangan tidak terdeteksi dengan baik, silakan coba lagi.'
     ];
 
     public function mount($id_diklat)
@@ -313,6 +315,7 @@ class TrainingRegistration extends Component
             'rt' => 'nullable|numeric|min:1',
             'rw' => 'nullable|numeric|min:1',
             'approval' => 'accepted',
+            'ttd' => 'required|min:6000',
         ];
 
         if ($this->diklat['jenis'] == 'sdma') {

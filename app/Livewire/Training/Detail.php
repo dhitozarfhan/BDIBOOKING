@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Training;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
-class TrainingDetail extends Component
+class Detail extends Component
 {
     public ?array $training = null;
     public array $participants = [];
@@ -59,7 +59,6 @@ class TrainingDetail extends Component
                 if (empty($this->training)) {
                     $this->error = 'Data diklat tidak ditemukan atau tidak valid.';
                 } else {
-                    // Now, fetch participants
                     try {
                         $participantResponse = Http::withBasicAuth($credentials['username'], $credentials['password'])
                             ->post(config('services.sidia.url') . '/register/training/peserta', [
@@ -80,7 +79,7 @@ class TrainingDetail extends Component
 
                             if (isset($participantData['data']['peserta']) && is_array($participantData['data']['peserta'])) {
                                 $statusOptions = ['' => 'Semua', 'accept' => 'Diterima', 'deny' => 'Ditolak', 'pending' => 'Direview'];
-                                
+
                                 foreach ($participantData['data']['peserta'] as $dt) {
                                     $this->participants[] = [
                                         'nama'      => preg_replace_callback('/\b(\w{3})(\w+)\b/', fn($m) => $m[1] . str_repeat('*', strlen($m[2])), $dt['nama']),
@@ -88,7 +87,7 @@ class TrainingDetail extends Component
                                         'kelamin'   => $dt['id_kelamin'],
                                         'pendidikan'=> $dt['pendidikan'],
                                         'penempatan'=> $dt['penempatan'],
-                                        'ktp'       => isset($dt['ktp']) ? substr($dt['ktp'], 0, -8).'********' : '-',
+                                        'ktp'       => isset($dt['ktp']) ? substr($dt['ktp'], 0, -8) . '********' : '-',
                                         'tuk'       => $dt['tuk'],
                                         'ukom'      => $dt['ukom'],
                                         'satker'    => $dt['satker'],
@@ -99,12 +98,11 @@ class TrainingDetail extends Component
                                         'lsp'       => $dt['lsp'],
                                         'skema'     => $dt['skema'],
                                         'instansi'  => $dt['instansi_nama'],
-                                        'status'    => $statusOptions[$dt['status']] ?? $dt['status']
+                                        'status'    => $statusOptions[$dt['status']] ?? $dt['status'],
                                     ];
                                 }
                             }
                         } else {
-                            // Don't treat this as a fatal error, maybe just log it
                             Log::warning('SIDIA API request failed for training participants', [
                                 'status'    => $participantResponse->status(),
                                 'response'  => $participantResponse->body(),
@@ -115,7 +113,6 @@ class TrainingDetail extends Component
                         Log::error('SIDIA API request exception for training participants: ' . $e->getMessage(), ['id_diklat' => $this->id_diklat]);
                     }
                 }
-
             } else {
                 $this->error = "Gagal mengambil data dari API (Status: " . $response->status() . ").";
                 Log::error('SIDIA API request failed for training detail', [

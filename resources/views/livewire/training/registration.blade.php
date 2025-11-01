@@ -59,7 +59,7 @@
                 </div>
             </div>
 
-            <form wire:submit.prevent="submit" class="space-y-10">
+            <form wire:submit.prevent="submit" class="space-y-10" data-signature-form>
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div class="space-y-1">
                         <h2 class="text-2xl font-semibold text-base-content">Lengkapi Data Pendaftaran</h2>
@@ -69,7 +69,6 @@
                         <a href="{{ route('training.detail', ['id_diklat' => $diklat['id_diklat']]) }}" wire:navigate class="btn btn-outline btn-sm">
                             Kembali ke Detail Diklat
                         </a>
-                        <span class="badge badge-primary badge-outline">{{ $diklat['angkatan'] ?? 'Angkatan' }}</span>
                     </div>
                 </div>
 
@@ -117,16 +116,18 @@
                                         @error('scan_ktp') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                                     </label>
                                     @endif
-                                    <label class="form-control w-full">
-                                        <div class="label"><span class="label-text">Tempat Lahir <span class="text-error">*</span></span></div>
-                                        <input type="text" wire:model.lazy="tempat_lahir" @class(['input input-bordered w-full', 'input-error' => $errors->has('tempat_lahir')]) />
-                                        @error('tempat_lahir') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
-                                    </label>
-                                    <label class="form-control w-full">
-                                        <div class="label"><span class="label-text">Tanggal Lahir <span class="text-error">*</span></span></div>
-                                        <input type="date" wire:model.lazy="tanggal_lahir" @class(['input input-bordered w-full', 'input-error' => $errors->has('tanggal_lahir')]) />
-                                        @error('tanggal_lahir') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
-                                    </label>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <label class="form-control w-full">
+                                            <div class="label"><span class="label-text">Tempat Lahir <span class="text-error">*</span></span></div>
+                                            <input type="text" wire:model.lazy="tempat_lahir" @class(['input input-bordered w-full', 'input-error' => $errors->has('tempat_lahir')]) />
+                                            @error('tempat_lahir') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                        </label>
+                                        <label class="form-control w-full">
+                                            <div class="label"><span class="label-text">Tanggal Lahir <span class="text-error">*</span></span></div>
+                                            <input type="date" wire:model.lazy="tanggal_lahir" @class(['input input-bordered w-full', 'input-error' => $errors->has('tanggal_lahir')]) />
+                                            @error('tanggal_lahir') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                        </label>
+                                    </div>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <label class="form-control w-full">
                                             <div class="label"><span class="label-text">Jenis Kelamin <span class="text-error">*</span></span></div>
@@ -339,70 +340,43 @@
                             </div>
                         </div>
                         <div class="card bg-base-100 shadow-xl border border-base-200">
-                            <div class="card-body">
-                                <div class="space-y-2">
-                                    <h2 class="card-title">Tanda Tangan Peserta</h2>
-                                    <div class="divider mt-2"></div>
-                                </div>
-                                <p class="text-sm text-base-content/70">Gunakan mouse atau layar sentuh untuk memberikan tanda tangan digital Anda.</p>
-                                <div
-                                    class="rounded-xl border border-dashed border-base-300 bg-base-200/60 p-3"
-                                    wire:ignore
-                                    x-data="{
-                                        signaturePad: null,
-                                        signature: @entangle('ttd').defer,
-                                        init() {
-                                            const canvas = this.$refs.canvas;
-                                            this.signaturePad = new SignaturePad(canvas);
-
-                                            const resizeCanvas = () => {
-                                                const ratio = Math.max(window.devicePixelRatio || 1, 1);
-                                                const data = this.signaturePad.toData();
-                                                canvas.width = canvas.offsetWidth * ratio;
-                                                canvas.height = canvas.offsetHeight * ratio;
-                                                canvas.getContext('2d').scale(ratio, ratio);
-                                                this.signaturePad.fromData(data);
-                                            }
-
-                                            window.addEventListener('resize', resizeCanvas);
-                                            resizeCanvas();
-
-                                            if (this.signature) {
-                                                this.signaturePad.fromDataURL(this.signature);
-                                            }
-
-                                            this.signaturePad.onEnd = () => {
-                                                if(this.signaturePad.isEmpty()){
-                                                    this.signature = null
-                                                    return
-                                                }
-                                                this.signature = this.signaturePad.toDataURL();
-                                            };
-                                        },
-                                        undo() {
-                                            data = this.signaturePad.toData();
-                                            if (data) {
-                                                data.pop();
-                                                this.signaturePad.fromData(data);
-                                            }
-                                        },
-                                        clear() {
-                                            this.signaturePad.clear();
-                                            this.signature = null;
-                                        }
-                                    }"
-                                    x-init="init()"
-                                >
-                                    <canvas x-ref="canvas" class="w-full h-48 bg-base-100 rounded-lg"></canvas>
-
-                                    <div class="flex flex-wrap items-center gap-3 mt-3">
-                                        <button type="button" x-on:click.prevent="undo()" class="btn btn-xs btn-warning">
-                                            Batalkan Coretan
-                                        </button>
-                                        <button type="button" x-on:click.prevent="clear()" class="btn btn-outline btn-xs btn-error">
-                                            Bersihkan Semua
-                                        </button>
+                            <div class="card-body space-y-4">
+                                <div class="flex items-center justify-between flex-wrap gap-3">
+                                    <div>
+                                        <h2 class="card-title">Tanda Tangan Peserta</h2>
+                                        <p class="text-sm text-base-content/70">Mohon bubuhkan tanda tangan digital sebagai persetujuan data.</p>
                                     </div>
+                                </div>
+
+                                <div class="space-y-3" x-data="signaturePadComponent()" x-init="init()">
+                                    <div
+                                        class="rounded-2xl border border-dashed border-base-300/90 bg-base-200/60 p-4 shadow-inner"
+                                        wire:ignore
+                                    >
+                                        <div class="flex items-center justify-between mb-3">
+                                            <div class="flex items-center gap-2 text-xs sm:text-sm text-base-content/60">
+                                                <span>Gunakan kursor atau layar sentuh untuk menandatangani.</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <button type="button" class="btn btn-warning btn-xs" x-on:click.prevent="undo()">
+                                                    Undo
+                                                </button>
+                                                <button type="button" class="btn btn-outline btn-xs btn-error" x-on:click.prevent="clear()">
+                                                    Bersihkan
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="relative">
+                                            <canvas
+                                                x-ref="canvas"
+                                                class="w-full h-48 rounded-xl bg-base-100 shadow-sm"
+                                                style="touch-action: none;"
+                                            ></canvas>
+                                            <div class="pointer-events-none absolute inset-0 rounded-xl border-2 border-dashed border-base-300/80"></div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" x-ref="hidden" name="ttd" wire:model.defer="ttd" />
+                                    <p class="text-xs text-base-content/50">Jika diklat tidak memerlukan tanda tangan, Anda dapat melewati bagian ini.</p>
                                 </div>
                                 @error('ttd') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                             </div>
@@ -458,8 +432,8 @@
                 <div class="divider pt-4"></div>
 
                 <div class="form-control">
-                    <label class="label cursor-pointer justify-start gap-4">
-                        <input type="checkbox" wire:model.lazy="approval" class="checkbox checkbox-primary" />
+                    <label class="cursor-pointer">
+                        <input type="checkbox" wire:model.lazy="approval" class="checkbox checkbox-primary me-4" />
                         <span class="label-text">Saya menyatakan bahwa data yang saya isikan adalah benar dan saya menyetujui syarat dan ketentuan yang berlaku. <span class="text-error">*</span></span> 
                     </label>
                     @error('approval') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
@@ -480,6 +454,115 @@
     </div>
 </div>
 
-@pushonce('scripts')
+@pushOnce('scripts')
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@5.1.1/dist/signature_pad.umd.min.js"></script>
-@endpushonce
+<script>
+    window.signaturePadComponent = window.signaturePadComponent || function () {
+        return {
+            signaturePad: null,
+            canvas: null,
+            hiddenInput: null,
+            syncFn: null,
+            init() {
+                this.canvas = this.$refs.canvas;
+                this.hiddenInput = this.$refs.hidden;
+
+                const width = this.canvas.parentElement ? this.canvas.parentElement.clientWidth : 600;
+                const height = 220;
+
+                this.canvas.width = width;
+                this.canvas.height = height;
+
+                this.signaturePad = new SignaturePad(this.canvas, {
+                    penColor: '#1f2937',
+                    backgroundColor: 'rgba(255,255,255,0)',
+                    minWidth: 0.75,
+                    maxWidth: 2.5,
+                });
+
+                if (this.hiddenInput.value) {
+                    try {
+                        this.signaturePad.fromDataURL(this.hiddenInput.value);
+                    } catch (error) {
+                        console.warn('Tanda tangan tersimpan tidak dapat dimuat ulang.', error);
+                        this.signaturePad.clear();
+                    }
+                }
+
+                this.signaturePad.onEnd = () => {
+                    this.sync();
+                };
+
+                this.registerSync();
+                this.sync();
+            },
+            undo() {
+                if (!this.signaturePad) {
+                    return;
+                }
+
+                const data = this.signaturePad.toData();
+                if (data.length) {
+                    data.pop();
+                    this.signaturePad.fromData(data);
+                }
+                this.sync();
+            },
+            clear() {
+                if (!this.signaturePad) {
+                    return;
+                }
+                this.signaturePad.clear();
+                this.sync();
+            },
+            registerSync() {
+                window.__registrationSignatureSyncers = window.__registrationSignatureSyncers || new Set();
+                if (this.syncFn) {
+                    window.__registrationSignatureSyncers.delete(this.syncFn);
+                }
+                this.syncFn = () => this.sync();
+                window.__registrationSignatureSyncers.add(this.syncFn);
+            },
+            sync() {
+                if (!this.hiddenInput) {
+                    return;
+                }
+
+                const value = this.signaturePad && !this.signaturePad.isEmpty()
+                    ? this.signaturePad.toDataURL('image/png')
+                    : '';
+
+                if (this.hiddenInput.value !== value) {
+                    this.hiddenInput.value = value;
+                    this.hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            },
+        };
+    };
+
+    (function bindSignatureFormListener() {
+        const attach = () => {
+            const form = document.querySelector('[data-signature-form]');
+            if (!form || form.dataset.signatureSyncBound) {
+                return;
+            }
+            form.dataset.signatureSyncBound = 'true';
+            form.addEventListener('submit', () => {
+                if (!window.__registrationSignatureSyncers) {
+                    return;
+                }
+                window.__registrationSignatureSyncers.forEach((fn) => {
+                    try {
+                        fn();
+                    } catch (error) {
+                        console.warn('Gagal menyinkronkan tanda tangan sebelum submit.', error);
+                    }
+                });
+            }, { capture: true });
+        };
+
+        document.addEventListener('DOMContentLoaded', attach);
+        document.addEventListener('livewire:navigated', attach);
+    })();
+</script>
+@endPushOnce

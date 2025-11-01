@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Training;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -33,7 +33,6 @@ class Register extends Component
                 ]);
 
             if ($response->successful()) {
-                // API mengembalikan JSON yang di-escape dalam string, jadi perlu dua kali decode
                 $rawBody = $response->body();
                 $decodedBody = json_decode($rawBody, true);
 
@@ -49,11 +48,6 @@ class Register extends Component
                 } else {
                     $this->trainings = [];
                 }
-
-                // if (empty($this->trainings)) {
-                //     $this->error = 'Tidak ada data diklat yang tersedia saat ini.';
-                // }
-
             } else {
                 $this->error = "Gagal mengambil data dari API (Status: " . $response->status() . ").";
                 Log::error('SIDIA API request failed', [

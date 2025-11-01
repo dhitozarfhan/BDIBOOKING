@@ -21,11 +21,11 @@ Route::get('/{article_type}/{slug}', App\Livewire\Articles\Show::class)
 //VirtualTour
 Route::get('/virtualtour', \App\Livewire\VirtualTour::class)->name('virtualtour');
 
-Route::get('/register', \App\Livewire\Register::class)->name('register');
+Route::get('/register', \App\Livewire\Training\Register::class)->name('register');
 
-Route::get('/training/detail/{id_diklat}', \App\Livewire\TrainingDetail::class)->name('training.detail');
+Route::get('/training/detail/{id_diklat}', \App\Livewire\Training\Detail::class)->name('training.detail');
 
-Route::get('/register/training/{id_diklat}', \App\Livewire\TrainingRegistration::class)->name('training.register');
+Route::get('/register/training/{id_diklat}', \App\Livewire\Training\Registration::class)->name('training.register');
 
 // Archive export route ///filament perlu cek di bawah ini karena ekspos URL
 Route::get('/archive/export', [ArchivePage::class, 'exportToExcel'])->name('archive.export');

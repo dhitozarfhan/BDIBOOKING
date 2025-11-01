@@ -24,47 +24,84 @@
                 </div>
             </div>
         @else
-            <h1 class="text-4xl font-bold mb-6">Diklat yang Tersedia Saat Ini</h1>
-            <div class="overflow-x-auto rounded-lg shadow-lg">
-                <table class="table table-zebra w-full">
-                    {{-- head --}}
-                    <thead class="bg-base-200">
-                        <tr>
-                            <th>Nama Diklat</th>
-                            <th>Jenis</th>
-                            <th>Jadwal</th>
-                            <th>Lokasi</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($trainings as $training)
-                            <tr class="hover">
-                                <td>
-                                    <a href="{{ route('training.detail', ['id_diklat' => $training['id_diklat']]) }}" wire:navigate class="font-bold hover:underline">
-                                        {{ $training['nama'] }}
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold tracking-wide uppercase rounded-full bg-primary/10 text-primary">
-                                        {{ $training['jenis_diklat'] }}
-                                    </span>
-                                </td>
-                                <td>{{ \Carbon\Carbon::parse($training['tgl_mulai'])->isoFormat('D MMM YYYY') }} - {{ \Carbon\Carbon::parse($training['tgl_selesai'])->isoFormat('D MMM YYYY') }}</td>
-                                <td>{{ $training['tempat'] }}</td>
-                                <td>
-                                     @if($training['allowed_reg'] == 'Y')
-                                        <a href="{{ $training['register_url'] . $training['id_diklat'] }}" wire:navigate class="btn btn-primary btn-sm">
-                                            Daftar
-                                        </a>
-                                    @else
-                                        <div class="badge badge-neutral">Pendaftaran Ditutup</div>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <div class="card bg-base-100 shadow-xl border border-base-200">
+                <div class="card-body p-0">
+                    <div class="px-6 py-6">
+                        <h1 class="text-3xl font-bold text-base-content">Daftar Diklat Tersedia</h1>
+                        <p class="text-sm text-base-content/70 mt-2">
+                            Berikut rangkuman diklat yang sedang membuka pendaftaran. Gunakan tombol pada kolom terakhir untuk melihat detail atau langsung mendaftar.
+                        </p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="table table-zebra w-full">
+                            <thead class="bg-base-200 text-sm text-base-content/80">
+                                <tr>
+                                    <th>Nama Diklat</th>
+                                    <th>Jenis</th>
+                                    <th>Jadwal</th>
+                                    <th>Lokasi</th>
+                                    <th class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($trainings as $training)
+                                    @php
+                                        $start = \Carbon\Carbon::parse($training['tgl_mulai']);
+                                        $end = \Carbon\Carbon::parse($training['tgl_selesai']);
+                                        $statusOpen = $training['allowed_reg'] === 'Y';
+                                    @endphp
+                                    <tr class="hover align-top">
+                                        <td class="max-w-xs">
+                                            <div class="space-y-1">
+                                                <a href="{{ route('training.detail', ['id_diklat' => $training['id_diklat']]) }}"
+                                                   wire:navigate
+                                                   class="font-semibold text-base-content hover:text-primary transition-colors">
+                                                    {{ $training['nama'] }}
+                                                </a>
+                                                @if(!empty($training['penyelenggara']))
+                                                    <div class="text-xs text-base-content/60">
+                                                        {{ $training['penyelenggara'] }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold tracking-wide uppercase rounded-full bg-primary/10 text-primary">
+                                                {{ $training['jenis_diklat'] }}
+                                            </span>
+                                        </td>
+                                        <td class="text-sm">
+                                            <div class="font-medium text-base-content">
+                                                {{ $start->isoFormat('D MMM YYYY') }} - {{ $end->isoFormat('D MMM YYYY') }}
+                                            </div>
+                                        </td>
+                                        <td class="text-sm text-base-content">
+                                            {{ $training['tempat'] ?? 'Lokasi belum tersedia' }}
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
+                                                <a href="{{ route('training.detail', ['id_diklat' => $training['id_diklat']]) }}"
+                                                   wire:navigate
+                                                   class="btn btn-success">
+                                                    Detail
+                                                </a>
+                                                @if($statusOpen)
+                                                    <a href="{{ route('training.register', ['id_diklat' => $training['id_diklat']]) }}"
+                                                       wire:navigate
+                                                       class="btn btn-primary">
+                                                        Daftar
+                                                    </a>
+                                                @else
+                                                    <span class="badge badge-outline badge-sm text-xs">Tutup</span>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         @endif
     </div>
