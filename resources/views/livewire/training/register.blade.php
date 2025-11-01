@@ -1,4 +1,4 @@
-<div class="container mx-auto px-4 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
     {{-- Loading State --}}
     <div wire:loading class="w-full flex justify-center items-center py-10">
         <span class="loading loading-lg loading-spinner text-primary"></span>
@@ -45,7 +45,11 @@
                                         {{ $training['nama'] }}
                                     </a>
                                 </td>
-                                <td><div class="badge badge-accent badge-outline">{{ $training['jenis_diklat'] }}</div></td>
+                                <td>
+                                    <span class="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold tracking-wide uppercase rounded-full bg-primary/10 text-primary">
+                                        {{ $training['jenis_diklat'] }}
+                                    </span>
+                                </td>
                                 <td>{{ \Carbon\Carbon::parse($training['tgl_mulai'])->isoFormat('D MMM YYYY') }} - {{ \Carbon\Carbon::parse($training['tgl_selesai'])->isoFormat('D MMM YYYY') }}</td>
                                 <td>{{ $training['tempat'] }}</td>
                                 <td>

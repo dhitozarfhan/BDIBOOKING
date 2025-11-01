@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 
 class TrainingRegistration extends Component
@@ -24,6 +25,8 @@ class TrainingRegistration extends Component
     // Form model
     public $id_diklat;
     public string $nama = '';
+    public string $titel = '';
+    public string $gelar = '';
     public string $ktp = '';
     public $scan_ktp;
     public string $tempat_lahir = '';
@@ -120,6 +123,9 @@ class TrainingRegistration extends Component
         'instansi_jabatan' => 'Jabatan di Instansi',
         'instansi_alamat' => 'Alamat Instansi',
         'instansi_telepon' => 'Telepon Instansi',
+        'scan_foto' => 'Scan Foto',
+        'scan_ktp' => 'Scan KTP',
+        'scan_ijazah' => 'Scan Ijazah',
     ];
 
     protected $messages = [
@@ -129,6 +135,12 @@ class TrainingRegistration extends Component
         'pendidikan_tamat.digits' => ':attribute harus 4 digit.',
         'nip.digits' => ':attribute harus 18 digit.',
         'email.email' => 'Format :attribute tidak valid.',
+        'scan_foto.required' => 'Bagian foto peserta wajib diisi.',
+        'scan_ktp.required' => 'Bagian KTP peserta wajib diisi.',
+        'scan_ijazah.required' => 'Bagian ijazah peserta wajib diisi.',
+        'scan_foto.mimes' => 'Format berkas foto harus JPG atau JPEG.',
+        'scan_ktp.mimes' => 'Format berkas KTP harus JPG atau JPEG.',
+        'scan_ijazah.mimes' => 'Format berkas ijazah harus JPG atau JPEG.',
     ];
 
     public function mount($id_diklat)
@@ -243,6 +255,11 @@ class TrainingRegistration extends Component
 
     public function submit()
     {
+        if (empty($this->diklat)) {
+            $this->error = 'Data diklat tidak tersedia. Silakan muat ulang halaman.';
+            return;
+        }
+
         $rules = [
             'nama' => 'required|string|max:50',
             'tempat_lahir' => 'required|string|max:50',
@@ -332,15 +349,302 @@ class TrainingRegistration extends Component
             }
         }
 
+        foreach ([
+            'scan_foto' => 'kapan_upload_foto',
+            'scan_ktp' => 'kapan_upload_ktp',
+            'scan_ijazah' => 'kapan_upload_ijazah',
+        ] as $field => $timing) {
+            if ($this->shouldProcessUpload($field, $timing)) {
+                $rules[$field] = [
+                    $this->isUploadRequired($field, $timing) ? 'required' : 'nullable',
+                    'file',
+                    'mimes:jpg,jpeg',
+                ];
+            }
+        }
+
         $this->validate($rules);
 
-        // Validation passed, handle submission...
-        Log::info('Registration form validated successfully.');
+        $this->error = '';
+
+        $filePayload = $this->prepareFilePayload();
+        if ($filePayload === false) {
+            // Specific field error already set in prepareFilePayload.
+            return;
+        }
+
+        $pesertaPayload = $this->buildPesertaPayload();
+
+        $credentials = $this->getSidiaCredentials();
+        if (!$credentials) {
+            $this->error = 'Konfigurasi API SIDIA belum lengkap.';
+            Log::warning('Attempted to submit registration without complete SIDIA credentials.', ['id_diklat' => $this->id_diklat]);
+            return;
+        }
+
+        try {
+            $response = Http::withBasicAuth($credentials['username'], $credentials['password'])
+                ->post(config('services.sidia.url') . '/register', [
+                    $credentials['key_name'] => $credentials['key'],
+                    'id_diklat' => $this->id_diklat,
+                    'peserta' => $pesertaPayload,
+                    'file' => $filePayload,
+                ]);
+
+            if ($response->successful()) {
+                $result = $response->json();
+                if (is_string($result)) {
+                    $result = json_decode($result, true);
+                }
+
+                if (($result['status'] ?? null) == 1) {
+                    $message = 'Anda telah terdaftar pada "' . ($this->diklat['nama_lengkap'] ?? $this->diklat['nama'] ?? 'diklat ini') . '".';
+                    session()->flash('success', $message);
+                    Log::info('Training registration submitted successfully.', [
+                        'id_diklat' => $this->id_diklat,
+                        'ktp' => $this->ktp,
+                    ]);
+
+                    return redirect()->route('training.detail', ['id_diklat' => $this->id_diklat]);
+                }
+
+                $this->error = $result['message'] ?? 'Pendaftaran gagal diproses.';
+                Log::warning('Training registration rejected by SIDIA.', [
+                    'response' => $result,
+                    'id_diklat' => $this->id_diklat,
+                    'ktp' => $this->ktp,
+                ]);
+                return;
+            }
+
+            $this->error = 'Gagal mengirim data ke API (Status: ' . $response->status() . ').';
+            Log::error('Training registration request failed.', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+                'id_diklat' => $this->id_diklat,
+                'ktp' => $this->ktp,
+            ]);
+            return;
+        } catch (\Exception $e) {
+            $this->error = 'Terjadi kesalahan saat menghubungi API.';
+            Log::error('Exception when submitting training registration: ' . $e->getMessage(), [
+                'id_diklat' => $this->id_diklat,
+                'ktp' => $this->ktp,
+            ]);
+        }
     }
 
     public function render()
     {
         return view('livewire.training.registration')->title('Form Pendaftaran Diklat');
+    }
+
+    private function prepareFilePayload(): array|false
+    {
+        $files = [
+            'foto' => null,
+            'ktp' => null,
+            'ijazah' => null,
+            'bukti_kompetensi' => null,
+            'sertifikat_asesor' => null,
+            'ma' => null,
+            'mpa_mkva' => null,
+            'mma_mapa' => null,
+        ];
+
+        if (empty($this->diklat)) {
+            return $files;
+        }
+
+        $uploads = [
+            'scan_foto' => [
+                'destination' => 'foto',
+                'timing' => 'kapan_upload_foto',
+                'message' => 'Bagian foto peserta wajib diisi.',
+            ],
+            'scan_ktp' => [
+                'destination' => 'ktp',
+                'timing' => 'kapan_upload_ktp',
+                'message' => 'Bagian KTP peserta wajib diisi.',
+            ],
+            'scan_ijazah' => [
+                'destination' => 'ijazah',
+                'timing' => 'kapan_upload_ijazah',
+                'message' => 'Bagian ijazah peserta wajib diisi.',
+            ],
+        ];
+
+        foreach ($uploads as $property => $config) {
+            $shouldHandle = $this->shouldProcessUpload($property, $config['timing']);
+            $hasUpload = $this->{$property} instanceof TemporaryUploadedFile;
+
+            if (!$shouldHandle) {
+                if ($hasUpload) {
+                    Log::info('Ignoring uploaded file because diklat configuration does not require initial upload.', [
+                        'field' => $property,
+                        'id_diklat' => $this->id_diklat,
+                        'scan_flag' => $this->diklat[$property] ?? null,
+                        'timing' => $this->diklat[$config['timing']] ?? null,
+                    ]);
+                }
+                continue;
+            }
+
+            $result = $this->processImageUpload(
+                $this->{$property},
+                $property,
+                $this->isUploadRequired($property, $config['timing']),
+                $config['message']
+            );
+
+            if ($result === false) {
+                return false;
+            }
+
+            $files[$config['destination']] = $result;
+        }
+
+        return $files;
+    }
+
+    private function processImageUpload($file, string $field, bool $required, string $requiredMessage): string|null|false
+    {
+        if (!$file) {
+            if ($required) {
+                $this->addError($field, $requiredMessage);
+                Log::warning('Missing required upload for field.', ['field' => $field, 'id_diklat' => $this->id_diklat]);
+                return false;
+            }
+            return null;
+        }
+
+        if (!$file instanceof TemporaryUploadedFile) {
+            $this->addError($field, 'Berkas yang diunggah tidak valid.');
+            Log::warning('Invalid upload instance detected.', ['field' => $field, 'id_diklat' => $this->id_diklat]);
+            return false;
+        }
+
+        $extension = strtolower($file->getClientOriginalExtension());
+        if (!in_array($extension, ['jpg', 'jpeg'], true)) {
+            $this->addError($field, 'Format file harus JPG atau JPEG.');
+            return false;
+        }
+
+        try {
+            $mime = $file->getMimeType() ?: 'image/jpeg';
+            $contents = file_get_contents($file->getRealPath());
+        } catch (\Throwable $throwable) {
+            Log::error('Failed to read uploaded file.', [
+                'field' => $field,
+                'id_diklat' => $this->id_diklat,
+                'error' => $throwable->getMessage(),
+            ]);
+            $this->addError($field, 'Gagal memproses berkas yang diunggah.');
+            return false;
+        }
+
+        if ($contents === false) {
+            $this->addError($field, 'Gagal memproses berkas yang diunggah.');
+            return false;
+        }
+
+        return 'data:' . $mime . ';base64,' . base64_encode($contents);
+    }
+
+    private function shouldProcessUpload(string $flagKey, string $timingKey): bool
+    {
+        return in_array($this->diklat[$flagKey] ?? 'N', ['O', 'Y'], true)
+            && ($this->diklat[$timingKey] ?? '') === 'initial';
+    }
+
+    private function isUploadRequired(string $flagKey, string $timingKey): bool
+    {
+        return ($this->diklat[$flagKey] ?? 'N') === 'Y'
+            && ($this->diklat[$timingKey] ?? '') === 'initial';
+    }
+
+    private function buildPesertaPayload(): array
+    {
+        $payload = [
+            'ktp' => $this->ktp,
+            'nama' => $this->nama,
+            'titel' => $this->titel,
+            'gelar' => $this->gelar,
+            'tempat_lahir' => $this->tempat_lahir,
+            'tanggal_lahir' => $this->tanggal_lahir,
+            'id_kelamin' => $this->id_kelamin,
+            'telepon' => $this->telepon,
+            'mobile' => $this->mobile,
+            'email' => $this->email,
+            'id_desa' => $this->selectedDesa,
+            'dusun' => $this->dusun,
+            'rt' => $this->rt,
+            'rw' => $this->rw,
+            'id_agama' => $this->id_agama,
+            'id_pendidikan' => $this->id_pendidikan,
+            'pendidikan_jurusan' => $this->pendidikan_jurusan,
+            'pendidikan_tamat' => $this->pendidikan_tamat,
+        ];
+
+        if (($this->diklat['jenis'] ?? '') === 'sdma') {
+            $payload['nip'] = $this->nip;
+            $payload['id_pangkat'] = $this->id_pangkat;
+            $payload['jabatan'] = $this->jabatan;
+            $payload['id_satker'] = $this->id_satker;
+        }
+
+        if (($this->diklat['jenis'] ?? '') === 'infrastruktur_kompetensi') {
+            $payload['nomor_reg_asesor'] = $this->nomor_reg_asesor;
+            $payload['id_lsp'] = $this->id_lsp;
+            $payload['id_skema'] = $this->id_skema;
+            $payload['instansi_nama'] = $this->instansi_nama;
+            $payload['instansi_jabatan'] = $this->instansi_jabatan;
+            $payload['instansi_alamat'] = $this->instansi_alamat;
+            $payload['instansi_telepon'] = $this->instansi_telepon;
+            $payload['instansi_fax'] = $this->instansi_fax;
+            $payload['instansi_email'] = $this->instansi_email;
+        }
+
+        if (($this->diklat['bigdata'] ?? 'N') === 'Y') {
+            $payload['id_pekerjaan_sebelumnya'] = $this->id_pekerjaan_sebelumnya;
+            $payload['id_penghasilan_sebelumnya'] = $this->id_penghasilan_sebelumnya;
+            $payload['id_status_nikah'] = $this->id_status_nikah;
+            $payload['tanggal_lahir_pasangan'] = $this->tanggal_lahir_pasangan;
+            $payload['id_pekerjaan_pasangan'] = $this->id_pekerjaan_pasangan;
+            $payload['id_penghasilan_pasangan'] = $this->id_penghasilan_pasangan;
+            $payload['jumlah_anak'] = $this->jumlah_anak;
+            $payload['id_status_hidup_ibu'] = $this->id_status_hidup_ibu;
+            $payload['tanggal_lahir_ibu'] = $this->tanggal_lahir_ibu;
+            $payload['id_pekerjaan_ibu'] = $this->id_pekerjaan_ibu;
+            $payload['id_status_hidup_ayah'] = $this->id_status_hidup_ayah;
+            $payload['tanggal_lahir_ayah'] = $this->tanggal_lahir_ayah;
+            $payload['id_pekerjaan_ayah'] = $this->id_pekerjaan_ayah;
+            $payload['id_penghasilan_ortu'] = $this->id_penghasilan_ortu;
+        }
+
+        foreach ($payload as $key => $value) {
+            if ($value === '') {
+                $payload[$key] = null;
+            }
+        }
+
+        return $payload;
+    }
+
+    private function getSidiaCredentials(): ?array
+    {
+        $credentials = [
+            'username' => config('services.sidia.username'),
+            'password' => config('services.sidia.password'),
+            'key'      => config('services.sidia.key'),
+            'key_name' => config('services.sidia.key_name'),
+        ];
+
+        if (empty($credentials['username']) || empty($credentials['password']) || empty($credentials['key']) || empty($credentials['key_name'])) {
+            return null;
+        }
+
+        return $credentials;
     }
 
     /**
@@ -352,14 +656,8 @@ class TrainingRegistration extends Component
             return [];
         }
 
-        $credentials = [
-            'username' => config('services.sidia.username'),
-            'password' => config('services.sidia.password'),
-            'key'      => config('services.sidia.key'),
-            'key_name' => config('services.sidia.key_name'),
-        ];
-
-        if (empty($credentials['username']) || empty($credentials['password']) || empty($credentials['key']) || empty($credentials['key_name'])) {
+        $credentials = $this->getSidiaCredentials();
+        if (!$credentials) {
             Log::warning('SIDIA credentials incomplete when fetching wilayah data.', ['wilayah' => $wilayah]);
             return [];
         }

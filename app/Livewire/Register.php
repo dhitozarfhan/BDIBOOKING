@@ -50,9 +50,9 @@ class Register extends Component
                     $this->trainings = [];
                 }
 
-                if (empty($this->trainings)) {
-                    $this->error = 'Tidak ada data diklat yang tersedia saat ini.';
-                }
+                // if (empty($this->trainings)) {
+                //     $this->error = 'Tidak ada data diklat yang tersedia saat ini.';
+                // }
 
             } else {
                 $this->error = "Gagal mengambil data dari API (Status: " . $response->status() . ").";

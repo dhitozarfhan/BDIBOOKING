@@ -1,4 +1,4 @@
-<div class="container mx-auto px-4 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
     {{-- Loading State --}}
     <div wire:loading class="w-full flex justify-center items-center py-10">
         <span class="loading loading-lg loading-spinner text-primary"></span>
