@@ -27,6 +27,8 @@ Route::get('/training/detail/{id_diklat}', \App\Livewire\Training\Detail::class)
 
 Route::get('/register/training/{id_diklat}', \App\Livewire\Training\Registration::class)->name('training.register');
 
+Route::get('/training/presence/{id_diklat}', \App\Livewire\Training\Presence::class)->name('training.presence');
+
 // Archive export route ///filament perlu cek di bawah ini karena ekspos URL
 Route::get('/archive/export', [ArchivePage::class, 'exportToExcel'])->name('archive.export');
 
