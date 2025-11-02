@@ -201,6 +201,22 @@
                                 </div>
                             </div>
                         </div>
+
+                        @if(($diklat['scan_suket_pengalaman_kerja'] ?? 'N') != 'N' && ($diklat['kapan_upload_suket_pengalaman_kerja'] ?? '') == 'initial')
+                        <div class="card bg-base-100 shadow-xl border border-base-200">
+                            <div class="card-body">
+                                <div class="space-y-2">
+                                    <h2 class="card-title">Surat Keterangan Pengalaman Kerja</h2>
+                                    <div class="divider mt-2"></div>
+                                </div>
+                                <label class="form-control w-full">
+                                    <div class="label"><span class="label-text">Scan Surat Keterangan (JPG) <span class="text-error">{{ $diklat['scan_suket_pengalaman_kerja'] == 'Y' ? '*' : '' }}</span></span></div>
+                                    <input type="file" wire:model="scan_suket_pengalaman_kerja" @class(['file-input file-input-bordered w-full', 'input-error' => $errors->has('scan_suket_pengalaman_kerja')]) />
+                                    @error('scan_suket_pengalaman_kerja') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                </label>
+                            </div>
+                        </div>
+                        @endif
                     </div>
 
                     {{-- Right Column --}}
@@ -291,18 +307,18 @@
                                     </div>
                                     <label class="form-control w-full">
                                         <div class="label"><span class="label-text">Dusun, Nama Jalan, dsb. <span class="text-error">*</span></span></div>
-                                        <input type="text" wire:model.lazy="dusun" @class(['input input-bordered w-full', 'input-error' => $errors->has('dusun')]) />
+                                        <input type="text" wire:model.lazy="dusun" @class(['input input-bordered w-full', 'input-error' => $errors->has('dusun')]) @disabled(empty($selectedDesa)) />
                                         @error('dusun') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                                     </label>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <label class="form-control w-full">
                                             <div class="label"><span class="label-text">RT</span></div>
-                                            <input type="text" wire:model.lazy="rt" @class(['input input-bordered w-full', 'input-error' => $errors->has('rt')]) />
+                                            <input type="text" wire:model.lazy="rt" @class(['input input-bordered w-full', 'input-error' => $errors->has('rt')]) @disabled(empty($selectedDesa)) />
                                             @error('rt') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                                         </label>
                                         <label class="form-control w-full">
                                             <div class="label"><span class="label-text">RW</span></div>
-                                            <input type="text" wire:model.lazy="rw" @class(['input input-bordered w-full', 'input-error' => $errors->has('rw')]) />
+                                            <input type="text" wire:model.lazy="rw" @class(['input input-bordered w-full', 'input-error' => $errors->has('rw')]) @disabled(empty($selectedDesa)) />
                                             @error('rw') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                                         </label>
                                     </div>
@@ -376,7 +392,6 @@
                                         </div>
                                     </div>
                                     <input type="hidden" x-ref="hidden" name="ttd" wire:model.defer="ttd" />
-                                    <p class="text-xs text-base-content/50">Jika diklat tidak memerlukan tanda tangan, Anda dapat melewati bagian ini.</p>
                                 </div>
                                 @error('ttd') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                             </div>

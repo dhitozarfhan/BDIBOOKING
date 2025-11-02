@@ -36,6 +36,7 @@ class Registration extends Component
     public string $id_pendidikan = '';
     public $scan_ijazah;
     public $scan_foto;
+    public $scan_suket_pengalaman_kerja;
     public string $pendidikan_jurusan = '';
     public string $pendidikan_tamat = '';
 
@@ -128,6 +129,7 @@ class Registration extends Component
         'scan_foto' => 'Scan Foto',
         'scan_ktp' => 'Scan KTP',
         'scan_ijazah' => 'Scan Ijazah',
+        'scan_suket_pengalaman_kerja' => 'Scan Surat Keterangan Pengalaman Kerja',
     ];
 
     protected $messages = [
@@ -140,9 +142,11 @@ class Registration extends Component
         'scan_foto.required' => 'Bagian foto peserta wajib diisi.',
         'scan_ktp.required' => 'Bagian KTP peserta wajib diisi.',
         'scan_ijazah.required' => 'Bagian ijazah peserta wajib diisi.',
+        'scan_suket_pengalaman_kerja.required' => 'Bagian surat keterangan pengalaman kerja peserta wajib diisi.',
         'scan_foto.mimes' => 'Format berkas foto harus JPG atau JPEG.',
         'scan_ktp.mimes' => 'Format berkas KTP harus JPG atau JPEG.',
         'scan_ijazah.mimes' => 'Format berkas ijazah harus JPG atau JPEG.',
+        'scan_suket_pengalaman_kerja.mimes' => 'Format berkas surat keterangan pengalaman kerja harus JPG atau JPEG.',
         'ttd.required' => 'Tanda tangan wajib dibubuhkan pada form ini.',
         'ttd.min' => 'Tanda tangan tidak terdeteksi dengan baik, silakan coba lagi.'
     ];
@@ -358,6 +362,7 @@ class Registration extends Component
             'scan_foto' => 'kapan_upload_foto',
             'scan_ktp' => 'kapan_upload_ktp',
             'scan_ijazah' => 'kapan_upload_ijazah',
+            'scan_suket_pengalaman_kerja' => 'kapan_upload_suket_pengalaman_kerja',
         ] as $field => $timing) {
             if ($this->shouldProcessUpload($field, $timing)) {
                 $rules[$field] = [
@@ -388,13 +393,16 @@ class Registration extends Component
         }
 
         try {
+            $post = [
+                $credentials['key_name'] => $credentials['key'],
+                'id_diklat' => $this->id_diklat,
+                'peserta' => $pesertaPayload,
+                'file' => $filePayload,
+            ];
+            // dd($post);
+            // exit();
             $response = Http::withBasicAuth($credentials['username'], $credentials['password'])
-                ->post(config('services.sidia.url') . '/register', [
-                    $credentials['key_name'] => $credentials['key'],
-                    'id_diklat' => $this->id_diklat,
-                    'peserta' => $pesertaPayload,
-                    'file' => $filePayload,
-                ]);
+                ->post(config('services.sidia.url') . '/register', $post);
 
             if ($response->successful()) {
                 $result = $response->json();
@@ -451,6 +459,7 @@ class Registration extends Component
             'foto' => null,
             'ktp' => null,
             'ijazah' => null,
+            'suket_pengalaman_kerja' => null,
             'bukti_kompetensi' => null,
             'sertifikat_asesor' => null,
             'ma' => null,
@@ -478,6 +487,11 @@ class Registration extends Component
                 'destination' => 'ijazah',
                 'timing' => 'kapan_upload_ijazah',
                 'message' => 'Bagian ijazah peserta wajib diisi.',
+            ],
+            'scan_suket_pengalaman_kerja' => [
+                'destination' => 'suket_pengalaman_kerja',
+                'timing' => 'kapan_upload_suket_pengalaman_kerja',
+                'message' => 'Bagian surat keterangan pengalaman kerja peserta wajib diisi.',
             ],
         ];
 
