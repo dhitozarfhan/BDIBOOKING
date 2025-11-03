@@ -40,7 +40,7 @@
                                     <span>{{ $diklat['jenis_diklat'] ?? '-' }}</span>
                                 </div>
                             </div>
-                            <a href="{{ route('training.detail', ['id_diklat' => $diklat['id_diklat']]) }}" wire:navigate class="btn btn-ghost btn-sm mt-4">
+                            <a href="{{ route('training.detail', ['id_diklat' => $diklat['id_diklat'], 'slug' => Str::slug($diklat['nama'])]) }}" wire:navigate class="btn btn-ghost btn-sm mt-4">
                                 Lihat Detail Diklat
                             </a>
                         </div>
@@ -66,7 +66,7 @@
                         <p class="text-sm text-base-content/60">Pastikan seluruh data diisi dengan benar sesuai dokumen resmi.</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
-                        <a href="{{ route('training.detail', ['id_diklat' => $diklat['id_diklat']]) }}" wire:navigate class="btn btn-outline btn-sm">
+                        <a href="{{ route('training.detail', ['id_diklat' => $diklat['id_diklat'], 'slug' => Str::slug($diklat['nama'])]) }}" wire:navigate class="btn btn-outline btn-sm">
                             Kembali ke Detail Diklat
                         </a>
                     </div>
@@ -455,7 +455,7 @@
                 </div>
 
                 <div class="card-actions justify-between items-center mt-10">
-                    <a href="{{ route('training.detail', ['id_diklat' => $diklat['id_diklat']]) }}" wire:navigate class="btn btn-warning">
+                    <a href="{{ route('training.detail', ['id_diklat' => $diklat['id_diklat'], 'slug' => Str::slug($diklat['nama'])]) }}" wire:navigate class="btn btn-warning">
                         Kembali ke Detail Diklat
                     </a>
                     <button type="submit" class="btn btn-primary btn-lg">

@@ -53,7 +53,7 @@
                                     <tr class="hover align-top">
                                         <td class="max-w-xs">
                                             <div class="space-y-1">
-                                                <a href="{{ route('training.detail', ['id_diklat' => $training['id_diklat']]) }}"
+                                                <a href="{{ route('training.detail', ['id_diklat' => $training['id_diklat'], 'slug' => Str::slug($training['nama'])]) }}"
                                                    wire:navigate
                                                    class="font-semibold text-base-content hover:text-primary transition-colors">
                                                     {{ $training['nama'] }}
@@ -80,13 +80,13 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
-                                                <a href="{{ route('training.detail', ['id_diklat' => $training['id_diklat']]) }}"
+                                                <a href="{{ route('training.detail', ['id_diklat' => $training['id_diklat'], 'slug' => Str::slug($training['nama'])]) }}"
                                                    wire:navigate
                                                    class="btn btn-success">
                                                     Detail
                                                 </a>
                                                 @if($statusOpen)
-                                                    <a href="{{ route('training.register', ['id_diklat' => $training['id_diklat']]) }}"
+                                                    <a href="{{ route('training.register', ['id_diklat' => $training['id_diklat'], 'slug' => Str::slug($training['nama'])]) }}"
                                                        wire:navigate
                                                        class="btn btn-primary">
                                                         Daftar

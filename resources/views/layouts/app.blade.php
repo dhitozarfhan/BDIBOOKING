@@ -59,14 +59,14 @@
 <body>
     <header>
         <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between py-4">
+            <div class="flex flex-col md:flex-row items-center justify-between py-4 gap-4">
                 <a href="{{ url('/') }}" class="flex items-center space-x-3" wire:navigate>
                     <!-- hidden on lower than md screen size -->
-                    <img id="kemenperin-logo" class="h-16 hidden md:inline-block" src="{{ asset('images/kemenperin.svg') }}" alt="Kementerian Perindustrian RI - Balai Diklat Industri Yogyakarta">
-                    <img id="bdi-yogyakarta-logo" class="h-16" src="{{ asset('images/bdi-yogyakarta-corpu.svg') }}" alt="Balai Diklat Industri Yogyakarta">
+                    <img id="kemenperin-logo" class="h-16" src="{{ asset('images/kemenperin.svg') }}" alt="Kementerian Perindustrian RI - Balai Diklat Industri Yogyakarta">
+                    <img id="bdi-yogyakarta-logo" class="h-16 lg:inline-block md:hidden" src="{{ asset('images/bdi-yogyakarta-corpu.svg') }}" alt="Balai Diklat Industri Yogyakarta">
                 </a>
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('register') }}" class="btn btn-accent">Pendaftaran Peserta Diklat</a>
+                <div class="flex items-center flex-wrap justify-center gap-2">
+                    <a href="{{ route('register') }}" wire:navigate class="btn btn-accent">Pendaftaran Peserta Diklat</a>
                     <a href="https://bdiyogyakarta.kemenperin.go.id/sidia" class="btn btn-primary">Login SIDIA</a>
                     <livewire:language-switcher />
                     <livewire:theme-switcher />

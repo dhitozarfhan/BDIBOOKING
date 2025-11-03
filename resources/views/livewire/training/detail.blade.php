@@ -56,7 +56,7 @@
                             <span class="text-xs font-semibold uppercase text-base-content/60">Status Pendaftaran</span>
                             @if(($training['allowed_reg'] ?? 'N') === 'Y')
                                 <div class="text-2xl font-bold text-success mt-1 mb-3">Masih Dibuka</div>
-                                <a href="{{ route('training.register', ['id_diklat' => $training['id_diklat']]) }}"
+                                <a href="{{ route('training.register', ['id_diklat' => $training['id_diklat'], 'slug' => Str::slug($training['nama'])]) }}"
                                    wire:navigate
                                    class="btn btn-primary btn-lg">
                                     Daftar Sekarang
