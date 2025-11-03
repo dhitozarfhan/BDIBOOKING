@@ -32,6 +32,10 @@ Route::get('/training/presence/{id_diklat}/{slug?}', \App\Livewire\Training\Pres
 // Archive export route ///filament perlu cek di bawah ini karena ekspos URL
 Route::get('/archive/export', [ArchivePage::class, 'exportToExcel'])->name('archive.export');
 
+// Rute untuk Laporan Gratifikasi
+Route::get('/gratification', App\Livewire\Gratification\Gratification::class)->name('gratification');
+
+
 /*
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\BlogController;
