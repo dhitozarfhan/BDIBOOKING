@@ -455,7 +455,7 @@
                 </div>
 
                 <div class="card-actions justify-between items-center mt-10">
-                    <a href="{{ route('training.detail', ['id_diklat' => $diklat['id_diklat'], 'slug' => Str::slug($diklat['nama'])]) }}" wire:navigate class="btn btn-warning">
+                    <a href="{{ route('training.detail', ['id_diklat' => $diklat['id_diklat'], 'slug' => Str::slug($diklat['nama'])]) }}" wire:navigate class="btn btn-warning hidden md:inline-flex">
                         Kembali ke Detail Diklat
                     </a>
                     <button type="submit" class="btn btn-primary btn-lg">
@@ -470,8 +470,24 @@
 </div>
 
 @pushOnce('scripts')
-<script src="https://cdn.jsdelivr.net/npm/signature_pad@5.1.1/dist/signature_pad.umd.min.js"></script>
 <script>
+    function loadSignaturePad(callback) {
+        const src = "https://cdn.jsdelivr.net/npm/signature_pad@5.1.1/dist/signature_pad.umd.min.js";
+        if (window.SignaturePad) {
+            callback();
+            return;
+        }
+        let script = document.querySelector(`script[src="${src}"]`);
+        if (script) {
+            script.addEventListener('load', callback);
+            return;
+        }
+        script = document.createElement('script');
+        script.src = src;
+        script.onload = callback;
+        document.head.appendChild(script);
+    }
+
     window.signaturePadComponent = window.signaturePadComponent || function () {
         return {
             signaturePad: null,
@@ -479,37 +495,39 @@
             hiddenInput: null,
             syncFn: null,
             init() {
-                this.canvas = this.$refs.canvas;
-                this.hiddenInput = this.$refs.hidden;
+                loadSignaturePad(() => {
+                    this.canvas = this.$refs.canvas;
+                    this.hiddenInput = this.$refs.hidden;
 
-                const width = this.canvas.parentElement ? this.canvas.parentElement.clientWidth : 600;
-                const height = 220;
+                    const width = this.canvas.parentElement ? this.canvas.parentElement.clientWidth : 600;
+                    const height = 220;
 
-                this.canvas.width = width;
-                this.canvas.height = height;
+                    this.canvas.width = width;
+                    this.canvas.height = height;
 
-                this.signaturePad = new SignaturePad(this.canvas, {
-                    penColor: '#1f2937',
-                    backgroundColor: 'rgba(255,255,255,0)',
-                    minWidth: 0.75,
-                    maxWidth: 2.5,
-                });
+                    this.signaturePad = new SignaturePad(this.canvas, {
+                        penColor: '#1f2937',
+                        backgroundColor: 'rgba(255,255,255,0)',
+                        minWidth: 0.75,
+                        maxWidth: 2.5,
+                    });
 
-                if (this.hiddenInput.value) {
-                    try {
-                        this.signaturePad.fromDataURL(this.hiddenInput.value);
-                    } catch (error) {
-                        console.warn('Tanda tangan tersimpan tidak dapat dimuat ulang.', error);
-                        this.signaturePad.clear();
+                    if (this.hiddenInput.value) {
+                        try {
+                            this.signaturePad.fromDataURL(this.hiddenInput.value);
+                        } catch (error) {
+                            console.warn('Tanda tangan tersimpan tidak dapat dimuat ulang.', error);
+                            this.signaturePad.clear();
+                        }
                     }
-                }
 
-                this.signaturePad.onEnd = () => {
+                    this.signaturePad.onEnd = () => {
+                        this.sync();
+                    };
+
+                    this.registerSync();
                     this.sync();
-                };
-
-                this.registerSync();
-                this.sync();
+                });
             },
             undo() {
                 if (!this.signaturePad) {
