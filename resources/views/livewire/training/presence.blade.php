@@ -353,15 +353,26 @@
                 }
 
                 this.signaturePad.onEnd = () => this.sync();
-                window.addEventListener('resize', () => this.resizeCanvas());
+                window.addEventListener('resize', this.debounce(() => this.resizeCanvas()));
 
                 this.registerSync();
                 this.sync();
+            },
+            debounce(func, wait = 100) {
+                let timeout;
+                return (...args) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                        func.apply(this, args);
+                    }, wait);
+                };
             },
             resizeCanvas() {
                 if (!this.canvas) {
                     return;
                 }
+
+                const data = this.signaturePad ? this.signaturePad.toData() : null;
 
                 const ratio = Math.max(window.devicePixelRatio || 1, 1);
                 const width = this.canvas.clientWidth;
@@ -370,6 +381,10 @@
                 this.canvas.width = width * ratio;
                 this.canvas.height = height * ratio;
                 this.canvas.getContext('2d').scale(ratio, ratio);
+
+                if (this.signaturePad && data) {
+                    this.signaturePad.fromData(data);
+                }
             },
             undo() {
                 if (!this.signaturePad) {
