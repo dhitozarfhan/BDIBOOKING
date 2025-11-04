@@ -10,6 +10,7 @@ class Gratification extends Component
 {
     use WithFileUploads;
 
+    // Variabel untuk formulir
     public $nama_pelapor;
     public $nomor_identitas;
     public $alamat;
@@ -21,9 +22,41 @@ class Gratification extends Component
     public $data_dukung;
     public $gRecaptchaResponse;
 
+    // Variabel untuk navigasi antar view
+    public $currentView = 'index';
+    
+    // Variabel untuk cek status laporan
+    public $kode_register;
+    public $showReportDetail = false;
+    public $statusError = '';
+    public $reportDetail;
+    
+    // Variabel untuk laporan statistik
+    public $selectedYear;
+    public $reportCountData;
+    public $timeToAnswerData;
+    public $statusData;
+
+    public function mount()
+    {
+        $this->selectedYear = date('Y');
+        
+        // Menentukan view awal berdasarkan route
+        $currentRoute = request()->route()->getName();
+        if (str_contains($currentRoute, 'gratification.form')) {
+            $this->currentView = 'form';
+        } elseif (str_contains($currentRoute, 'gratification.status')) {
+            $this->currentView = 'status';
+        } elseif (str_contains($currentRoute, 'gratification.report')) {
+            $this->currentView = 'report';
+        } else {
+            $this->currentView = 'index'; // default
+        }
+    }
+
     public function rules()
     {
-        return [
+        $rules = [
             'nama_pelapor' => 'required|string|max:255',
             'nomor_identitas' => 'nullable|string|max:255',
             'alamat' => 'nullable|string',
@@ -33,8 +66,17 @@ class Gratification extends Component
             'judul_laporan' => 'required|string|max:255',
             'uraian_laporan' => 'required|string',
             'data_dukung' => 'nullable|file|max:1024', // 1MB max
-            'gRecaptchaResponse' => 'required|recaptcha',
         ];
+
+        if ($this->currentView === 'form') {
+            $rules['gRecaptchaResponse'] = 'required|recaptcha';
+        }
+
+        if ($this->currentView === 'status') {
+            $rules['kode_register'] = 'required|string|max:255';
+        }
+
+        return $rules;
     }
 
     public function messages()
@@ -42,12 +84,33 @@ class Gratification extends Component
         return [
             'gRecaptchaResponse.required' => 'Verifikasi reCAPTCHA wajib diisi.',
             'gRecaptchaResponse.recaptcha' => 'Verifikasi reCAPTCHA gagal.',
+            'kode_register.required' => 'Kode register wajib diisi.',
         ];
     }
 
     public function updated($propertyName)
     {
         $this->validateOnly($propertyName);
+    }
+
+    public function setView($view)
+    {
+        $this->currentView = $view;
+        $this->resetForm();
+        
+        if ($view === 'report') {
+            $this->updateReport();
+        }
+    }
+    
+    public function resetForm()
+    {
+        $this->reset([
+            'nama_pelapor', 'nomor_identitas', 'alamat', 'pekerjaan', 
+            'telepon', 'email', 'judul_laporan', 'uraian_laporan', 
+            'data_dukung', 'gRecaptchaResponse', 'kode_register',
+            'showReportDetail', 'statusError', 'reportDetail'
+        ]);
     }
 
     public function save()
@@ -59,6 +122,9 @@ class Gratification extends Component
             $filePath = $this->data_dukung->store('gratifications', 'public');
         }
 
+        // Generate kode register unik
+        $kodeRegister = $this->generateKodeRegister();
+
         GratificationModel::create([
             'nama_pelapor' => $this->nama_pelapor,
             'nomor_identitas' => $this->nomor_identitas,
@@ -69,16 +135,80 @@ class Gratification extends Component
             'judul_laporan' => $this->judul_laporan,
             'uraian_laporan' => $this->uraian_laporan,
             'data_dukung' => $filePath,
+            'status' => 'I', // Set status awal sebagai Inisiasi
+            'kode_register' => $kodeRegister,
         ]);
 
-        session()->flash('message', 'Laporan gratifikasi Anda telah berhasil dikirim. Terima kasih atas partisipasi Anda dalam menjaga integritas.');
+        session()->flash('message', "Laporan gratifikasi Anda telah berhasil dikirim dengan kode register: $kodeRegister. Terima kasih atas partisipasi Anda dalam menjaga integritas.");
 
-        $this->reset();
+        $this->resetForm();
+        $this->currentView = 'index';
     }
 
+    private function generateKodeRegister()
+    {
+        do {
+            $kode = strtoupper(substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 6));
+            $exists = GratificationModel::where('kode_register', $kode)->exists();
+        } while ($exists);
+
+        return $kode;
+    }
+
+    public function checkStatus()
+    {
+        $this->validate();
+        
+        // Cari berdasarkan kode_register terlebih dahulu
+        // Kita bisa mencoba mengenerate kode register dari ID atau nama pelapor jika belum ada
+        $report = GratificationModel::where('kode_register', $this->kode_register)
+                    ->orWhere('id', $this->kode_register)
+                    ->first();
+
+        if ($report) {
+            $this->reportDetail = $report;
+            $this->showReportDetail = true;
+            $this->statusError = '';
+        } else {
+            $this->showReportDetail = false;
+            $this->statusError = 'Kode register tidak ditemukan dalam sistem kami.';
+        }
+    }
+
+    public function updateReport()
+    {
+        // Simulasi data untuk laporan statistik
+        // Dalam implementasi sebenarnya, ini akan diambil dari database
+        $this->reportCountData = [
+            1 => rand(1, 10), 2 => rand(1, 10), 3 => rand(1, 10), 4 => rand(1, 10),
+            5 => rand(1, 10), 6 => rand(1, 10), 7 => rand(1, 10), 8 => rand(1, 10),
+            9 => rand(1, 10), 10 => rand(1, 10), 11 => rand(1, 10), 12 => rand(1, 10)
+        ];
+        
+        $this->timeToAnswerData = [
+            1 => rand(1, 10), 2 => rand(1, 10), 3 => rand(1, 10), 4 => rand(1, 10),
+            5 => rand(1, 10), 6 => rand(1, 10), 7 => rand(1, 10), 8 => rand(1, 10),
+            9 => rand(1, 10), 10 => rand(1, 10), 11 => rand(1, 10), 12 => rand(1, 10)
+        ];
+        
+        $this->statusData = [
+            ['status' => 'I', 'count' => rand(1, 20)],
+            ['status' => 'P', 'count' => rand(1, 20)],
+            ['status' => 'D', 'count' => rand(1, 20)],
+            ['status' => 'T', 'count' => rand(1, 20)]
+        ];
+    }
 
     public function render()
     {
-        return view('livewire.gratification.gratification');
+        if ($this->currentView === 'form') {
+            return view('livewire.gratification.form');
+        } elseif ($this->currentView === 'status') {
+            return view('livewire.gratification.status');
+        } elseif ($this->currentView === 'report') {
+            return view('livewire.gratification.report');
+        } else {
+            return view('livewire.gratification.index');
+        }
     }
 }

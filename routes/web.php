@@ -84,6 +84,9 @@ Route::get('/archive/export', [ArchivePage::class, 'exportToExcel'])->name('arch
 
 // Rute untuk Laporan Gratifikasi
 Route::get('/gratification', App\Livewire\Gratification\Gratification::class)->name('gratification');
+Route::get('/gratification/form', App\Livewire\Gratification\Gratification::class)->name('gratification.form');
+Route::get('/gratification/status', App\Livewire\Gratification\Gratification::class)->name('gratification.status');
+Route::get('/gratification/report', App\Livewire\Gratification\Gratification::class)->name('gratification.report');
 
 
 /*
