@@ -3,7 +3,7 @@
         <div class="bg-cyan-950" style="background-image: url('{{ asset('images/pattern/04.png') }}');">
             <div class="container mx-auto py-5 mb-5">
                 <div class="text-center mx-auto">
-                    <h1 class="text-white text-4xl font-bold py-4">Kompetensi SDM Industri</h1>
+                    <h1 class="text-base-content text-4xl font-bold py-4">Kompetensi SDM Industri</h1>
                 </div>
             </div>
         </div>
