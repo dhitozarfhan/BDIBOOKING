@@ -1,8 +1,7 @@
 <div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-8">
-            <!-- Konten Utama - 2 kolom (2/3) -->
-            <div class="lg:col-span-2 mb-6 lg:mb-0">
+        <div class="grid grid-cols-1 lg:grid-cols-12 lg:gap-4">
+            <div class="lg:col-span-8 mb-6 lg:mb-0">
                 <div class="text-sm breadcrumbs">
                     <ul>
                         <li><a href="{{ route('home') }}"><i class="bi bi-house-fill"></i></a></li>
@@ -73,9 +72,7 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Sidebar - 1 kolom (1/3) -->
-            <div class="lg:col-span-1">
+            <div class="lg:col-span-4">
                 <div class="bg-base-200 p-4 rounded-lg shadow-sm mt-12">
                     <h2 class="text-2xl font-bold text-base-content mb-4">
                         <i class="bi bi-info-circle-fill mr-2"></i> Kontak Kami
