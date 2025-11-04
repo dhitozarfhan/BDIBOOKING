@@ -198,6 +198,12 @@ class DataTable extends Component
                 default => __('competency.unknown_status'),
             };
 
+            $notes = $item['notes'] ?? null;
+            $url = null;
+            if (filter_var($notes, FILTER_VALIDATE_URL)) {
+                $url = $notes;
+            }
+
             return [
                 'nomor' => $item['nomor'] ?? '-',
                 'judul' => [
@@ -220,6 +226,8 @@ class DataTable extends Component
                         'cancelled' => 'error',
                         default => 'neutral',
                     },
+                    'url' => $url,
+                    'notes' => $notes,
                 ],
                 'total_unit' => $item['total_skkni_unit'] ?? 0,
             ];
@@ -233,8 +241,14 @@ class DataTable extends Component
         return array_map(function (array $item): array {
             $name = $item['nama'] ?? '-';
 
+            $imageUrl = $item['image'] ?? null;
+            if ($imageUrl && ! Str::startsWith($imageUrl, ['http://', 'https://'])) {
+                $apiUrl = rtrim((string) config('services.sidia.url'), '/');
+                $imageUrl = $apiUrl . '/' . ltrim($imageUrl, '/');
+            }
+
             return [
-                'logo' => $item['image'] ?? null,
+                'logo' => $imageUrl,
                 'nama' => [
                     'text' => $name,
                     'url' => isset($item['id_lsp'])

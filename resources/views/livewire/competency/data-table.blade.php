@@ -79,7 +79,7 @@
                                                                 @endphp
                                                                 @if ($url)
                                                                     <a wire:navigate href="{{ $url }}"
-                                                                        class="text-primary font-semibold hover:underline">
+                                                                        class="text-blue-600 font-semibold hover:underline">
                                                                         {{ $text }}
                                                                     </a>
                                                                 @else
@@ -90,29 +90,69 @@
                                                             @endif
                                                         @break
 
-                                                        @case('badge')
-                                                            @if (is_array($value))
-                                                                @php
-                                                                    $label = $value['label'] ?? '-';
-                                                                    $tone = $value['tone'] ?? 'neutral';
-                                                                    $badgeClasses = match ($tone) {
-                                                                        'success' => 'badge-success',
-                                                                        'warning' => 'badge-warning',
-                                                                        'error' => 'badge-error',
-                                                                        'primary' => 'badge-primary',
-                                                                        default => 'badge-ghost',
-                                                                    };
-                                                                @endphp
-                                                                <span class="badge {{ $badgeClasses }}">{{ $label }}</span>
-                                                            @else
-                                                                {{ $value ?? '-' }}
-                                                            @endif
-                                                        @break
+                                                                                                                                                                                                                    @case('badge')
 
-                                                        @case('image')
+                                                                                                                                                                                                                        @if (is_array($value))
+
+                                                                                                                                                                                                                            @php
+
+                                                                                                                                                                                                                                $label = $value['label'] ?? '-';
+
+                                                                                                                                                                                                                                $tone = $value['tone'] ?? 'neutral';
+
+                                                                                                                                                                                                                                $url = $value['url'] ?? null;
+
+                                                                                                                                                                                                                                $notes = $value['notes'] ?? null;
+
+                                                                                                                                                                                                                                $badgeClasses = match ($tone) {
+
+                                                                                                                                                                                                                                    'success' => 'badge-success',
+
+                                                                                                                                                                                                                                    'warning' => 'badge-warning',
+
+                                                                                                                                                                                                                                    'error' => 'badge-error',
+
+                                                                                                                                                                                                                                    'primary' => 'badge-primary',
+
+                                                                                                                                                                                                                                    default => 'badge-ghost',
+
+                                                                                                                                                                                                                                };
+
+                                                                                                                                                                                                                            @endphp
+
+                                                                                                                                                                                                                            @if ($url)
+
+                                                                                                                                                                                                                                <a href="{{ $url }}" class="btn btn-xs {{ $badgeClasses }}" target="_blank">{{ $label }}</a>
+
+                                                                                                                                                                                                                            @elseif ($notes)
+
+                                                                                                                                                                                                                                <div class="tooltip" data-tip="{{ $notes }}">
+
+                                                                                                                                                                                                                                    <span class="badge {{ $badgeClasses }}">{{ $label }}</span>
+
+                                                                                                                                                                                                                                </div>
+
+                                                                                                                                                                                                                            @else
+
+                                                                                                                                                                                                                                <span class="badge {{ $badgeClasses }}">{{ $label }}</span>
+
+                                                                                                                                                                                                                            @endif
+
+                                                                                                                                                                                                                        @else
+
+                                                                                                                                                                                                                            {{ $value ?? '-' }}
+
+                                                                                                                                                                                                                        @endif
+
+                                                                                                                                                                                                                    @break                                                        @case('image')
                                                             @if ($value)
                                                                 <img src="{{ $value }}" alt=""
                                                                     class="w-16 h-16 object-contain rounded-lg shadow border border-base-200">
+                                                            @else
+                                                                <div class="w-16 h-16 flex flex-col items-center justify-center bg-gray-100 rounded-lg text-gray-400 text-xs">
+                                                                    <i class="bi bi-image text-2xl"></i>
+                                                                    <span>{{ __('competency.no_logo') }}</span>
+                                                                </div>
                                                             @endif
                                                         @break
 
