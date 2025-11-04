@@ -13,6 +13,16 @@ class Detail extends Component
     public string $error = '';
     public $id_diklat;
     public ?string $successMessage = null;
+    public string $registrationRoute = '';
+
+    public function getRegistrationRoute(): string
+    {
+        if ($this->training && $this->training['jenis'] === 'sdma') {
+            return route('training.sdma-option', ['id_diklat' => $this->training['id_diklat'], 'slug' => \Illuminate\Support\Str::slug($this->training['nama'])]);
+        }
+        return route('training.register', ['id_diklat' => $this->training['id_diklat'], 'slug' => \Illuminate\Support\Str::slug($this->training['nama'])]);
+    }
+
 
     public function mount($id_diklat)
     {
@@ -52,6 +62,7 @@ class Detail extends Component
 
                 if (isset($data['data']['diklat']) && is_array($data['data']['diklat'])) {
                     $this->training = $data['data']['diklat'];
+                    $this->registrationRoute = $this->getRegistrationRoute();
                 } else {
                     $this->training = null;
                 }

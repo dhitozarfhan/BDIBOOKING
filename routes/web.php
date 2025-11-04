@@ -27,6 +27,10 @@ Route::get('/training/detail/{id_diklat}/{slug?}', \App\Livewire\Training\Detail
 
 Route::get('/register/training/{id_diklat}/{slug?}', \App\Livewire\Training\Registration::class)->name('training.register');
 
+Route::get('/register/training/sdma-option/{id_diklat}/{slug?}', \App\Livewire\Training\SdmaOption::class)->name('training.sdma-option');
+
+Route::get('/register/training/kemenperin/{id_diklat}/{slug?}', \App\Livewire\Training\KemenperinRegistration::class)->name('training.kemenperin-register');
+
 Route::get('/training/presence/{id_diklat}/{slug?}', \App\Livewire\Training\Presence::class)->name('training.presence');
 
 // Archive export route ///filament perlu cek di bawah ini karena ekspos URL

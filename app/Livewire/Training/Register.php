@@ -44,7 +44,17 @@ class Register extends Component
                 }
 
                 if (isset($data['data']['diklat']) && is_array($data['data']['diklat'])) {
-                    $this->trainings = $data['data']['diklat'];
+                    $trainings = $data['data']['diklat'];
+                    usort($trainings, function($a, $b) {
+                        $nameA = preg_replace('/ Angkatan .*/', '', $a['nama']);
+                        $nameB = preg_replace('/ Angkatan .*/', '', $b['nama']);
+
+                        if ($nameA == $nameB) {
+                            return $a['angkatan'] <=> $b['angkatan'];
+                        }
+                        return strcmp($nameA, $nameB);
+                    });
+                    $this->trainings = $trainings;
                 } else {
                     $this->trainings = [];
                 }

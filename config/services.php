@@ -49,6 +49,14 @@ return [
         'key_name' => env('SIDIA_API_KEY_NAME', 'SRV-KEY'),
     ],
 
+    'sippa' => [
+        'url' => env('SIPPA_API_URL'),
+        'username' => env('SIPPA_API_USERNAME'),
+        'password' => env('SIPPA_API_PASSWORD'),
+        'key' => env('SIPPA_API_KEY'),
+        'key_name' => env('SIPPA_API_KEY_NAME', 'SRV-KEY'),
+    ],
+
     'disk'  => [
         'employee'  => [
             'image'     => 'employee/images',
