@@ -2,31 +2,31 @@
     $items = [
         [
             'key' => 'skkni',
-            'icon' => 'fa-swatchbook',
+            'icon' => 'bi-journal-text',
             'label' => __('competency.competency_skkni'),
             'description' => __('competency.quickmenu_skkni_description'),
         ],
         [
             'key' => 'lsp',
-            'icon' => 'fa-building',
+            'icon' => 'bi-patch-check',
             'label' => __('competency.competency_lsp'),
             'description' => __('competency.quickmenu_lsp_description'),
         ],
         [
             'key' => 'tuk',
-            'icon' => 'fa-warehouse',
+            'icon' => 'bi-clipboard-check',
             'label' => __('competency.competency_tuk'),
             'description' => __('competency.quickmenu_tuk_description'),
         ],
         [
             'key' => 'assessor',
-            'icon' => 'fa-user-check',
+            'icon' => 'bi-person-check',
             'label' => __('competency.competency_assessor'),
             'description' => __('competency.quickmenu_assessor_description'),
         ],
         [
             'key' => 'scheme',
-            'icon' => 'fa-flask',
+            'icon' => 'bi-diagram-3',
             'label' => __('competency.competency_scheme'),
             'description' => __('competency.quickmenu_scheme_description'),
         ],
@@ -45,7 +45,7 @@
                     class="card bg-base-100 border border-base-200 shadow-sm hover:shadow-lg h-full">
                     <div class="card-body text-center items-center gap-4">
                         <div class="w-16 h-16 flex items-center justify-center rounded-full bg-primary/10 text-primary">
-                            <i class="fas {{ $item['icon'] }} text-3xl"></i>
+                            <i class="bi {{ $item['icon'] }} text-3xl"></i>
                         </div>
                         <h3 class="text-lg font-semibold text-base-content text-center">
                             {{ $item['label'] }}
