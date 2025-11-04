@@ -19,5 +19,13 @@ class Gratification extends Model
         'judul_laporan',
         'uraian_laporan',
         'data_dukung',
+        'status',
+        'jawaban',
+        'kode_register',
+        'waktu_publish',
+    ];
+
+    protected $casts = [
+        'waktu_publish' => 'datetime',
     ];
 }
