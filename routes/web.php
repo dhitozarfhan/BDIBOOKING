@@ -1,8 +1,54 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Filament\Pages\ArchivePage;
+use App\Http\Controllers\CompetencyDownloadController;
+use App\Livewire\Competency\DataTable as CompetencyDataTable;
+use App\Livewire\Competency\Index as CompetencyIndex;
+use App\Livewire\Competency\LspDetail;
+use App\Livewire\Competency\SkkniDetail;
 
 Route::get('/', \App\Livewire\Home::class)->name('home');
+
+Route::prefix('competency')->name('competency.')->group(function () {
+    Route::get('/', CompetencyIndex::class)->name('index');
+
+    Route::get('/skkni/download/{skkniId}/{slug?}', CompetencyDownloadController::class)
+        ->whereNumber('skkniId')
+        ->name('skkni.download');
+
+    Route::get('/skkni/{skkniId}/{slug?}', SkkniDetail::class)
+        ->whereNumber('skkniId')
+        ->name('skkni.show');
+
+    Route::get('/lsp/{lspId}/{slug?}', LspDetail::class)
+        ->whereNumber('lspId')
+        ->name('lsp.show');
+
+    Route::get('/lsp/{tab}/{lspId}/{slug?}', function (string $tab, int $lspId, ?string $slug = null) {
+        return redirect()->route('competency.lsp.show', array_filter([
+            'lspId' => $lspId,
+            'slug' => $slug,
+            'tab' => $tab,
+        ], static fn ($value) => !is_null($value)));
+    })->whereIn('tab', ['assessor', 'tuk', 'scheme'])
+        ->whereNumber('lspId')
+        ->name('lsp.legacy-tab');
+
+    Route::get('/lsp/unit/{lspId}/{schemeId}/{slug?}', function (int $lspId, int $schemeId, ?string $slug = null) {
+        return redirect()->route('competency.lsp.show', array_filter([
+            'lspId' => $lspId,
+            'slug' => $slug,
+            'tab' => 'scheme',
+            'scheme' => $schemeId,
+        ], static fn ($value) => !is_null($value)));
+    })->whereNumber('lspId')
+        ->whereNumber('schemeId')
+        ->name('lsp.legacy-unit');
+
+    Route::get('/{section}', CompetencyDataTable::class)
+        ->whereIn('section', ['skkni', 'lsp', 'assessor', 'tuk', 'scheme'])
+        ->name('section');
+});
 
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);
