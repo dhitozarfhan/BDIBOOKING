@@ -1,6 +1,6 @@
 <div>
     <div class="bg-base-200 min-h-screen">
-        <section class="bg-gradient-to-r from-cyan-900 to-cyan-700 text-white">
+        <section class="bg-gradient-to-r from-cyan-900 to-cyan-700 text-base-content">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 text-center">
                 <h1 class="text-3xl md:text-5xl font-bold mb-3">
                     {{ $lsp['nama'] ?? __('competency.lsp_details') }}
