@@ -381,5 +381,6 @@
 
     "Footer About Message": "BDI Yogyakarta has the task of implementing education and training for industrial human resources through <b>3-in-1 Training </b> (Training-Competency Certification-Job Placement) and <b>business incubators to bring up industrial entrepreneurship.</b>",
     "pagination.per_page": "Per Page",
-    "pagination.search_placeholder": "Search..."
+    "pagination.search_placeholder": "Search...",
+    "competency.no_logo": "No Logo"
 }
