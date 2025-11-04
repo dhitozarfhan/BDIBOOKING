@@ -1,12 +1,14 @@
-<div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-    <div class="max-w-full">
-        <h2 class="text-lg font-medium text-gray-900">
-            Statistik Laporan Gratifikasi
+<div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-2xl font-bold text-base-content">
+            <i class="bi bi-bar-chart-line-fill mr-2"></i> Statistik Laporan Gratifikasi
         </h2>
 
         <div class="mt-6">
-            <label for="tahun" class="block font-medium text-sm text-gray-700">Tahun</label>
-            <select id="tahun" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full" wire:model="selectedYear" wire:change="updateReport">
+            <label for="tahun" class="label">
+                <span class="label-text">Tahun</span>
+            </label>
+            <select id="tahun" class="select select-bordered w-full" wire:model="selectedYear" wire:change="updateReport">
                 @for ($year = date('Y'); $year >= 2020; $year--)
                     <option value="{{ $year }}">{{ $year }}</option>
                 @endfor
@@ -15,86 +17,85 @@
 
         <!-- Grafik Jumlah Laporan per Bulan -->
         <div class="mt-8">
-            <h3 class="text-md font-medium text-gray-900">Jumlah Laporan per Bulan ({{ $selectedYear }})</h3>
-            <div class="mt-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
-                <!-- Di sini akan ditampilkan grafik jumlah laporan per bulan -->
-                @if($reportCountData)
-                    <div class="space-y-2">
-                        @foreach($reportCountData as $month => $count)
-                            <div class="flex items-center">
-                                <div class="w-16 text-sm text-gray-600">{{ date('F', mktime(0, 0, 0, $month, 1)) }}</div>
-                                <div class="flex-1 ml-4">
-                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ ($count / max($reportCountData)) * 100 }}%"></div>
+            <h3 class="text-lg font-medium text-base-content">Jumlah Laporan per Bulan ({{ $selectedYear }})</h3>
+            <div class="mt-4 card bg-base-200 shadow-xl">
+                <div class="card-body">
+                    @if($reportCountData)
+                        <div class="space-y-2">
+                            @foreach($reportCountData as $month => $count)
+                                <div class="flex items-center">
+                                    <div class="w-24 text-sm">{{ date('F', mktime(0, 0, 0, $month, 1)) }}</div>
+                                    <div class="flex-1 ml-4">
+                                        <progress class="progress progress-primary w-full" value="{{ $count }}" max="{{ max($reportCountData) }}"></progress>
+                                        <div class="text-xs text-base-content mt-1">{{ $count }} laporan</div>
                                     </div>
-                                    <div class="text-xs text-gray-500 mt-1">{{ $count }} laporan</div>
                                 </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @else
-                    <p class="text-gray-600">Data tidak tersedia</p>
-                @endif
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-base-content">Data tidak tersedia</p>
+                    @endif
+                </div>
             </div>
         </div>
 
         <!-- Grafik Waktu Rata-rata Penyelesaian -->
         <div class="mt-8">
-            <h3 class="text-md font-medium text-gray-900">Rata-rata Waktu Penyelesaian per Bulan ({{ $selectedYear }})</h3>
-            <div class="mt-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
-                @if($timeToAnswerData)
-                    <div class="space-y-2">
-                        @foreach($timeToAnswerData as $month => $time)
-                            <div class="flex items-center">
-                                <div class="w-16 text-sm text-gray-600">{{ date('F', mktime(0, 0, 0, $month, 1)) }}</div>
-                                <div class="flex-1 ml-4">
-                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                        <div class="bg-green-600 h-2.5 rounded-full" style="width: {{ min(($time / max($timeToAnswerData)) * 100, 100) }}%"></div>
+            <h3 class="text-lg font-medium text-base-content">Rata-rata Waktu Penyelesaian per Bulan ({{ $selectedYear }})</h3>
+            <div class="mt-4 card bg-base-200 shadow-xl">
+                <div class="card-body">
+                    @if($timeToAnswerData)
+                        <div class="space-y-2">
+                            @foreach($timeToAnswerData as $month => $time)
+                                <div class="flex items-center">
+                                    <div class="w-24 text-sm">{{ date('F', mktime(0, 0, 0, $month, 1)) }}</div>
+                                    <div class="flex-1 ml-4">
+                                        <progress class="progress progress-accent w-full" value="{{ $time }}" max="{{ max($timeToAnswerData) }}"></progress>
+                                        <div class="text-xs text-base-content mt-1">{{ $time }} hari</div>
                                     </div>
-                                    <div class="text-xs text-gray-500 mt-1">{{ $time }} hari</div>
                                 </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @else
-                    <p class="text-gray-600">Data tidak tersedia</p>
-                @endif
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-base-content">Data tidak tersedia</p>
+                    @endif
+                </div>
             </div>
         </div>
 
         <!-- Grafik Status Laporan -->
         <div class="mt-8">
-            <h3 class="text-md font-medium text-gray-900">Distribusi Status Laporan ({{ $selectedYear }})</h3>
-            <div class="mt-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h3 class="text-lg font-medium text-base-content">Distribusi Status Laporan ({{ $selectedYear }})</h3>
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 @if($statusData)
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        @foreach($statusData as $status)
-                            <div class="bg-white p-4 rounded-lg border border-gray-200">
-                                <div class="text-sm text-gray-600">
+                    @foreach($statusData as $status)
+                        <div class="card bg-base-200 shadow-xl">
+                            <div class="card-body items-center text-center">
+                                <h4 class="card-title">
                                     @if($status['status'] == 'I')
-                                        Inisiasi
+                                        <i class="bi bi-hourglass-split text-warning"></i> Inisiasi
                                     @elseif($status['status'] == 'P')
-                                        Proses
+                                        <i class="bi bi-arrow-repeat text-info"></i> Proses
                                     @elseif($status['status'] == 'D')
-                                        Disposisi
+                                        <i class="bi bi-cursor-fill text-primary"></i> Disposisi
                                     @elseif($status['status'] == 'T')
-                                        Selesai
+                                        <i class="bi bi-check-all text-success"></i> Selesai
                                     @else
-                                        Status Tidak Dikenal
+                                        <i class="bi bi-question-circle-fill"></i> Status Tidak Dikenal
                                     @endif
-                                </div>
-                                <div class="text-2xl font-bold mt-1">{{ $status['count'] }}</div>
+                                </h4>
+                                <p class="text-3xl font-bold">{{ $status['count'] }}</p>
                             </div>
-                        @endforeach
-                    </div>
+                        </div>
+                    @endforeach
                 @else
-                    <p class="text-gray-600">Data tidak tersedia</p>
+                    <p class="text-base-content">Data tidak tersedia</p>
                 @endif
             </div>
         </div>
 
         <div class="mt-6">
-            <a href="{{ route('gratification') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+            <a href="{{ route('gratification') }}" class="btn btn-ghost">
                 Kembali
             </a>
         </div>
