@@ -3,48 +3,100 @@
 namespace App\Livewire\Competency;
 
 use App\Services\SidiaClient;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Livewire\WithPagination;
 use RuntimeException;
 
 class DataTable extends Component
 {
+    use WithPagination;
+
     protected const SECTIONS = ['skkni', 'lsp', 'assessor', 'tuk', 'scheme'];
 
     public string $section;
     public array $columns = [];
-    public array $rows = [];
     public ?string $error = null;
     public string $title;
+    public string $search = '';
+    public int $perPage = 15;
 
-    public function mount(string $section, SidiaClient $sidia): void
+    public function mount(string $section): void
     {
         $section = strtolower($section);
-        if (!in_array($section, self::SECTIONS, true)) {
+        if (! in_array($section, self::SECTIONS, true)) {
             abort(404);
         }
 
         $this->section = $section;
         $this->columns = $this->columnsFor($section);
         $this->title = $this->titleFor($section);
-
-        try {
-            $payload = $sidia->post('competency/' . $section);
-            $this->rows = $this->rowsFromPayload($section, $payload);
-        } catch (RuntimeException $e) {
-            $this->error = $e->getMessage();
-        }
     }
 
-    public function render()
+    public function updatedSearch(): void
     {
+        $this->resetPage();
+    }
+
+    public function render(SidiaClient $sidia)
+    {
+        try {
+            $payload = $sidia->post('competency/' . $this->section);
+            $rows = $this->rowsFromPayload($this->section, $payload);
+        } catch (RuntimeException $e) {
+            $this->error = $e->getMessage();
+            $rows = [];
+        }
+
+        if (! empty($this->search)) {
+            $rows = $this->filterRows($rows, $this->search);
+        }
+
+        $paginatedRows = $this->paginate($rows, $this->perPage);
+
         return view('livewire.competency.data-table', [
             'columns' => $this->columns,
-            'rows' => $this->rows,
+            'rows' => $paginatedRows,
             'error' => $this->error,
             'section' => $this->section,
             'title' => $this->title,
         ])->title($this->title);
+    }
+
+    protected function filterRows(array $rows, string $search): array
+    {
+        $search = strtolower($search);
+
+        return array_filter($rows, function ($row) use ($search) {
+            foreach ($row as $value) {
+                if (is_string($value) && str_contains(strtolower($value), $search)) {
+                    return true;
+                } elseif (is_array($value)) {
+                    foreach ($value as $nestedValue) {
+                        if (is_string($nestedValue) && str_contains(strtolower($nestedValue), $search)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        });
+    }
+
+    protected function paginate(array $items, int $perPage = 15): LengthAwarePaginator
+    {
+        $page = $this->getPage();
+        $items = Collection::make($items);
+        $total = $items->count();
+        $items = $items->slice(($page - 1) * $perPage, $perPage)->values();
+
+        return new LengthAwarePaginator($items, $total, $perPage, $page, [
+            'path' => request()->url(),
+            'query' => request()->query(),
+        ]);
     }
 
     protected function titleFor(string $section): string
@@ -311,10 +363,11 @@ class DataTable extends Component
 
     protected function normalizeList(mixed $items): array
     {
-        if (!is_array($items)) {
+        if (! is_array($items)) {
             return [];
         }
 
         return array_values(array_filter($items, 'is_array'));
     }
 }
+
