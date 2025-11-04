@@ -10,13 +10,13 @@
                 </p>
             </div>
         </section>
-    
+
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-12">
             <div wire:loading class="flex justify-center items-center py-20">
                 <span class="loading loading-spinner loading-lg text-primary"></span>
                 <span class="ml-4 text-lg font-semibold text-base-content/70">{{ __('competency.loading_data') }}</span>
             </div>
-    
+
             <div wire:loading.remove>
                 @if ($error)
                     <div role="alert" class="alert alert-error shadow-lg mb-8">
@@ -26,7 +26,7 @@
                             <div class="text-sm">{{ $error }}</div>
                         </div>
                     </div>
-                @elseif (empty($rows))
+                @elseif ($rows->isEmpty())
                     <div role="alert" class="alert alert-info shadow mb-8">
                         <i class="fas fa-info-circle text-xl"></i>
                         <div>
@@ -35,6 +35,20 @@
                         </div>
                     </div>
                 @else
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center">
+                            <span class="mr-2 text-sm text-base-content/70">{{ __('pagination.per_page') }}</span>
+                            <select wire:model.live="perPage" class="select select-bordered select-sm">
+                                <option value="15">15</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                        <div class="w-full max-w-xs">
+                            <input type="search" wire:model.live.debounce.300ms="search" class="input input-bordered input-sm w-full" placeholder="{{ __('pagination.search_placeholder') }}">
+                        </div>
+                    </div>
                     <div class="card bg-base-100 shadow-xl border border-base-200">
                         <div class="overflow-x-auto">
                             <table class="table table-zebra w-full">
@@ -75,7 +89,7 @@
                                                                 {{ $value ?? '-' }}
                                                             @endif
                                                         @break
-    
+
                                                         @case('badge')
                                                             @if (is_array($value))
                                                                 @php
@@ -94,14 +108,14 @@
                                                                 {{ $value ?? '-' }}
                                                             @endif
                                                         @break
-    
+
                                                         @case('image')
                                                             @if ($value)
                                                                 <img src="{{ $value }}" alt=""
                                                                     class="w-16 h-16 object-contain rounded-lg shadow border border-base-200">
                                                             @endif
                                                         @break
-    
+
                                                         @case('gender')
                                                             @if (is_array($value))
                                                                 @php
@@ -117,7 +131,7 @@
                                                                 {{ $value ?? '-' }}
                                                             @endif
                                                         @break
-    
+
                                                         @default
                                                             {{ $value ?? '-' }}
                                                     @endswitch
@@ -129,10 +143,13 @@
                             </table>
                         </div>
                     </div>
+                    <div class="mt-8">
+                        {{ $rows->links() }}
+                    </div>
                 @endif
             </div>
         </div>
     </div>
-    
+
     @include('livewire.competency.partials.quick-menu')
 </div>
