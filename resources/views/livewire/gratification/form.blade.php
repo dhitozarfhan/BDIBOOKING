@@ -1,6 +1,13 @@
 <div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg">
-    <div class="max-w-7xl mx-auto">
-        <h2 class="text-2xl font-bold text-base-content">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-sm breadcrumbs">
+            <ul>
+                <li><a href="{{ route('home') }}"><i class="bi bi-house-fill"></i></a></li>
+                <li><a href="{{ route('gratification') }}">Pelaporan Gratifikasi</a></li>
+                <li>Formulir Laporan</li>
+            </ul>
+        </div>
+        <h2 class="text-2xl font-bold text-base-content mt-4">
             <i class="bi bi-gift-fill mr-2"></i> Formulir Laporan Gratifikasi
         </h2>
 
