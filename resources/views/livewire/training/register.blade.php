@@ -88,7 +88,7 @@
                                                 @if($statusOpen)
                                                     <a href="{{ route('training.register', ['id_diklat' => $training['id_diklat'], 'slug' => Str::slug($training['nama'])]) }}"
                                                        wire:navigate
-                                                       class="btn btn-primary">
+                                                       class="btn btn-primary{{ $training['jenis'] === 'sdmi' ? '' : ' btn-disabled' }}">
                                                         Daftar
                                                     </a>
                                                 @else

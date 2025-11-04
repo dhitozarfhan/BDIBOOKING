@@ -201,19 +201,48 @@
                                 </div>
                             </div>
                         </div>
-
-                        @if(($diklat['scan_suket_pengalaman_kerja'] ?? 'N') != 'N' && ($diklat['kapan_upload_suket_pengalaman_kerja'] ?? '') == 'initial')
+                        @if(
+                            (($diklat['scan_surat_usulan'] == 'O' || $diklat['scan_surat_usulan'] == 'Y') && $diklat['kapan_upload_surat_usulan']=='initial') ||
+                            (($diklat['scan_surat_tugas'] == 'O' || $diklat['scan_surat_tugas'] == 'Y') && $diklat['kapan_upload_surat_tugas']=='initial') ||
+                            (($diklat['scan_surat_kesediaan'] == 'O' || $diklat['scan_surat_kesediaan'] == 'Y') && $diklat['kapan_upload_surat_kesediaan']=='initial') ||
+                            (($diklat['scan_suket_pengalaman_kerja'] == 'O' || $diklat['scan_suket_pengalaman_kerja'] == 'Y') && $diklat['kapan_upload_suket_pengalaman_kerja']=='initial')
+                        )
                         <div class="card bg-base-100 shadow-xl border border-base-200">
                             <div class="card-body">
                                 <div class="space-y-2">
-                                    <h2 class="card-title">Surat Keterangan Pengalaman Kerja</h2>
+                                    <h2 class="card-title">Surat Pendukung</h2>
                                     <div class="divider mt-2"></div>
                                 </div>
-                                <label class="form-control w-full">
-                                    <div class="label"><span class="label-text">Scan Surat Keterangan (JPG) <span class="text-error">{{ $diklat['scan_suket_pengalaman_kerja'] == 'Y' ? '*' : '' }}</span></span></div>
-                                    <input type="file" wire:model="scan_suket_pengalaman_kerja" @class(['file-input file-input-bordered w-full', 'input-error' => $errors->has('scan_suket_pengalaman_kerja')]) />
-                                    @error('scan_suket_pengalaman_kerja') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
-                                </label>
+                                <div class="flex flex-col gap-6">
+                                    @if(($diklat['scan_surat_usulan'] ?? 'N') != 'N' && ($diklat['kapan_upload_surat_usulan'] ?? '') == 'initial')
+                                    <label class="form-control w-full">
+                                        <div class="label"><span class="label-text">Scan Surat Usulan (PDF) <span class="text-error">{{ $diklat['scan_surat_usulan'] == 'Y' ? '*' : '' }}</span></span></div>
+                                        <input type="file" wire:model="scan_surat_usulan" @class(['file-input file-input-bordered w-full', 'input-error' => $errors->has('scan_surat_usulan')]) />
+                                        @error('scan_surat_usulan') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                    </label>
+                                    @endif
+                                    @if(($diklat['scan_surat_tugas'] ?? 'N') != 'N' && ($diklat['kapan_upload_surat_tugas'] ?? '') == 'initial')
+                                    <label class="form-control w-full">
+                                        <div class="label"><span class="label-text">Scan Surat Tugas (PDF) <span class="text-error">{{ $diklat['scan_surat_tugas'] == 'Y' ? '*' : '' }}</span></span></div>
+                                        <input type="file" wire:model="scan_surat_tugas" @class(['file-input file-input-bordered w-full', 'input-error' => $errors->has('scan_surat_tugas')]) />
+                                        @error('scan_surat_tugas') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                    </label>
+                                    @endif
+                                    @if(($diklat['scan_surat_kesediaan'] ?? 'N') != 'N' && ($diklat['kapan_upload_surat_kesediaan'] ?? '') == 'initial')
+                                    <label class="form-control w-full">
+                                        <div class="label"><span class="label-text">Scan Surat Kesediaan (PDF) <span class="text-error">{{ $diklat['scan_surat_kesediaan'] == 'Y' ? '*' : '' }}</span></span></div>
+                                        <input type="file" wire:model="scan_surat_kesediaan" @class(['file-input file-input-bordered w-full', 'input-error' => $errors->has('scan_surat_kesediaan')]) />
+                                        @error('scan_surat_kesediaan') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                    </label>
+                                    @endif
+                                    @if(($diklat['scan_suket_pengalaman_kerja'] ?? 'N') != 'N' && ($diklat['kapan_upload_suket_pengalaman_kerja'] ?? '') == 'initial')
+                                    <label class="form-control w-full">
+                                        <div class="label"><span class="label-text">Scan Surat Keterangan Pengalaman Kerja (PDF) <span class="text-error">{{ $diklat['scan_suket_pengalaman_kerja'] == 'Y' ? '*' : '' }}</span></span></div>
+                                        <input type="file" wire:model="scan_suket_pengalaman_kerja" @class(['file-input file-input-bordered w-full', 'input-error' => $errors->has('scan_suket_pengalaman_kerja')]) />
+                                        @error('scan_suket_pengalaman_kerja') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                    </label>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                         @endif
@@ -424,14 +453,45 @@
                                     <div class="divider mt-2"></div>
                                 </div>
                                 <div class="flex flex-col gap-4">
-                                    <p class="text-sm text-warning">Data untuk bagian ini belum tersedia dari API.</p>
                                     @if($diklat['jenis'] == 'sdma')
-                                    <input type="text" placeholder="NIP" class="input input-bordered w-full" disabled />
-                                    <select class="select select-bordered" disabled><option>Pangkat</option></select>
-                                    <input type="text" placeholder="Jabatan" class="input input-bordered w-full" disabled />
-                                    <select class="select select-bordered" disabled><option>Asal Satker</option></select>
+                                        <label class="form-control w-full">
+                                            <div class="label"><span class="label-text">NIP <span class="text-error">*</span></span></div>
+                                            <input type="text" wire:model.lazy="nip" @class(['input input-bordered w-full', 'input-error' => $errors->has('nip')]) />
+                                            @error('nip') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                        </label>
+                                        <label class="form-control w-full">
+                                            <div class="label"><span class="label-text">Pangkat <span class="text-error">*</span></span></div>
+                                            <select wire:model.lazy="id_pangkat" @class(['select select-bordered', 'select-error' => $errors->has('id_pangkat')])>
+                                                <option value="">-- Pilih Pangkat --</option>
+                                                @foreach($pangkat as $item)
+                                                    <option value="{{ $item['id_pangkat'] }}">{{ $item['nama'] }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('id_pangkat') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                        </label>
+                                        <label class="form-control w-full">
+                                            <div class="label"><span class="label-text">Jabatan <span class="text-error">*</span></span></div>
+                                            <input type="text" wire:model.lazy="jabatan" @class(['input input-bordered w-full', 'input-error' => $errors->has('jabatan')]) />
+                                            @error('jabatan') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                        </label>
+                                        @if($from_kemenperin)
+                                            <label class="form-control w-full">
+                                                <div class="label"><span class="label-text">Asal Satker <span class="text-error">*</span></span></div>
+                                                <select wire:model.lazy="id_satker" @class(['select select-bordered', 'select-error' => $errors->has('id_satker')])>
+                                                    <option value="">-- Pilih Satker --</option>
+                                                    @foreach($satker as $item)
+                                                        <option value="{{ $item['id_satker'] }}">{{ $item['nama'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('id_satker') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                            </label>
+                                        @else
+                                            <p class="text-sm text-warning">Data untuk bagian ini belum tersedia dari API.</p>
+                                            <select class="select select-bordered" disabled><option>Asal Satker</option></select>
+                                        @endif
                                     @endif
                                     @if($diklat['jenis'] == 'infrastruktur_kompetensi')
+                                    <p class="text-sm text-warning">Data untuk bagian ini belum tersedia dari API.</p>
                                     <input type="text" placeholder="No. Reg Asesor" class="input input-bordered w-full" disabled />
                                     <select class="select select-bordered" disabled><option>Nama LSP Induk</option></select>
                                     <select class="select select-bordered" disabled><option>Skema Sertifikasi</option></select>

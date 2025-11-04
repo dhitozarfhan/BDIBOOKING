@@ -56,7 +56,7 @@
                             <span class="text-xs font-semibold uppercase text-base-content/60">Status Pendaftaran</span>
                             @if(($training['allowed_reg'] ?? 'N') === 'Y')
                                 <div class="text-2xl font-bold text-success mt-1 mb-3">Masih Dibuka</div>
-                                <a href="{{ route('training.register', ['id_diklat' => $training['id_diklat'], 'slug' => Str::slug($training['nama'])]) }}"
+                                <a href="{{ $registrationRoute }}"
                                    wire:navigate
                                    class="btn btn-primary btn-lg">
                                     Daftar Sekarang
@@ -142,7 +142,6 @@
                                         <th>Pendidikan</th>
                                         @if($training['jenis'] == 'sdmi')
                                             <th>KTP</th>
-                                            <th>Lulus UK</th>
                                         @elseif($training['jenis'] == 'sdma')
                                             <th>Asal Satker</th>
                                             <th>NIP</th>
@@ -166,7 +165,6 @@
                                             <td>{{ $participant['pendidikan'] }}</td>
                                             @if($training['jenis'] == 'sdmi')
                                                 <td>{{ $participant['ktp'] }}</td>
-                                                <td>{{ $participant['ukom'] }}</td>
                                             @elseif($training['jenis'] == 'sdma')
                                                 <td>{{ $participant['satker'] }}</td>
                                                 <td>{{ $participant['nip'] }}</td>

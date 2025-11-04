@@ -21,6 +21,8 @@ class Registration extends Component
     public array $kota = [];
     public array $kecamatan = [];
     public array $desa = [];
+    public array $pangkat = [];
+    public array $satker = [];
 
     // Form model
     public $id_diklat;
@@ -36,6 +38,9 @@ class Registration extends Component
     public string $id_pendidikan = '';
     public $scan_ijazah;
     public $scan_foto;
+    public $scan_surat_usulan;
+    public $scan_surat_tugas;
+    public $scan_surat_kesediaan;
     public $scan_suket_pengalaman_kerja;
     public string $pendidikan_jurusan = '';
     public string $pendidikan_tamat = '';
@@ -129,6 +134,9 @@ class Registration extends Component
         'scan_foto' => 'Scan Foto',
         'scan_ktp' => 'Scan KTP',
         'scan_ijazah' => 'Scan Ijazah',
+        'scan_surat_usulan' => 'Scan Surat Usulan',
+        'scan_surat_tugas' => 'Scan Surat Tugas',
+        'scan_surat_kesediaan' => 'Scan Surat Kesediaan',
         'scan_suket_pengalaman_kerja' => 'Scan Surat Keterangan Pengalaman Kerja',
     ];
 
@@ -142,18 +150,73 @@ class Registration extends Component
         'scan_foto.required' => 'Bagian foto peserta wajib diisi.',
         'scan_ktp.required' => 'Bagian KTP peserta wajib diisi.',
         'scan_ijazah.required' => 'Bagian ijazah peserta wajib diisi.',
+        'scan_surat_usulan.required' => 'Bagian surat usulan peserta wajib diisi.',
+        'scan_surat_tugas.required' => 'Bagian surat tugas peserta wajib diisi.',
+        'scan_surat_kesediaan.required' => 'Bagian surat kesediaan peserta wajib diisi.',
         'scan_suket_pengalaman_kerja.required' => 'Bagian surat keterangan pengalaman kerja peserta wajib diisi.',
         'scan_foto.mimes' => 'Format berkas foto harus JPG atau JPEG.',
         'scan_ktp.mimes' => 'Format berkas KTP harus JPG atau JPEG.',
         'scan_ijazah.mimes' => 'Format berkas ijazah harus JPG atau JPEG.',
-        'scan_suket_pengalaman_kerja.mimes' => 'Format berkas surat keterangan pengalaman kerja harus JPG atau JPEG.',
+        'scan_surat_usulan.mimes' => 'Format berkas surat usulan harus PDF.',
+        'scan_surat_tugas.mimes' => 'Format berkas surat tugas harus PDF.',
+        'scan_surat_kesediaan.mimes' => 'Format berkas surat kesediaan harus PDF.',
+        'scan_suket_pengalaman_kerja.mimes' => 'Format berkas surat keterangan pengalaman kerja harus PDF.',
         'ttd.required' => 'Tanda tangan wajib dibubuhkan pada form ini.',
         'ttd.min' => 'Tanda tangan tidak terdeteksi dengan baik, silakan coba lagi.'
     ];
 
-    public function mount($id_diklat)
+    public function mount($id_diklat, $slug = null, $from_kemenperin = false)
     {
         $this->id_diklat = $id_diklat;
+        $this->from_kemenperin = (bool)$from_kemenperin;
+
+        if ($this->from_kemenperin && session()->has('kemenperin_user_data')) {
+            $userData = session('kemenperin_user_data.peserta');
+            $this->nip = $userData['nip'] ?? '';
+            $this->nama = $userData['nama'] ?? '';
+            $this->titel = $userData['titel'] ?? '';
+            $this->gelar = $userData['gelar'] ?? '';
+            $this->tempat_lahir = $userData['tempat_lahir'] ?? '';
+            $this->tanggal_lahir = $userData['tanggal_lahir'] ?? '';
+            $this->ktp = $userData['ktp'] ?? '';
+            $this->id_kelamin = $userData['id_kelamin'] ?? '';
+            $this->id_agama = $userData['id_agama'] ?? '';
+            $this->telepon = $userData['pelanggan_telepon'] ?? '';
+            $this->mobile = $userData['pelanggan_mobile'] ?? '';
+            $this->email = $userData['pelanggan_email'] ?? '';
+            $this->dusun = $userData['pelanggan_dusun'] ?? '';
+            $this->rt = $userData['pelanggan_rt'] ?? '';
+            $this->rw = $userData['pelanggan_rw'] ?? '';
+            $this->selectedProvinsi = $userData['pelanggan_id_provinsi'] ?? '';
+            $this->selectedKota = $userData['pelanggan_id_kota'] ?? '';
+            $this->selectedKecamatan = $userData['pelanggan_id_kecamatan'] ?? '';
+            $this->selectedDesa = $userData['pelanggan_id_desa'] ?? '';
+            $this->id_pendidikan = $userData['id_pendidikan'] ?? '';
+            $this->pendidikan_jurusan = $userData['pendidikan_jurusan'] ?? '';
+            $this->pendidikan_tamat = $userData['pendidikan_tamat'] ?? '';
+            $this->id_pangkat = $userData['id_pangkat'] ?? '';
+            $this->jabatan = $userData['jabatan'] ?? '';
+            $this->id_satker = $userData['id_satker'] ?? '';
+
+            $masterData = session('kemenperin_user_data.master');
+            if(isset($masterData['pangkat'])) {
+                $this->pangkat = $masterData['pangkat'];
+            }
+            if(isset($masterData['satker'])) {
+                $this->satker = $masterData['satker'];
+            }
+
+            if($this->selectedProvinsi) {
+                $this->updatedSelectedProvinsi($this->selectedProvinsi);
+            }
+            if($this->selectedKota) {
+                $this->updatedSelectedKota($this->selectedKota);
+            }
+            if($this->selectedKecamatan) {
+                $this->updatedSelectedKecamatan($this->selectedKecamatan);
+            }
+        }
+
         $credentials = [
             'username' => config('services.sidia.username'),
             'password' => config('services.sidia.password'),
@@ -358,17 +421,30 @@ class Registration extends Component
             }
         }
 
+        $fileRules = [
+            'scan_foto' => 'jpg,jpeg',
+            'scan_ktp' => 'jpg,jpeg',
+            'scan_ijazah' => 'jpg,jpeg',
+            'scan_surat_usulan' => 'pdf',
+            'scan_surat_tugas' => 'pdf',
+            'scan_surat_kesediaan' => 'pdf',
+            'scan_suket_pengalaman_kerja' => 'pdf',
+        ];
+
         foreach ([
             'scan_foto' => 'kapan_upload_foto',
             'scan_ktp' => 'kapan_upload_ktp',
             'scan_ijazah' => 'kapan_upload_ijazah',
+            'scan_surat_usulan' => 'kapan_upload_surat_usulan',
+            'scan_surat_tugas' => 'kapan_upload_surat_tugas',
+            'scan_surat_kesediaan' => 'kapan_upload_surat_kesediaan',
             'scan_suket_pengalaman_kerja' => 'kapan_upload_suket_pengalaman_kerja',
         ] as $field => $timing) {
             if ($this->shouldProcessUpload($field, $timing)) {
                 $rules[$field] = [
                     $this->isUploadRequired($field, $timing) ? 'required' : 'nullable',
                     'file',
-                    'mimes:jpg,jpeg',
+                    'mimes:' . ($fileRules[$field] ?? 'jpg,jpeg'),
                 ];
             }
         }
@@ -459,6 +535,9 @@ class Registration extends Component
             'foto' => null,
             'ktp' => null,
             'ijazah' => null,
+            'surat_usulan' => null,
+            'surat_tugas' => null,
+            'surat_kesediaan' => null,
             'suket_pengalaman_kerja' => null,
             'bukti_kompetensi' => null,
             'sertifikat_asesor' => null,
@@ -488,11 +567,36 @@ class Registration extends Component
                 'timing' => 'kapan_upload_ijazah',
                 'message' => 'Bagian ijazah peserta wajib diisi.',
             ],
+            'scan_surat_usulan' => [
+                'destination' => 'surat_usulan',
+                'timing' => 'kapan_upload_surat_usulan',
+                'message' => 'Bagian surat usulan peserta wajib diisi.',
+            ],
+            'scan_surat_tugas' => [
+                'destination' => 'surat_tugas',
+                'timing' => 'kapan_upload_surat_tugas',
+                'message' => 'Bagian surat tugas peserta wajib diisi.',
+            ],
+            'scan_surat_kesediaan' => [
+                'destination' => 'surat_kesediaan',
+                'timing' => 'kapan_upload_surat_kesediaan',
+                'message' => 'Bagian surat kesediaan peserta wajib diisi.',
+            ],
             'scan_suket_pengalaman_kerja' => [
                 'destination' => 'suket_pengalaman_kerja',
                 'timing' => 'kapan_upload_suket_pengalaman_kerja',
                 'message' => 'Bagian surat keterangan pengalaman kerja peserta wajib diisi.',
             ],
+        ];
+
+        $fileRules = [
+            'scan_foto' => 'jpg,jpeg',
+            'scan_ktp' => 'jpg,jpeg',
+            'scan_ijazah' => 'jpg,jpeg',
+            'scan_surat_usulan' => 'pdf',
+            'scan_surat_tugas' => 'pdf',
+            'scan_surat_kesediaan' => 'pdf',
+            'scan_suket_pengalaman_kerja' => 'pdf',
         ];
 
         foreach ($uploads as $property => $config) {
@@ -511,11 +615,12 @@ class Registration extends Component
                 continue;
             }
 
-            $result = $this->processImageUpload(
+            $result = $this->processFileUpload(
                 $this->{$property},
                 $property,
                 $this->isUploadRequired($property, $config['timing']),
-                $config['message']
+                $config['message'],
+                $fileRules[$property] ?? 'jpg,jpeg'
             );
 
             if ($result === false) {
@@ -535,7 +640,7 @@ class Registration extends Component
         return $files;
     }
 
-    private function processImageUpload($file, string $field, bool $required, string $requiredMessage): string|null|false
+    private function processFileUpload($file, string $field, bool $required, string $requiredMessage, string $allowedMimes): string|null|false
     {
         if (!$file) {
             if ($required) {
@@ -553,13 +658,13 @@ class Registration extends Component
         }
 
         $extension = strtolower($file->getClientOriginalExtension());
-        if (!in_array($extension, ['jpg', 'jpeg'], true)) {
-            $this->addError($field, 'Format file harus JPG atau JPEG.');
+        if (!in_array($extension, explode(',', $allowedMimes), true)) {
+            $this->addError($field, 'Format file tidak diizinkan.');
             return false;
         }
 
         try {
-            $mime = $file->getMimeType() ?: 'image/jpeg';
+            $mime = $file->getMimeType() ?: 'application/octet-stream';
             $contents = file_get_contents($file->getRealPath());
         } catch (\Throwable $throwable) {
             Log::error('Failed to read uploaded file.', [
