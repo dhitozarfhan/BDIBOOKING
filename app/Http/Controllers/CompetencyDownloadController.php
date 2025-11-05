@@ -9,7 +9,7 @@ use RuntimeException;
 
 class CompetencyDownloadController extends Controller
 {
-    public function __invoke(SidiaClient $sidia, int $skkniId)
+    public function __invoke(SidiaClient $sidia, string $skkniId)
     {
         try {
             $payload = $sidia->post('competency/skkni/download', [

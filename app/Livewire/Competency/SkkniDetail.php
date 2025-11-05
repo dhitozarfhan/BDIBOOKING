@@ -12,13 +12,13 @@ class SkkniDetail extends Component
     #[Url(as: 'tab')]
     public string $activeTab = 'details';
 
-    public int $skkniId;
+    public string $skkniId;
     public array $skkni = [];
     public array $units = [];
     public ?string $error = null;
     public string $title = '';
 
-    public function mount(SidiaClient $sidia, int $skkniId): void
+    public function mount(SidiaClient $sidia, string $skkniId): void
     {
         $this->skkniId = $skkniId;
 
@@ -27,18 +27,30 @@ class SkkniDetail extends Component
         }
 
         try {
-            $payload = $sidia->post('competency/skkni', [
-                'skkni_id' => $skkniId,
-            ]);
+            $payload = $sidia->post('competency/skkni', ['skkni_id' => $skkniId]);
 
-            $skkni = data_get($payload, 'data.skkni');
+            $data = data_get($payload, 'data');
 
-            if (!is_array($skkni) || empty($skkni)) {
+            // Ensure $data is an array and not empty
+            if (!is_array($data) || empty($data)) {
+                abort(404);
+            }
+
+            // Try to get 'skkni' from 'data', otherwise use 'data' itself
+            // Ensure $skkniData is an array
+            $skkniData = (is_array($data) && isset($data['skkni'])) ? $data['skkni'] : $data;
+
+            // If the API returns a list for a single item query, take the first one.
+            // Ensure $skkni is an array
+            $skkni = (is_array($skkniData) && isset($skkniData[0]) && is_array($skkniData[0])) ? $skkniData[0] : $skkniData;
+
+            // Re-validate to ensure we have a valid SKKNI object before proceeding.
+            if (!is_array($skkni) || empty($skkni) || !isset($skkni['skkni_id'])) {
                 abort(404);
             }
 
             $this->skkni = $skkni;
-            $this->units = $this->normalizeUnits(data_get($payload, 'data.unit', []));
+            $this->units = $this->normalizeUnits(data_get($data, 'unit', []));
             $this->title = $skkni['judul'] ?? __('competency.skkni_details');
         } catch (RuntimeException $e) {
             $this->error = $e->getMessage();
