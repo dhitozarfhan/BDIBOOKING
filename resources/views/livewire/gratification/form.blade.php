@@ -134,15 +134,7 @@
                             @error('data_dukung') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
                         </div>
 
-                        <div>
-                            <label class="label">
-                                <span class="label-text">Verifikasi <span class="text-red-500">*</span></span>
-                            </label>
-                            <div class="mt-1" wire:ignore>
-                                <div id="recaptcha-container"></div>
-                            </div>
-                            @error('gRecaptchaResponse') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
-                        </div>
+                        
                     </div>
                 </div>
             </form>
@@ -158,17 +150,3 @@
                 </div>
     </div>
 </div>
-
-@push('scripts')
-<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
-<script type="text/javascript">
-    var onloadCallback = function() {
-        grecaptcha.render('recaptcha-container', {
-            'sitekey' : '{{ config("captcha.sitekey") }}',
-            'callback' : function(response) {
-                @this.set('gRecaptchaResponse', response);
-            }
-        });
-    };
-</script>
-@endpush

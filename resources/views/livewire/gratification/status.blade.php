@@ -30,18 +30,8 @@
                 </div>
             </div>
 
-            <div>
-                <label class="label">
-                    <span class="label-text">Verifikasi <span class="text-red-500">*</span></span>
-                </label>
-                <div class="mt-1" wire:ignore>
-                    <div id="recaptcha-container-status"></div>
-                </div>
-                @error('gRecaptchaResponse') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
-            </div>
-
             <div class="flex items-center gap-4 mt-6">
-                <button type="submit" class="btn btn-primary" :disabled="!gRecaptchaResponse">
+                <button type="submit" class="btn btn-primary">
                     <i class="bi bi-search"></i> Cek Status
                 </button>
                 <a href="{{ route('gratification') }}" class="btn btn-ghost">
@@ -55,32 +45,3 @@
 
     </div>
 </div>
-
-@push('scripts')
-<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallbackStatus&render=explicit" async defer></script>
-<script type="text/javascript">
-    var widgetIdStatus;
-    var onloadCallbackStatus = function() {
-        widgetIdStatus = grecaptcha.render('recaptcha-container-status', {
-            'sitekey' : '{{ config("captcha.sitekey") }}',
-            'callback' : function(response) {
-                @this.set('gRecaptchaResponse', response);
-            },
-            'expired-callback' : function() {
-                @this.set('gRecaptchaResponse', '');
-            },
-            'error-callback' : function() {
-                @this.set('gRecaptchaResponse', '');
-            }
-        });
-    };
-    
-    // Reset reCAPTCHA after form submission
-    window.addEventListener('status-checked', function() {
-        if (widgetIdStatus) {
-            grecaptcha.reset(widgetIdStatus);
-            @this.set('gRecaptchaResponse', '');
-        }
-    });
-</script>
-@endpush
