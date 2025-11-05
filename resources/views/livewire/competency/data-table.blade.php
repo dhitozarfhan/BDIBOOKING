@@ -111,7 +111,7 @@
                                                                             $url = $value['url'] ?? null;
                                                                         @endphp
                                                                         @if ($url)
-                                                                            <a wire:navigate href="{{ $url }}"
+                                                                            <a href="{{ $url }}"
                                                                                 class="text-blue-600 font-semibold hover:underline">
                                                                                 {{ $text }}
                                                                             </a>
@@ -167,7 +167,7 @@
                                                                             };
                                                                         @endphp
                                                                         @if ($url)
-                                                                            <a wire:navigate href="{{ $url }}" class="btn btn-xs {{ $buttonClasses }}">
+                                                                            <a href="{{ $url }}" class="btn btn-xs {{ $buttonClasses }}">
                                                                                 {{ $label }}
                                                                             </a>
                                                                         @else
