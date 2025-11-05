@@ -1,5 +1,6 @@
-<div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div>
+    <div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-sm breadcrumbs">
             <ul>
                 <li><a href="{{ route('home') }}"><i class="bi bi-house-fill"></i></a></li>
@@ -27,6 +28,16 @@
                     </div>
                     @error('kode_register') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
                 </div>
+            </div>
+
+            <div>
+                <label class="label">
+                    <span class="label-text">Verifikasi <span class="text-red-500">*</span></span>
+                </label>
+                <div class="mt-1" wire:ignore>
+                    <div id="recaptcha-container-status"></div>
+                </div>
+                @error('gRecaptchaResponse') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
             </div>
 
             <div class="flex items-center gap-4 mt-6">
@@ -97,3 +108,17 @@
         @endif
     </div>
 </div>
+
+@push('scripts')
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallbackStatus&render=explicit" async defer></script>
+<script type="text/javascript">
+    var onloadCallbackStatus = function() {
+        grecaptcha.render('recaptcha-container-status', {
+            'sitekey' : '{{ config("captcha.sitekey") }}',
+            'callback' : function(response) {
+                @this.set('gRecaptchaResponse', response);
+            }
+        });
+    };
+</script>
+@endpush

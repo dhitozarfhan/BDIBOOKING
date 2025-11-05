@@ -76,6 +76,7 @@ class Gratification extends Component
 
         if ($this->currentView === 'status') {
             $rules['kode_register'] = 'required|string|max:255';
+            $rules['gRecaptchaResponse'] = 'required|recaptcha';
         }
 
         return $rules;

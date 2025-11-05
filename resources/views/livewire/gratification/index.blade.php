@@ -74,9 +74,7 @@
             </div>
             <div class="lg:col-span-4">
                 <div class="bg-base-200 p-4 rounded-lg shadow-sm mt-12">
-                    <h2 class="text-2xl font-bold text-base-content mb-4">
-                        <i class="bi bi-info-circle-fill mr-2"></i> Kontak Kami
-                    </h2>
+                    <h2 class="text-2xl font-bold text-base-content mb-4">Kontak Kami</h2>
                     <div class="space-y-2 text-base-content/80">
                         <p><i class="bi bi-telephone-fill mr-2"></i> <strong>Telepon:</strong> 0274-487711</p>
                         <p><i class="bi bi-printer-fill mr-2"></i> <strong>Faksimile:</strong> 0274-487711</p>
@@ -84,9 +82,7 @@
                         <p><i class="bi bi-envelope-fill mr-2"></i> <strong>Email:</strong> info@bdiyk.id</p>
                     </div>
                     <div class="mt-6">
-                        <h2 class="text-2xl font-bold text-base-content mb-4">
-                            <i class="bi bi-map-fill mr-2"></i> Maps
-                        </h2>
+                        <h2 class="text-2xl font-bold text-base-content mb-4">Maps</h2>
                         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.164483635528!2d110.401864!3d-7.816401!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a57156a828f41%3A0x310b8a2efcab039a!2sBalai%20Diklat%20Industri%20Yogyakarta!5e0!3m2!1sen!2sid!4v1730698774152!5m2!1sen!2sid" class="w-full h-72 border-0 rounded-md" allowfullscreen="" loading="lazy"></iframe>
                     </div>
                 </div>
