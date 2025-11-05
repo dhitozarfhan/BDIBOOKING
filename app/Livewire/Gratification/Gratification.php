@@ -189,23 +189,21 @@ class Gratification extends Component
                 $reportDetail->status = $process->status;
                 $reportDetail->answer = $process->jawaban;
             } else {
-                $reportDetail->status = 'I'; // Default to Inisiasi
+                $reportDetail->status = 'I';
                 $reportDetail->answer = null;
             }
 
             $reportDetail->attachment = $gratification->data_dukung;
 
-            $this->reportDetail = $reportDetail;
-            $this->showReportDetail = true;
-            $this->statusError = '';
-        } else {
-            $this->showReportDetail = false;
-            $this->reportDetail = null;
-            $this->statusError = 'Kode register tidak ditemukan dalam sistem kami.';
-        }
+            // Store the report detail in the session and redirect
+            session()->flash('reportDetail', $reportDetail);
+            return redirect()->route('gratification.response');
 
-        // Emit event to reset reCAPTCHA after status check
-        $this->dispatch('status-checked');
+        } else {
+            // If not found, flash an error message and redirect back
+            session()->flash('statusError', 'Kode register tidak ditemukan dalam sistem kami.');
+            return redirect()->route('gratification.status');
+        }
     }
 
     public function updateReport()
