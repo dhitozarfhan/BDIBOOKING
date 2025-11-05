@@ -16,35 +16,15 @@ class Response extends Component
      * @param string $code
      * @return void
      */
-    public function mount($code)
+    public function mount()
     {
-        $gratification = GratificationModel::where('kode_register', $code)->first();
+        $this->reportDetail = session('reportDetail');
+        $this->statusError = session('statusError');
 
-        if ($gratification) {
-            $process = $gratification->processes()->latest()->first();
-
-            $reportDetail = new \stdClass();
-            $reportDetail->subject = $gratification->judul_laporan;
-            $reportDetail->name = $gratification->nama_pelapor;
-            $reportDetail->mobile = $gratification->telepon ? substr($gratification->telepon, 0, -4) . 'xxxx' : '-';
-            $reportDetail->time_insert = $gratification->created_at;
-            $reportDetail->content = $gratification->uraian_laporan;
-
-            if ($process) {
-                $reportDetail->status = $process->status;
-                $reportDetail->answer = $process->jawaban;
-            } else {
-                $reportDetail->status = 'I'; // Default to Inisiasi
-                $reportDetail->answer = null;
-            }
-
-            // Attachment is from the original report's data_dukung
-            $reportDetail->attachment = $gratification->data_dukung;
-            
-            $this->reportDetail = $reportDetail;
-
-        } else {
-            $this->statusError = 'Kode register tidak ditemukan dalam sistem kami.';
+        // If there is no report detail and no error, redirect to the status page 
+        // to prevent accessing the response page directly.
+        if (!$this->reportDetail && !$this->statusError) {
+            return redirect()->route('gratification.status');
         }
     }
 

@@ -87,6 +87,7 @@ Route::get('/gratification', App\Livewire\Gratification\Gratification::class)->n
 Route::get('/gratification/form', App\Livewire\Gratification\Gratification::class)->name('gratification.form');
 Route::get('/gratification/status', App\Livewire\Gratification\Gratification::class)->name('gratification.status');
 Route::get('/gratification/report', App\Livewire\Gratification\Gratification::class)->name('gratification.report');
+Route::get('/gratification/response', App\Livewire\Gratification\Response::class)->name('gratification.response');
 
 
 /*
