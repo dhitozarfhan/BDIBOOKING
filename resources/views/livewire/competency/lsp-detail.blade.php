@@ -274,7 +274,7 @@
                                             @php
                                                 $schemeId = $scheme['id_skema'] ?? null;
                                                 $unitCount = (int) ($scheme['total_unit'] ?? 0);
-                                                $isExpanded = $expandedSchemeId === $schemeId;
+                                                $isExpanded = $expandedSchemeId == $schemeId;
                                                 $unitList = $schemeId ? ($unitsByScheme[$schemeId] ?? []) : [];
                                             @endphp
                                             <tr class="hover" wire:key="scheme-{{ $schemeId }}">

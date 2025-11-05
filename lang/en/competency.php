@@ -101,6 +101,8 @@ Locations for conducting competency tests.</li>
     'unit_count_zero' => 'No units available',
     'unit_count_label' => '{0} No units|{1} :count Unit|[2,*] :count Units',
 
+    'unit_list' => 'Unit List',
+
     'unknown_status' => 'Unknown',
 
     'lsp_name' => 'LSP Name',

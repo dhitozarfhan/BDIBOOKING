@@ -191,7 +191,7 @@ class DataTable extends Component
                 ['key' => 'lsp', 'label' => __('competency.lsp_name'), 'type' => 'link'],
                 ['key' => 'bidang', 'label' => __('competency.scheme_sector')],
                 ['key' => 'subsektor', 'label' => __('competency.scheme_subsector')],
-                ['key' => 'total_unit', 'label' => __('competency.unit_count'), 'type' => 'badge'],
+                ['key' => 'total_unit', 'label' => __('competency.unit_count'), 'type' => 'button'],
             ],
             default => [],
         };
@@ -394,6 +394,14 @@ class DataTable extends Component
                         ? trans_choice('competency.unit_count_label', $unitCount, ['count' => $unitCount])
                         : __('competency.unit_count_zero'),
                     'tone' => $unitCount > 0 ? 'primary' : 'neutral',
+                    'url' => isset($item['id_lsp'])
+                        ? route('competency.lsp.show', [
+                            'lspId' => $item['id_lsp'],
+                            'slug' => Str::slug($lspName),
+                            'tab' => 'scheme',
+                            'scheme' => $item['id_skema'] ?? null,
+                        ]) . '#tr-skema-' . ($item['id_skema'] ?? '')
+                        : null,
                 ],
             ];
         }, $items);
