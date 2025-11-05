@@ -160,5 +160,7 @@ Tempat untuk melaksanakan uji kompetensi.</li>
 
     'item_not_found' => 'Belum ada data :item.',
 
+    'search_no_results_for' => 'Tidak ada hasil untuk pencarian ":term".',
+
     'competency_scheme' => 'Skema Kompetensi',
 ];

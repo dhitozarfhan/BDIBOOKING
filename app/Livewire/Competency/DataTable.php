@@ -23,6 +23,9 @@ class DataTable extends Component
     public string $search = '';
     public int $perPage = 15;
 
+    public array $allRows = [];
+    public bool $isDataLoaded = false;
+
     public function mount(string $section): void
     {
         $section = strtolower($section);
@@ -35,20 +38,41 @@ class DataTable extends Component
         $this->title = $this->titleFor($section);
     }
 
+    public function loadFromCache(array $data): void
+    {
+        if ($this->isDataLoaded) {
+            return;
+        }
+        $this->allRows = $data;
+        $this->isDataLoaded = true;
+    }
+
+    public function loadData(SidiaClient $sidia): void
+    {
+        if ($this->isDataLoaded) {
+            return;
+        }
+
+        try {
+            $payload = $sidia->post('competency/' . $this->section);
+            $this->allRows = $this->rowsFromPayload($this->section, $payload);
+            $this->dispatch('data-loaded', data: $this->allRows);
+        } catch (RuntimeException $e) {
+            $this->error = $e->getMessage();
+            $this->allRows = [];
+        }
+
+        $this->isDataLoaded = true;
+    }
+
     public function updatedSearch(): void
     {
         $this->resetPage();
     }
 
-    public function render(SidiaClient $sidia)
+    public function render()
     {
-        try {
-            $payload = $sidia->post('competency/' . $this->section);
-            $rows = $this->rowsFromPayload($this->section, $payload);
-        } catch (RuntimeException $e) {
-            $this->error = $e->getMessage();
-            $rows = [];
-        }
+        $rows = $this->allRows;
 
         if (! empty($this->search)) {
             $rows = $this->filterRows($rows, $this->search);
@@ -384,4 +408,3 @@ class DataTable extends Component
         return array_values(array_filter($items, 'is_array'));
     }
 }
-
