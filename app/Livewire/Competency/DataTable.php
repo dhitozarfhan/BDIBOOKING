@@ -379,12 +379,12 @@ class DataTable extends Component
                 'lsp' => [
                     'text' => $lspName,
                     'url' => isset($item['id_lsp'])
-                        ? route('competency.lsp.show', [
+                        ? route('competency.lsp.show', array_filter([
                             'lspId' => $item['id_lsp'],
                             'slug' => Str::slug($lspName),
                             'tab' => 'scheme',
                             'scheme' => $item['id_skema'] ?? null,
-                        ])
+                        ]))
                         : null,
                 ],
                 'bidang' => $item['bidang'] ?? '-',
@@ -395,12 +395,13 @@ class DataTable extends Component
                         : __('competency.unit_count_zero'),
                     'tone' => $unitCount > 0 ? 'primary' : 'neutral',
                     'url' => isset($item['id_lsp'])
-                        ? route('competency.lsp.show', [
+                        ? route('competency.lsp.show', array_filter([
                             'lspId' => $item['id_lsp'],
                             'slug' => Str::slug($lspName),
                             'tab' => 'scheme',
-                            'scheme' => $item['id_skema'] ?? null,
-                        ]) . '#tr-skema-' . ($item['id_skema'] ?? '')
+                            'scheme' => $item['id_skema'] ?? null,  // This will be filtered out if null
+                        ], fn($value) => !is_null($value)))
+                        . (isset($item['id_skema']) ? '#tr-skema-' . $item['id_skema'] : '')
                         : null,
                 ],
             ];

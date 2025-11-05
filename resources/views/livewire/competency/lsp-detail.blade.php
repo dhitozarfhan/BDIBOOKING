@@ -277,7 +277,7 @@
                                                 $isExpanded = $expandedSchemeId == $schemeId;
                                                 $unitList = $schemeId ? ($unitsByScheme[$schemeId] ?? []) : [];
                                             @endphp
-                                            <tr class="hover" wire:key="scheme-{{ $schemeId }}">
+                                            <tr class="hover" wire:key="scheme-{{ $schemeId }}" id="tr-skema-{{ $schemeId }}">
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $scheme['nama'] ?? '-' }}</td>
                                                 <td>{{ $scheme['jenis'] ?? '-' }}</td>
@@ -342,7 +342,7 @@
                     </div>
 
                     <div class="card-footer flex flex-col sm:flex-row justify-start gap-3 bg-base-200/60 p-4">
-                        <a wire:navigate href="{{ route('competency.section', ['section' => 'lsp']) }}"
+                        <a wire:navigate href="{{ $backUrl }}"
                             class="btn btn-outline">
                             {{ __('competency.back') }}
                         </a>

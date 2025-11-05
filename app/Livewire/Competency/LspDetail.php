@@ -23,10 +23,20 @@ class LspDetail extends Component
     public array $unitsByScheme = [];
     public ?string $error = null;
     public string $title = '';
+    public string $backUrl = '';
 
     public function mount(SidiaClient $sidia, int $lspId): void
     {
         $this->lspId = $lspId;
+
+        $previousUrl = url()->previous();
+        $baseCompetencyUrl = route('competency.index');
+
+        if (str_starts_with($previousUrl, $baseCompetencyUrl)) {
+            $this->backUrl = $previousUrl;
+        } else {
+            $this->backUrl = route('competency.section', ['section' => 'scheme']);
+        }
 
         if (!in_array($this->activeTab, ['lsp', 'assessor', 'tuk', 'scheme'], true)) {
             $this->activeTab = 'lsp';
@@ -119,7 +129,7 @@ class LspDetail extends Component
     protected function hasScheme(int $schemeId): bool
     {
         foreach ($this->schemes as $scheme) {
-            if (($scheme['id_skema'] ?? null) === $schemeId) {
+            if (($scheme['id_skema'] ?? null) == $schemeId) {
                 return true;
             }
         }
