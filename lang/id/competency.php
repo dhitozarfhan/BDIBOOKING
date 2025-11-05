@@ -101,6 +101,8 @@ Tempat untuk melaksanakan uji kompetensi.</li>
     'unit_count_zero' => 'Tidak ada unit',
     'unit_count_label' => '{0} Tidak ada unit|{1} :count Unit|[2,*] :count Unit',
 
+    'unit_list' => 'Daftar Unit',
+
     'unknown_status' => 'Tidak diketahui',
 
     'lsp_name' => 'Nama LSP',

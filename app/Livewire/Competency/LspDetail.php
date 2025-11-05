@@ -107,12 +107,10 @@ class LspDetail extends Component
         }
 
         $normalized = [];
-
-        foreach ($units as $schemeId => $unitList) {
-            if (!is_array($unitList)) {
-                continue;
+        foreach ($units as $unit) {
+            if (is_array($unit) && isset($unit['id_skema'])) {
+                $normalized[$unit['id_skema']][] = $unit;
             }
-            $normalized[$schemeId] = array_values(array_filter($unitList, 'is_array'));
         }
 
         return $normalized;

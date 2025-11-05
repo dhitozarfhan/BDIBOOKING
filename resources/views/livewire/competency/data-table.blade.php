@@ -152,6 +152,32 @@
                                                                     @endif
                                                                     @break
 
+                                                                @case('button')
+                                                                    @if (is_array($value))
+                                                                        @php
+                                                                            $label = $value['label'] ?? '-';
+                                                                            $url = $value['url'] ?? null;
+                                                                            $tone = $value['tone'] ?? 'primary';
+                                                                            $buttonClasses = match ($tone) {
+                                                                                'success' => 'btn-success',
+                                                                                'warning' => 'btn-warning',
+                                                                                'error' => 'btn-error',
+                                                                                'primary' => 'btn-primary',
+                                                                                default => 'btn-ghost',
+                                                                            };
+                                                                        @endphp
+                                                                        @if ($url)
+                                                                            <a wire:navigate href="{{ $url }}" class="btn btn-xs {{ $buttonClasses }}">
+                                                                                {{ $label }}
+                                                                            </a>
+                                                                        @else
+                                                                            <span class="btn btn-xs {{ $buttonClasses }} btn-disabled">{{ $label }}</span>
+                                                                        @endif
+                                                                    @else
+                                                                        <span class="btn btn-xs btn-disabled">{{ $value ?? '-' }}</span>
+                                                                    @endif
+                                                                    @break
+
                                                                 @case('image')
                                                                     @if ($value)
                                                                         <img src="{{ $value }}" alt=""
