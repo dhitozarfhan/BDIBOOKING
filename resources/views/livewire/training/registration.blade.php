@@ -85,7 +85,7 @@
                                 <div class="flex flex-col gap-6">
                                     <label class="form-control w-full">
                                         <div class="label"><span class="label-text">Nama Lengkap <span class="text-error">*</span></span></div>
-                                        <input type="text" wire:model.lazy="nama" @class(['input input-bordered w-full', 'input-error' => $errors->has('nama')]) />
+                                        <input type="text" wire:model.lazy="nama" @class(['input input-bordered w-full', 'input-error' => $errors->has('nama')]) x-data @input="$el.value = ucWords($el.value)" />
                                         @error('nama') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                                     </label>
 
@@ -106,7 +106,7 @@
 
                                     <label class="form-control w-full">
                                         <div class="label"><span class="label-text">Nomor KTP / NIK <span class="text-error">*</span></span></div>
-                                        <input type="text" wire:model.lazy="ktp" @class(['input input-bordered w-full', 'input-error' => $errors->has('ktp')]) />
+                                        <input type="text" wire:model.lazy="ktp" @class(['input input-bordered w-full', 'input-error' => $errors->has('ktp')]) x-data @input="forceNumber($el)" />
                                         @error('ktp') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                                     </label>
                                     @if(($diklat['scan_ktp'] ?? 'N') != 'N' && ($diklat['kapan_upload_ktp'] ?? '') == 'initial')
@@ -119,7 +119,7 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <label class="form-control w-full">
                                             <div class="label"><span class="label-text">Tempat Lahir <span class="text-error">*</span></span></div>
-                                            <input type="text" wire:model.lazy="tempat_lahir" @class(['input input-bordered w-full', 'input-error' => $errors->has('tempat_lahir')]) />
+                                            <input type="text" wire:model.lazy="tempat_lahir" @class(['input input-bordered w-full', 'input-error' => $errors->has('tempat_lahir')]) x-data @input="$el.value = ucWords($el.value)" />
                                             @error('tempat_lahir') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                                         </label>
                                         <label class="form-control w-full">
@@ -182,7 +182,7 @@
                                         </label>
                                         <label class="form-control w-full">
                                             <div class="label"><span class="label-text">Tahun Ijazah <span class="text-error">*</span></span></div>
-                                            <input type="text" wire:model.lazy="pendidikan_tamat" @class(['input input-bordered w-full', 'input-error' => $errors->has('pendidikan_tamat')]) placeholder="YYYY"/>
+                                            <input type="text" wire:model.lazy="pendidikan_tamat" @class(['input input-bordered w-full', 'input-error' => $errors->has('pendidikan_tamat')]) placeholder="YYYY" x-data @input="forceNumber($el)"/>
                                             @error('pendidikan_tamat') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                                         </label>
                                     </div>
@@ -342,12 +342,12 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <label class="form-control w-full">
                                             <div class="label"><span class="label-text">RT</span></div>
-                                            <input type="text" wire:model.lazy="rt" @class(['input input-bordered w-full', 'input-error' => $errors->has('rt')]) @disabled(empty($selectedDesa)) />
+                                            <input type="text" wire:model.lazy="rt" @class(['input input-bordered w-full', 'input-error' => $errors->has('rt')]) @disabled(empty($selectedDesa)) x-data @input="forceNumber($el)" />
                                             @error('rt') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                                         </label>
                                         <label class="form-control w-full">
                                             <div class="label"><span class="label-text">RW</span></div>
-                                            <input type="text" wire:model.lazy="rw" @class(['input input-bordered w-full', 'input-error' => $errors->has('rw')]) @disabled(empty($selectedDesa)) />
+                                            <input type="text" wire:model.lazy="rw" @class(['input input-bordered w-full', 'input-error' => $errors->has('rw')]) @disabled(empty($selectedDesa)) x-data @input="forceNumber($el)" />
                                             @error('rw') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                                         </label>
                                     </div>
@@ -364,7 +364,7 @@
                                 <div class="flex flex-col gap-6">
                                     <label class="form-control w-full">
                                         <div class="label"><span class="label-text">Handphone WhatsApp <span class="text-error">*</span></span></div>
-                                        <input type="tel" wire:model.lazy="mobile" @class(['input input-bordered w-full', 'input-error' => $errors->has('mobile')]) />
+                                        <input type="tel" wire:model.lazy="mobile" @class(['input input-bordered w-full', 'input-error' => $errors->has('mobile')]) x-data @input="forceNumber($el)" />
                                         @error('mobile') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                                     </label>
                                     <div class="form-control w-full">
@@ -373,7 +373,7 @@
                                                 <span class="label-text">Telepon</span>
                                             </label>
                                         </div>
-                                        <input type="tel" wire:model.lazy="telepon" @class(['input input-bordered w-full', 'input-error' => $errors->has('telepon')]) />
+                                        <input type="tel" wire:model.lazy="telepon" @class(['input input-bordered w-full', 'input-error' => $errors->has('telepon')]) x-data @input="forceNumber($el)" />
                                         @error('telepon') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                                     </div>
                                     <label class="form-control w-full">
@@ -531,6 +531,16 @@
 
 @pushOnce('scripts')
 <script>
+
+    function forceNumber(el) {
+        el.value = el.value.replace(/[^0-9]/g, '');
+    }
+
+    function ucWords(str) {
+        return str.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+            return letter.toUpperCase();
+        });
+    }
     function loadSignaturePad(callback) {
         const src = "https://cdn.jsdelivr.net/npm/signature_pad@5.1.1/dist/signature_pad.umd.min.js";
         if (window.SignaturePad) {
