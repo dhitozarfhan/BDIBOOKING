@@ -12,12 +12,12 @@
         </h2>
 
         @if (session()->has('message'))
-            <div class="mt-4 alert alert-success shadow-lg">
+            <div class="mt-4 alert alert-success bg-green-100 text-green-800 shadow-lg">
                 <div>
                     <i class="bi bi-check-circle-fill"></i>
                     <span>
                         <strong class="font-bold">Berhasil!</strong>
-                        <span class="block sm:inline">{{ session('message') }}</span>
+                        <span class="block sm:inline">{{ session('message') }} <strong class="font-bold">{{ session('kode_register') }}</strong>. Terima kasih atas partisipasi Anda dalam menjaga integritas.</span>
                     </span>
                 </div>
             </div>
