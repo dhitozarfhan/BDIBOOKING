@@ -149,10 +149,11 @@ class Gratification extends Component
             'waktu_publish' => null,
         ]);
 
-        session()->flash('message', "Laporan gratifikasi Anda telah berhasil dikirim dengan kode register: $kodeRegister. Terima kasih atas partisipasi Anda dalam menjaga integritas.");
+        session()->flash('message', 'Laporan gratifikasi Anda telah berhasil dikirim dengan kode register: ');
+        session()->flash('kode_register', $kodeRegister);
 
         $this->resetForm();
-        $this->currentView = 'index';
+
     }
 
     private function generateKodeRegister()
@@ -167,27 +168,44 @@ class Gratification extends Component
 
     public function checkStatus()
     {
-        $this->validate();
-        
-        // Cari berdasarkan kode_register terlebih dahulu
+        $this->validate([
+            'kode_register' => 'required|string|max:255',
+            'gRecaptchaResponse' => 'required|recaptcha',
+        ]);
+
         $gratification = GratificationModel::where('kode_register', $this->kode_register)->first();
 
         if ($gratification) {
-            // Ambil detail proses terbaru dari tabel pivot
-            $process = GratificationProcess::where('gratification_id', $gratification->id)
-                        ->latest('created_at')
-                        ->first();
-            
-            $this->reportDetail = $gratification;
-            $this->reportDetail->status = $process->status ?? 'I';
-            $this->reportDetail->jawaban = $process->jawaban ?? null;
-            
+            $process = $gratification->processes()->latest()->first();
+
+            $reportDetail = new \stdClass();
+            $reportDetail->subject = $gratification->judul_laporan;
+            $reportDetail->name = $gratification->nama_pelapor;
+            $reportDetail->mobile = $gratification->telepon ? substr($gratification->telepon, 0, -4) . 'xxxx' : '-';
+            $reportDetail->time_insert = $gratification->created_at;
+            $reportDetail->content = $gratification->uraian_laporan;
+
+            if ($process) {
+                $reportDetail->status = $process->status;
+                $reportDetail->answer = $process->jawaban;
+            } else {
+                $reportDetail->status = 'I'; // Default to Inisiasi
+                $reportDetail->answer = null;
+            }
+
+            $reportDetail->attachment = $gratification->data_dukung;
+
+            $this->reportDetail = $reportDetail;
             $this->showReportDetail = true;
             $this->statusError = '';
         } else {
             $this->showReportDetail = false;
+            $this->reportDetail = null;
             $this->statusError = 'Kode register tidak ditemukan dalam sistem kami.';
         }
+
+        // Emit event to reset reCAPTCHA after status check
+        $this->dispatch('status-checked');
     }
 
     public function updateReport()

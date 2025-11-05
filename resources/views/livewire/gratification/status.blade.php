@@ -41,7 +41,7 @@
             </div>
 
             <div class="flex items-center gap-4 mt-6">
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary" :disabled="!gRecaptchaResponse">
                     <i class="bi bi-search"></i> Cek Status
                 </button>
                 <a href="{{ route('gratification') }}" class="btn btn-ghost">
@@ -52,48 +52,66 @@
 
         @if($showReportDetail)
             <div class="mt-8 card bg-base-200 shadow-xl">
+                <div class="card-header border-b border-base-300 px-6 py-4">
+                    <h3 class="card-title">Respon Laporan Gratifikasi</h3>
+                </div>
                 <div class="card-body">
-                    <h3 class="card-title">Detail Laporan</h3>
-                    
-                    <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-sm text-base-content/80">Judul Laporan</p>
-                            <p class="font-medium">{{ $reportDetail->judul_laporan }}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        <div class="form-control">
+                            <label class="label"><span class="label-text font-semibold">Subjek Laporan</span></label>
+                            <p class="prose min-w-full break-words">{{ $reportDetail->subject }}</p>
                         </div>
-                        <div>
-                            <p class="text-sm text-base-content/80">Nama Pelapor</p>
-                            <p class="font-medium">{{ $reportDetail->nama_pelapor }}</p>
+                        <div class="form-control">
+                            <label class="label"><span class="label-text font-semibold">Telepon Pelapor</span></label>
+                            <p class="prose min-w-full break-words">{{ $reportDetail->mobile }}</p>
                         </div>
-                        <div>
-                            <p class="text-sm text-base-content/80">Tanggal Laporan</p>
-                            <p class="font-medium">{{ $reportDetail->created_at ? $reportDetail->created_at->format('d M Y H:i') : 'N/A' }}</p>
+                        <div class="form-control">
+                            <label class="label"><span class="label-text font-semibold">Nama Pelapor</span></label>
+                            <p class="prose min-w-full break-words">{{ $reportDetail->name }}</p>
                         </div>
-                        <div>
-                            <p class="text-sm text-base-content/80">Status</p>
-                            <p class="font-medium">
-                                @if($reportDetail->status == 'I')
-                                    <span class="badge badge-warning">Inisiasi</span>
-                                @elseif($reportDetail->status == 'P')
-                                    <span class="badge badge-info">Proses</span>
-                                @elseif($reportDetail->status == 'D')
-                                    <span class="badge badge-primary">Disposisi</span>
-                                @elseif($reportDetail->status == 'T')
-                                    <span class="badge badge-success">Selesai</span>
-                                @else
-                                    <span class="badge badge-ghost">Tidak Dikenal</span>
-                                @endif
-                            </p>
-                        </div>
-                        <div class="md:col-span-2">
-                            <p class="text-sm text-base-content/80">Uraian Laporan</p>
-                            <p class="font-medium">{{ $reportDetail->uraian_laporan }}</p>
+                        <div class="form-control">
+                            <label class="label"><span class="label-text font-semibold">Tanggal Laporan</span></label>
+                            <p class="prose min-w-full break-words">{{ $reportDetail->time_insert ? $reportDetail->time_insert->format('d/m/Y H:i') : 'N/A' }}</p>
                         </div>
                     </div>
-                    
+
+                    <div class="mt-4 form-control">
+                        <label class="label"><span class="label-text font-semibold">Status Laporan</span></label>
+                        <p class="prose min-w-full break-words">
+                            @if($reportDetail->status == 'I')
+                                <span class="badge badge-warning">Inisiasi</span>
+                            @elseif($reportDetail->status == 'P')
+                                <span class="badge badge-info">Proses</span>
+                            @elseif($reportDetail->status == 'D')
+                                <span class="badge badge-primary">Disposisi</span>
+                            @elseif($reportDetail->status == 'T')
+                                <span class="badge badge-success">Selesai</span>
+                            @else
+                                <span class="badge badge-ghost">Tidak Dikenal</span>
+                            @endif
+                        </p>
+                    </div>
+
+                    <div class="mt-4 form-control">
+                        <label class="label"><span class="label-text font-semibold">Isi Laporan</span></label>
+                        <p class="prose min-w-full break-words">{{ $reportDetail->content }}</p>
+                    </div>
+
                     @if($reportDetail->status === 'T')
-                        <div class="mt-4">
-                            <p class="text-sm text-base-content/80">Jawaban</p>
-                            <p class="font-medium">{{ $reportDetail->jawaban ?? 'Jawaban belum tersedia' }}</p>
+                        <div class="mt-4 border-t border-base-300 pt-4">
+                            <div class="form-control">
+                                <label class="label"><span class="label-text font-semibold">Jawaban</span></label>
+                                <p class="prose min-w-full break-words">{{ $reportDetail->answer ?? 'Jawaban tidak tersedia.' }}</p>
+                            </div>
+
+                            @if($reportDetail->attachment)
+                                <div class="mt-4 form-control">
+                                    <label class="label"><span class="label-text font-semibold">Lampiran Jawaban</span></label>
+                                    <a href="{{ Storage::url($reportDetail->attachment) }}" target="_blank" class="link link-primary">
+                                        <i class="bi bi-paperclip"></i> {{ basename($reportDetail->attachment) }}
+                                    </a>
+                                </div>
+                            @endif
                         </div>
                     @endif
                 </div>
@@ -106,19 +124,36 @@
                 </div>
             </div>
         @endif
+
+
     </div>
 </div>
 
 @push('scripts')
 <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallbackStatus&render=explicit" async defer></script>
 <script type="text/javascript">
+    var widgetIdStatus;
     var onloadCallbackStatus = function() {
-        grecaptcha.render('recaptcha-container-status', {
+        widgetIdStatus = grecaptcha.render('recaptcha-container-status', {
             'sitekey' : '{{ config("captcha.sitekey") }}',
             'callback' : function(response) {
                 @this.set('gRecaptchaResponse', response);
+            },
+            'expired-callback' : function() {
+                @this.set('gRecaptchaResponse', '');
+            },
+            'error-callback' : function() {
+                @this.set('gRecaptchaResponse', '');
             }
         });
     };
+    
+    // Reset reCAPTCHA after form submission
+    window.addEventListener('status-checked', function() {
+        if (widgetIdStatus) {
+            grecaptcha.reset(widgetIdStatus);
+            @this.set('gRecaptchaResponse', '');
+        }
+    });
 </script>
 @endpush
