@@ -75,8 +75,8 @@
                         </table>
                     </div>
                     <div class="mt-4">
-                        <a href="{{ route('gratification.status') }}" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i> Kembali
+                        <a href="{{ route('gratification.status') }}" class="btn btn-ghost">
+                              Kembali
                         </a>
                     </div>
                 </div>
