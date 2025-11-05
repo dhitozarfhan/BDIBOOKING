@@ -36,110 +36,200 @@
                     {{-- Kolom Kiri --}}
                     <div class="space-y-6">
                         <h3 class="text-lg font-medium text-base-content border-b border-base-300 pb-2">Informasi Pelapor</h3>
-                        <div>
-                            <label for="nama_pelapor" class="label">
-                                <span class="label-text">Nama Pelapor <span class="text-red-500">*</span></span>
-                            </label>
-                            <div class="relative">
-                                <i class="bi bi-person-fill absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                <input id="nama_pelapor" type="text" class="input input-bordered w-full pl-10" wire:model.lazy="nama_pelapor">
+                        <div class="form-group">
+                                <label for="nama_pelapor" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Nama Pelapor <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <i class="bi bi-person-fill text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
+                                    </div>
+                                    <input 
+                                        id="nama_pelapor" 
+                                        type="text" 
+                                        class="w-full pl-9 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300" 
+                                        wire:model.lazy="nama_pelapor"
+                                        placeholder="Masukkan nama lengkap">
+                                </div>
+                                @error('nama_pelapor') <p class="text-red-500 text-xs mt-1 flex items-center"><i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}</p> @enderror
                             </div>
-                            @error('nama_pelapor') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
-                        </div>
 
-                        <div>
-                            <label for="nomor_identitas" class="label">
-                                <span class="label-text">Nomor Identitas (KTP/SIM)</span>
-                            </label>
-                            <div class="relative">
-                                <i class="bi bi-card-heading absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                <input id="nomor_identitas" type="text" class="input input-bordered w-full pl-10" wire:model.lazy="nomor_identitas">
+                            <!-- Nomor Identitas -->
+                            <div class="form-group">
+                                <label for="nomor_identitas" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Nomor Identitas (KTP/SIM)
+                                </label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <i class="bi bi-card-heading text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
+                                    </div>
+                                    <input 
+                                        id="nomor_identitas" 
+                                        type="text" 
+                                        class="w-full pl-9 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300" 
+                                        wire:model.lazy="nomor_identitas"
+                                        placeholder="Contoh: 3174012345678901">
+                                </div>
+                                @error('nomor_identitas') <p class="text-red-500 text-xs mt-1 flex items-center"><i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}</p> @enderror
                             </div>
-                            @error('nomor_identitas') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
-                        </div>
 
-                        <div>
-                            <label for="alamat" class="label">
-                                <span class="label-text">Alamat</span>
-                            </label>
-                            <div class="relative">
-                                <textarea id="alamat" class="textarea textarea-bordered w-full pl-10" wire:model.lazy="alamat"></textarea>
+                            <!-- Alamat -->
+                            <div class="form-group">
+                                <label for="alamat" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Alamat
+                                </label>
+                                <div class="relative">
+                                    <textarea 
+                                        id="alamat" 
+                                        rows="3"
+                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300" 
+                                        wire:model.lazy="alamat"
+                                        placeholder="Masukkan alamat lengkap"></textarea>
+                                </div>
+                                @error('alamat') <p class="text-red-500 text-xs mt-1 flex items-center"><i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}</p> @enderror
                             </div>
-                            @error('alamat') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
-                        </div>
 
-                        <div>
-                            <label for="pekerjaan" class="label">
-                                <span class="label-text">Pekerjaan</span>
-                            </label>
-                            <div class="relative">
-                                <input id="pekerjaan" type="text" class="input input-bordered w-full pl-10" wire:model.lazy="pekerjaan">
+                            <!-- Pekerjaan -->
+                            <div class="form-group">
+                                <label for="pekerjaan" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Pekerjaan
+                                </label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <i class="bi bi-briefcase-fill text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
+                                    </div>
+                                    <input 
+                                        id="pekerjaan" 
+                                        type="text" 
+                                        class="w-full pl-9 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300" 
+                                        wire:model.lazy="pekerjaan"
+                                        placeholder="Contoh: Pegawai Negeri Sipil">
+                                </div>
+                                @error('pekerjaan') <p class="text-red-500 text-xs mt-1 flex items-center"><i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}</p> @enderror
                             </div>
-                            @error('pekerjaan') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
-                        </div>
 
-                        <div>
-                            <label for="telepon" class="label">
-                                <span class="label-text">Telepon</span>
-                            </label>
-                            <div class="relative">
-                                <i class="bi bi-telephone-fill absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                <input id="telepon" type="text" class="input input-bordered w-full pl-10" wire:model.lazy="telepon">
+                            <!-- Telepon -->
+                            <div class="form-group">
+                                <label for="telepon" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Telepon
+                                </label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <i class="bi bi-telephone-fill text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
+                                    </div>
+                                    <input 
+                                        id="telepon" 
+                                        type="text" 
+                                        class="w-full pl-9 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300" 
+                                        wire:model.lazy="telepon"
+                                        placeholder="Contoh: 08123456789">
+                                </div>
+                                @error('telepon') <p class="text-red-500 text-xs mt-1 flex items-center"><i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}</p> @enderror
                             </div>
-                            @error('telepon') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
-                        </div>
 
-                        <div>
-                            <label for="email" class="label">
-                                <span class="label-text">Email</span>
-                            </label>
-                            <div class="relative">
-                                <i class="bi bi-envelope-fill absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                <input id="email" type="email" class="input input-bordered w-full pl-10" wire:model.lazy="email">
+                            <!-- Email -->
+                            <div class="form-group">
+                                <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Email
+                                </label>
+                                <div class="relative group">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <i class="bi bi-envelope-fill text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
+                                    </div>
+                                    <input 
+                                        id="email" 
+                                        type="email" 
+                                        class="w-full pl-9 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300" 
+                                        wire:model.lazy="email"
+                                        placeholder="contoh @email.com">
+                                </div>
+                                @error('email') <p class="text-red-500 text-xs mt-1 flex items-center"><i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}</p> @enderror
                             </div>
-                            @error('email') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
                         </div>
-                    </div>
 
                     {{-- Kolom Kanan --}}
                     <div class="space-y-6">
                         <h3 class="text-lg font-medium text-base-content border-b border-base-300 pb-2">Detail Laporan</h3>
-                        <div>
-                            <label for="judul_laporan" class="label">
-                                <span class="label-text">Judul Laporan <span class="text-red-500">*</span></span>
+                        <!-- Judul Laporan -->
+                        <div class="form-group">
+                            <label for="judul_laporan" class="block text-sm font-semibold text-gray-700 mb-2">
+                                Judul Laporan <span class="text-red-500">*</span>
                             </label>
-                            <div class="relative">
-                                <i class="bi bi-chat-left-text-fill absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                <input id="judul_laporan" type="text" class="input input-bordered w-full pl-10" wire:model.lazy="judul_laporan">
+                            <div class="relative group">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="bi bi-chat-left-text-fill text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
+                                </div>
+                                <input 
+                                    id="judul_laporan" 
+                                    type="text" 
+                                    class="w-full pl-9 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300" 
+                                    wire:model.lazy="judul_laporan"
+                                    placeholder="Masukkan judul laporan">
                             </div>
-                            @error('judul_laporan') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
+                            @error('judul_laporan') <p class="text-red-500 text-xs mt-1 flex items-center"><i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}</p> @enderror
                         </div>
 
-                        <div>
-                            <label for="uraian_laporan" class="label">
-                                <span class="label-text">Uraian Laporan <span class="text-red-500">*</span></span>
+                        <!-- Uraian Laporan -->
+                        <div class="form-group">
+                            <label for="uraian_laporan" class="block text-sm font-semibold text-gray-700 mb-2">
+                                Uraian Laporan <span class="text-red-500">*</span>
                             </label>
                             <div class="relative">
-                                <textarea id="uraian_laporan" rows="5" class="textarea textarea-bordered w-full pl-10 lg:w-[567px] h-[231px] min-h-[231px]" wire:model.lazy="uraian_laporan"></textarea>
+                                <textarea 
+                                    id="uraian_laporan" 
+                                    rows="5"
+                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 hover:border-gray-300 resize-none" 
+                                    wire:model.lazy="uraian_laporan"
+                                    placeholder="Jelaskan secara rinci laporan Anda"></textarea>
                             </div>
-                            @error('uraian_laporan') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
+                            @error('uraian_laporan') <p class="text-red-500 text-xs mt-1 flex items-center"><i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}</p> @enderror
                         </div>
 
-                        <div>
-                            <label for="data_dukung" class="label">
-                                <span class="label-text">Data Dukung (doc/pdf/zip, max 1MB)</span>
-                            </label>
-                            <input id="data_dukung" type="file" class="file-input file-input-bordered w-full" wire:model="data_dukung">
-                            <div wire:loading wire:target="data_dukung" class="text-sm text-gray-500 mt-1">Mengunggah...</div>
-                            @error('data_dukung') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
-                        </div>
+                        <div class="form-group">
+                                <label for="data_dukung" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    Data Dukung
+                                </label>
+                                <div class="relative">
+                                    <div class="flex items-center justify-center w-full">
+                                        <label for="data_dukung" class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all duration-200">
+                                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                                <i class="bi bi-cloud-arrow-up-fill text-4xl text-gray-400 mb-2"></i>
+                                                <p class="mb-1 text-sm text-gray-600"><span class="font-semibold">Klik untuk upload</span> atau drag & drop</p>
+                                                <p class="text-xs text-gray-500">DOC, PDF, ZIP (Max 1MB)</p>
+                                            </div>
+                                            <input id="data_dukung" type="file" class="hidden" wire:model="data_dukung" accept=".doc,.docx,.pdf,.zip" onchange="showPdfPreview(event)">
+                                        </label>
+                                    </div>
+                                    <div wire:loading wire:target="data_dukung" class="mt-2 flex items-center text-sm text-indigo-600">
+                                        <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Mengunggah file...
+                                    </div>
+                                </div>
+                                @error('data_dukung') <p class="text-red-500 text-xs mt-1 flex items-center"><i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}</p> @enderror
+                            </div>
+
+                        <!-- PDF Preview Modal -->
+                        <dialog id="pdf_preview_modal" class="modal">
+                            <div class="modal-box w-11/12 max-w-5xl">
+                                <h3 class="font-bold text-lg">Pratinjau PDF</h3>
+                                <div class="py-4">
+                                    <embed id="pdf-preview" src="" type="application/pdf" width="100%" height="600px" />
+                                </div>
+                                <div class="modal-action">
+                                    <form method="dialog">
+                                        <button class="btn">Tutup</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </dialog>
 
                         
                     </div>
                 </div>
-            </form>
-        </div>
-        <div class="pt-6 border-t border-base-300 flex items-center justify-end gap-4">
+                <div class="pt-6 border-t border-base-300 flex items-center justify-end gap-4">
                     <div wire:loading wire:target="save" class="text-sm text-gray-500">
                         Menyimpan...
                     </div>
@@ -148,5 +238,23 @@
                         <i class="bi bi-send-fill"></i> Kirim Laporan
                     </button>
                 </div>
+            </form>
+        </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    function showPdfPreview(event) {
+        const [file] = event.target.files;
+        if (file && file.type === 'application/pdf') {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('pdf-preview').src = e.target.result;
+                document.getElementById('pdf_preview_modal').showModal();
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+@endpush
