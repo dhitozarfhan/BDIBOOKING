@@ -22,7 +22,6 @@ class Gratification extends Component
     public $judul_laporan;
     public $uraian_laporan;
     public $data_dukung;
-    public $gRecaptchaResponse;
 
     // Variabel untuk navigasi antar view
     public $currentView = 'index';
@@ -71,12 +70,10 @@ class Gratification extends Component
         ];
 
         if ($this->currentView === 'form') {
-            $rules['gRecaptchaResponse'] = 'required|recaptcha';
         }
 
         if ($this->currentView === 'status') {
             $rules['kode_register'] = 'required|string|max:255';
-            $rules['gRecaptchaResponse'] = 'required|recaptcha';
         }
 
         return $rules;
@@ -85,8 +82,6 @@ class Gratification extends Component
     public function messages()
     {
         return [
-            'gRecaptchaResponse.required' => 'Verifikasi reCAPTCHA wajib diisi.',
-            'gRecaptchaResponse.recaptcha' => 'Verifikasi reCAPTCHA gagal.',
             'kode_register.required' => 'Kode register wajib diisi.',
         ];
     }
@@ -111,7 +106,7 @@ class Gratification extends Component
         $this->reset([
             'nama_pelapor', 'nomor_identitas', 'alamat', 'pekerjaan', 
             'telepon', 'email', 'judul_laporan', 'uraian_laporan', 
-            'data_dukung', 'gRecaptchaResponse', 'kode_register',
+            'data_dukung', 'kode_register',
             'showReportDetail', 'statusError', 'reportDetail'
         ]);
     }
@@ -170,7 +165,6 @@ class Gratification extends Component
     {
         $this->validate([
             'kode_register' => 'required|string|max:255',
-            'gRecaptchaResponse' => 'required|recaptcha',
         ]);
 
         $gratification = GratificationModel::where('kode_register', $this->kode_register)->first();

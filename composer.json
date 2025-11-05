@@ -7,7 +7,6 @@
     "require": {
         "php": "^8.2",
         "15web/filament-tree": "^1.0",
-        "anhskohbo/no-captcha": "^3.7",
         "asmit/filament-upload": "^1.1",
         "codewithdennis/filament-simple-alert": "^3.0",
         "filament/filament": "^3.3",
