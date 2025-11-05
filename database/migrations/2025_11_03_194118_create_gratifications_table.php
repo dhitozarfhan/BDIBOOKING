@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('judul_laporan');
             $table->text('uraian_laporan');
             $table->string('data_dukung')->nullable();
+            $table->string('kode_register')->nullable()->unique();
             $table->timestamps();
         });
     }

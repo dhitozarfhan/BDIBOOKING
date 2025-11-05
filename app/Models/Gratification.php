@@ -19,13 +19,17 @@ class Gratification extends Model
         'judul_laporan',
         'uraian_laporan',
         'data_dukung',
-        'status',
-        'jawaban',
         'kode_register',
-        'waktu_publish',
     ];
 
-    protected $casts = [
-        'waktu_publish' => 'datetime',
-    ];
+    public function processes()
+    {
+        return $this->hasMany(GratificationProcess::class, 'gratification_id');
+    }
+    
+    public function latestProcess()
+    {
+        return $this->hasOne(GratificationProcess::class, 'gratification_id')
+                   ->latestOfMany();
+    }
 }

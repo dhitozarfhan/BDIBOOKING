@@ -8,7 +8,7 @@
             </ul>
         </div>
         <h2 class="text-2xl font-bold text-base-content mt-4">
-            <i class="bi bi-check-circle-fill mr-2"></i> Status Laporan Gratifikasi
+            Status Laporan Gratifikasi
         </h2>
 
         <p class="mt-2 text-base-content/80">

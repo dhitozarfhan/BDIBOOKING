@@ -8,7 +8,7 @@
             </ul>
         </div>
         <h2 class="text-2xl font-bold text-base-content mt-4">
-            <i class="bi bi-bar-chart-line-fill mr-2"></i> Statistik Laporan Gratifikasi
+            Statistik Laporan Gratifikasi
         </h2>
 
         <div class="mt-6">
