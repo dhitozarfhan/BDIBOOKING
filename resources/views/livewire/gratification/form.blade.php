@@ -8,7 +8,7 @@
             </ul>
         </div>
         <h2 class="text-2xl font-bold text-base-content mt-4">
-            <i class="bi bi-gift-fill mr-2"></i> Formulir Laporan Gratifikasi
+            Formulir Laporan Gratifikasi
         </h2>
 
         @if (session()->has('message'))

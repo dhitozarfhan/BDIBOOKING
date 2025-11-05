@@ -3,6 +3,8 @@
 namespace App\Livewire\Gratification;
 
 use App\Models\Gratification as GratificationModel;
+use App\Models\GratificationProcess;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -125,7 +127,7 @@ class Gratification extends Component
         // Generate kode register unik
         $kodeRegister = $this->generateKodeRegister();
 
-        GratificationModel::create([
+        $gratification = GratificationModel::create([
             'nama_pelapor' => $this->nama_pelapor,
             'nomor_identitas' => $this->nomor_identitas,
             'alamat' => $this->alamat,
@@ -135,8 +137,15 @@ class Gratification extends Component
             'judul_laporan' => $this->judul_laporan,
             'uraian_laporan' => $this->uraian_laporan,
             'data_dukung' => $filePath,
-            'status' => 'I', // Set status awal sebagai Inisiasi
             'kode_register' => $kodeRegister,
+        ]);
+
+        // Create the initial process record for the gratification
+        GratificationProcess::create([
+            'gratification_id' => $gratification->id,
+            'status' => 'I', // Set status awal sebagai Inisiasi
+            'jawaban' => null,
+            'waktu_publish' => null,
         ]);
 
         session()->flash('message', "Laporan gratifikasi Anda telah berhasil dikirim dengan kode register: $kodeRegister. Terima kasih atas partisipasi Anda dalam menjaga integritas.");
@@ -160,13 +169,18 @@ class Gratification extends Component
         $this->validate();
         
         // Cari berdasarkan kode_register terlebih dahulu
-        // Kita bisa mencoba mengenerate kode register dari ID atau nama pelapor jika belum ada
-        $report = GratificationModel::where('kode_register', $this->kode_register)
-                    ->orWhere('id', $this->kode_register)
-                    ->first();
+        $gratification = GratificationModel::where('kode_register', $this->kode_register)->first();
 
-        if ($report) {
-            $this->reportDetail = $report;
+        if ($gratification) {
+            // Ambil detail proses terbaru dari tabel pivot
+            $process = GratificationProcess::where('gratification_id', $gratification->id)
+                        ->latest('created_at')
+                        ->first();
+            
+            $this->reportDetail = $gratification;
+            $this->reportDetail->status = $process->status ?? 'I';
+            $this->reportDetail->jawaban = $process->jawaban ?? null;
+            
             $this->showReportDetail = true;
             $this->statusError = '';
         } else {
@@ -177,26 +191,59 @@ class Gratification extends Component
 
     public function updateReport()
     {
-        // Simulasi data untuk laporan statistik
-        // Dalam implementasi sebenarnya, ini akan diambil dari database
-        $this->reportCountData = [
-            1 => rand(1, 10), 2 => rand(1, 10), 3 => rand(1, 10), 4 => rand(1, 10),
-            5 => rand(1, 10), 6 => rand(1, 10), 7 => rand(1, 10), 8 => rand(1, 10),
-            9 => rand(1, 10), 10 => rand(1, 10), 11 => rand(1, 10), 12 => rand(1, 10)
-        ];
+        // Ambil data dari database untuk laporan statistik
+        $year = $this->selectedYear;
         
-        $this->timeToAnswerData = [
-            1 => rand(1, 10), 2 => rand(1, 10), 3 => rand(1, 10), 4 => rand(1, 10),
-            5 => rand(1, 10), 6 => rand(1, 10), 7 => rand(1, 10), 8 => rand(1, 10),
-            9 => rand(1, 10), 10 => rand(1, 10), 11 => rand(1, 10), 12 => rand(1, 10)
-        ];
+        // Jumlah laporan per bulan
+        $this->reportCountData = [];
+        for ($month = 1; $month <= 12; $month++) {
+            $this->reportCountData[$month] = GratificationModel::whereYear('created_at', $year)
+                ->whereMonth('created_at', $month)
+                ->count();
+        }
         
-        $this->statusData = [
-            ['status' => 'I', 'count' => rand(1, 20)],
-            ['status' => 'P', 'count' => rand(1, 20)],
-            ['status' => 'D', 'count' => rand(1, 20)],
-            ['status' => 'T', 'count' => rand(1, 20)]
-        ];
+        // Rata-rata waktu penyelesaian per bulan
+        // Ambil waktu antara laporan dibuat dan status berubah menjadi T (Terminasi)
+        $this->timeToAnswerData = [];
+        for ($month = 1; $month <= 12; $month++) {
+            $processes = GratificationProcess::whereHas('gratification', function($query) use ($year, $month) {
+                $query->whereYear('created_at', $year)
+                      ->whereMonth('created_at', $month);
+            })
+            ->where('status', 'T') // Hanya laporan yang sudah selesai
+            ->with('gratification')
+            ->get();
+            
+            $totalDays = 0;
+            foreach ($processes as $process) {
+                if ($process->gratification) {
+                    $days = $process->gratification->created_at->diffInDays($process->created_at);
+                    $totalDays += $days;
+                }
+            }
+            
+            $this->timeToAnswerData[$month] = $processes->count() > 0 ? round($totalDays / $processes->count()) : 0;
+        }
+        
+        // Distribusi status laporan berdasarkan status terbaru
+        $subquery = GratificationProcess::select('gratification_id', \DB::raw('MAX(created_at) as max_created_at'))
+            ->whereYear('created_at', $year)
+            ->groupBy('gratification_id');
+    
+        $latestProcesses = GratificationProcess::select('status', \DB::raw('count(*) as count'))
+            ->joinSub($subquery, 'latest_status', function($join) {
+                $join->on('gratification_processes.gratification_id', '=', 'latest_status.gratification_id')
+                     ->on('gratification_processes.created_at', '=', 'latest_status.max_created_at');
+            })
+            ->groupBy('status')
+            ->get();
+        
+        $this->statusData = $latestProcesses->map(function($item) {
+            return [
+                'status' => $item->status,
+                'count' => $item->count
+            ];
+        })->toArray();
     }
 
     public function render()

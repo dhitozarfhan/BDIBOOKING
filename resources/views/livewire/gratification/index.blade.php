@@ -9,7 +9,7 @@
                     </ul>
                 </div>
                 <h2 class="text-2xl font-bold text-base-content mt-4">
-                    <i class="bi bi-file-earmark-text-fill mr-2"></i> Pelaporan Gratifikasi
+                    Pelaporan Gratifikasi
                 </h2>
 
                 <div class="mt-4 prose max-w-none">
