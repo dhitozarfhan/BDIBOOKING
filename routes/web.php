@@ -13,11 +13,11 @@ Route::prefix('competency')->name('competency.')->group(function () {
     Route::get('/', CompetencyIndex::class)->name('index');
 
     Route::get('/skkni/download/{skkniId}/{slug?}', CompetencyDownloadController::class)
-        ->whereNumber('skkniId')
+        ->whereUuid('skkniId')
         ->name('skkni.download');
 
     Route::get('/skkni/{skkniId}/{slug?}', SkkniDetail::class)
-        ->whereNumber('skkniId')
+        ->whereUuid('skkniId')
         ->name('skkni.show');
 
     Route::get('/lsp/{lspId}/{slug?}', LspDetail::class)
