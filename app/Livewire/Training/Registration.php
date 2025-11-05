@@ -357,6 +357,7 @@ class Registration extends Component
                                 $credentials['key_name'] => $credentials['key'],
                                 'ktp' => $value,
                                 'id_diklat' => $this->id_diklat,
+                                'tanggal_lahir' => $this->tanggal_lahir,
                             ]);
                         
                         $result = $response->json();
@@ -365,7 +366,7 @@ class Registration extends Component
                         }
 
                         if (isset($result['data']['allowed']) && !$result['data']['allowed']) {
-                            $fail('Nomor KTP atau biodata peserta yang Anda masukkan sudah ada sebelumnya.');
+                            $fail($result['data']['message']);
                         }
                     } catch (\Exception $e) {
                         $fail('Terjadi kesalahan dalam memvalidasi KTP via API.');
@@ -378,9 +379,9 @@ class Registration extends Component
             'selectedKota' => 'required',
             'selectedKecamatan' => 'required',
             'selectedDesa' => 'required',
-            'dusun' => 'required|string|max:100',
-            'rt' => 'nullable|numeric|min:1',
-            'rw' => 'nullable|numeric|min:1',
+            'dusun' => 'required|string',
+            'rt' => 'nullable|numeric|min:1|max:100',
+            'rw' => 'nullable|numeric|min:1|max:100',
             'approval' => 'accepted',
             'ttd' => 'required|min:6000',
         ];
