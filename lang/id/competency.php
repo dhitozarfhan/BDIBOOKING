@@ -91,6 +91,7 @@ Tempat untuk melaksanakan uji kompetensi.</li>
     'skkni_job_title' => 'Jabatan Kerja',
     'skkni_details' => 'Detail SKKNI',
     'skkni_details_subtitle' => 'Rincian dokumen SKKNI beserta unit kompetensi terkait.',
+    'revoked_date' => 'Tanggal Dicabut',
 
     'unit_title' => 'Judul Unit',
     'unit_code' => 'Kode Unit',

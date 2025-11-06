@@ -51,18 +51,49 @@
                                     }
                                 @endphp
                         
-                                @php
-                                    $details = [
-                                        ['icon' => 'bi-hash', 'label' => __('competency.skkni_code'), 'value' => $skkni['kode_skkni'] ?? '-'],
-                                        ['icon' => 'bi-briefcase', 'label' => __('competency.skkni_sector'), 'value' => $skkni['bidang'] ?? '-'],
-                                        ['icon' => 'bi-building', 'label' => __('competency.skkni_agency'), 'value' => $skkni['agency'] ?? '-'],
-                                        ['icon' => 'bi-tags', 'label' => __('competency.skkni_category'), 'value' => $skkni['category'] ?? '-'],
-                                        ['icon' => 'bi-star', 'label' => __('competency.skkni_core'), 'value' => $skkni['core'] ?? '-'],
-                                        ['icon' => 'bi-patch-check', 'label' => __('competency.skkni_ministerial_decree_number'), 'value' => $skkni['nomor'] ?? '-'],
-                                        ['icon' => 'bi-calendar', 'label' => __('competency.created_date'), 'value' => $createdLabel ?? '-'],
-                                        ['icon' => 'bi-person-badge', 'label' => __('competency.skkni_job_title'), 'value' => $skkni['job_title'] ?? '-'],
-                                    ];
-                                @endphp
+                                                                @php
+                        
+                                                                    $details = [
+                        
+                                                                        ['icon' => 'bi-hash', 'label' => __('competency.skkni_code'), 'value' => $skkni['kode_skkni'] ?? '-'],
+                        
+                                                                        ['icon' => 'bi-briefcase', 'label' => __('competency.skkni_sector'), 'value' => $skkni['bidang'] ?? '-'],
+                        
+                                                                        ['icon' => 'bi-building', 'label' => __('competency.skkni_agency'), 'value' => $skkni['agency'] ?? '-'],
+                        
+                                                                        ['icon' => 'bi-tags', 'label' => __('competency.skkni_category'), 'value' => $skkni['category'] ?? '-'],
+                        
+                                                                        ['icon' => 'bi-star', 'label' => __('competency.skkni_core'), 'value' => $skkni['core'] ?? '-'],
+                        
+                                                                        ['icon' => 'bi-patch-check', 'label' => __('competency.skkni_ministerial_decree_number'), 'value' => $skkni['nomor'] ?? '-'],
+                        
+                                                                        ['icon' => 'bi-calendar', 'label' => __('competency.created_date'), 'value' => $createdLabel ?? '-'],
+                        
+                                                                        ['icon' => 'bi-person-badge', 'label' => __('competency.skkni_job_title'), 'value' => $skkni['job_title'] ?? '-'],
+                        
+                                                                    ];
+                        
+                                
+                        
+                                                                    if (strtolower((string) ($skkni['availability'] ?? '')) === 'cancelled' && !empty($skkni['revoked_date'])) {
+                        
+                                                                        $revokedDate = $skkni['revoked_date'];
+                        
+                                                                        try {
+                        
+                                                                            $revokedDateLabel = \Carbon\Carbon::parse($revokedDate)->isoFormat('D MMMM YYYY');
+                        
+                                                                        } catch (\Exception $e) {
+                        
+                                                                            $revokedDateLabel = $revokedDate;
+                        
+                                                                        }
+                        
+                                                                        $details[] = ['icon' => 'bi-calendar-x', 'label' => __('competency.revoked_date'), 'value' => $revokedDateLabel];
+                        
+                                                                    }
+                        
+                                                                @endphp
 
                                 <div class="divide-y divide-base-300">
                                     @foreach ($details as $detail)

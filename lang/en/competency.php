@@ -91,6 +91,7 @@ Locations for conducting competency tests.</li>
     'skkni_job_title' => 'Job Title',
     'skkni_details' => 'SKKNI Details',
     'skkni_details_subtitle' => 'Detailed SKKNI document along with related competency units.',
+    'revoked_date' => 'Revoked Date',
 
     'unit_title' => 'Unit Title',
     'unit_code' => 'Unit Code',
