@@ -55,21 +55,25 @@
                                     <th>Isi Laporan</th>
                                     <td>{{ $reportDetail->content }}</td>
                                 </tr>
-                                @if($reportDetail->status === 'T')
+                                <tr>
+                                    <th>Jawaban</th>
+                                    <td>
+                                        @if($reportDetail->status == 'T')
+                                            {{ $reportDetail->answer ?? 'Jawaban tidak tersedia.' }}
+                                        @else
+                                            Belum terdapat tanggapan resmi atas laporan ini.
+                                        @endif
+                                    </td>
+                                </tr>
+                                @if($reportDetail->status === 'T' && $reportDetail->attachment)
                                     <tr>
-                                        <th>Jawaban</th>
-                                        <td>{{ $reportDetail->answer ?? 'Jawaban tidak tersedia.' }}</td>
+                                        <th>Lampiran Jawaban</th>
+                                        <td>
+                                            <a href="{{ Storage::url($reportDetail->attachment) }}" target="_blank" class="link link-primary">
+                                                <i class="bi bi-paperclip"></i> {{ basename($reportDetail->attachment) }}
+                                            </a>
+                                        </td>
                                     </tr>
-                                    @if($reportDetail->attachment)
-                                        <tr>
-                                            <th>Lampiran Jawaban</th>
-                                            <td>
-                                                <a href="{{ Storage::url($reportDetail->attachment) }}" target="_blank" class="link link-primary">
-                                                    <i class="bi bi-paperclip"></i> {{ basename($reportDetail->attachment) }}
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endif
                                 @endif
                             </tbody>
                         </table>
