@@ -3,12 +3,12 @@
         <div class="text-sm breadcrumbs">
             <ul>
                 <li><a href="{{ route('home') }}"><i class="bi bi-house-fill"></i></a></li>
-                <li><a href="{{ route('gratification') }}">Pelaporan Gratifikasi</a></li>
-                <li>Formulir Laporan</li>
+                <li><a href="{{ route('gratification') }}">{{ __('Gratification Reporting') }}</a></li>
+                <li>{{ __('Report Form') }}</li>
             </ul>
         </div>
         <h2 class="text-2xl font-bold text-base-content mt-4">
-            Formulir Laporan Gratifikasi
+            {{ __('Gratification Report Form') }}
         </h2>
 
         <br>
@@ -21,14 +21,14 @@
                         <i class="bi bi-check-circle-fill text-2xl"></i>
                     </div>
                     <div class="ml-4 flex-1">
-                        <h3 class="font-bold text-lg">Berhasil!</h3>
+                        <h3 class="font-bold text-lg">{{ __('Success!') }}</h3>
                         <p class="mt-1">
                             {{ session('message') }} 
                             <span class="badge badge-success badge-lg ml-2 font-semibold">
                                 {{ session('kode_register') }}
                             </span>
                         </p>
-                        <p class="text-sm mt-2 opacity-90">Terima kasih atas partisipasi Anda dalam menjaga integritas.</p>
+                        <p class="text-sm mt-2 opacity-90">{{ __('Thank you for your participation in maintaining integrity.') }}</p>
                     </div>
                 </div>
             </div>
@@ -39,9 +39,9 @@
                         <i class="bi bi-info-circle-fill text-2xl"></i>
                     </div>
                     <div class="ml-4 flex-1">
-                        <h4 class="font-bold text-base mb-2">Informasi Penting</h4>
+                        <h4 class="font-bold text-base mb-2">{{ __('Important Information') }}</h4>
                         <p class="text-sm leading-relaxed">
-                            Setiap laporan akan dijaga kerahasiannya dan dalam hal terdapat bukti yang cukup akan ditindaklanjuti pada proses investigasi selanjutnya. Keberadaan pelaporan gratifikasi menciptakan sistem saling mengawasi terhadap etika, kesesuaian perilaku dan ketaatan prosedur kerja.
+                            {{ __('gratification.form.info_text') }}
                         </p>
                     </div>
                 </div>
@@ -54,13 +54,13 @@
                 <!-- Kolom Kiri - Informasi Pelapor -->
                 <div class="lg:w-1/2 space-y-6">
                     <div class="flex items-center space-x-3 mb-6 pb-2 border-primary">
-                        <h4 class="text-xl font-bold text-base-content">Informasi Pelapor</h4>
+                        <h4 class="text-xl font-bold text-base-content">{{ __('Reporter Information') }}</h4>
                     </div>
 
                     <!-- Nama Pelapor -->
                     <div class="form-control">
                         <label for="nama_pelapor" class="label">
-                            <span class="label-text font-semibold">Nama Pelapor <span class="text-error">*</span></span>
+                            <span class="label-text font-semibold">{{ __('Reporter Name') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative group">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -71,7 +71,7 @@
                                 type="text" 
                                 class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200" 
                                 wire:model.lazy="nama_pelapor"
-                                placeholder="Masukkan nama lengkap">
+                                placeholder="{{ __('Enter full name') }}">
                         </div>
                         @error('nama_pelapor') 
                         <label class="label">
@@ -85,7 +85,7 @@
                     <!-- Nomor Identitas -->
                     <div class="form-control">
                         <label for="nomor_identitas" class="label">
-                            <span class="label-text font-semibold">Nomor Identitas (KTP/SIM)</span>
+                            <span class="label-text font-semibold">{{ __('Identity Number (KTP/SIM)') }}</span>
                         </label>
                         <div class="relative group">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -96,7 +96,7 @@
                                 type="text" 
                                 class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200" 
                                 wire:model.lazy="nomor_identitas"
-                                placeholder="Contoh: 3174012345678901">
+                                placeholder="{{ __('Example: 3174012345678901') }}">
                         </div>
                         @error('nomor_identitas') 
                         <label class="label">
@@ -110,14 +110,14 @@
                     <!-- Alamat -->
                     <div class="form-control">
                         <label for="alamat" class="label">
-                            <span class="label-text font-semibold">Alamat</span>
+                            <span class="label-text font-semibold">{{ __('Address') }}</span>
                         </label>
                         <textarea 
                             id="alamat" 
                             rows="3"
                             class="textarea textarea-bordered w-full focus:textarea-primary transition-all duration-200 resize-none" 
                             wire:model.lazy="alamat"
-                            placeholder="Masukkan alamat lengkap"></textarea>
+                            placeholder="{{ __('Enter full address') }}"></textarea>
                         @error('alamat') 
                         <label class="label">
                             <span class="label-text-alt text-error flex items-center">
@@ -130,7 +130,7 @@
                     <!-- Pekerjaan -->
                     <div class="form-control">
                         <label for="pekerjaan" class="label">
-                            <span class="label-text font-semibold">Pekerjaan</span>
+                            <span class="label-text font-semibold">{{ __('Occupation') }}</span>
                         </label>
                         <div class="relative group">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -141,7 +141,7 @@
                                 type="text" 
                                 class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200" 
                                 wire:model.lazy="pekerjaan"
-                                placeholder="Contoh: Pegawai Negeri Sipil">
+                                placeholder="{{ __('Example: Civil Servant') }}">
                         </div>
                         @error('pekerjaan') 
                         <label class="label">
@@ -155,7 +155,7 @@
                     <!-- Telepon -->
                     <div class="form-control">
                         <label for="telepon" class="label">
-                            <span class="label-text font-semibold">Telepon</span>
+                            <span class="label-text font-semibold">{{ __('Phone') }}</span>
                         </label>
                         <div class="relative group">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -166,7 +166,7 @@
                                 type="text" 
                                 class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200" 
                                 wire:model.lazy="telepon"
-                                placeholder="Contoh: 08123456789">
+                                placeholder="{{ __('Example: 08123456789') }}">
                         </div>
                         @error('telepon') 
                         <label class="label">
@@ -180,7 +180,7 @@
                     <!-- Email -->
                     <div class="form-control">
                         <label for="email" class="label">
-                            <span class="label-text font-semibold">Email</span>
+                            <span class="label-text font-semibold">{{ __('Email') }}</span>
                         </label>
                         <div class="relative group">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -191,7 +191,7 @@
                                 type="email" 
                                 class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200" 
                                 wire:model.lazy="email"
-                                placeholder="contoh@email.com">
+                                placeholder="{{ __('example@email.com') }}">
                         </div>
                         @error('email') 
                         <label class="label">
@@ -206,13 +206,13 @@
                 <!-- Kolom Kanan - Detail Laporan -->
                 <div class="lg:w-1/2 space-y-6">
                     <div class="flex items-center space-x-3 mb-6 pb-2 border-secondary">
-                        <h4 class="text-xl font-bold text-base-content">Detail Laporan</h4>
+                        <h4 class="text-xl font-bold text-base-content">{{ __('Report Details') }}</h4>
                     </div>
 
                     <!-- Judul Laporan -->
                     <div class="form-control">
                         <label for="judul_laporan" class="label">
-                            <span class="label-text font-semibold">Judul Laporan <span class="text-error">*</span></span>
+                            <span class="label-text font-semibold">{{ __('Report Title') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative group">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -223,7 +223,7 @@
                                 type="text" 
                                 class="input input-bordered w-full pl-11 focus:input-secondary transition-all duration-200" 
                                 wire:model.lazy="judul_laporan"
-                                placeholder="Ringkasan singkat dari laporan Anda">
+                                placeholder="{{ __('Brief summary of your report') }}">
                         </div>
                         @error('judul_laporan') 
                         <label class="label">
@@ -237,16 +237,16 @@
                     <!-- Uraian Laporan -->
                     <div class="form-control">
                         <label for="uraian_laporan" class="label">
-                            <span class="label-text font-semibold">Uraian Laporan <span class="text-error">*</span></span>
+                            <span class="label-text font-semibold">{{ __('Report Description') }} <span class="text-error">*</span></span>
                         </label>
                         <textarea 
                             id="uraian_laporan" 
                             rows="10"
                             class="textarea textarea-bordered w-full focus:textarea-secondary transition-all duration-200 resize-none" 
                             wire:model.lazy="uraian_laporan"
-                            placeholder="Jelaskan secara detail kronologi kejadian, siapa yang terlibat, kapan dan di mana kejadian berlangsung..."></textarea>
+                            placeholder="{{ __('gratification.form.description_placeholder') }}"></textarea>
                         <label class="label">
-                            <span class="label-text-alt text-base-content/60">Sertakan informasi sejelas mungkin untuk mempermudah proses investigasi</span>
+                            <span class="label-text-alt text-base-content/60">{{ __('Include as much clear information as possible to facilitate the investigation process') }}</span>
                         </label>
                         @error('uraian_laporan') 
                         <label class="label">
@@ -260,7 +260,7 @@
                     <!-- Data Dukung -->
                     <div class="form-control">
                         <label for="data_dukung" class="label">
-                            <span class="label-text font-semibold">Data Dukung</span>
+                            <span class="label-text font-semibold">{{ __('Supporting Data') }}</span>
                         </label>
                         <div class="relative">
                             @if ($data_dukung)
@@ -270,7 +270,7 @@
                                         <p class="text-sm font-semibold text-base-content truncate" title="{{ $data_dukung->getClientOriginalName() }}">{{ $data_dukung->getClientOriginalName() }}</p>
                                         <p class="text-xs text-base-content/60">({{ round($data_dukung->getSize() / 1024) }} KB)</p>
                                         <button wire:click="$set('data_dukung', null)" type="button" class="btn btn-xs btn-ghost text-error mt-2">
-                                            <i class="bi bi-x-lg"></i> Hapus
+                                            <i class="bi bi-x-lg"></i> {{ __('Remove') }}
                                         </button>
                                     </div>
                                 </div>
@@ -279,12 +279,12 @@
                                     <label for="data_dukung" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-base-300 rounded-xl cursor-pointer bg-base-200/50 hover:bg-base-200 transition-all duration-200">
                                         <div wire:loading.remove wire:target="data_dukung" class="flex flex-col items-center justify-center pt-5 pb-6">
                                             <i class="bi bi-cloud-arrow-up-fill text-4xl text-base-content/40 mb-2"></i>
-                                            <p class="mb-1 text-sm text-base-content/80"><span class="font-semibold">Klik untuk upload</span> atau drag & drop</p>
-                                            <p class="text-xs text-base-content/60">DOC, PDF, ZIP (Max 1MB)</p>
+                                            <p class="mb-1 text-sm text-base-content/80"><span class="font-semibold">{{ __('Click to upload') }}</span> {{ __('or drag & drop') }}</p>
+                                            <p class="text-xs text-base-content/60">{{ __('DOC, PDF, ZIP (Max 1MB)') }}</p>
                                         </div>
                                         <div wire:loading wire:target="data_dukung" class="w-full h-full flex flex-col items-center justify-center">
                                             <span class="loading loading-spinner loading-lg text-primary"></span>
-                                            <p class="mt-2 text-sm text-primary">Mengunggah...</p>
+                                            <p class="mt-2 text-sm text-primary">{{ __('Uploading...') }}</p>
                                         </div>
                                         <input id="data_dukung" type="file" class="hidden" wire:model="data_dukung" accept=".doc,.docx,.pdf,.zip">
                                     </label>
@@ -306,18 +306,18 @@
             <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t-2 border-base-300">
                 <div class="flex items-center text-sm text-base-content/70">
                     <i class="bi bi-shield-lock-fill text-success text-lg mr-2"></i>
-                    <span>Laporan Anda akan dijaga kerahasiaannya</span>
+                    <span>{{ __('Your report will be kept confidential') }}</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <div wire:loading wire:target="save" class="flex items-center text-sm text-secondary">
                         <span class="loading loading-spinner loading-sm mr-2"></span>
-                        Menyimpan laporan...
+                        {{ __('Saving report...') }}
                     </div>
                     <a href="{{ route('gratification') }}" class="btn btn-ghost btn-outline" wire:navigate>
-                        Kembali
+                        {{ __('Back') }}
                     </a>
                     <button type="submit" class="btn btn-primary shadow-lg hover:shadow-xl transition-all duration-200">
-                        Kirim Laporan
+                        {{ __('Send Report') }}
                     </button>
                 </div>
             </div>
@@ -325,7 +325,7 @@
 
         <!-- Additional Info -->
         <div class="mt-6 text-center text-sm text-base-content/60">
-            <p>Butuh bantuan? Hubungi kami di <a href="mailto:support@bdiyogyakarta.kemenperin.go.id" class="link link-primary font-medium">support@bdiyogyakarta.kemenperin.go.id</a></p>
+            <p>{{ __('Need help? Contact us at') }} <a href="mailto:support@bdiyogyakarta.kemenperin.go.id" class="link link-primary font-medium">support@bdiyogyakarta.kemenperin.go.id</a></p>
         </div>
     </div>
 </div>
@@ -365,4 +365,5 @@
         transition-property: background-color, border-color, color, box-shadow, transform;
     }
 </style>
-@endpush    
+@endpush
+    
