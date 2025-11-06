@@ -53,8 +53,8 @@
             <div class="flex flex-col lg:flex-row gap-8 mb-8">
                 <!-- Kolom Kiri - Informasi Pelapor -->
                 <div class="lg:w-1/2 space-y-6">
-                    <div class="flex items-center space-x-3 mb-6 pb-2 border-b-2 border-primary">
-                        <h2 class="text-xl font-bold text-base-content">Informasi Pelapor</h2>
+                    <div class="flex items-center space-x-3 mb-6 pb-2 border-primary">
+                        <h4 class="text-xl font-bold text-base-content">Informasi Pelapor</h4>
                     </div>
 
                     <!-- Nama Pelapor -->
@@ -205,8 +205,8 @@
 
                 <!-- Kolom Kanan - Detail Laporan -->
                 <div class="lg:w-1/2 space-y-6">
-                    <div class="flex items-center space-x-3 mb-6 pb-2 border-b-2 border-secondary">
-                        <h2 class="text-xl font-bold text-base-content">Detail Laporan</h2>
+                    <div class="flex items-center space-x-3 mb-6 pb-2 border-secondary">
+                        <h4 class="text-xl font-bold text-base-content">Detail Laporan</h4>
                     </div>
 
                     <!-- Judul Laporan -->
@@ -263,20 +263,33 @@
                             <span class="label-text font-semibold">Data Dukung</span>
                         </label>
                         <div class="relative">
-                            <div class="flex items-center justify-center w-full">
-                                <label for="data_dukung" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-base-300 rounded-xl cursor-pointer bg-base-200/50 hover:bg-base-200 transition-all duration-200">
-                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <i class="bi bi-cloud-arrow-up-fill text-4xl text-base-content/40 mb-2"></i>
-                                        <p class="mb-1 text-sm text-base-content/80"><span class="font-semibold">Klik untuk upload</span> atau drag & drop</p>
-                                        <p class="text-xs text-base-content/60">DOC, PDF, ZIP (Max 1MB)</p>
+                            @if ($data_dukung)
+                                <div class="flex items-center justify-center w-full h-32 border-2 border-dashed border-success rounded-xl bg-base-200/50">
+                                    <div class="text-center p-4">
+                                        <i class="bi bi-file-earmark-check-fill text-4xl text-success mb-2"></i>
+                                        <p class="text-sm font-semibold text-base-content truncate" title="{{ $data_dukung->getClientOriginalName() }}">{{ $data_dukung->getClientOriginalName() }}</p>
+                                        <p class="text-xs text-base-content/60">({{ round($data_dukung->getSize() / 1024) }} KB)</p>
+                                        <button wire:click="$set('data_dukung', null)" type="button" class="btn btn-xs btn-ghost text-error mt-2">
+                                            <i class="bi bi-x-lg"></i> Hapus
+                                        </button>
                                     </div>
-                                    <input id="data_dukung" type="file" class="hidden" wire:model="data_dukung" accept=".doc,.docx,.pdf,.zip">
-                                </label>
-                            </div>
-                            <div wire:loading wire:target="data_dukung" class="mt-2 flex items-center text-sm text-secondary">
-                                <span class="loading loading-spinner loading-sm mr-2"></span>
-                                Mengunggah file...
-                            </div>
+                                </div>
+                            @else
+                                <div class="flex items-center justify-center w-full">
+                                    <label for="data_dukung" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-base-300 rounded-xl cursor-pointer bg-base-200/50 hover:bg-base-200 transition-all duration-200">
+                                        <div wire:loading.remove wire:target="data_dukung" class="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <i class="bi bi-cloud-arrow-up-fill text-4xl text-base-content/40 mb-2"></i>
+                                            <p class="mb-1 text-sm text-base-content/80"><span class="font-semibold">Klik untuk upload</span> atau drag & drop</p>
+                                            <p class="text-xs text-base-content/60">DOC, PDF, ZIP (Max 1MB)</p>
+                                        </div>
+                                        <div wire:loading wire:target="data_dukung" class="w-full h-full flex flex-col items-center justify-center">
+                                            <span class="loading loading-spinner loading-lg text-primary"></span>
+                                            <p class="mt-2 text-sm text-primary">Mengunggah...</p>
+                                        </div>
+                                        <input id="data_dukung" type="file" class="hidden" wire:model="data_dukung" accept=".doc,.docx,.pdf,.zip">
+                                    </label>
+                                </div>
+                            @endif
                         </div>
                         @error('data_dukung') 
                         <label class="label">
@@ -301,11 +314,9 @@
                         Menyimpan laporan...
                     </div>
                     <a href="{{ route('gratification') }}" class="btn btn-ghost btn-outline" wire:navigate>
-                        <i class="bi bi-arrow-left mr-1"></i>
                         Kembali
                     </a>
                     <button type="submit" class="btn btn-primary shadow-lg hover:shadow-xl transition-all duration-200">
-                        <i class="bi bi-send-fill mr-1"></i>
                         Kirim Laporan
                     </button>
                 </div>

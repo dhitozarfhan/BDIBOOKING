@@ -1,6 +1,5 @@
 @section('title', 'Status Laporan Gratifikasi')
-
-<div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg min-h-[calc(100vh-200px)]">
+<<div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg" style="min-height: 43.5vh;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-sm breadcrumbs">
             <ul>
@@ -12,11 +11,9 @@
         <h2 class="text-2xl font-bold text-base-content mt-4">
             Status Laporan Gratifikasi
         </h2>
-
         <p class="mt-2 text-base-content/80">
             Masukkan kode register untuk melihat status laporan Anda.
         </p>
-
         <form wire:submit.prevent="checkStatus" class="mt-6 space-y-6">
             <div class="space-y-4">
                 <div>
@@ -30,12 +27,11 @@
                     @error('kode_register') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
                 </div>
             </div>
-
             <div class="flex items-center gap-4 mt-6">
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-search"></i> Cek Status
                 </button>
-                <a href="{{ route('gratification') }}" class="btn btn-ghost">
+                <a href="{{ route('gratification') }}" class="btn btn-ghost btn-outline" wire:navigate>
                     Kembali
                 </a>
             </div>
