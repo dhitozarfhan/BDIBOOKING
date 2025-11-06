@@ -15,62 +15,93 @@
 
 
             @if($reportDetail)
-                <div class="mt-4">
-                    <div class="overflow-x-auto">
-                        <table class="table w-full">
+                <div class="mt-6">
+                    <div class="bg-base-100 rounded-xl shadow-md border border-base-300 overflow-hidden">
+                        <table class="table table-zebra w-full">
                             <tbody>
                                 <tr>
-                                    <th class="w-1/3">Subjek Laporan</th>
-                                    <td>{{ $reportDetail->subject }}</td>
+                                    <th class="w-1/3 bg-base-200 font-semibold text-base-content">
+                                        <i class="bi bi-chat-left-text mr-2 text-primary"></i>Subjek Laporan
+                                    </th>
+                                    <td class="font-medium">{{ $reportDetail->subject }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Nama Pelapor</th>
+                                    <th class="bg-base-200 font-semibold text-base-content">
+                                        <i class="bi bi-person mr-2 text-primary"></i>Nama Pelapor
+                                    </th>
                                     <td>{{ $reportDetail->name }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Telepon Pelapor</th>
+                                    <th class="bg-base-200 font-semibold text-base-content">
+                                        <i class="bi bi-telephone mr-2 text-primary"></i>Telepon Pelapor
+                                    </th>
                                     <td>{{ $reportDetail->mobile }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Tanggal Laporan</th>
+                                    <th class="bg-base-200 font-semibold text-base-content">
+                                        <i class="bi bi-calendar-event mr-2 text-primary"></i>Tanggal Laporan
+                                    </th>
                                     <td>{{ $reportDetail->time_insert ? $reportDetail->time_insert->format('d/m/Y H:i') : 'N/A' }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Status Laporan</th>
+                                    <th class="bg-base-200 font-semibold text-base-content">
+                                        <i class="bi bi-flag mr-2 text-primary"></i>Status Laporan
+                                    </th>
                                     <td>
                                         @if($reportDetail->status == 'I')
-                                            <span class="badge badge-warning">Inisiasi</span>
+                                            <span class="badge badge-warning gap-2">
+                                                <i class="bi bi-hourglass-split"></i>Inisiasi
+                                            </span>
                                         @elseif($reportDetail->status == 'P')
-                                            <span class="badge badge-info">Proses</span>
+                                            <span class="badge badge-info gap-2">
+                                                <i class="bi bi-arrow-repeat"></i>Proses
+                                            </span>
                                         @elseif($reportDetail->status == 'D')
-                                            <span class="badge badge-primary">Disposisi</span>
+                                            <span class="badge badge-primary gap-2">
+                                                <i class="bi bi-send-check"></i>Disposisi
+                                            </span>
                                         @elseif($reportDetail->status == 'T')
-                                            <span class="badge badge-success">Selesai</span>
+                                            <span class="badge badge-success gap-2">
+                                                <i class="bi bi-check-circle"></i>Selesai
+                                            </span>
                                         @else
-                                            <span class="badge badge-ghost">Tidak Dikenal</span>
+                                            <span class="badge badge-ghost gap-2">
+                                                <i class="bi bi-question-circle"></i>Tidak Dikenal
+                                            </span>
                                         @endif
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>Isi Laporan</th>
-                                    <td>{{ $reportDetail->content }}</td>
+                                    <th class="bg-base-200 font-semibold text-base-content align-top">
+                                        <i class="bi bi-file-text mr-2 text-primary"></i>Isi Laporan
+                                    </th>
+                                    <td class="whitespace-pre-wrap">{{ $reportDetail->content }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Jawaban</th>
-                                    <td>
+                                    <th class="bg-base-200 font-semibold text-base-content align-top">
+                                        <i class="bi bi-reply mr-2 text-secondary"></i>Jawaban
+                                    </th>
+                                    <td class="whitespace-pre-wrap">
                                         @if($reportDetail->status == 'T')
-                                            {{ $reportDetail->answer ?? 'Jawaban tidak tersedia.' }}
+                                            <div class="bg-success/10 border-l-4 border-success p-3 rounded">
+                                                {{ $reportDetail->answer ?? 'Jawaban tidak tersedia.' }}
+                                            </div>
                                         @else
-                                            Belum terdapat tanggapan resmi atas laporan ini.
+                                            <div class="bg-base-200 border-l-4 border-base-300 p-3 rounded text-base-content/60 italic">
+                                                Belum terdapat tanggapan resmi atas laporan ini.
+                                            </div>
                                         @endif
                                     </td>
                                 </tr>
                                 @if($reportDetail->status === 'T' && $reportDetail->attachment)
                                     <tr>
-                                        <th>Lampiran Jawaban</th>
+                                        <th class="bg-base-200 font-semibold text-base-content">
+                                            <i class="bi bi-paperclip mr-2 text-secondary"></i>Lampiran Jawaban
+                                        </th>
                                         <td>
-                                            <a href="{{ Storage::url($reportDetail->attachment) }}" target="_blank" class="link link-primary">
-                                                <i class="bi bi-paperclip"></i> {{ basename($reportDetail->attachment) }}
+                                            <a href="{{ Storage::url($reportDetail->attachment) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2">
+                                                <i class="bi bi-download"></i>
+                                                {{ basename($reportDetail->attachment) }}
                                             </a>
                                         </td>
                                     </tr>
@@ -78,23 +109,17 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="mt-4">
-                        <a href="{{ route('gratification.status') }}" class="btn btn-ghost">
-                              Kembali
+                    <div class="mt-6">
+                        <a href="{{ route('gratification.status') }}" class="btn btn-ghost btn-outline" wire:navigate>
+                           Kembali
                         </a>
                     </div>
                 </div>
             @elseif($statusError)
                 <div class="mt-4 alert alert-error shadow-lg">
                     <div>
-                        <i class="bi bi-x-circle-fill"></i>
                         <span>{{ $statusError }}</span>
                     </div>
-                </div>
-                <div class="mt-4">
-                     <a href="{{ route('gratification.status') }}" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Kembali
-                    </a>
                 </div>
             @endif
         </div>
