@@ -18,6 +18,52 @@ class KemenperinRegistration extends Component
     {
         $this->id_diklat = $id_diklat;
         $this->slug = $slug;
+
+        $credentials = [
+            'username' => config('services.sidia.username'),
+            'password' => config('services.sidia.password'),
+            'key'      => config('services.sidia.key'),
+            'key_name' => config('services.sidia.key_name'),
+        ];
+
+        if (empty($credentials['username']) || empty($credentials['password']) || empty($credentials['key']) || empty($credentials['key_name'])) {
+            session()->flash('error', 'Konfigurasi API SIDIA belum lengkap.');
+            return redirect()->route('register');
+        }
+
+        try {
+            $response = Http::withBasicAuth($credentials['username'], $credentials['password'])
+                ->post(config('services.sidia.url') . '/register/training/detail', [
+                    $credentials['key_name'] => $credentials['key'],
+                    'id_diklat'              => $this->id_diklat,
+                ]);
+
+            if ($response->successful()) {
+                $rawBody = $response->body();
+                $decodedBody = json_decode($rawBody, true);
+
+                $data = null;
+                if (json_last_error() === JSON_ERROR_NONE && is_string($decodedBody)) {
+                    $data = json_decode($decodedBody, true);
+                } elseif (is_array($decodedBody)) {
+                    $data = $decodedBody;
+                }
+
+                if (isset($data['data']['diklat']) && is_array($data['data']['diklat'])) {
+                    $training = $data['data']['diklat'];
+                    if ($training['jenis'] !== 'sdma') {
+                        return redirect()->route('register');
+                    }
+                } else {
+                    return redirect()->route('register');
+                }
+            } else {
+                return redirect()->route('register');
+            }
+        } catch (\Exception $e) {
+            Log::error('SIDIA API request exception in SdmaOption: ' . $e->getMessage(), ['id_diklat' => $this->id_diklat]);
+            return redirect()->route('register');
+        }
     }
 
     public function submit()
@@ -28,15 +74,15 @@ class KemenperinRegistration extends Component
         ]);
 
         $credentials = [
-            'username' => config('services.sippa.username'),
-            'password' => config('services.sippa.password'),
-            'key'      => config('services.sippa.key'),
-            'key_name' => config('services.sippa.key_name'),
+            'username' => config('services.sidia.username'),
+            'password' => config('services.sidia.password'),
+            'key'      => config('services.sidia.key'),
+            'key_name' => config('services.sidia.key_name'),
         ];
 
         try {
             $loginResponse = Http::withBasicAuth($credentials['username'], $credentials['password'])
-                ->post(config('services.sippa.url') . '/intranet/login', [
+                ->post(config('services.sidia.url') . '/intranet/login', [
                     $credentials['key_name'] => $credentials['key'],
                     'username' => $this->username,
                     'password' => $this->password,
@@ -59,7 +105,7 @@ class KemenperinRegistration extends Component
                 $nip_intranet = $loginData['data']['nip_intranet'];
 
                 $biodataResponse = Http::withBasicAuth($credentials['username'], $credentials['password'])
-                    ->post(config('services.sippa.url') . '/intranet/biodata', [
+                    ->post(config('services.sidia.url') . '/intranet/biodata', [
                         $credentials['key_name'] => $credentials['key'],
                         'nip_intranet' => $nip_intranet,
                         'password' => $this->password,
