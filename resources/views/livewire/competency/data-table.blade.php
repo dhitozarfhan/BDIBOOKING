@@ -159,22 +159,22 @@
                                                                             $url = $value['url'] ?? null;
                                                                             $tone = $value['tone'] ?? 'primary';
                                                                             $buttonClasses = match ($tone) {
-                                                                                'success' => 'btn-success',
+                                                                                'success' => 'bg-green-500 border-green-500 text-white',
                                                                                 'warning' => 'btn-warning',
-                                                                                'error' => 'btn-error',
+                                                                                'error' => 'bg-red-500 border-red-500 text-white',
                                                                                 'primary' => 'btn-primary',
                                                                                 default => 'btn-ghost',
                                                                             };
                                                                         @endphp
                                                                         @if ($url)
-                                                                            <a href="{{ $url }}" class="btn btn-xs {{ $buttonClasses }}">
+                                                                            <a href="{{ $url }}" class="btn btn-sm {{ $buttonClasses }}">
                                                                                 {{ $label }}
                                                                             </a>
                                                                         @else
-                                                                            <span class="btn btn-xs {{ $buttonClasses }} btn-disabled">{{ $label }}</span>
+                                                                            <span class="btn btn-sm {{ $buttonClasses }}">{{ $label }}</span>
                                                                         @endif
                                                                     @else
-                                                                        <span class="btn btn-xs btn-disabled">{{ $value ?? '-' }}</span>
+                                                                        <span class="btn btn-sm btn-disabled">{{ $value ?? '-' }}</span>
                                                                     @endif
                                                                     @break
 

@@ -144,7 +144,7 @@ class DataTable extends Component
                 ['key' => 'kategori', 'label' => __('competency.skkni_category')],
                 ['key' => 'pokok', 'label' => __('competency.skkni_core')],
                 ['key' => 'instansi', 'label' => __('competency.skkni_agency')],
-                ['key' => 'status', 'label' => __('competency.skkni_status'), 'type' => 'badge'],
+                ['key' => 'status', 'label' => __('competency.skkni_status'), 'type' => 'button'],
                 ['key' => 'total_unit', 'label' => __('competency.unit_count')],
             ],
             'lsp' => [
