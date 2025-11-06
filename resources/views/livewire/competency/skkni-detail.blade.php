@@ -1,17 +1,17 @@
 <div>
     <div class="bg-base-200 min-h-screen">
-        <section class="bg-gradient-to-r from-cyan-900 to-cyan-700 text-white">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 text-center">
-                <h1 class="text-3xl md:text-5xl font-bold mb-3">
+        <section class="bg-gradient-to-r from-cyan-900 to-cyan-700">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 text-center">
+                <h1 class="text-3xl md:text-5xl font-bold mb-3 text-base-content">
                     {{ $skkni['judul'] ?? __('competency.skkni_details') }}
                 </h1>
-                <p class="max-w-3xl mx-auto text-base md:text-lg text-white/80">
+                <p class="max-w-3xl mx-auto text-base md:text-lg text-base-content/80">
                     {{ __('competency.skkni_details_subtitle') }}
                 </p>
             </div>
         </section>
 
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-12">
             @if ($error)
                 <div role="alert" class="alert alert-error shadow-lg">
                     <i class="fas fa-exclamation-triangle text-xl"></i>
@@ -35,87 +35,78 @@
                         </div>
 
                         @if ($activeTab === 'details')
-                            <div class="overflow-x-auto">
-                                <table class="table w-full">
-                                    <tbody>
-                                        <tr>
-                                            <th class="w-48">{{ __('competency.skkni_title') }}</th>
-                                            <td>
-                                                <h2 class="text-xl font-semibold">{{ $skkni['judul'] ?? '-' }}</h2>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>{{ __('competency.skkni_code') }}</th>
-                                            <td>{{ $skkni['kode_skkni'] ?? '-' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>{{ __('competency.skkni_sector') }}</th>
-                                            <td>{{ $skkni['bidang'] ?? '-' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>{{ __('competency.skkni_agency') }}</th>
-                                            <td>{{ $skkni['agency'] ?? '-' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>{{ __('competency.skkni_category') }}</th>
-                                            <td>{{ $skkni['category'] ?? '-' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>{{ __('competency.skkni_core') }}</th>
-                                            <td>{{ $skkni['core'] ?? '-' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>{{ __('competency.skkni_ministerial_decree_number') }}</th>
-                                            <td>{{ $skkni['nomor'] ?? '-' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>{{ __('competency.created_date') }}</th>
-                                            <td>
-                                                @php
-                                                    $createdAt = $skkni['created_date'] ?? null;
-                                                    try {
-                                                        $createdLabel = $createdAt
-                                                            ? \Carbon\Carbon::parse($createdAt)->isoFormat('D MMMM YYYY')
-                                                            : null;
-                                                    } catch (\Exception $e) {
-                                                        $createdLabel = $createdAt;
-                                                    }
-                                                @endphp
-                                                {{ $createdLabel ?? '-' }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>{{ __('competency.skkni_status') }}</th>
-                                            <td>
-                                                @php
-                                                    $availability = strtolower((string) ($skkni['availability'] ?? ''));
-                                                    $statusLabel = match ($availability) {
-                                                        'applied' => __('competency.skkni_status_applied'),
-                                                        'replaced' => __('competency.skkni_status_replaced'),
-                                                        'cancelled' => __('competency.skkni_status_cancelled'),
-                                                        default => __('competency.unknown_status'),
-                                                    };
-                                                    $badgeClass = match ($availability) {
-                                                        'applied' => 'badge-success',
-                                                        'replaced' => 'badge-warning',
-                                                        'cancelled' => 'badge-error',
-                                                        default => 'badge',
-                                                    };
-                                                @endphp
-                                                <span class="badge {{ $badgeClass }}">{{ $statusLabel }}</span>
-                                                @if (!empty($skkni['notes']))
-                                                    <p class="mt-2 text-sm text-base-content/70">
-                                                        {{ $skkni['notes'] }}
-                                                    </p>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>{{ __('competency.skkni_job_title') }}</th>
-                                            <td>{{ $skkni['job_title'] ?? '-' }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="space-y-6">
+                                <div class="pb-4 border-b border-base-300">
+                                    <h2 class="text-2xl font-bold text-primary">{{ $skkni['judul'] ?? '-' }}</h2>
+                                </div>
+
+                                @php
+                                    $createdAt = $skkni['created_date'] ?? null;
+                                    try {
+                                        $createdLabel = $createdAt
+                                            ? \Carbon\Carbon::parse($createdAt)->isoFormat('D MMMM YYYY')
+                                            : null;
+                                    } catch (\Exception $e) {
+                                        $createdLabel = $createdAt;
+                                    }
+                                @endphp
+                        
+                                @php
+                                    $details = [
+                                        ['icon' => 'bi-hash', 'label' => __('competency.skkni_code'), 'value' => $skkni['kode_skkni'] ?? '-'],
+                                        ['icon' => 'bi-briefcase', 'label' => __('competency.skkni_sector'), 'value' => $skkni['bidang'] ?? '-'],
+                                        ['icon' => 'bi-building', 'label' => __('competency.skkni_agency'), 'value' => $skkni['agency'] ?? '-'],
+                                        ['icon' => 'bi-tags', 'label' => __('competency.skkni_category'), 'value' => $skkni['category'] ?? '-'],
+                                        ['icon' => 'bi-star', 'label' => __('competency.skkni_core'), 'value' => $skkni['core'] ?? '-'],
+                                        ['icon' => 'bi-patch-check', 'label' => __('competency.skkni_ministerial_decree_number'), 'value' => $skkni['nomor'] ?? '-'],
+                                        ['icon' => 'bi-calendar', 'label' => __('competency.created_date'), 'value' => $createdLabel ?? '-'],
+                                        ['icon' => 'bi-person-badge', 'label' => __('competency.skkni_job_title'), 'value' => $skkni['job_title'] ?? '-'],
+                                    ];
+                                @endphp
+
+                                <div class="divide-y divide-base-300">
+                                    @foreach ($details as $detail)
+                                        <div class="flex items-center py-3">
+                                            <div class="w-full sm:w-1/3 font-semibold text-base-content/80 flex items-center gap-3">
+                                                <i class="bi {{ $detail['icon'] }} text-primary text-lg"></i>
+                                                <span>{{ $detail['label'] }}</span>
+                                            </div>
+                                            <div class="w-full sm:w-2/3 text-base-content">
+                                                {{ $detail['value'] }}
+                                            </div>
+                                        </div>
+                                    @endforeach
+
+                                    <div class="flex items-center py-3">
+                                        <div class="w-full sm:w-1/3 font-semibold text-base-content/80 flex items-center gap-3">
+                                            <i class="bi bi-info-circle text-primary text-lg"></i>
+                                            <span>{{ __('competency.skkni_status') }}</span>
+                                        </div>
+                                        <div class="w-full sm:w-2/3">
+                                            @php
+                                                $availability = strtolower((string) ($skkni['availability'] ?? ''));
+                                                $statusLabel = match ($availability) {
+                                                    'applied' => __('competency.skkni_status_applied'),
+                                                    'replaced' => __('competency.skkni_status_replaced'),
+                                                    'cancelled' => __('competency.skkni_status_cancelled'),
+                                                    default => __('competency.unknown_status'),
+                                                };
+                                                $buttonClasses = match ($availability) {
+                                                    'applied' => 'bg-green-500 border-green-500 text-white',
+                                                    'replaced' => 'btn-warning',
+                                                    'cancelled' => 'bg-red-500 border-red-500 text-white',
+                                                    default => 'btn-ghost',
+                                                };
+                                            @endphp
+                                            <span class="btn {{ $buttonClasses }}">{{ $statusLabel }}</span>
+                                            @if (!empty($skkni['notes']))
+                                                <p class="mt-2 text-sm text-base-content/70">
+                                                    {{ $skkni['notes'] }}
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         @else
                             <div class="overflow-x-auto">
@@ -147,22 +138,21 @@
                         @endif
                     </div>
 
-                    <div class="card-footer flex flex-col sm:flex-row justify-center gap-3 bg-base-200/60">
+                    <div class="card-footer flex flex-col sm:flex-row justify-center items-center gap-4 bg-base-200/60 px-8 py-4 border-t border-base-300 mt-6">
                         @if (!empty($skkni['skkni_id']))
                             <a href="{{ route('competency.skkni.download', ['skkniId' => $skkni['skkni_id'], 'slug' => \Illuminate\Support\Str::slug($skkni['judul'] ?? '')]) }}"
-                                class="btn btn-primary">
-                                <i class="fas fa-download mr-2"></i> {{ __('competency.download_document') }}
+                                class="btn btn-primary gap-2">
+                                <i class="bi bi-download"></i> {{ __('competency.download_document') }}
                             </a>
                         @endif
                         <a wire:navigate href="{{ route('competency.section', ['section' => 'skkni']) }}"
-                            class="btn btn-outline">
-                            {{ __('competency.back') }}
+                            class="btn btn-outline gap-2">
+                            <i class="bi bi-arrow-left"></i> {{ __('competency.back') }}
                         </a>
                     </div>
                 </div>
             @endif
         </div>
+        @include('livewire.competency.partials.quick-menu')
     </div>
-
-    @include('livewire.competency.partials.quick-menu')
 </div>
