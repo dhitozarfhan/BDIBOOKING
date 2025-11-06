@@ -223,21 +223,19 @@ class DataTable extends Component
             };
 
             $notes = $item['notes'] ?? null;
-            $url = null;
-            if (filter_var($notes, FILTER_VALIDATE_URL)) {
-                $url = $notes;
-            }
+
+            $detailUrl = isset($item['skkni_id'])
+                ? route('competency.skkni.show', [
+                    'skkniId' => $item['skkni_id'],
+                    'slug' => Str::slug((string) ($item['judul'] ?? '')),
+                ])
+                : null;
 
             return [
                 'nomor' => $item['nomor'] ?? '-',
                 'judul' => [
                     'text' => $item['judul'] ?? '-',
-                    'url' => isset($item['skkni_id'])
-                        ? route('competency.skkni.show', [
-                            'skkniId' => $item['skkni_id'],
-                            'slug' => Str::slug((string) ($item['judul'] ?? '')),
-                        ])
-                        : null,
+                    'url' => $detailUrl,
                 ],
                 'kategori' => $item['category'] ?? '-',
                 'pokok' => $item['core'] ?? '-',
@@ -250,7 +248,7 @@ class DataTable extends Component
                         'cancelled' => 'error',
                         default => 'neutral',
                     },
-                    'url' => $url,
+                    'url' => $detailUrl,
                     'notes' => $notes,
                 ],
                 'total_unit' => $item['total_skkni_unit'] ?? 0,
