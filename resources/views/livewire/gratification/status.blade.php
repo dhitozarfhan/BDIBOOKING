@@ -1,6 +1,7 @@
-<div>
-    <div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg mt-4 pb-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+@section('title', 'Status Laporan Gratifikasi')
+
+<div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg min-h-[calc(100vh-200px)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-sm breadcrumbs">
             <ul>
                 <li><a href="{{ route('home') }}"><i class="bi bi-house-fill"></i></a></li>
@@ -39,9 +40,5 @@
                 </a>
             </div>
         </form>
-
-
-
-
     </div>
 </div>
