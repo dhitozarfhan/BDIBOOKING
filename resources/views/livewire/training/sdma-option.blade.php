@@ -5,8 +5,8 @@
                 <h1 class="text-3xl md:text-4xl font-bold leading-tight text-base-content">Pendaftaran Diklat SDM Aparatur</h1>
                 <p class="py-6">Silakan pilih asal pendaftar untuk melanjutkan.</p>
                 <div class="flex justify-center gap-4">
-                    <a href="{{ route('training.kemenperin-register', ['id_diklat' => $id_diklat, 'slug' => $slug]) }}" wire:navigate class="btn btn-primary btn-disabled">Satker Kemenperin</a>
-                    <a href="{{ route('training.register', ['id_diklat' => $id_diklat, 'slug' => $slug]) }}" wire:navigate class="btn btn-secondary btn-disabled">Luar Kemenperin</a>
+                    <a href="{{ route('training.kemenperin-register', ['id_diklat' => $id_diklat, 'slug' => $slug]) }}" wire:navigate class="btn btn-primary">Satker Kemenperin</a>
+                    <a href="{{ route('training.register', ['id_diklat' => $id_diklat, 'slug' => $slug, 'from_kemenperin' => 0]) }}" wire:navigate class="btn btn-secondary">Luar Kemenperin</a>
                 </div>
             </div>
         </div>

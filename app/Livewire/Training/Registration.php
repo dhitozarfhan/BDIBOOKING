@@ -4,6 +4,7 @@ namespace App\Livewire\Training;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
@@ -23,6 +24,9 @@ class Registration extends Component
     public array $desa = [];
     public array $pangkat = [];
     public array $satker = [];
+    public array $satker_jenis = [];
+    public array $provinsi_satker = [];
+    public array $kota_satker = [];
 
     // Form model
     public $id_diklat;
@@ -68,6 +72,8 @@ class Registration extends Component
     public string $id_provinsi_satker = '';
     public string $id_kota_satker = '';
     public string $id_satker = '';
+
+    #[Url]
     public bool $from_kemenperin = false;
 
     // Infrastruktur Kompetensi fields
@@ -165,13 +171,72 @@ class Registration extends Component
         'ttd.min' => 'Tanda tangan tidak terdeteksi dengan baik, silakan coba lagi.'
     ];
 
-    public function mount($id_diklat, $slug = null, $from_kemenperin = false)
+    private function getDiklatData()
+    {
+        $credentials = [
+            'username' => config('services.sidia.username'),
+            'password' => config('services.sidia.password'),
+            'key'      => config('services.sidia.key'),
+            'key_name' => config('services.sidia.key_name'),
+        ];
+
+        if (empty($credentials['username']) || empty($credentials['password']) || empty($credentials['key']) || empty($credentials['key_name'])) {
+            $this->error = 'Konfigurasi API SIDIA belum lengkap.';
+            return null;
+        }
+
+        try {
+            $response = Http::withBasicAuth($credentials['username'], $credentials['password'])
+                ->post(config('services.sidia.url') . '/register/training/form', [
+                    $credentials['key_name'] => $credentials['key'],
+                    'id_diklat'              => $this->id_diklat,
+                ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                
+                if (is_string($data)) {
+                    $data = json_decode($data, true);
+                }
+
+                if (isset($data['status']) && $data['status'] == 1) {
+                    return $data;
+                } else {
+                    $this->error = 'Gagal memuat data form pendaftaran: ' . ($data['message'] ?? 'Status API tidak valid.');
+                }
+            } else {
+                $this->error = "Gagal mengambil data dari API (Status: " . $response->status() . ").";
+            }
+        } catch (\Exception $e) {
+            $this->error = 'Terjadi kesalahan saat menghubungi API.';
+            Log::error('SIDIA API request exception for training form: ' . $e->getMessage(), ['id_diklat' => $this->id_diklat]);
+        }
+
+        return null;
+    }
+
+    public function mount($id_diklat, $slug = null)
     {
         $this->id_diklat = $id_diklat;
-        $this->from_kemenperin = (bool)$from_kemenperin;
+
+        $data = $this->getDiklatData();
+        if (!$data) {
+            return;
+        }
+
+        $this->diklat = $data['data']['diklat'] ?? null;
+
+        if ($this->diklat && $this->diklat['jenis'] === 'sdma' && !request()->has('from_kemenperin')) {
+            return redirect()->route('training.sdma-option', ['id_diklat' => $this->id_diklat, 'slug' => $slug]);
+        }
+
+        if (!$this->from_kemenperin) {
+            session()->forget('kemenperin_user_data');
+        }
 
         if ($this->from_kemenperin && session()->has('kemenperin_user_data')) {
             $userData = session('kemenperin_user_data.peserta');
+            // dd($userData);
             $this->nip = $userData['nip'] ?? '';
             $this->nama = $userData['nama'] ?? '';
             $this->titel = $userData['titel'] ?? '';
@@ -185,8 +250,8 @@ class Registration extends Component
             $this->mobile = $userData['pelanggan_mobile'] ?? '';
             $this->email = $userData['pelanggan_email'] ?? '';
             $this->dusun = $userData['pelanggan_dusun'] ?? '';
-            $this->rt = $userData['pelanggan_rt'] ?? '';
-            $this->rw = $userData['pelanggan_rw'] ?? '';
+            $this->rt = $userData['pelanggan_rt'] && !empty((int)$userData['pelanggan_rt']) ? $userData['pelanggan_rt'] : '';
+            $this->rw = $userData['pelanggan_rw'] && !empty((int)$userData['pelanggan_rw']) ? $userData['pelanggan_rw'] : '';
             $this->selectedProvinsi = $userData['pelanggan_id_provinsi'] ?? '';
             $this->selectedKota = $userData['pelanggan_id_kota'] ?? '';
             $this->selectedKecamatan = $userData['pelanggan_id_kecamatan'] ?? '';
@@ -206,59 +271,23 @@ class Registration extends Component
                 $this->satker = $masterData['satker'];
             }
 
-            if($this->selectedProvinsi) {
-                $this->updatedSelectedProvinsi($this->selectedProvinsi);
+            if($this->selectedKota && isset($masterData['w_kota'])) {
+                $this->kota = $masterData['w_kota'];
             }
-            if($this->selectedKota) {
-                $this->updatedSelectedKota($this->selectedKota);
+            if($this->selectedKecamatan && isset($masterData['w_kecamatan'])) {
+                $this->kecamatan = $masterData['w_kecamatan'];
             }
-            if($this->selectedKecamatan) {
-                $this->updatedSelectedKecamatan($this->selectedKecamatan);
+            if($this->selectedDesa && isset($masterData['w_desa'])) {
+                $this->desa = $masterData['w_desa'];
             }
         }
 
-        $credentials = [
-            'username' => config('services.sidia.username'),
-            'password' => config('services.sidia.password'),
-            'key'      => config('services.sidia.key'),
-            'key_name' => config('services.sidia.key_name'),
-        ];
-
-        if (empty($credentials['username']) || empty($credentials['password']) || empty($credentials['key']) || empty($credentials['key_name'])) {
-            $this->error = 'Konfigurasi API SIDIA belum lengkap.';
-            return;
-        }
-
-        try {
-            $response = Http::withBasicAuth($credentials['username'], $credentials['password'])
-                ->post(config('services.sidia.url') . '/register/training/form', [
-                    $credentials['key_name'] => $credentials['key'],
-                    'id_diklat'              => $this->id_diklat,
-                ]);
-
-            if ($response->successful()) {
-                $data = $response->json();
-                
-                if (is_string($data)) {
-                    $data = json_decode($data, true);
-                }
-
-                if (isset($data['status']) && $data['status'] == 1) {
-                    $this->diklat = $data['data']['diklat'] ?? null;
-                    $this->agama = $data['data']['agama'] ?? [];
-                    $this->kelamin = $data['data']['kelamin'] ?? [];
-                    $this->pendidikan = $data['data']['pendidikan'] ?? [];
-                    $this->provinsi = $data['data']['w_provinsi'] ?? [];
-                } else {
-                    $this->error = 'Gagal memuat data form pendaftaran: ' . ($data['message'] ?? 'Status API tidak valid.');
-                }
-            } else {
-                $this->error = "Gagal mengambil data dari API (Status: " . $response->status() . ").";
-            }
-        } catch (\Exception $e) {
-            $this->error = 'Terjadi kesalahan saat menghubungi API.';
-            Log::error('SIDIA API request exception for training form: ' . $e->getMessage(), ['id_diklat' => $this->id_diklat]);
-        }
+        $this->agama = $data['data']['agama'] ?? [];
+        $this->kelamin = $data['data']['kelamin'] ?? [];
+        $this->pendidikan = $data['data']['pendidikan'] ?? [];
+        $this->provinsi = $data['data']['w_provinsi'] ?? [];
+        $this->pangkat = $data['data']['pangkat'] ?? [];
+        $this->satker_jenis = $data['data']['satker_jenis'] ?? [];
     }
     
     public function updatedSelectedProvinsi($provinsiId)
@@ -305,6 +334,137 @@ class Registration extends Component
         }, $wilayah);
     }
     
+    public function updatedIdSatkerJenis($value)
+    {
+        $this->provinsi_satker = [];
+        $this->kota_satker = [];
+        $this->satker = [];
+        $this->id_provinsi_satker = '';
+        $this->id_kota_satker = '';
+        $this->id_satker = '';
+
+        if (in_array($value, [2, 3])) { // 2 for province, 3 for city
+            $this->provinsi_satker = $this->provinsi;
+        }
+    }
+
+    public function updatedIdProvinsiSatker($value)
+    {
+        $this->kota_satker = [];
+        $this->satker = [];
+        $this->id_kota_satker = '';
+        $this->id_satker = '';
+
+        if ($this->id_satker_jenis == 2) { // Province level
+            $this->satker = $this->fetchSatker('provinsi', $value);
+        } elseif ($this->id_satker_jenis == 3) { // City level, so fetch cities
+            $this->kota_satker = $this->fetchKotaSatker($value);
+        }
+    }
+
+    public function updatedIdKotaSatker($value)
+    {
+        $this->satker = [];
+        $this->id_satker = '';
+        $this->satker = $this->fetchSatker('kota', $value);
+    }
+
+    private function fetchKotaSatker($id_provinsi): array
+    {
+        $credentials = $this->getSidiaCredentials();
+        if (!$credentials) {
+            return [];
+        }
+
+        $payload = [
+            $credentials['key_name'] => $credentials['key'],
+            'id_satker_jenis' => 3,
+            'id_provinsi' => $id_provinsi,
+            'wilayah' => 'kota',
+        ];
+
+        try {
+            $response = Http::withBasicAuth($credentials['username'], $credentials['password'])
+                ->post(config('services.sidia.url') . '/fetch/satker_wilayah', $payload);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                if (is_string($data)) {
+                    $data = json_decode($data, true);
+                }
+
+                if (isset($data['data']['opt']) && is_array($data['data']['opt'])) {
+                    $kotas = [];
+                    foreach ($data['data']['opt'] as $option) {
+                        if (!empty($option['value'])) {
+                            $kotas[] = [
+                                'id_kota' => $option['value'],
+                                'kota' => $option['name'],
+                            ];
+                        }
+                    }
+                    return $kotas;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('SIDIA API exception when fetching kota satker data: ' . $e->getMessage(), $payload);
+        }
+
+        return [];
+    }
+
+    private function fetchSatker(string $level, string $id): array
+    {
+        $credentials = $this->getSidiaCredentials();
+        if (!$credentials) {
+            return [];
+        }
+
+        $payload = [
+            $credentials['key_name'] => $credentials['key'],
+            'wilayah' => 'satker',
+        ];
+
+        if ($level === 'satker_jenis') {
+            $payload['id_satker_jenis'] = $id;
+        } elseif ($level === 'provinsi') {
+            $payload['id_satker_jenis'] = $this->id_satker_jenis;
+            $payload['id_provinsi'] = $id;
+        } elseif ($level === 'kota') {
+            $payload['id_satker_jenis'] = $this->id_satker_jenis;
+            $payload['id_kota'] = $id;
+        }
+
+        try {
+            $response = Http::withBasicAuth($credentials['username'], $credentials['password'])
+                ->post(config('services.sidia.url') . '/fetch/satker_wilayah', $payload);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                if (is_string($data)) {
+                    $data = json_decode($data, true);
+                }
+
+                if (isset($data['data']['opt']) && is_array($data['data']['opt'])) {
+                    $satkers = [];
+                    foreach ($data['data']['opt'] as $option) {
+                        if (!empty($option['value'])) {
+                            $satkers[] = [
+                                'id_satker' => $option['value'],
+                                'nama' => $option['name'],
+                            ];
+                        }
+                    }
+                    return $satkers;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('SIDIA API exception when fetching satker data: ' . $e->getMessage(), $payload);
+        }
+
+        return [];
+    }
+
     public function updatedSelectedKecamatan($kecamatanId)
     {
         $this->desa = [];

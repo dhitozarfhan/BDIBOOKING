@@ -72,7 +72,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="grid grid-cols-1 lg:grid-cols-{{ ($diklat['jenis'] ?? '') == 'sdma' || ($diklat['jenis'] ?? '') == 'infrastruktur_kompetensi' ? 3 : 2 }} gap-8">
                     {{-- Left Column --}}
                     <div class="space-y-8">
                         {{-- Biodata Card --}}
@@ -273,37 +273,36 @@
                                     <div class="divider mt-2"></div>
                                 </div>
                                 <div class="flex flex-col gap-6">
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div class="flex flex-col gap-1">
-                                            <label class="form-control w-full">
-                                                <div class="label"><span class="label-text">Provinsi <span class="text-error">*</span></span></div>
-                                                <select wire:model.live="selectedProvinsi" @class(['select select-bordered', 'select-error' => $errors->has('selectedProvinsi')])>
-                                                    <option value="">-- Pilih Provinsi --</option>
-                                                    @foreach($provinsi as $item)
-                                                        <option value="{{ $item['id_provinsi'] }}">{{ $item['provinsi'] }}</option>
-                                                    @endforeach
-                                                </select>
-                                                @error('selectedProvinsi') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
-                                            </label>
-                                        </div>
-                                        <div class="flex flex-col gap-1">
-                                            <label class="form-control w-full">
-                                                <div class="label"><span class="label-text">Kabupaten / Kota <span class="text-error">*</span></span></div>
-                                                <select wire:model.live="selectedKota" @class(['select select-bordered', 'select-error' => $errors->has('selectedKota')]) @disabled(empty($kota))>
-                                                    <option value="">{{ empty($kota) ? 'Pilih provinsi terlebih dahulu' : '-- Pilih Kabupaten / Kota --' }}</option>
-                                                    @foreach($kota as $item)
-                                                        <option value="{{ $item['id_kota'] }}">{{ $item['kota'] }}</option>
-                                                    @endforeach
-                                                </select>
-                                                @error('selectedKota') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
-                                            </label>
-                                            <div wire:loading.flex wire:target="selectedProvinsi" class="label pt-0">
-                                                <span class="label-text-alt text-primary">Memuat data kabupaten/kota...</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div class="flex flex-col gap-1">
+                                                                    <div class="grid grid-cols-1 gap-6 {{ ($diklat['jenis'] ?? '') == 'sdma' || ($diklat['jenis'] ?? '') == 'infrastruktur_kompetensi' ? '' : 'md:grid-cols-2' }}">
+                                                                            <div class="flex flex-col gap-1">
+                                                                                <label class="form-control w-full">
+                                                                                    <div class="label"><span class="label-text">Provinsi <span class="text-error">*</span></span></div>
+                                                                                    <select wire:model.live="selectedProvinsi" @class(['select select-bordered', 'select-error' => $errors->has('selectedProvinsi')])>
+                                                                                        <option value="">-- Pilih Provinsi --</option>
+                                                                                        @foreach($provinsi as $item)
+                                                                                            <option value="{{ $item['id_provinsi'] }}">{{ $item['provinsi'] }}</option>
+                                                                                        @endforeach
+                                                                                    </select>
+                                                                                    @error('selectedProvinsi') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                                                                </label>
+                                                                            </div>
+                                                                            <div class="flex flex-col gap-1">
+                                                                                <label class="form-control w-full">
+                                                                                    <div class="label"><span class="label-text">Kabupaten / Kota <span class="text-error">*</span></span></div>
+                                                                                    <select wire:model.live="selectedKota" @class(['select select-bordered', 'select-error' => $errors->has('selectedKota')]) @disabled(empty($kota))>
+                                                                                        <option value="">{{ empty($kota) ? 'Pilih provinsi terlebih dahulu' : '-- Pilih Kabupaten / Kota --' }}</option>
+                                                                                        @foreach($kota as $item)
+                                                                                            <option value="{{ $item['id_kota'] }}">{{ $item['kota'] }}</option>
+                                                                                        @endforeach
+                                                                                    </select>
+                                                                                    @error('selectedKota') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                                                                </label>
+                                                                                <div wire:loading.flex wire:target="selectedProvinsi" class="label pt-0">
+                                                                                    <span class="label-text-alt text-primary">Memuat data kabupaten/kota...</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="grid grid-cols-1 gap-6 {{ ($diklat['jenis'] ?? '') == 'sdma' || ($diklat['jenis'] ?? '') == 'infrastruktur_kompetensi' ? '' : 'md:grid-cols-2' }}">                                        <div class="flex flex-col gap-1">
                                             <label class="form-control w-full">
                                                 <div class="label"><span class="label-text">Kecamatan <span class="text-error">*</span></span></div>
                                                 <select wire:model.live="selectedKecamatan" @class(['select select-bordered', 'select-error' => $errors->has('selectedKecamatan')]) @disabled(empty($kecamatan))>
@@ -384,48 +383,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card bg-base-100 shadow-xl border border-base-200">
-                            <div class="card-body space-y-4">
-                                <div class="flex items-center justify-between flex-wrap gap-3">
-                                    <div>
-                                        <h2 class="card-title">Tanda Tangan Peserta</h2>
-                                        <p class="text-sm text-base-content/70">Mohon bubuhkan tanda tangan digital sebagai persetujuan data.</p>
-                                    </div>
-                                </div>
-
-                                <div class="space-y-3" x-data="signaturePadComponent()" x-init="init()">
-                                    <div
-                                        class="rounded-2xl border border-dashed border-base-300/90 bg-base-200/60 p-4 shadow-inner"
-                                        wire:ignore
-                                    >
-                                        <div class="flex items-center justify-between mb-3">
-                                            <div class="flex items-center gap-2 text-xs sm:text-sm text-base-content/60">
-                                                <span>Gunakan kursor atau layar sentuh untuk menandatangani.</span>
-                                            </div>
-                                            <div class="flex items-center gap-2">
-                                                <button type="button" class="btn btn-warning btn-xs" x-on:click.prevent="undo()">
-                                                    Undo
-                                                </button>
-                                                <button type="button" class="btn btn-outline btn-xs btn-error" x-on:click.prevent="clear()">
-                                                    Bersihkan
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="relative">
-                                            <canvas
-                                                x-ref="canvas"
-                                                class="w-full h-48 rounded-xl bg-base-100 shadow-sm"
-                                                style="touch-action: none;"
-                                            ></canvas>
-                                            <div class="pointer-events-none absolute inset-0 rounded-xl border-2 border-dashed border-base-300/80"></div>
-                                        </div>
-                                    </div>
-                                    <input type="hidden" x-ref="hidden" name="ttd" wire:model.defer="ttd" />
-                                </div>
-                                @error('ttd') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
-                            </div>
-                        </div>
-
+                        @if($diklat['jenis'] == 'sdmi')
+                            @include('livewire.training.partials.signature-pad')
+                        @endif
                         @if($diklat['bigdata'] == 'Y')
                         <div class="card bg-base-100 shadow-xl border border-base-200">
                             <div class="card-body">
@@ -439,9 +399,10 @@
                                 </div>
                             </div>
                         </div>
-                        @endif
-
-                        @if($diklat['jenis'] == 'sdma' || $diklat['jenis'] == 'infrastruktur_kompetensi')
+                        @endif                        
+                    </div>
+                    @if($diklat['jenis'] == 'sdma' || $diklat['jenis'] == 'infrastruktur_kompetensi')
+                    <div class="space-y-8">
                         <div class="card bg-base-100 shadow-xl border border-base-200">
                             <div class="card-body">
                                 <div class="space-y-2">
@@ -486,8 +447,50 @@
                                                 @error('id_satker') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
                                             </label>
                                         @else
-                                            <p class="text-sm text-warning">Data untuk bagian ini belum tersedia dari API.</p>
-                                            <select class="select select-bordered" disabled><option>Asal Satker</option></select>
+                                                <select wire:model.live="id_satker_jenis" wire:key="id_satker_jenis" @class(['select select-bordered', 'select-error' => $errors->has('id_satker_jenis')])>
+                                                    <option value="">-- Pilih Jenis Satker --</option>
+                                                    @foreach($satker_jenis as $item)
+                                                        @if($item['id_satker_jenis'] != 1)
+                                                            <option value="{{ $item['id_satker_jenis'] }}">{{ $item['nama'] }}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                                @error('id_satker_jenis') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                            </label>
+                                            @if($provinsi_satker)
+                                            <label class="form-control w-full">
+                                                <div class="label"><span class="label-text">Provinsi Satker <span class="text-error">*</span></span></div>
+                                                <select wire:model.live="id_provinsi_satker" wire:key="id_provinsi_satker" @class(['select select-bordered', 'select-error' => $errors->has('id_provinsi_satker')])>
+                                                    <option value="">-- Pilih Provinsi --</option>
+                                                    @foreach($provinsi_satker as $item)
+                                                        <option value="{{ $item['id_provinsi'] }}">{{ $item['provinsi'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('id_provinsi_satker') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                            </label>
+                                            @endif
+                                            @if($kota_satker)
+                                            <label class="form-control w-full">
+                                                <div class="label"><span class="label-text">Kota Satker <span class="text-error">*</span></span></div>
+                                                <select wire:model.live="id_kota_satker" wire:key="id_kota_satker" @class(['select select-bordered', 'select-error' => $errors->has('id_kota_satker')])>
+                                                    <option value="">-- Pilih Kota --</option>
+                                                    @foreach($kota_satker as $item)
+                                                        <option value="{{ $item['id_kota'] }}">{{ $item['kota'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('id_kota_satker') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                            </label>
+                                            @endif
+                                            <label class="form-control w-full">
+                                                <div class="label"><span class="label-text">Asal Satker <span class="text-error">*</span></span></div>
+                                                <select wire:model.lazy="id_satker" @class(['select select-bordered', 'select-error' => $errors->has('id_satker')]) @disabled(empty($satker))>
+                                                    <option value="">-- Pilih Satker --</option>
+                                                    @foreach($satker as $item)
+                                                        <option value="{{ $item['id_satker'] }}">{{ $item['nama'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('id_satker') <div class="label"><span class="label-text-alt text-error">{{ $message }}</span></div> @enderror
+                                            </label>
                                         @endif
                                     @endif
                                     @if($diklat['jenis'] == 'infrastruktur_kompetensi')
@@ -500,8 +503,9 @@
                                 </div>
                             </div>
                         </div>
-                        @endif
+                        @include('livewire.training.partials.signature-pad')
                     </div>
+                    @endif
                 </div>
 
                 <div class="divider pt-4"></div>
