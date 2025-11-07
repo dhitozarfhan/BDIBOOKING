@@ -187,7 +187,9 @@ class Gratification extends Component
                 $reportDetail->answer = null;
             }
 
-            $reportDetail->attachment = $gratification->data_dukung;
+            // Set both the original attachment and answer attachment
+            $reportDetail->attachment = $gratification->data_dukung; // Original gratification attachment
+            $reportDetail->answer_attachment = $process ? $process->jawaban_lampiran : null; // Answer attachment from process
 
             // Store the report detail in the session and redirect
             session()->flash('reportDetail', $reportDetail);
