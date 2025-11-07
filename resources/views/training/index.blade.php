@@ -32,28 +32,49 @@
                     <h2 class="text-4xl font-bold">Proses 3-in-1</h2>
                     <p class="text-lg mt-2 text-base-content/80">Tiga langkah utama untuk memastikan lulusan siap kerja.</p>
                 </div>
-                <div class="flex justify-center">
-                    <ul class="steps steps-vertical lg:steps-horizontal">
-                        <li class="step step-primary">
-                            <div class="step-content text-left lg:text-center lg:w-64">
-                                <h4 class="font-bold text-lg">Pelatihan Industri</h4>
-                                <p class="text-sm">Berbasis kompetensi sesuai kebutuhan industri.</p>
-                            </div>
-                        </li>
-                        <li class="step step-primary">
-                            <div class="step-content text-left lg:text-center lg:w-64">
-                                <h4 class="font-bold text-lg">Sertifikasi Kompetensi</h4>
-                                <p class="text-sm">Uji kompetensi oleh LSP untuk menjamin keahlian.</p>
-                            </div>
-                        </li>
-                        <li class="step step-primary">
-                            <div class="step-content text-left lg:text-center lg:w-64">
-                                <h4 class="font-bold text-lg">Penempatan Kerja</h4>
-                                <p class="text-sm">Jaminan penempatan di perusahaan mitra.</p>
-                            </div>
-                        </li>
-                    </ul>
+        <div class="grid grid-cols-1 gap-8 text-center md:grid-cols-3">
+            <!-- Step 1: Pelatihan -->
+            <div class="card relative bg-base-200 p-8 transform-gpu transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                <div class="absolute -left-4 -top-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-content">
+                    <span>01</span>
                 </div>
+                <div class="mb-4 flex justify-center pt-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-12 w-12 text-primary">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0l-2.072-1.036A30.022 30.022 0 0112 3.493a30.019 30.019 0 0110.072 5.617l-2.072 1.036m-16.142 0c.217.025.435.048.654.071m15.482 0c.219-.023.437-.046.654-.071m-16.142 0a30.017 30.017 0 01-2.658-.814m16.142 0a30.017 30.017 0 00-2.658-.814m-10.832 0a60.436 60.436 0 00-2.658-.814" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold">Pelatihan Industri</h3>
+                <p class="text-base-content/80 mt-2 leading-relaxed">Berbasis kompetensi sesuai kebutuhan industri.</p>
+            </div>
+
+            <!-- Step 2: Sertifikasi -->
+            <div class="card relative bg-base-200 p-8 transform-gpu transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                <div class="absolute -left-4 -top-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-content">
+                    <span>02</span>
+                </div>
+                <div class="mb-4 flex justify-center pt-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-12 w-12 text-primary">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.745 3.745 0 013.296-1.043A3.745 3.745 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.745 3.745 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold">Sertifikasi Kompetensi</h3>
+                <p class="text-base-content/80 mt-2 leading-relaxed">Uji kompetensi oleh LSP untuk menjamin keahlian.</p>
+            </div>
+
+            <!-- Step 3: Penempatan -->
+            <div class="card relative bg-base-200 p-8 transform-gpu transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                <div class="absolute -left-4 -top-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-content">
+                    <span>03</span>
+                </div>
+                <div class="mb-4 flex justify-center pt-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-12 w-12 text-primary">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.07a2.25 2.25 0 01-2.25 2.25H5.998a2.25 2.25 0 01-2.25-2.25v-4.07a2.25 2.25 0 01.521-1.458l2.25-3.375a2.25 2.25 0 012.664-.642l1.32 1.32a2.25 2.25 0 002.828 0l1.32-1.32a2.25 2.25 0 012.664.642l2.25 3.375a2.25 2.25 0 01.521 1.458z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold">Penempatan Kerja</h3>
+                <p class="text-base-content/80 mt-2 leading-relaxed">Jaminan penempatan di perusahaan mitra.</p>
+            </div>
+        </div>
             </div>
         </section>
 
