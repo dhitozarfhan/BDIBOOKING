@@ -73,7 +73,7 @@
                 </div>
             </div>
         </div>
-        <div class="border-y border-base-300 mx-auto px-4">
+        <div class="mt-4 border-y border-base-300 mx-auto px-4">
             @include('layouts.partials.header')
         </div>
     </header>
