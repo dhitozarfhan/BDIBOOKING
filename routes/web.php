@@ -79,6 +79,15 @@ Route::get('/register/training/kemenperin/{id_diklat}/{slug?}', \App\Livewire\Tr
 
 Route::get('/training/presence/{id_diklat}/{slug?}', \App\Livewire\Training\Presence::class)->name('training.presence');
 
+Route::get('/training/{page?}', function ($page = 'index') {
+    // prevent directory traversal from page name
+    $page = str_replace('..', '', $page);
+    if (view()->exists("training.{$page}")) {
+        return view("training.{$page}");
+    }
+    abort(404);
+})->where('page', '[a-zA-Z0-9_\-]+')->name('training.page');
+
 // Archive export route ///filament perlu cek di bawah ini karena ekspos URL
 Route::get('/archive/export', [ArchivePage::class, 'exportToExcel'])->name('archive.export');
 
