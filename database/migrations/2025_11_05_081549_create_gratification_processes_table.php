@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('gratification_id')->constrained('gratifications')->onDelete('cascade');
             $table->string('status')->default('I'); // I=Inisiasi, P=Proses, D=Disposisi, T=Terminasi
             $table->text('jawaban')->nullable(); // Jawaban/respon terhadap laporan
+            $table->string('jawaban_lampiran')->nullable(); // Lampiran jawaban similar to data_dukung in gratifications table
             $table->timestamp('waktu_publish')->nullable(); // Waktu publish jawaban
             $table->timestamps();
         });
