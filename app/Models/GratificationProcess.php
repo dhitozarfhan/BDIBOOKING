@@ -13,6 +13,7 @@ class GratificationProcess extends Model
         'gratification_id',
         'status',
         'jawaban',
+        'jawaban_lampiran',
         'waktu_publish',
     ];
 

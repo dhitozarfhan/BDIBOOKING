@@ -96,13 +96,50 @@
                                 @if($reportDetail->status === 'T' && $reportDetail->attachment)
                                     <tr>
                                         <th class="bg-base-200 font-semibold text-base-content">
+                                            <i class="bi bi-paperclip mr-2 text-secondary"></i>{{ __('Report Attachment') }}
+                                        </th>
+                                        <td>
+                                            <div class="flex flex-col gap-2">
+                                                <a href="{{ Storage::url($reportDetail->attachment) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2">
+                                                    <i class="bi bi-download"></i>
+                                                    {{ basename($reportDetail->attachment) }}
+                                                </a>
+                                                @if(pathinfo($reportDetail->attachment, PATHINFO_EXTENSION) === 'pdf')
+                                                    <div class="mt-2 border rounded">
+                                                        <iframe src="{{ Storage::url($reportDetail->attachment) }}" 
+                                                                class="w-full h-96" 
+                                                                type="application/pdf"
+                                                                title="Report Attachment Preview">
+                                                            <p>{{ __('Your browser does not support PDF previews. Please download the file to view it.') }}</p>
+                                                        </iframe>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                                @if($reportDetail->status === 'T' && $reportDetail->answer_attachment)
+                                    <tr>
+                                        <th class="bg-base-200 font-semibold text-base-content">
                                             <i class="bi bi-paperclip mr-2 text-secondary"></i>{{ __('Answer Attachment') }}
                                         </th>
                                         <td>
-                                            <a href="{{ Storage::url($reportDetail->attachment) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2">
-                                                <i class="bi bi-download"></i>
-                                                {{ basename($reportDetail->attachment) }}
-                                            </a>
+                                            <div class="flex flex-col gap-2">
+                                                <a href="{{ Storage::url($reportDetail->answer_attachment) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2">
+                                                    <i class="bi bi-download"></i>
+                                                    {{ basename($reportDetail->answer_attachment) }}
+                                                </a>
+                                                @if(pathinfo($reportDetail->answer_attachment, PATHINFO_EXTENSION) === 'pdf')
+                                                    <div class="mt-2 border rounded">
+                                                        <iframe src="{{ Storage::url($reportDetail->answer_attachment) }}" 
+                                                                class="w-full h-96" 
+                                                                type="application/pdf"
+                                                                title="Answer Attachment Preview">
+                                                            <p>{{ __('Your browser does not support PDF previews. Please download the file to view it.') }}</p>
+                                                        </iframe>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                 @endif
