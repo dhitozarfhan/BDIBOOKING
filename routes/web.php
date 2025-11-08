@@ -55,6 +55,7 @@ Route::fallback(function () {
 });
 
 Route::get('/information', App\Livewire\Articles\Information::class)->name('articles.information');
+Route::get('/information/question', App\Livewire\Information\QuestionForm::class)->name('information.question');
 
 Route::get('/{article_type}', App\Livewire\Articles\Index::class)
     ->whereIn('article_type', ['news','gallery','page'])
@@ -136,7 +137,7 @@ Route::get('/blog/post/{year}/{month}/{category}/{blog}/{title}', [BlogControlle
 Route::get('/information', [InformationController::class, 'home'])->name('information.home');
 Route::get('/information/post/{id}/{slug}', [InformationController::class, 'show'])->name('information.post');
 Route::get('information/core/{slug}', [InformationController::class, 'showCore'])->name('information.core');
-Route::get('/information/question', [QuestionController::class, 'question'])->name('information.question');
+
 Route::get('/information/procedure/{type?}', [InformationController::class, 'procedure'])->name('information.procedure');
 Route::get('/information/request', function() {
     return view('information.request');
