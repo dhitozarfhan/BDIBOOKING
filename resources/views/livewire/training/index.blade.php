@@ -1,4 +1,4 @@
-<x-app-layout>
+<div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
         {{-- Breadcrumbs --}}
         <nav class="text-sm breadcrumbs mb-4">
@@ -8,7 +8,7 @@
             </ul>
         </nav>
     </div>
-    
+
     <section class="bg-base-200">
         <div class="container max-w-7xl mx-auto px-4">
             <div class="card p-4">
@@ -20,7 +20,7 @@
                     <div class="text-2xl leading-10">
                         Pelatihan yang dilakukan oleh Balai Diklat Industri (BDI) menggunakan sistem
                         <strong>3-in-1</strong>: pelatihan, sertifikasi kompetensi, dan penempatan kerja.
-                        Kurikulum dan modul dirancang mengacu pada kebutuhan industri untuk menciptakan
+                        Kurikulum dan modul diranced mengacu pada kebutuhan industri untuk menciptakan
                         <em>link and match</em> yang kuat. Lulusan pelatihan yang kompeten dan siap kerja dijamin
                         melalui sertifikasi di akhir program. Untuk memfasilitasi ini, BDI telah membentuk
                         Tempat Uji Kompetensi (TUK) dan Lembaga Sertifikasi Profesi (LSP). Proses diakhiri
@@ -133,4 +133,4 @@
             </div>
         </div>
     </section>
-</x-app-layout>
+</div>
