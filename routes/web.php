@@ -6,6 +6,7 @@ use App\Livewire\Competency\DataTable as CompetencyDataTable;
 use App\Livewire\Competency\Index as CompetencyIndex;
 use App\Livewire\Competency\LspDetail;
 use App\Livewire\Competency\SkkniDetail;
+use App\Livewire\Training\Index as TrainingIndex;
 
 Route::get('/', \App\Livewire\Home::class)->name('home');
 
@@ -78,8 +79,8 @@ Route::get('/register/training/sdma-option/{id_diklat}/{slug?}', \App\Livewire\T
 
 Route::get('/register/training/kemenperin/{id_diklat}/{slug?}', \App\Livewire\Training\KemenperinRegistration::class)->name('training.kemenperin-register');
 
+Route::get('/training', TrainingIndex::class)->name('training.index');
 Route::get('/training/presence/{id_diklat}/{slug?}', \App\Livewire\Training\Presence::class)->name('training.presence');
-
 Route::get('/training/{page?}', function ($page = 'index') {
     // prevent directory traversal from page name
     $page = str_replace('..', '', $page);
