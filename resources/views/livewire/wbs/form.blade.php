@@ -3,7 +3,7 @@
         <div class="text-sm breadcrumbs">
             <ul>
                 <li><a href="{{ route('home') }}"><i class="bi bi-house-fill"></i></a></li>
-                <li><a href="{{ route('wbs') }}">WBS Reporting</a></li>
+                <li><a href="{{ route('wbs') }}">{{ __('WBS Reporting') }}</a></li>
                 <li>{{ __('Report Form') }}</li>
             </ul>
         </div>
@@ -29,6 +29,20 @@
                             </span>
                         </p>
                         <p class="text-sm mt-2 opacity-90">{{ __('Thank you for your participation in maintaining integrity.') }}</p>
+                    </div>
+                </div>
+            </div>
+        @else
+            <div class="mb-6 alert alert-info shadow-lg">
+                <div class="flex items-start w-full">
+                    <div class="flex-shrink-0">
+                        <i class="bi bi-info-circle-fill text-2xl"></i>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h4 class="font-bold text-base mb-2">{{ __('Important Information') }}</h4>
+                        <p class="text-sm leading-relaxed">
+                            WBS (Whistle Blowing System) adalah sistem pelaporan pelanggaran yang dapat digunakan oleh pegawai atau masyarakat untuk melaporkan dugaan pelanggaran yang terjadi di lingkungan BDI Yogyakarta.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -152,7 +166,7 @@
                                 type="text"
                                 class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="telepon"
-                                placeholder="{{ __('Example: 081234567890') }}">
+                                placeholder="{{ __('Example: 08123456789') }}">
                         </div>
                         @error('telepon')
                         <label class="label">
@@ -177,7 +191,7 @@
                                 type="email"
                                 class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="email"
-                                placeholder="{{ __('example@domain.com') }}">
+                                placeholder="{{ __('example@email.com') }}">
                         </div>
                         @error('email')
                         <label class="label">
@@ -189,10 +203,10 @@
                     </div>
                 </div>
 
-                <!-- Kolom Kanan - Informasi Laporan -->
+                <!-- Kolom Kanan - Detail Laporan -->
                 <div class="lg:w-1/2 space-y-6">
-                    <div class="flex items-center space-x-3 mb-6 pb-2 border-primary">
-                        <h4 class="text-xl font-bold text-base-content">{{ __('Report Information') }}</h4>
+                    <div class="flex items-center space-x-3 mb-6 pb-2 border-secondary">
+                        <h4 class="text-xl font-bold text-base-content">{{ __('Report Details') }}</h4>
                     </div>
 
                     <!-- Jenis Pelanggaran -->
@@ -202,7 +216,7 @@
                         </label>
                         <select
                             id="violation_id"
-                            class="select select-bordered w-full focus:select-primary transition-all duration-200"
+                            class="select select-bordered w-full focus:select-secondary transition-all duration-200"
                             wire:model.lazy="violation_id">
                             <option value="">{{ __('Select a violation type') }}</option>
                             @foreach($violations as $violation)
@@ -225,14 +239,14 @@
                         </label>
                         <div class="relative group">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <i class="bi bi-card-text text-base-content/40 group-focus-within:text-primary transition-colors"></i>
+                                <i class="bi bi-chat-left-text-fill text-base-content/40 group-focus-within:text-secondary transition-colors"></i>
                             </div>
                             <input
                                 id="judul_laporan"
                                 type="text"
-                                class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full pl-11 focus:input-secondary transition-all duration-200"
                                 wire:model.lazy="judul_laporan"
-                                placeholder="{{ __('Enter report title') }}">
+                                placeholder="{{ __('Brief summary of your report') }}">
                         </div>
                         @error('judul_laporan')
                         <label class="label">
@@ -246,14 +260,17 @@
                     <!-- Uraian Laporan -->
                     <div class="form-control">
                         <label for="uraian_laporan" class="label">
-                            <span class="label-text font-semibold">{{ __('Report Details') }} <span class="text-error">*</span></span>
+                            <span class="label-text font-semibold">{{ __('Report Description') }} <span class="text-error">*</span></span>
                         </label>
                         <textarea
                             id="uraian_laporan"
-                            rows="6"
-                            class="textarea textarea-bordered w-full focus:textarea-primary transition-all duration-200 resize-none"
+                            rows="10"
+                            class="textarea textarea-bordered w-full focus:textarea-secondary transition-all duration-200 resize-none"
                             wire:model.lazy="uraian_laporan"
                             placeholder="{{ __('Describe the reported incident in detail') }}"></textarea>
+                        <label class="label">
+                            <span class="label-text-alt text-base-content/60">{{ __('Include as much clear information as possible to facilitate the investigation process') }}</span>
+                        </label>
                         @error('uraian_laporan')
                         <label class="label">
                             <span class="label-text-alt text-error flex items-center">
@@ -268,21 +285,35 @@
                         <label for="data_dukung" class="label">
                             <span class="label-text font-semibold">{{ __('Supporting Data') }}</span>
                         </label>
-                        <div class="flex flex-col gap-2">
-                            <input
-                                id="data_dukung"
-                                type="file"
-                                class="file-input file-input-bordered w-full max-w-full focus:file-input-primary transition-all duration-200"
-                                wire:model="data_dukung">
-                            @if($data_dukung)
-                                <span class="text-sm text-base-content/80">{{ $data_dukung->getClientOriginalName() }}</span>
+                        <div class="relative">
+                            @if ($data_dukung)
+                                <div class="flex items-center justify-center w-full h-32 border-2 border-dashed border-success rounded-xl bg-base-200/50">
+                                    <div class="text-center p-4">
+                                        <i class="bi bi-file-earmark-check-fill text-4xl text-success mb-2"></i>
+                                        <p class="text-sm font-semibold text-base-content truncate" title="{{ $data_dukung->getClientOriginalName() }}">{{ $data_dukung->getClientOriginalName() }}</p>
+                                        <p class="text-xs text-base-content/60">({{ round($data_dukung->getSize() / 1024) }} KB)</p>
+                                        <button wire:click="$set('data_dukung', null)" type="button" class="btn btn-xs btn-ghost text-error mt-2">
+                                            <i class="bi bi-x-lg"></i> {{ __('Remove') }}
+                                        </button>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="flex items-center justify-center w-full">
+                                    <label for="data_dukung" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-base-300 rounded-xl cursor-pointer bg-base-200/50 hover:bg-base-200 transition-all duration-200">
+                                        <div wire:loading.remove wire:target="data_dukung" class="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <i class="bi bi-cloud-arrow-up-fill text-4xl text-base-content/40 mb-2"></i>
+                                            <p class="mb-1 text-sm text-base-content/80"><span class="font-semibold">{{ __('Click to upload') }}</span> {{ __('or drag & drop') }}</p>
+                                            <p class="text-xs text-base-content/60">{{ __('DOC, PDF, ZIP (Max 10MB)') }}</p>
+                                        </div>
+                                        <div wire:loading wire:target="data_dukung" class="w-full h-full flex flex-col items-center justify-center">
+                                            <span class="loading loading-spinner loading-lg text-primary"></span>
+                                            <p class="mt-2 text-sm text-primary">{{ __('Uploading...') }}</p>
+                                        </div>
+                                        <input id="data_dukung" type="file" class="hidden" wire:model="data_dukung" accept=".doc,.docx,.pdf,.zip,.jpg,.jpeg,.png">
+                                    </label>
+                                </div>
                             @endif
                         </div>
-                        <label class="label">
-                            <span class="label-text-alt text-base-content/80 flex items-center">
-                                <i class="bi bi-info-circle-fill mr-1"></i>{{ __('Maximum file size 10MB. Supported formats: PDF, DOC, DOCX, JPG, PNG') }}
-                            </span>
-                        </label>
                         @error('data_dukung')
                         <label class="label">
                             <span class="label-text-alt text-error flex items-center">
@@ -294,12 +325,67 @@
                 </div>
             </div>
 
-            <!-- Tombol Submit -->
-            <div class="flex justify-end">
-                <button type="submit" class="btn btn-primary px-8 py-3">
-                    <i class="bi bi-send mr-2"></i>{{ __('Submit Report') }}
-                </button>
+            <!-- Security Notice & Action Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t-2 border-base-300">
+                <div class="flex items-center text-sm text-base-content/70">
+                    <i class="bi bi-shield-lock-fill text-success text-lg mr-2"></i>
+                    <span>{{ __('Your report will be kept confidential') }}</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div wire:loading wire:target="save" class="flex items-center text-sm text-secondary">
+                        <span class="loading loading-spinner loading-sm mr-2"></span>
+                        {{ __('Saving report...') }}
+                    </div>
+                    <a href="{{ route('wbs') }}" class="btn btn-ghost btn-outline" wire:navigate>
+                        {{ __('Back') }}
+                    </a>
+                    <button type="submit" class="btn btn-primary shadow-lg hover:shadow-xl transition-all duration-200">
+                        {{ __('Send Report') }}
+                    </button>
+                </div>
             </div>
         </form>
+
+        <!-- Additional Info -->
+        <div class="mt-6 text-center text-sm text-base-content/60">
+            <p>{{ __('Need help? Contact us at') }} <a href="mailto:info@bdiyk.id" class="link link-primary font-medium">info@bdiyk.id</a></p>
+        </div>
     </div>
 </div>
+
+@push('scripts')
+<style>
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in {
+        animation: fade-in 0.5s ease-out;
+    }
+
+    /* Custom focus styles untuk dark mode */
+    .input:focus, .textarea:focus, .select:focus {
+        outline: 2px solid hsl(var(--p));
+        outline-offset: 2px;
+    }
+
+    /* Smooth transitions untuk theme switching */
+    * {
+        transition-property: background-color, border-color, color, fill, stroke;
+        transition-duration: 200ms;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Override transition untuk form inputs */
+    .input, .textarea, .select, .btn {
+        transition-property: background-color, border-color, color, box-shadow, transform;
+    }
+</style>
+@endpush
