@@ -100,6 +100,10 @@ Route::get('/gratification/status', App\Livewire\Gratification\Gratification::cl
 Route::get('/gratification/report', App\Livewire\Gratification\Gratification::class)->name('gratification.report');
 Route::get('/gratification/response', App\Livewire\Gratification\Response::class)->name('gratification.response');
 
+// Rute untuk Laporan WBS
+Route::get('/wbs', App\Livewire\Wbs\Wbs::class)->name('wbs');
+Route::get('/wbs/form', App\Livewire\Wbs\Wbs::class)->name('wbs.form');
+
 
 /*
 use App\Http\Controllers\ArchiveController;
