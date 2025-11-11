@@ -2,13 +2,13 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 lg:gap-4">
             <div class="lg:col-span-8 mb-6 lg:mb-0">
-                <div class="text-sm breadcrumbs">
-                    <ul>
-                        <li><a href="{{ route('home') }}"><i class="bi bi-house-fill"></i></a></li>
-                        <li>{{ __('Gratification Reporting') }}</li>
-                    </ul>
-                </div>
-                <h2 class="text-2xl font-bold text-base-content mt-4">
+                        @php
+                            $breadcrumbs = [
+                                ['label' => __('Beranda'), 'url' => route('home')],
+                                ['label' => __('Gratification Reporting')]
+                            ];
+                        @endphp
+                        @include('livewire.gratification.partials.breadcrumb', ['items' => $breadcrumbs])                <h2 class="text-2xl font-bold text-base-content mt-4">
                     {{ __('Gratification Reporting') }}
                 </h2>
 
