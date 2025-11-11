@@ -24,6 +24,7 @@ class Wbs extends Component
     public $report_title;
     public $report_description;
     public $attachment;
+    public $identity_card_attachment;
     public $violation_id;
 
     // Variabel untuk navigasi antar view
@@ -71,7 +72,7 @@ class Wbs extends Component
         $this->reset([
             'reporter_name', 'identity_number', 'address', 'occupation',
             'phone', 'email', 'report_title', 'report_description',
-            'attachment', 'violation_id'
+            'attachment', 'identity_card_attachment', 'violation_id'
         ]);
     }
 
@@ -80,6 +81,7 @@ class Wbs extends Component
         return [
             'reporter_name' => 'required|string|max:255',
             'identity_number' => 'nullable|string|max:255',
+            'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
             'address' => 'nullable|string',
             'occupation' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
@@ -116,12 +118,18 @@ class Wbs extends Component
             $filePath = $this->attachment->store('wbs', 'public');
         }
 
+        $identityCardPath = null;
+        if ($this->identity_card_attachment) {
+            $identityCardPath = $this->identity_card_attachment->store('identity_cards', 'public');
+        }
+
         // Generate kode register unik
         $registrationCode = $this->generateKodeRegister();
 
         $wbs = WbsModel::create([
             'reporter_name' => $this->reporter_name,
             'identity_number' => $this->identity_number,
+            'identity_card_attachment' => $identityCardPath,
             'address' => $this->address,
             'occupation' => $this->occupation,
             'phone' => $this->phone,
@@ -148,7 +156,7 @@ class Wbs extends Component
         $this->reset([
             'reporter_name', 'identity_number', 'address', 'occupation',
             'phone', 'email', 'report_title', 'report_description',
-            'attachment', 'violation_id'
+            'attachment', 'identity_card_attachment', 'violation_id'
         ]);
     }
 

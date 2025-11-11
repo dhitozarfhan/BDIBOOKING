@@ -12,6 +12,7 @@ class Gratification extends Model
     protected $fillable = [
         'reporter_name',
         'identity_number',
+        'identity_card_attachment',
         'address',
         'occupation',
         'phone',

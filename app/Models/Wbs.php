@@ -12,6 +12,7 @@ class Wbs extends Model
     protected $fillable = [
         'reporter_name',
         'identity_number',
+        'identity_card_attachment',
         'address',
         'occupation',
         'phone',
@@ -24,7 +25,7 @@ class Wbs extends Model
     ];
 
     protected $casts = [
-        'data_dukung' => 'string',
+        'attachment' => 'string',
         'violation_id' => 'integer',
     ];
 

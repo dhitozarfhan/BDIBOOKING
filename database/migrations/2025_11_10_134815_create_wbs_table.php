@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('reporter_name');
             $table->string('identity_number')->nullable();
+            $table->string('identity_card_attachment')->nullable();
             $table->text('address')->nullable();
             $table->string('occupation')->nullable();
             $table->string('phone')->nullable();
