@@ -183,3 +183,4 @@ Route::middleware([
     // })->name('dashboard');
 });
 */
+Route::get('/ibiza', App\Livewire\Ibiza::class)->name('ibiza');
