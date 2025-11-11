@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Wbs;
 
+use App\Enums\ResponseStatus;
 use App\Models\Wbs as WbsModel;
 use App\Models\Violation;
 use App\Models\WbsProcess;
@@ -14,22 +15,22 @@ class Wbs extends Component
     use WithFileUploads;
 
     // Variabel untuk formulir
-    public $nama_pelapor;
-    public $nomor_identitas;
-    public $alamat;
-    public $pekerjaan;
-    public $telepon;
+    public $reporter_name;
+    public $identity_number;
+    public $address;
+    public $occupation;
+    public $phone;
     public $email;
-    public $judul_laporan;
-    public $uraian_laporan;
-    public $data_dukung;
+    public $report_title;
+    public $report_description;
+    public $attachment;
     public $violation_id;
 
     // Variabel untuk navigasi antar view
     public $currentView = 'form';
 
     // Variabel untuk status laporan
-    public $kode_register;
+    public $registration_code;
     public $reportDetail;
 
     // Variabel untuk laporan statistik
@@ -68,24 +69,24 @@ class Wbs extends Component
     public function resetForm()
     {
         $this->reset([
-            'nama_pelapor', 'nomor_identitas', 'alamat', 'pekerjaan',
-            'telepon', 'email', 'judul_laporan', 'uraian_laporan',
-            'data_dukung', 'violation_id'
+            'reporter_name', 'identity_number', 'address', 'occupation',
+            'phone', 'email', 'report_title', 'report_description',
+            'attachment', 'violation_id'
         ]);
     }
 
     public function rules()
     {
         return [
-            'nama_pelapor' => 'required|string|max:255',
-            'nomor_identitas' => 'nullable|string|max:255',
-            'alamat' => 'nullable|string',
-            'pekerjaan' => 'nullable|string|max:255',
-            'telepon' => 'nullable|string|max:20',
+            'reporter_name' => 'required|string|max:255',
+            'identity_number' => 'nullable|string|max:255',
+            'address' => 'nullable|string',
+            'occupation' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
-            'judul_laporan' => 'required|string|max:255',
-            'uraian_laporan' => 'required|string',
-            'data_dukung' => 'nullable|file|max:10240', // 10MB max
+            'report_title' => 'required|string|max:255',
+            'report_description' => 'required|string',
+            'attachment' => 'nullable|file|max:10240', // 10MB max
             'violation_id' => 'nullable|exists:violations,id',
         ];
     }
@@ -93,10 +94,10 @@ class Wbs extends Component
     public function messages()
     {
         return [
-            'nama_pelapor.required' => 'Nama pelapor wajib diisi.',
-            'judul_laporan.required' => 'Judul laporan wajib diisi.',
-            'uraian_laporan.required' => 'Uraian laporan wajib diisi.',
-            'data_dukung.max' => 'File data dukung maksimal 10MB.',
+            'reporter_name.required' => 'Nama pelapor wajib diisi.',
+            'report_title.required' => 'Judul laporan wajib diisi.',
+            'report_description.required' => 'Uraian laporan wajib diisi.',
+            'attachment.max' => 'File data dukung maksimal 10MB.',
             'violation_id.exists' => 'Pelanggaran yang dipilih tidak valid.',
         ];
     }
@@ -111,43 +112,43 @@ class Wbs extends Component
         $validatedData = $this->validate();
 
         $filePath = null;
-        if ($this->data_dukung) {
-            $filePath = $this->data_dukung->store('wbs', 'public');
+        if ($this->attachment) {
+            $filePath = $this->attachment->store('wbs', 'public');
         }
 
         // Generate kode register unik
-        $kodeRegister = $this->generateKodeRegister();
+        $registrationCode = $this->generateKodeRegister();
 
         $wbs = WbsModel::create([
-            'nama_pelapor' => $this->nama_pelapor,
-            'nomor_identitas' => $this->nomor_identitas,
-            'alamat' => $this->alamat,
-            'pekerjaan' => $this->pekerjaan,
-            'telepon' => $this->telepon,
+            'reporter_name' => $this->reporter_name,
+            'identity_number' => $this->identity_number,
+            'address' => $this->address,
+            'occupation' => $this->occupation,
+            'phone' => $this->phone,
             'email' => $this->email,
-            'judul_laporan' => $this->judul_laporan,
-            'uraian_laporan' => $this->uraian_laporan,
-            'data_dukung' => $filePath,
+            'report_title' => $this->report_title,
+            'report_description' => $this->report_description,
+            'attachment' => $filePath,
             'violation_id' => $this->violation_id,
-            'kode_register' => $kodeRegister,
+            'registration_code' => $registrationCode,
         ]);
 
         // Create the initial process record for the WBS
         WbsProcess::create([
             'wbs_id' => $wbs->id,
-            'status' => 'I', // Set status awal sebagai Inisiasi
-            'jawaban' => null,
-            'waktu_publish' => null,
+            'response_status_id' => ResponseStatus::Initiation->value,
+            'answer' => null,
+            'published_at' => null,
         ]);
 
         session()->flash('message', 'Laporan WBS Anda telah berhasil dikirim dengan kode register: ');
-        session()->flash('kode_register', $kodeRegister);
+        session()->flash('registration_code', $registrationCode);
 
         // Reset form
         $this->reset([
-            'nama_pelapor', 'nomor_identitas', 'alamat', 'pekerjaan',
-            'telepon', 'email', 'judul_laporan', 'uraian_laporan',
-            'data_dukung', 'violation_id'
+            'reporter_name', 'identity_number', 'address', 'occupation',
+            'phone', 'email', 'report_title', 'report_description',
+            'attachment', 'violation_id'
         ]);
     }
 
@@ -155,7 +156,7 @@ class Wbs extends Component
     {
         do {
             $kode = strtoupper(substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 6));
-            $exists = WbsModel::where('kode_register', $kode)->exists();
+            $exists = WbsModel::where('registration_code', $kode)->exists();
         } while ($exists);
 
         return $kode;
@@ -164,10 +165,10 @@ class Wbs extends Component
     public function checkStatus()
     {
         $this->validate([
-            'kode_register' => 'required|string|exists:wbs,kode_register'
+            'registration_code' => 'required|string|exists:wbs,registration_code'
         ]);
 
-        $wbs = WbsModel::with('processes')->where('kode_register', $this->kode_register)->first();
+        $wbs = WbsModel::with('processes')->where('registration_code', $this->registration_code)->first();
         
         if ($wbs) {
             $this->reportDetail = $wbs;
@@ -191,10 +192,10 @@ class Wbs extends Component
         // Waktu rata-rata penyelesaian per bulan
         $this->timeToAnswerData = DB::table('wbs')
             ->join('wbs_processes', 'wbs.id', '=', 'wbs_processes.wbs_id')
-            ->selectRaw('EXTRACT(MONTH FROM wbs.created_at) as month, AVG(EXTRACT(DAY FROM (wbs_processes.waktu_publish - wbs.created_at))) as avg_days')
+            ->selectRaw('EXTRACT(MONTH FROM wbs.created_at) as month, AVG(EXTRACT(DAY FROM (wbs_processes.published_at - wbs.created_at))) as avg_days')
             ->whereYear('wbs.created_at', $year)
-            ->whereNotNull('wbs_processes.waktu_publish')
-            ->where('wbs_processes.status', 'T') // Completed status
+            ->whereNotNull('wbs_processes.published_at')
+            ->where('wbs_processes.response_status_id', ResponseStatus::Termination->value) // Completed status
             ->groupBy('month')
             ->orderBy('month')
             ->pluck('avg_days', 'month')
@@ -216,13 +217,13 @@ class Wbs extends Component
                 $join->on('wbs.id', '=', 'wbs_processes.wbs_id')
                      ->on('wbs_processes.id', '=', 'latest_processes.latest_process_id');
             })
-            ->select('wbs_processes.status', DB::raw('COUNT(*) as count'))
+            ->select('wbs_processes.response_status_id', DB::raw('COUNT(*) as count'))
             ->whereYear('wbs.created_at', $year)
-            ->groupBy('wbs_processes.status')
+            ->groupBy('wbs_processes.response_status_id')
             ->get()
             ->map(function ($item) {
                 return [
-                    'status' => $item->status,
+                    'status' => ResponseStatus::from($item->response_status_id),
                     'count' => $item->count
                 ];
             })

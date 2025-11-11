@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('wbs_processes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('wbs_id')->constrained('wbs')->onDelete('cascade');
-            $table->string('status')->default('I'); // I=Inisiasi, P=Proses, D=Disposisi, T=Terminasi
-            $table->text('jawaban')->nullable(); // Jawaban/respon terhadap laporan
-            $table->string('jawaban_lampiran')->nullable(); // Lampiran jawaban
-            $table->timestamp('waktu_publish')->nullable(); // Waktu publish jawaban
+            $table->foreignId('response_status_id')->default(1)->constrained('response_statuses');
+            $table->text('answer')->nullable(); // Answer/response to the report
+            $table->string('answer_attachment')->nullable(); // Answer attachment
+            $table->timestamp('published_at')->nullable(); // Time the answer was published
             $table->foreignId('disposition_to')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });

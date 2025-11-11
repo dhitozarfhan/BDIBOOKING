@@ -3,7 +3,8 @@
         <div class="text-center">
             <h1 class="text-3xl md:text-5xl font-bold mb-4 text-base-content">Ibiza = Inkubator Bisnis</h1>
             <p class="max-w-3xl mx-auto text-base md:text-lg text-base-content/80">Inkubator Bisnis Pazti Bisa</p>
-            <a href="https://ibiza.id" class="btn btn-warning btn-lg mt-6 shadow-lg hover:shadow-xl">
+            <!-- <a href="https://ibiza.id" class="btn btn-warning btn-lg mt-6 shadow-lg hover:shadow-xl"> -->
+            <a href="#" class="btn btn-warning btn-lg mt-6 shadow-lg hover:shadow-xl">
                 <i class="fas fa-suitcase mr-2"></i> Daftar Sekarang
             </a>
         </div>

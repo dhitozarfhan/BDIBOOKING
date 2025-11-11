@@ -18,14 +18,14 @@
         <form wire:submit.prevent="checkStatus" class="mt-6 space-y-6">
             <div class="space-y-4">
                 <div>
-                    <label for="kode_register" class="label">
+                    <label for="registration_code" class="label">
                         <span class="label-text">{{ __('Registration Code') }} <span class="text-red-500">*</span></span>
                     </label>
                     <div class="relative">
                         <i class="bi bi-upc-scan absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        <input id="kode_register" type="text" class="input input-bordered w-full pl-10" wire:model.lazy="kode_register">
+                        <input id="registration_code" type="text" class="input input-bordered w-full pl-10" wire:model.lazy="registration_code">
                     </div>
-                    @error('kode_register') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
+                    @error('registration_code') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
                 </div>
             </div>
             <div class="flex items-center gap-4 mt-6">

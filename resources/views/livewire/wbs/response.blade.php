@@ -23,19 +23,19 @@
                                     <th class="w-1/3 bg-base-200 font-semibold text-base-content">
                                         <i class="bi bi-chat-left-text mr-2 text-primary"></i>{{ __('Report Subject') }}
                                     </th>
-                                    <td class="font-medium">{{ $reportDetail->judul_laporan }}</td>
+                                    <td class="font-medium">{{ $reportDetail->report_title }}</td>
                                 </tr>
                                 <tr>
                                     <th class="bg-base-200 font-semibold text-base-content">
                                         <i class="bi bi-person mr-2 text-primary"></i>{{ __('Reporter Name') }}
                                     </th>
-                                    <td>{{ $reportDetail->nama_pelapor }}</td>
+                                    <td>{{ $reportDetail->reporter_name }}</td>
                                 </tr>
                                 <tr>
                                     <th class="bg-base-200 font-semibold text-base-content">
                                         <i class="bi bi-telephone mr-2 text-primary"></i>{{ __('Reporter Phone') }}
                                     </th>
-                                    <td>{{ $reportDetail->telepon }}</td>
+                                    <td>{{ $reportDetail->phone }}</td>
                                 </tr>
                                 <tr>
                                     <th class="bg-base-200 font-semibold text-base-content">
@@ -48,19 +48,19 @@
                                         <i class="bi bi-flag mr-2 text-primary"></i>{{ __('Report Status') }}
                                     </th>
                                     <td>
-                                        @if($reportDetail->processes->last()?->status == 'I')
+                                        @if($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Initiation)
                                             <span class="badge badge-warning gap-2">
                                                 <i class="bi bi-hourglass-split"></i>{{ __('Initiation') }}
                                             </span>
-                                        @elseif($reportDetail->processes->last()?->status == 'P')
+                                        @elseif($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Process)
                                             <span class="badge badge-info gap-2">
                                                 <i class="bi bi-arrow-repeat"></i>{{ __('Process') }}
                                             </span>
-                                        @elseif($reportDetail->processes->last()?->status == 'D')
+                                        @elseif($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Disposition)
                                             <span class="badge badge-primary gap-2">
                                                 <i class="bi bi-send-check"></i>{{ __('Disposition') }}
                                             </span>
-                                        @elseif($reportDetail->processes->last()?->status == 'T')
+                                        @elseif($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Termination)
                                             <span class="badge badge-success gap-2">
                                                 <i class="bi bi-check-circle"></i>{{ __('Completed') }}
                                             </span>
@@ -75,16 +75,16 @@
                                     <th class="bg-base-200 font-semibold text-base-content align-top">
                                         <i class="bi bi-file-text mr-2 text-primary"></i>{{ __('Report Content') }}
                                     </th>
-                                    <td class="whitespace-pre-wrap">{{ $reportDetail->uraian_laporan }}</td>
+                                    <td class="whitespace-pre-wrap">{{ $reportDetail->report_description }}</td>
                                 </tr>
                                 <tr>
                                     <th class="bg-base-200 font-semibold text-base-content align-top">
                                         <i class="bi bi-reply mr-2 text-secondary"></i>{{ __('Answer') }}
                                     </th>
                                     <td class="whitespace-pre-wrap">
-                                        @if($reportDetail->processes->last()?->status == 'T' && $reportDetail->processes->last()?->jawaban)
+                                        @if($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Termination && $reportDetail->processes->last()?->answer)
                                             <div class="bg-success/10 border-l-4 border-success p-3 rounded">
-                                                {{ $reportDetail->processes->last()->jawaban }}
+                                                {{ $reportDetail->processes->last()->answer }}
                                             </div>
                                         @else
                                             <div class="bg-base-200 border-l-4 border-base-300 p-3 rounded text-base-content/60 italic">
@@ -93,20 +93,20 @@
                                         @endif
                                     </td>
                                 </tr>
-                                @if($reportDetail->data_dukung)
+                                @if($reportDetail->attachment)
                                     <tr>
                                         <th class="bg-base-200 font-semibold text-base-content">
                                             <i class="bi bi-paperclip mr-2 text-secondary"></i>{{ __('Report Attachment') }}
                                         </th>
                                         <td>
                                             <div class="flex flex-col gap-2">
-                                                <a href="{{ Storage::url($reportDetail->data_dukung) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2">
+                                                <a href="{{ Storage::url($reportDetail->attachment) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2">
                                                     <i class="bi bi-download"></i>
-                                                    {{ basename($reportDetail->data_dukung) }}
+                                                    {{ basename($reportDetail->attachment) }}
                                                 </a>
-                                                @if(pathinfo($reportDetail->data_dukung, PATHINFO_EXTENSION) === 'pdf')
+                                                @if(pathinfo($reportDetail->attachment, PATHINFO_EXTENSION) === 'pdf')
                                                     <div class="mt-2 border rounded">
-                                                        <iframe src="{{ Storage::url($reportDetail->data_dukung) }}"
+                                                        <iframe src="{{ Storage::url($reportDetail->attachment) }}"
                                                                 class="w-full h-96"
                                                                 type="application/pdf"
                                                                 title="Report Attachment Preview">

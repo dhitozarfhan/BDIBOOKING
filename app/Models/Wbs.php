@@ -10,17 +10,17 @@ class Wbs extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama_pelapor',
-        'nomor_identitas',
-        'alamat',
-        'pekerjaan',
-        'telepon',
+        'reporter_name',
+        'identity_number',
+        'address',
+        'occupation',
+        'phone',
         'email',
-        'judul_laporan',
-        'uraian_laporan',
-        'data_dukung',
+        'report_title',
+        'report_description',
+        'attachment',
         'violation_id',
-        'kode_register',
+        'registration_code',
     ];
 
     protected $casts = [
