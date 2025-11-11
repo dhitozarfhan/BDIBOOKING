@@ -1,13 +1,25 @@
 <div>
     <div class="bg-base-200 min-h-screen">
         <section class="bg-gradient-to-r from-cyan-900 to-cyan-700">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 text-center">
-                <h1 class="text-3xl md:text-5xl font-bold mb-3 text-base-content">
-                    {{ $skkni['judul'] ?? __('competency.skkni_details') }}
-                </h1>
-                <p class="max-w-3xl mx-auto text-base md:text-lg text-base-content/80">
-                    {{ __('competency.skkni_details_subtitle') }}
-                </p>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+                @php
+                    $breadcrumbs = [
+                        ['label' => __('Beranda'), 'url' => route('home')],
+                        ['label' => __('competency.industrial_hr_competency'), 'url' => route('competency.index')],
+                        ['label' => __('competency.competency_skkni'), 'url' => route('competency.section', ['section' => 'skkni'])],
+                        ['label' => $skkni['judul'] ?? __('competency.skkni_details')]
+                    ];
+                @endphp
+                @include('livewire.competency.partials.breadcrumb', ['items' => $breadcrumbs])
+
+                <div class="text-center mt-4">
+                    <h1 class="text-3xl md::text-5xl font-bold mb-3 text-base-content">
+                        {{ $skkni['judul'] ?? __('competency.skkni_details') }}
+                    </h1>
+                    <p class="max-w-3xl mx-auto text-base md:text-lg text-base-content/80">
+                        {{ __('competency.skkni_details_subtitle') }}
+                    </p>
+                </div>
             </div>
         </section>
 
