@@ -28,6 +28,16 @@ class Wbs extends Component
     // Variabel untuk navigasi antar view
     public $currentView = 'form';
 
+    // Variabel untuk status laporan
+    public $kode_register;
+    public $reportDetail;
+
+    // Variabel untuk laporan statistik
+    public $selectedYear;
+    public $reportCountData;
+    public $timeToAnswerData;
+    public $statusData;
+
     public $violations = [];
 
     public function mount()
@@ -36,6 +46,12 @@ class Wbs extends Component
         $currentRoute = request()->route()->getName();
         if (str_contains($currentRoute, 'wbs.form')) {
             $this->currentView = 'form';
+        } elseif (str_contains($currentRoute, 'wbs.status')) {
+            $this->currentView = 'status';
+        } elseif (str_contains($currentRoute, 'wbs.report')) {
+            $this->currentView = 'report';
+            $this->selectedYear = date('Y');
+            $this->loadReportData();
         } else {
             $this->currentView = 'index'; // default
         }
@@ -145,10 +161,83 @@ class Wbs extends Component
         return $kode;
     }
 
+    public function checkStatus()
+    {
+        $this->validate([
+            'kode_register' => 'required|string|exists:wbs,kode_register'
+        ]);
+
+        $wbs = WbsModel::with('processes')->where('kode_register', $this->kode_register)->first();
+        
+        if ($wbs) {
+            $this->reportDetail = $wbs;
+            $this->currentView = 'response';
+        }
+    }
+
+    public function loadReportData()
+    {
+        $year = $this->selectedYear;
+
+        // Data laporan per bulan
+        $this->reportCountData = DB::table('wbs')
+            ->selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+            ->whereYear('created_at', $year)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('count', 'month')
+            ->toArray();
+
+        // Waktu rata-rata penyelesaian per bulan
+        $this->timeToAnswerData = DB::table('wbs')
+            ->join('wbs_processes', 'wbs.id', '=', 'wbs_processes.wbs_id')
+            ->selectRaw('MONTH(wbs.created_at) as month, AVG(DATEDIFF(wbs_processes.waktu_publish, wbs.created_at)) as avg_days')
+            ->whereYear('wbs.created_at', $year)
+            ->whereNotNull('wbs_processes.waktu_publish')
+            ->where('wbs_processes.status', 'T') // Completed status
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('avg_days', 'month')
+            ->map(function ($value) {
+                return $value ? round($value) : 0;
+            })
+            ->toArray();
+
+        // Distribusi status
+        $lastProcessSubquery = DB::table('wbs_processes')
+            ->select('wbs_id', DB::raw('MAX(id) as latest_process_id'))
+            ->groupBy('wbs_id');
+
+        $this->statusData = DB::table('wbs')
+            ->joinSub($lastProcessSubquery, 'latest_processes', function ($join) {
+                $join->on('wbs.id', '=', 'latest_processes.wbs_id');
+            })
+            ->join('wbs_processes', function ($join) {
+                $join->on('wbs.id', '=', 'wbs_processes.wbs_id')
+                     ->on('wbs_processes.id', '=', 'latest_processes.latest_process_id');
+            })
+            ->select('wbs_processes.status', DB::raw('COUNT(*) as count'))
+            ->whereYear('wbs.created_at', $year)
+            ->groupBy('wbs_processes.status')
+            ->get()
+            ->toArray();
+    }
+
+    public function updateReport()
+    {
+        $this->loadReportData();
+    }
+
     public function render()
     {
         if ($this->currentView === 'form') {
             return view('livewire.wbs.form');
+        } elseif ($this->currentView === 'status') {
+            return view('livewire.wbs.status');
+        } elseif ($this->currentView === 'report') {
+            return view('livewire.wbs.report');
+        } elseif ($this->currentView === 'response') {
+            return view('livewire.wbs.response');
         } else {
             return view('livewire.wbs.index');
         }
