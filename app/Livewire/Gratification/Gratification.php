@@ -50,6 +50,7 @@ class Gratification extends Component
             $this->currentView = 'status';
         } elseif (str_contains($currentRoute, 'gratification.report')) {
             $this->currentView = 'report';
+            $this->loadReportData();
         } else {
             $this->currentView = 'index'; // default
         }
@@ -202,61 +203,63 @@ class Gratification extends Component
         }
     }
 
+    public function loadReportData()
+    {
+        $year = $this->selectedYear;
+
+        // Data laporan per bulan
+        $this->reportCountData = DB::table('gratifications')
+            ->selectRaw('EXTRACT(MONTH FROM created_at) as month, COUNT(*) as count')
+            ->whereYear('created_at', $year)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('count', 'month')
+            ->toArray();
+
+        // Waktu rata-rata penyelesaian per bulan
+        $this->timeToAnswerData = DB::table('gratifications')
+            ->join('gratification_processes', 'gratifications.id', '=', 'gratification_processes.gratification_id')
+            ->selectRaw('EXTRACT(MONTH FROM gratifications.created_at) as month, AVG(EXTRACT(DAY FROM (gratification_processes.waktu_publish - gratifications.created_at))) as avg_days')
+            ->whereYear('gratifications.created_at', $year)
+            ->whereNotNull('gratification_processes.waktu_publish')
+            ->where('gratification_processes.status', 'T') // Completed status
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('avg_days', 'month')
+            ->map(function ($value) {
+                return $value ? round($value) : 0;
+            })
+            ->toArray();
+
+        // Distribusi status
+        $lastProcessSubquery = DB::table('gratification_processes')
+            ->select('gratification_id', DB::raw('MAX(id) as latest_process_id'))
+            ->groupBy('gratification_id');
+
+        $this->statusData = DB::table('gratifications')
+            ->joinSub($lastProcessSubquery, 'latest_processes', function ($join) {
+                $join->on('gratifications.id', '=', 'latest_processes.gratification_id');
+            })
+            ->join('gratification_processes', function ($join) {
+                $join->on('gratifications.id', '=', 'gratification_processes.gratification_id')
+                     ->on('gratification_processes.id', '=', 'latest_processes.latest_process_id');
+            })
+            ->select('gratification_processes.status', DB::raw('COUNT(*) as count'))
+            ->whereYear('gratifications.created_at', $year)
+            ->groupBy('gratification_processes.status')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'status' => $item->status,
+                    'count' => $item->count
+                ];
+            })
+            ->toArray();
+    }
+
     public function updateReport()
     {
-        // Ambil data dari database untuk laporan statistik
-        $year = $this->selectedYear;
-        
-        // Jumlah laporan per bulan
-        $this->reportCountData = [];
-        for ($month = 1; $month <= 12; $month++) {
-            $this->reportCountData[$month] = GratificationModel::whereYear('created_at', $year)
-                ->whereMonth('created_at', $month)
-                ->count();
-        }
-        
-        // Rata-rata waktu penyelesaian per bulan
-        // Ambil waktu antara laporan dibuat dan status berubah menjadi T (Terminasi)
-        $this->timeToAnswerData = [];
-        for ($month = 1; $month <= 12; $month++) {
-            $processes = GratificationProcess::whereHas('gratification', function($query) use ($year, $month) {
-                $query->whereYear('created_at', $year)
-                      ->whereMonth('created_at', $month);
-            })
-            ->where('status', 'T') // Hanya laporan yang sudah selesai
-            ->with('gratification')
-            ->get();
-            
-            $totalDays = 0;
-            foreach ($processes as $process) {
-                if ($process->gratification) {
-                    $days = $process->gratification->created_at->diffInDays($process->created_at);
-                    $totalDays += $days;
-                }
-            }
-            
-            $this->timeToAnswerData[$month] = $processes->count() > 0 ? round($totalDays / $processes->count()) : 0;
-        }
-        
-        // Distribusi status laporan berdasarkan status terbaru
-        $subquery = GratificationProcess::select('gratification_id', \DB::raw('MAX(created_at) as max_created_at'))
-            ->whereYear('created_at', $year)
-            ->groupBy('gratification_id');
-    
-        $latestProcesses = GratificationProcess::select('status', \DB::raw('count(*) as count'))
-            ->joinSub($subquery, 'latest_status', function($join) {
-                $join->on('gratification_processes.gratification_id', '=', 'latest_status.gratification_id')
-                     ->on('gratification_processes.created_at', '=', 'latest_status.max_created_at');
-            })
-            ->groupBy('status')
-            ->get();
-        
-        $this->statusData = $latestProcesses->map(function($item) {
-            return [
-                'status' => $item->status,
-                'count' => $item->count
-            ];
-        })->toArray();
+        $this->loadReportData();
     }
 
     public function render()
