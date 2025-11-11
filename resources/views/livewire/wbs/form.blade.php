@@ -108,6 +108,49 @@
                         @enderror
                     </div>
 
+                    <!-- Identity Card Attachment -->
+                    <div class="form-control">
+                        <label for="identity_card_attachment" class="label">
+                            <span class="label-text font-semibold">{{ __('ID Card Scan') }}</span>
+                        </label>
+                        <div class="relative">
+                            @if ($identity_card_attachment)
+                                <div class="flex items-center justify-center w-full h-32 border-2 border-dashed border-success rounded-xl bg-base-200/50">
+                                    <div class="text-center p-4">
+                                        <i class="bi bi-file-earmark-check-fill text-4xl text-success mb-2"></i>
+                                        <p class="text-sm font-semibold text-base-content truncate" title="{{ $identity_card_attachment->getClientOriginalName() }}">{{ $identity_card_attachment->getClientOriginalName() }}</p>
+                                        <p class="text-xs text-base-content/60">({{ round($identity_card_attachment->getSize() / 1024) }} KB)</p>
+                                        <button wire:click="$set('identity_card_attachment', null)" type="button" class="btn btn-xs btn-ghost text-error mt-2">
+                                            <i class="bi bi-x-lg"></i> {{ __('Remove') }}
+                                        </button>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="flex items-center justify-center w-full">
+                                    <label for="identity_card_attachment" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-base-300 rounded-xl cursor-pointer bg-base-200/50 hover:bg-base-200 transition-all duration-200">
+                                        <div wire:loading.remove wire:target="identity_card_attachment" class="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <i class="bi bi-cloud-arrow-up-fill text-4xl text-base-content/40 mb-2"></i>
+                                            <p class="mb-1 text-sm text-base-content/80"><span class="font-semibold">{{ __('Click to upload') }}</span> {{ __('or drag & drop') }}</p>
+                                            <p class="text-xs text-base-content/60">{{ __('Image (JPG, PNG, etc. Max 2MB)') }}</p>
+                                        </div>
+                                        <div wire:loading wire:target="identity_card_attachment" class="w-full h-full flex flex-col items-center justify-center">
+                                            <span class="loading loading-spinner loading-lg text-primary"></span>
+                                            <p class="mt-2 text-sm text-primary">{{ __('Uploading...') }}</p>
+                                        </div>
+                                        <input id="identity_card_attachment" type="file" class="hidden" wire:model="identity_card_attachment" accept="image/*">
+                                    </label>
+                                </div>
+                            @endif
+                        </div>
+                        @error('identity_card_attachment')
+                        <label class="label">
+                            <span class="label-text-alt text-error flex items-center">
+                                <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
+                            </span>
+                        </label>
+                        @enderror
+                    </div>
+
                     <!-- Address -->
                     <div class="form-control">
                         <label for="address" class="label">
