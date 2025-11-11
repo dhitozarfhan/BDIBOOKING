@@ -11,19 +11,25 @@ class WbsProcess extends Model
 
     protected $fillable = [
         'wbs_id',
-        'status',
-        'jawaban',
-        'jawaban_lampiran',
-        'waktu_publish',
+        'response_status_id',
+        'answer',
+        'answer_attachment',
+        'published_at',
     ];
 
     protected $casts = [
         'wbs_id' => 'integer',
-        'waktu_publish' => 'datetime',
+        'published_at' => 'datetime',
+        'response_status_id' => \App\Enums\ResponseStatus::class,
     ];
 
     public function wbs()
     {
         return $this->belongsTo(Wbs::class);
+    }
+
+    public function responseStatus()
+    {
+        return $this->belongsTo(ResponseStatus::class);
     }
 }

@@ -49,19 +49,19 @@
                                         <i class="bi bi-flag mr-2 text-primary"></i>{{ __('Report Status') }}
                                     </th>
                                     <td>
-                                        @if($reportDetail->status == 'I')
+                                        @if($reportDetail->status === \App\Enums\ResponseStatus::Initiation)
                                             <span class="badge badge-warning gap-2">
                                                 <i class="bi bi-hourglass-split"></i>{{ __('Initiation') }}
                                             </span>
-                                        @elseif($reportDetail->status == 'P')
+                                        @elseif($reportDetail->status === \App\Enums\ResponseStatus::Process)
                                             <span class="badge badge-info gap-2">
                                                 <i class="bi bi-arrow-repeat"></i>{{ __('Process') }}
                                             </span>
-                                        @elseif($reportDetail->status == 'D')
+                                        @elseif($reportDetail->status === \App\Enums\ResponseStatus::Disposition)
                                             <span class="badge badge-primary gap-2">
                                                 <i class="bi bi-send-check"></i>{{ __('Disposition') }}
                                             </span>
-                                        @elseif($reportDetail->status == 'T')
+                                        @elseif($reportDetail->status === \App\Enums\ResponseStatus::Termination)
                                             <span class="badge badge-success gap-2">
                                                 <i class="bi bi-check-circle"></i>{{ __('Completed') }}
                                             </span>
@@ -83,7 +83,7 @@
                                         <i class="bi bi-reply mr-2 text-secondary"></i>{{ __('Answer') }}
                                     </th>
                                     <td class="whitespace-pre-wrap">
-                                        @if($reportDetail->status == 'T')
+                                        @if($reportDetail->status === \App\Enums\ResponseStatus::Termination)
                                             <div class="bg-success/10 border-l-4 border-success p-3 rounded">
                                                 {{ $reportDetail->answer ?? __('No answer available.') }}
                                             </div>
@@ -94,7 +94,7 @@
                                         @endif
                                     </td>
                                 </tr>
-                                @if($reportDetail->status === 'T' && $reportDetail->attachment)
+                                @if($reportDetail->status === \App\Enums\ResponseStatus::Termination && $reportDetail->attachment)
                                     <tr>
                                         <th class="bg-base-200 font-semibold text-base-content">
                                             <i class="bi bi-paperclip mr-2 text-secondary"></i>{{ __('Report Attachment') }}
@@ -119,7 +119,7 @@
                                         </td>
                                     </tr>
                                 @endif
-                                @if($reportDetail->status === 'T' && $reportDetail->answer_attachment)
+                                @if($reportDetail->status === \App\Enums\ResponseStatus::Termination && $reportDetail->answer_attachment)
                                     <tr>
                                         <th class="bg-base-200 font-semibold text-base-content">
                                             <i class="bi bi-paperclip mr-2 text-secondary"></i>{{ __('Answer Attachment') }}

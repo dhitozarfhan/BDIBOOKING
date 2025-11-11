@@ -11,18 +11,24 @@ class GratificationProcess extends Model
 
     protected $fillable = [
         'gratification_id',
-        'status',
-        'jawaban',
-        'jawaban_lampiran',
-        'waktu_publish',
+        'response_status_id',
+        'answer',
+        'answer_attachment',
+        'published_at',
     ];
 
     protected $casts = [
-        'waktu_publish' => 'datetime',
+        'published_at' => 'datetime',
+        'response_status_id' => \App\Enums\ResponseStatus::class,
     ];
 
     public function gratification()
     {
         return $this->belongsTo(Gratification::class);
+    }
+
+    public function responseStatus()
+    {
+        return $this->belongsTo(ResponseStatus::class);
     }
 }

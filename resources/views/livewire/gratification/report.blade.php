@@ -80,13 +80,13 @@
                         <div class="card bg-base-200 shadow-xl">
                             <div class="card-body items-center text-center">
                                 <h4 class="card-title">
-                                    @if($status['status'] == 'I')
+                                    @if($status['status'] === \App\Enums\ResponseStatus::Initiation)
                                         <i class="bi bi-hourglass-split text-warning"></i> {{ __('Initiation') }}
-                                    @elseif($status['status'] == 'P')
+                                    @elseif($status['status'] === \App\Enums\ResponseStatus::Process)
                                         <i class="bi bi-arrow-repeat text-info"></i> {{ __('Process') }}
-                                    @elseif($status['status'] == 'D')
+                                    @elseif($status['status'] === \App\Enums\ResponseStatus::Disposition)
                                         <i class="bi bi-cursor-fill text-primary"></i> {{ __('Disposition') }}
-                                    @elseif($status['status'] == 'T')
+                                    @elseif($status['status'] === \App\Enums\ResponseStatus::Termination)
                                         <i class="bi bi-check-all text-success"></i> {{ __('Completed') }}
                                     @else
                                         <i class="bi bi-question-circle-fill"></i> {{ __('Unknown Status') }}

@@ -26,7 +26,7 @@
                         <p class="mt-1">
                             {{ session('message') }}
                             <span class="badge badge-success badge-lg ml-2 font-semibold">
-                                {{ session('kode_register') }}
+                                {{ session('registration_code') }}
                             </span>
                         </p>
                         <p class="text-sm mt-2 opacity-90">{{ __('Thank you for your participation in maintaining integrity.') }}</p>
@@ -58,9 +58,9 @@
                         <h4 class="text-xl font-bold text-base-content">{{ __('Reporter Information') }}</h4>
                     </div>
 
-                    <!-- Nama Pelapor -->
+                    <!-- Reporter Name -->
                     <div class="form-control">
-                        <label for="nama_pelapor" class="label">
+                        <label for="reporter_name" class="label">
                             <span class="label-text font-semibold">{{ __('Reporter Name') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative group">
@@ -68,13 +68,13 @@
                                 <i class="bi bi-person-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
                             <input
-                                id="nama_pelapor"
+                                id="reporter_name"
                                 type="text"
                                 class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200"
-                                wire:model.lazy="nama_pelapor"
+                                wire:model.lazy="reporter_name"
                                 placeholder="{{ __('Enter full name') }}">
                         </div>
-                        @error('nama_pelapor')
+                        @error('reporter_name')
                         <label class="label">
                             <span class="label-text-alt text-error flex items-center">
                                 <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
@@ -83,9 +83,9 @@
                         @enderror
                     </div>
 
-                    <!-- Nomor Identitas -->
+                    <!-- Identity Number -->
                     <div class="form-control">
-                        <label for="nomor_identitas" class="label">
+                        <label for="identity_number" class="label">
                             <span class="label-text font-semibold">{{ __('Identity Number (KTP/SIM)') }}</span>
                         </label>
                         <div class="relative group">
@@ -93,13 +93,13 @@
                                 <i class="bi bi-card-heading text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
                             <input
-                                id="nomor_identitas"
+                                id="identity_number"
                                 type="text"
                                 class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200"
-                                wire:model.lazy="nomor_identitas"
+                                wire:model.lazy="identity_number"
                                 placeholder="{{ __('Example: 3174012345678901') }}">
                         </div>
-                        @error('nomor_identitas')
+                        @error('identity_number')
                         <label class="label">
                             <span class="label-text-alt text-error flex items-center">
                                 <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
@@ -108,18 +108,18 @@
                         @enderror
                     </div>
 
-                    <!-- Alamat -->
+                    <!-- Address -->
                     <div class="form-control">
-                        <label for="alamat" class="label">
+                        <label for="address" class="label">
                             <span class="label-text font-semibold">{{ __('Address') }}</span>
                         </label>
                         <textarea
-                            id="alamat"
+                            id="address"
                             rows="3"
                             class="textarea textarea-bordered w-full focus:textarea-primary transition-all duration-200 resize-none"
-                            wire:model.lazy="alamat"
+                            wire:model.lazy="address"
                             placeholder="{{ __('Enter full address') }}"></textarea>
-                        @error('alamat')
+                        @error('address')
                         <label class="label">
                             <span class="label-text-alt text-error flex items-center">
                                 <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
@@ -128,9 +128,9 @@
                         @enderror
                     </div>
 
-                    <!-- Pekerjaan -->
+                    <!-- Occupation -->
                     <div class="form-control">
-                        <label for="pekerjaan" class="label">
+                        <label for="occupation" class="label">
                             <span class="label-text font-semibold">{{ __('Occupation') }}</span>
                         </label>
                         <div class="relative group">
@@ -138,13 +138,13 @@
                                 <i class="bi bi-briefcase-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
                             <input
-                                id="pekerjaan"
+                                id="occupation"
                                 type="text"
                                 class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200"
-                                wire:model.lazy="pekerjaan"
+                                wire:model.lazy="occupation"
                                 placeholder="{{ __('Example: Civil Servant') }}">
                         </div>
-                        @error('pekerjaan')
+                        @error('occupation')
                         <label class="label">
                             <span class="label-text-alt text-error flex items-center">
                                 <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
@@ -153,9 +153,9 @@
                         @enderror
                     </div>
 
-                    <!-- Telepon -->
+                    <!-- Phone -->
                     <div class="form-control">
-                        <label for="telepon" class="label">
+                        <label for="phone" class="label">
                             <span class="label-text font-semibold">{{ __('Phone') }}</span>
                         </label>
                         <div class="relative group">
@@ -163,13 +163,13 @@
                                 <i class="bi bi-telephone-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
                             <input
-                                id="telepon"
+                                id="phone"
                                 type="text"
                                 class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200"
-                                wire:model.lazy="telepon"
+                                wire:model.lazy="phone"
                                 placeholder="{{ __('Example: 08123456789') }}">
                         </div>
-                        @error('telepon')
+                        @error('phone')
                         <label class="label">
                             <span class="label-text-alt text-error flex items-center">
                                 <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
@@ -233,9 +233,9 @@
                         @enderror
                     </div>
 
-                    <!-- Judul Laporan -->
+                    <!-- Report Title -->
                     <div class="form-control">
-                        <label for="judul_laporan" class="label">
+                        <label for="report_title" class="label">
                             <span class="label-text font-semibold">{{ __('Report Title') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative group">
@@ -243,13 +243,13 @@
                                 <i class="bi bi-chat-left-text-fill text-base-content/40 group-focus-within:text-secondary transition-colors"></i>
                             </div>
                             <input
-                                id="judul_laporan"
+                                id="report_title"
                                 type="text"
                                 class="input input-bordered w-full pl-11 focus:input-secondary transition-all duration-200"
-                                wire:model.lazy="judul_laporan"
+                                wire:model.lazy="report_title"
                                 placeholder="{{ __('Brief summary of your report') }}">
                         </div>
-                        @error('judul_laporan')
+                        @error('report_title')
                         <label class="label">
                             <span class="label-text-alt text-error flex items-center">
                                 <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
@@ -258,21 +258,21 @@
                         @enderror
                     </div>
 
-                    <!-- Uraian Laporan -->
+                    <!-- Report Description -->
                     <div class="form-control">
-                        <label for="uraian_laporan" class="label">
+                        <label for="report_description" class="label">
                             <span class="label-text font-semibold">{{ __('Report Description') }} <span class="text-error">*</span></span>
                         </label>
                         <textarea
-                            id="uraian_laporan"
+                            id="report_description"
                             rows="10"
                             class="textarea textarea-bordered w-full focus:textarea-secondary transition-all duration-200 resize-none"
-                            wire:model.lazy="uraian_laporan"
+                            wire:model.lazy="report_description"
                             placeholder="{{ __('Describe the reported incident in detail') }}"></textarea>
                         <label class="label">
                             <span class="label-text-alt text-base-content/60">{{ __('Include as much clear information as possible to facilitate the investigation process') }}</span>
                         </label>
-                        @error('uraian_laporan')
+                        @error('report_description')
                         <label class="label">
                             <span class="label-text-alt text-error flex items-center">
                                 <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
@@ -281,41 +281,41 @@
                         @enderror
                     </div>
 
-                    <!-- Data Dukung -->
+                    <!-- Attachment -->
                     <div class="form-control">
-                        <label for="data_dukung" class="label">
+                        <label for="attachment" class="label">
                             <span class="label-text font-semibold">{{ __('Supporting Data') }}</span>
                         </label>
                         <div class="relative">
-                            @if ($data_dukung)
+                            @if ($attachment)
                                 <div class="flex items-center justify-center w-full h-32 border-2 border-dashed border-success rounded-xl bg-base-200/50">
                                     <div class="text-center p-4">
                                         <i class="bi bi-file-earmark-check-fill text-4xl text-success mb-2"></i>
-                                        <p class="text-sm font-semibold text-base-content truncate" title="{{ $data_dukung->getClientOriginalName() }}">{{ $data_dukung->getClientOriginalName() }}</p>
-                                        <p class="text-xs text-base-content/60">({{ round($data_dukung->getSize() / 1024) }} KB)</p>
-                                        <button wire:click="$set('data_dukung', null)" type="button" class="btn btn-xs btn-ghost text-error mt-2">
+                                        <p class="text-sm font-semibold text-base-content truncate" title="{{ $attachment->getClientOriginalName() }}">{{ $attachment->getClientOriginalName() }}</p>
+                                        <p class="text-xs text-base-content/60">({{ round($attachment->getSize() / 1024) }} KB)</p>
+                                        <button wire:click="$set('attachment', null)" type="button" class="btn btn-xs btn-ghost text-error mt-2">
                                             <i class="bi bi-x-lg"></i> {{ __('Remove') }}
                                         </button>
                                     </div>
                                 </div>
                             @else
                                 <div class="flex items-center justify-center w-full">
-                                    <label for="data_dukung" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-base-300 rounded-xl cursor-pointer bg-base-200/50 hover:bg-base-200 transition-all duration-200">
-                                        <div wire:loading.remove wire:target="data_dukung" class="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <label for="attachment" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-base-300 rounded-xl cursor-pointer bg-base-200/50 hover:bg-base-200 transition-all duration-200">
+                                        <div wire:loading.remove wire:target="attachment" class="flex flex-col items-center justify-center pt-5 pb-6">
                                             <i class="bi bi-cloud-arrow-up-fill text-4xl text-base-content/40 mb-2"></i>
                                             <p class="mb-1 text-sm text-base-content/80"><span class="font-semibold">{{ __('Click to upload') }}</span> {{ __('or drag & drop') }}</p>
                                             <p class="text-xs text-base-content/60">{{ __('DOC, PDF, ZIP (Max 10MB)') }}</p>
                                         </div>
-                                        <div wire:loading wire:target="data_dukung" class="w-full h-full flex flex-col items-center justify-center">
+                                        <div wire:loading wire:target="attachment" class="w-full h-full flex flex-col items-center justify-center">
                                             <span class="loading loading-spinner loading-lg text-primary"></span>
                                             <p class="mt-2 text-sm text-primary">{{ __('Uploading...') }}</p>
                                         </div>
-                                        <input id="data_dukung" type="file" class="hidden" wire:model="data_dukung" accept=".doc,.docx,.pdf,.zip,.jpg,.jpeg,.png">
+                                        <input id="attachment" type="file" class="hidden" wire:model="attachment" accept=".doc,.docx,.pdf,.zip,.jpg,.jpeg,.png">
                                     </label>
                                 </div>
                             @endif
                         </div>
-                        @error('data_dukung')
+                        @error('attachment')
                         <label class="label">
                             <span class="label-text-alt text-error flex items-center">
                                 <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}

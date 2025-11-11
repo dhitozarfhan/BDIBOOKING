@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Gratification;
 
+use App\Enums\ResponseStatus;
 use App\Models\Gratification as GratificationModel;
 use App\Models\GratificationProcess;
 use Illuminate\Support\Facades\DB;
@@ -13,21 +14,21 @@ class Gratification extends Component
     use WithFileUploads;
 
     // Variabel untuk formulir
-    public $nama_pelapor;
-    public $nomor_identitas;
-    public $alamat;
-    public $pekerjaan;
-    public $telepon;
+    public $reporter_name;
+    public $identity_number;
+    public $address;
+    public $occupation;
+    public $phone;
     public $email;
-    public $judul_laporan;
-    public $uraian_laporan;
-    public $data_dukung;
+    public $report_title;
+    public $report_description;
+    public $attachment;
 
     // Variabel untuk navigasi antar view
     public $currentView = 'index';
     
     // Variabel untuk cek status laporan
-    public $kode_register;
+    public $registration_code;
     public $showReportDetail = false;
     public $statusError = '';
     public $reportDetail;
@@ -59,22 +60,22 @@ class Gratification extends Component
     public function rules()
     {
         $rules = [
-            'nama_pelapor' => 'required|string|max:255',
-            'nomor_identitas' => 'nullable|string|max:255',
-            'alamat' => 'nullable|string',
-            'pekerjaan' => 'nullable|string|max:255',
-            'telepon' => 'nullable|string|max:20',
+            'reporter_name' => 'required|string|max:255',
+            'identity_number' => 'nullable|string|max:255',
+            'address' => 'nullable|string',
+            'occupation' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
-            'judul_laporan' => 'required|string|max:255',
-            'uraian_laporan' => 'required|string',
-            'data_dukung' => 'nullable|file|max:1024', // 1MB max
+            'report_title' => 'required|string|max:255',
+            'report_description' => 'required|string',
+            'attachment' => 'nullable|file|max:1024', // 1MB max
         ];
 
         if ($this->currentView === 'form') {
         }
 
         if ($this->currentView === 'status') {
-            $rules['kode_register'] = 'required|string|max:255';
+            $rules['registration_code'] = 'required|string|max:255';
         }
 
         return $rules;
@@ -83,7 +84,7 @@ class Gratification extends Component
     public function messages()
     {
         return [
-            'kode_register.required' => 'Kode register wajib diisi.',
+            'registration_code.required' => 'Kode register wajib diisi.',
         ];
     }
 
@@ -105,9 +106,9 @@ class Gratification extends Component
     public function resetForm()
     {
         $this->reset([
-            'nama_pelapor', 'nomor_identitas', 'alamat', 'pekerjaan', 
-            'telepon', 'email', 'judul_laporan', 'uraian_laporan', 
-            'data_dukung', 'kode_register',
+            'reporter_name', 'identity_number', 'address', 'occupation', 
+            'phone', 'email', 'report_title', 'report_description', 
+            'attachment', 'registration_code',
             'showReportDetail', 'statusError', 'reportDetail'
         ]);
     }
@@ -117,36 +118,36 @@ class Gratification extends Component
         $this->validate();
 
         $filePath = null;
-        if ($this->data_dukung) {
-            $filePath = $this->data_dukung->store('gratifications', 'public');
+        if ($this->attachment) {
+            $filePath = $this->attachment->store('gratifications', 'public');
         }
 
         // Generate kode register unik
-        $kodeRegister = $this->generateKodeRegister();
+        $registrationCode = $this->generateKodeRegister();
 
         $gratification = GratificationModel::create([
-            'nama_pelapor' => $this->nama_pelapor,
-            'nomor_identitas' => $this->nomor_identitas,
-            'alamat' => $this->alamat,
-            'pekerjaan' => $this->pekerjaan,
-            'telepon' => $this->telepon,
+            'reporter_name' => $this->reporter_name,
+            'identity_number' => $this->identity_number,
+            'address' => $this->address,
+            'occupation' => $this->occupation,
+            'phone' => $this->phone,
             'email' => $this->email,
-            'judul_laporan' => $this->judul_laporan,
-            'uraian_laporan' => $this->uraian_laporan,
-            'data_dukung' => $filePath,
-            'kode_register' => $kodeRegister,
+            'report_title' => $this->report_title,
+            'report_description' => $this->report_description,
+            'attachment' => $filePath,
+            'registration_code' => $registrationCode,
         ]);
 
         // Create the initial process record for the gratification
         GratificationProcess::create([
             'gratification_id' => $gratification->id,
-            'status' => 'I', // Set status awal sebagai Inisiasi
-            'jawaban' => null,
-            'waktu_publish' => null,
+            'response_status_id' => ResponseStatus::Initiation->value,
+            'answer' => null,
+            'published_at' => null,
         ]);
 
         session()->flash('message', 'Laporan gratifikasi Anda telah berhasil dikirim dengan kode register: ');
-        session()->flash('kode_register', $kodeRegister);
+        session()->flash('registration_code', $registrationCode);
 
         $this->resetForm();
 
@@ -156,7 +157,7 @@ class Gratification extends Component
     {
         do {
             $kode = strtoupper(substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 6));
-            $exists = GratificationModel::where('kode_register', $kode)->exists();
+            $exists = GratificationModel::where('registration_code', $kode)->exists();
         } while ($exists);
 
         return $kode;
@@ -165,32 +166,32 @@ class Gratification extends Component
     public function checkStatus()
     {
         $this->validate([
-            'kode_register' => 'required|string|max:255',
+            'registration_code' => 'required|string|max:255',
         ]);
 
-        $gratification = GratificationModel::where('kode_register', $this->kode_register)->first();
+        $gratification = GratificationModel::where('registration_code', $this->registration_code)->first();
 
         if ($gratification) {
             $process = $gratification->processes()->latest()->first();
 
             $reportDetail = new \stdClass();
-            $reportDetail->subject = $gratification->judul_laporan;
-            $reportDetail->name = $gratification->nama_pelapor;
-            $reportDetail->mobile = $gratification->telepon ? substr($gratification->telepon, 0, -4) . 'xxxx' : '-';
+            $reportDetail->subject = $gratification->report_title;
+            $reportDetail->name = $gratification->reporter_name;
+            $reportDetail->mobile = $gratification->phone ? substr($gratification->phone, 0, -4) . 'xxxx' : '-';
             $reportDetail->time_insert = $gratification->created_at;
-            $reportDetail->content = $gratification->uraian_laporan;
+            $reportDetail->content = $gratification->report_description;
 
             if ($process) {
-                $reportDetail->status = $process->status;
-                $reportDetail->answer = $process->jawaban;
+                $reportDetail->status = $process->response_status_id;
+                $reportDetail->answer = $process->answer;
             } else {
-                $reportDetail->status = 'I';
+                $reportDetail->status = ResponseStatus::Initiation;
                 $reportDetail->answer = null;
             }
 
             // Set both the original attachment and answer attachment
-            $reportDetail->attachment = $gratification->data_dukung; // Original gratification attachment
-            $reportDetail->answer_attachment = $process ? $process->jawaban_lampiran : null; // Answer attachment from process
+            $reportDetail->attachment = $gratification->attachment; // Original gratification attachment
+            $reportDetail->answer_attachment = $process ? $process->answer_attachment : null; // Answer attachment from process
 
             // Store the report detail in the session and redirect
             session()->flash('reportDetail', $reportDetail);
@@ -219,10 +220,10 @@ class Gratification extends Component
         // Waktu rata-rata penyelesaian per bulan
         $this->timeToAnswerData = DB::table('gratifications')
             ->join('gratification_processes', 'gratifications.id', '=', 'gratification_processes.gratification_id')
-            ->selectRaw('EXTRACT(MONTH FROM gratifications.created_at) as month, AVG(EXTRACT(DAY FROM (gratification_processes.waktu_publish - gratifications.created_at))) as avg_days')
+            ->selectRaw('EXTRACT(MONTH FROM gratifications.created_at) as month, AVG(EXTRACT(DAY FROM (gratification_processes.published_at - gratifications.created_at))) as avg_days')
             ->whereYear('gratifications.created_at', $year)
-            ->whereNotNull('gratification_processes.waktu_publish')
-            ->where('gratification_processes.status', 'T') // Completed status
+            ->whereNotNull('gratification_processes.published_at')
+            ->where('gratification_processes.response_status_id', ResponseStatus::Termination->value) // Completed status
             ->groupBy('month')
             ->orderBy('month')
             ->pluck('avg_days', 'month')
@@ -244,13 +245,13 @@ class Gratification extends Component
                 $join->on('gratifications.id', '=', 'gratification_processes.gratification_id')
                      ->on('gratification_processes.id', '=', 'latest_processes.latest_process_id');
             })
-            ->select('gratification_processes.status', DB::raw('COUNT(*) as count'))
+            ->select('gratification_processes.response_status_id', DB::raw('COUNT(*) as count'))
             ->whereYear('gratifications.created_at', $year)
-            ->groupBy('gratification_processes.status')
+            ->groupBy('gratification_processes.response_status_id')
             ->get()
             ->map(function ($item) {
                 return [
-                    'status' => $item->status,
+                    'status' => ResponseStatus::from($item->response_status_id),
                     'count' => $item->count
                 ];
             })

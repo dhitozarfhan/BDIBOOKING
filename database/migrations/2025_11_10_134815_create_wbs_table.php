@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('wbs', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_pelapor');
-            $table->string('nomor_identitas')->nullable();
-            $table->text('alamat')->nullable();
-            $table->string('pekerjaan')->nullable();
-            $table->string('telepon')->nullable();
+            $table->string('reporter_name');
+            $table->string('identity_number')->nullable();
+            $table->text('address')->nullable();
+            $table->string('occupation')->nullable();
+            $table->string('phone')->nullable();
             $table->string('email')->nullable();
-            $table->string('judul_laporan');
-            $table->text('uraian_laporan');
-            $table->string('data_dukung')->nullable();
+            $table->string('report_title');
+            $table->text('report_description');
+            $table->string('attachment')->nullable();
             $table->foreignId('violation_id')->nullable()->constrained('violations')->onDelete('set null');
-            $table->string('kode_register')->nullable()->unique();
+            $table->string('registration_code')->nullable()->unique();
             $table->timestamps();
         });
     }
