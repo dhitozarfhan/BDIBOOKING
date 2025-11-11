@@ -1,26 +1,26 @@
-<section class="bg-gray-100">
-    <div class="container mx-auto px-4 mt-6 mb-16">
-        <div class="card bg-white p-6 mb-5 shadow-lg rounded-lg">
-            <div class="mb-5">
-                <h2 class="text-4xl font-bold text-gray-800">Ibiza = Inkubator Bisnis</h2>
-                <h4 class="text-2xl font-semibold text-gray-800">Inkubator Bisnis Pazti Bisa</h4>
-            </div>
-            <div class="border-t border-b py-4">
-                <p class="leading-relaxed font-semibold text-lg">
+<section class="bg-base-200 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <div class="text-center">
+            <h1 class="text-3xl md:text-5xl font-bold mb-4 text-base-content">Ibiza = Inkubator Bisnis</h1>
+            <p class="max-w-3xl mx-auto text-base md:text-lg text-base-content/80">Inkubator Bisnis Pazti Bisa</p>
+            <a href="https://ibiza.id" class="btn btn-warning btn-lg mt-6 shadow-lg hover:shadow-xl">
+                <i class="fas fa-suitcase mr-2"></i> Daftar Sekarang
+            </a>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-12">
+        <div class="card bg-base-100 shadow-xl border border-base-200 mb-10">
+            <div class="card-body prose max-w-none">
+                <p class="leading-relaxed font-semibold text-lg text-base-content">
                     Balai Diklat Industri Yogyakarta mengambil semangat bahwa Inkubator Bisnis Pazti Bisa (Ibiza)
                     agar para tenant
                     memiliki jiwa optimis dalam mengembangkan usaha barunya. Tenant yang menjadi fokus Ibiza adalah
                     wirausaha di bidang
-                    industri <b class="text-green-500">plastik</b>, <b class="text-blue-500">kerajinan kulit</b> dan
-                    <b class="text-red-500">produk kulit</b>. </br>
-                    <a href="https://ibiza.id"
-                        class="btn mt-2 bg-yellow-500 text-black font-semibold py-2 px-4 items-center rounded-lg shadow-md hover:bg-yellow-600">
-                        <i class="fas fa-suitcase mr-2"></i> Daftar Sekarang
-                    </a>
+                    industri <b class="text-success">plastik</b>, <b class="text-info">kerajinan kulit</b> dan
+                    <b class="text-error">produk kulit</b>.
                 </p>
-            </div>
-            <div class="py-4">
-                <p class="text-gray-600">
+                <p class="text-base-content/80">
                     Program pengembangan wirausaha nasional telah menjadi salah satu program utama pemerintah
                     sebagaimana diamanatkan
                     dalam <b>Perpres No. 27 Tahun 2013</b> dalam penyelenggaraan kegiatan inkubator bisnis.
@@ -49,67 +49,71 @@
                 </p>
             </div>
         </div>
-        <h2 class="text-center text-3xl font-bold my-12">Layanan inkubasi yang didapatkan oleh para tenant</h2>
+
+        <h2 class="text-center text-3xl font-bold my-12 text-base-content">Layanan inkubasi yang didapatkan oleh para tenant</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Card 1 -->
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <span class="fa-stack fa-2x">
-                    <i class="fas fa-square fa-stack-2x text-green-500"></i>
-                    <i class="fas fa-hammer fa-stack-1x fa-inverse"></i>
-                </span>
-                <h2 class="text-xl font-bold mb-2">Pengembangan Produk</h2>
-                <ul class="list-none mb-4">
-                    <li class="flex items-center text-green-500 mb-2">
-                        <i class="fas fa-check mr-2"></i> Product Development
-                    </li>
-                    <li class="flex items-center text-green-500 mb-2">
-                        <i class="fas fa-check mr-2"></i> Product Simulation
-                    </li>
-                    <li class="flex items-center text-green-500 mb-2">
-                        <i class="fas fa-check mr-2"></i> Evaluasi Bulanan dan Akhir
-                    </li>
-                </ul>
-                <p class="text-gray-600">Bimbingan teknis, bimbingan manjerial, konseling tim, penjadwalan project,
-                    penentuan target capaian mingguan-bulanan, evaluasi capaian mingguan-bulanan, evaluasi akhir
-                    capaian Busines Model Canvas</p>
+            <div class="card bg-base-100 shadow-xl border border-base-200">
+                <div class="card-body items-center text-center">
+                    <div class="w-20 h-20 flex items-center justify-center rounded-full bg-success/10 text-success mb-4">
+                        <i class="fas fa-hammer text-3xl"></i>
+                    </div>
+                    <h3 class="card-title text-xl font-bold mb-2 text-base-content">Pengembangan Produk</h3>
+                    <ul class="list-none mb-4 text-left w-full">
+                        <li class="flex items-center text-base-content/80 mb-2">
+                            <i class="fas fa-check mr-2 text-success"></i> Product Development
+                        </li>
+                        <li class="flex items-center text-base-content/80 mb-2">
+                            <i class="fas fa-check mr-2 text-success"></i> Product Simulation
+                        </li>
+                        <li class="flex items-center text-base-content/80 mb-2">
+                            <i class="fas fa-check mr-2 text-success"></i> Evaluasi Bulanan dan Akhir
+                        </li>
+                    </ul>
+                    <p class="text-sm text-base-content/70">Bimbingan teknis, bimbingan manjerial, konseling tim, penjadwalan project,
+                        penentuan target capaian mingguan-bulanan, evaluasi capaian mingguan-bulanan, evaluasi akhir
+                        capaian Busines Model Canvas</p>
+                </div>
             </div>
             <!-- Card 2 -->
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <span class="fa-stack fa-2x">
-                    <i class="fas fa-square fa-stack-2x text-blue-500"></i>
-                    <i class="fas fa-shopping-bag fa-stack-1x fa-inverse"></i>
-                </span>
-                <h2 class="text-xl font-bold mb-2">Pengembangan Pasar</h2>
-                <ul class="list-none mb-4">
-                    <li class="flex items-center text-blue-500 mb-2">
-                        <i class="fas fa-check mr-2"></i> Konsultasi Bisnis
-                    </li>
-                    <li class="flex items-center text-blue-500 mb-2">
-                        <i class="fas fa-check mr-2"></i> Business Matching
-                    </li>
-                    <li class="flex items-center text-blue-500 mb-2">
-                        <i class="fas fa-check mr-2"></i> Evaluasi
-                    </li>
-                </ul>
-                <p class="text-gray-600">Bimbingan teknis, bimbingan manjerial, konseling tim, penjadwalan project,
-                    fasilitasi pameran/temu pelanggan, evaluasi akhir capaian Busines Model Canvas</p>
+            <div class="card bg-base-100 shadow-xl border border-base-200">
+                <div class="card-body items-center text-center">
+                    <div class="w-20 h-20 flex items-center justify-center rounded-full bg-info/10 text-info mb-4">
+                        <i class="fas fa-shopping-bag text-3xl"></i>
+                    </div>
+                    <h3 class="card-title text-xl font-bold mb-2 text-base-content">Pengembangan Pasar</h3>
+                    <ul class="list-none mb-4 text-left w-full">
+                        <li class="flex items-center text-base-content/80 mb-2">
+                            <i class="fas fa-check mr-2 text-info"></i> Konsultasi Bisnis
+                        </li>
+                        <li class="flex items-center text-base-content/80 mb-2">
+                            <i class="fas fa-check mr-2 text-info"></i> Business Matching
+                        </li>
+                        <li class="flex items-center text-base-content/80 mb-2">
+                            <i class="fas fa-check mr-2 text-info"></i> Evaluasi
+                        </li>
+                    </ul>
+                    <p class="text-sm text-base-content/70">Bimbingan teknis, bimbingan manjerial, konseling tim, penjadwalan project,
+                        fasilitasi pameran/temu pelanggan, evaluasi akhir capaian Busines Model Canvas</p>
+                </div>
             </div>
             <!-- Card 3 -->
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <span class="fa-stack fa-2x">
-                    <i class="fas fa-square fa-stack-2x text-red-500"></i>
-                    <i class="fas fa-graduation-cap fa-stack-1x fa-inverse"></i>
-                </span>
-                <h2 class="text-xl font-bold mb-2">Start Up Graduate Program</h2>
-                <ul class="list-none mb-4">
-                    <li class="flex items-center text-red-500 mb-2">
-                        <i class="fas fa-check mr-2"></i> Memantau perkembangan pasca program inkubasi
-                    </li>
-                    <li class="flex items-center text-red-500 mb-2">
-                        <i class="fas fa-check mr-2"></i> Pendampingan serta pemantauan tetap dilakukan dengan
-                        intensitas yang lebih rendah
-                    </li>
-                </ul>
+            <div class="card bg-base-100 shadow-xl border border-base-200">
+                <div class="card-body items-center text-center">
+                    <div class="w-20 h-20 flex items-center justify-center rounded-full bg-error/10 text-error mb-4">
+                        <i class="fas fa-graduation-cap text-3xl"></i>
+                    </div>
+                    <h3 class="card-title text-xl font-bold mb-2 text-base-content">Start Up Graduate Program</h3>
+                    <ul class="list-none mb-4 text-left w-full">
+                        <li class="flex items-center text-base-content/80 mb-2">
+                            <i class="fas fa-check mr-2 text-error"></i> Memantau perkembangan pasca program inkubasi
+                        </li>
+                        <li class="flex items-center text-base-content/80 mb-2">
+                            <i class="fas fa-check mr-2 text-error"></i> Pendampingan serta pemantauan tetap dilakukan dengan
+                            intensitas yang lebih rendah
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
