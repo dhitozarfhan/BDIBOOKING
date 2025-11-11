@@ -3,18 +3,23 @@
 namespace App\Livewire\Competency;
 
 use App\Services\SidiaClient;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Livewire\Attributes\Url;
 use Livewire\Component;
+use Livewire\WithPagination;
 use RuntimeException;
 
 class SkkniDetail extends Component
 {
+    use WithPagination;
+
     #[Url(as: 'tab')]
     public string $activeTab = 'details';
 
     public string $skkniId;
     public array $skkni = [];
-    public array $units = [];
+    public array $allUnits = []; // Changed from $units
     public ?string $error = null;
     public string $title = '';
 
@@ -50,7 +55,7 @@ class SkkniDetail extends Component
             }
 
             $this->skkni = $skkni;
-            $this->units = $this->normalizeUnits(data_get($data, 'unit', []));
+            $this->allUnits = $this->normalizeUnits(data_get($data, 'unit', [])); // Changed from $units
             $this->title = $skkni['judul'] ?? __('competency.skkni_details');
         } catch (RuntimeException $e) {
             $this->error = $e->getMessage();
@@ -61,14 +66,26 @@ class SkkniDetail extends Component
     {
         if (in_array($tab, ['details', 'units'], true)) {
             $this->activeTab = $tab;
+            $this->resetPage('unitsPage'); // Add this
         }
     }
 
     public function render()
     {
+        $unitsCollection = new Collection($this->allUnits); // Use allUnits
+        $perPage = 10; // Define per page
+
+        $paginatedUnits = new LengthAwarePaginator(
+            $unitsCollection->forPage($this->getPage('unitsPage'), $perPage),
+            $unitsCollection->count(),
+            $perPage,
+            $this->getPage('unitsPage'),
+            ['pageName' => 'unitsPage']
+        );
+
         return view('livewire.competency.skkni-detail', [
             'skkni' => $this->skkni,
-            'units' => $this->units,
+            'units' => $paginatedUnits, // Pass paginated units
             'error' => $this->error,
             'activeTab' => $this->activeTab,
         ])->title($this->title ?: __('competency.skkni_details'));
