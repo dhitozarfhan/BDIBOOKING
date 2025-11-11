@@ -165,7 +165,7 @@
                                     <tbody>
                                         @forelse ($assessors as $index => $assessor)
                                             <tr class="hover">
-                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $assessors->firstItem() + $index }}</td>
                                                 <td>
                                                     <div class="font-semibold">{{ $assessor['nama'] ?? '-' }}</div>
                                                     @php
@@ -216,6 +216,11 @@
                                     </tbody>
                                 </table>
                             </div>
+                            @if ($assessors->hasPages())
+                                <div class="mt-4">
+                                    {{ $assessors->links() }}
+                                </div>
+                            @endif
                         @elseif ($activeTab === 'tuk')
                             <div class="overflow-x-auto">
                                 <table class="table table-zebra w-full">
@@ -235,7 +240,7 @@
                                     <tbody>
                                         @forelse ($tuk as $index => $item)
                                             <tr class="hover">
-                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $tuk->firstItem() + $index }}</td>
                                                 <td>{{ $item['nama'] ?? '-' }}</td>
                                                 <td>{{ $item['jenis'] ?? '-' }}</td>
                                                 <td>{{ $item['kode'] ?? '-' }}</td>
@@ -255,6 +260,11 @@
                                     </tbody>
                                 </table>
                             </div>
+                            @if ($tuk->hasPages())
+                                <div class="mt-4">
+                                    {{ $tuk->links() }}
+                                </div>
+                            @endif
                         @elseif ($activeTab === 'scheme')
                             <div class="overflow-x-auto">
                                 <table class="table w-full">
@@ -278,7 +288,7 @@
                                                 $unitList = $schemeId ? ($unitsByScheme[$schemeId] ?? []) : [];
                                             @endphp
                                             <tr class="hover" wire:key="scheme-{{ $schemeId }}" id="tr-skema-{{ $schemeId }}">
-                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $schemes->firstItem() + $index }}</td>
                                                 <td>{{ $scheme['nama'] ?? '-' }}</td>
                                                 <td>{{ $scheme['jenis'] ?? '-' }}</td>
                                                 <td>{{ $scheme['kode'] ?? '-' }}</td>
@@ -336,6 +346,11 @@
                                     </tbody>
                                 </table>
                             </div>
+                            @if ($schemes->hasPages())
+                                <div class="mt-4">
+                                    {{ $schemes->links() }}
+                                </div>
+                            @endif
 
 
                         @endif
