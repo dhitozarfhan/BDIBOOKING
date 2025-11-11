@@ -3,12 +3,17 @@
 namespace App\Livewire\Competency;
 
 use App\Services\SidiaClient;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Livewire\Attributes\Url;
 use Livewire\Component;
+use Livewire\WithPagination;
 use RuntimeException;
 
 class LspDetail extends Component
 {
+    use WithPagination;
+
     #[Url(as: 'tab')]
     public string $activeTab = 'lsp';
 
@@ -17,9 +22,9 @@ class LspDetail extends Component
 
     public int $lspId;
     public array $lsp = [];
-    public array $assessors = [];
-    public array $tuk = [];
-    public array $schemes = [];
+    public array $allAssessors = [];
+    public array $allTuk = [];
+    public array $allSchemes = [];
     public array $unitsByScheme = [];
     public ?string $error = null;
     public string $title = '';
@@ -54,9 +59,9 @@ class LspDetail extends Component
             }
 
             $this->lsp = $lsp;
-            $this->assessors = $this->normalizeList(data_get($payload, 'data.asesor', []));
-            $this->tuk = $this->normalizeList(data_get($payload, 'data.tuk', []));
-            $this->schemes = $this->normalizeList(data_get($payload, 'data.skema', []));
+            $this->allAssessors = $this->normalizeList(data_get($payload, 'data.asesor', []));
+            $this->allTuk = $this->normalizeList(data_get($payload, 'data.tuk', []));
+            $this->allSchemes = $this->normalizeList(data_get($payload, 'data.skema', []));
             $this->unitsByScheme = $this->normalizeUnitsByScheme(data_get($payload, 'data.unit', []));
             $this->title = __('competency.lsp_details') . ' : ' . ($lsp['nama'] ?? '');
         } catch (RuntimeException $e) {
@@ -75,6 +80,9 @@ class LspDetail extends Component
         }
 
         $this->activeTab = $tab;
+        $this->resetPage('assessorsPage');
+        $this->resetPage('tukPage');
+        $this->resetPage('schemesPage');
 
         if ($tab !== 'scheme') {
             $this->expandedSchemeId = null;
@@ -89,11 +97,40 @@ class LspDetail extends Component
 
     public function render()
     {
+        $assessorsCollection = new Collection($this->allAssessors);
+        $tukCollection = new Collection($this->allTuk);
+        $schemesCollection = new Collection($this->allSchemes);
+        $perPage = 10;
+
+        $paginatedAssessors = new LengthAwarePaginator(
+            $assessorsCollection->forPage($this->getPage('assessorsPage'), $perPage),
+            $assessorsCollection->count(),
+            $perPage,
+            $this->getPage('assessorsPage'),
+            ['pageName' => 'assessorsPage']
+        );
+
+        $paginatedTuk = new LengthAwarePaginator(
+            $tukCollection->forPage($this->getPage('tukPage'), $perPage),
+            $tukCollection->count(),
+            $perPage,
+            $this->getPage('tukPage'),
+            ['pageName' => 'tukPage']
+        );
+
+        $paginatedSchemes = new LengthAwarePaginator(
+            $schemesCollection->forPage($this->getPage('schemesPage'), $perPage),
+            $schemesCollection->count(),
+            $perPage,
+            $this->getPage('schemesPage'),
+            ['pageName' => 'schemesPage']
+        );
+
         return view('livewire.competency.lsp-detail', [
             'lsp' => $this->lsp,
-            'assessors' => $this->assessors,
-            'tuk' => $this->tuk,
-            'schemes' => $this->schemes,
+            'assessors' => $paginatedAssessors,
+            'tuk' => $paginatedTuk,
+            'schemes' => $paginatedSchemes,
             'unitsByScheme' => $this->unitsByScheme,
             'error' => $this->error,
             'activeTab' => $this->activeTab,
@@ -128,7 +165,7 @@ class LspDetail extends Component
 
     protected function hasScheme(int $schemeId): bool
     {
-        foreach ($this->schemes as $scheme) {
+        foreach ($this->allSchemes as $scheme) {
             if (($scheme['id_skema'] ?? null) == $schemeId) {
                 return true;
             }
