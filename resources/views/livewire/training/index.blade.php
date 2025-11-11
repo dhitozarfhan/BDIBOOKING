@@ -9,10 +9,10 @@
         </nav>
     </div>
 
-    <section class="bg-base-200">
+    <section class="bg-base-100">
         <div class="container max-w-7xl mx-auto px-4">
             <div class="card" style="padding: 1rem;">
-                <div class="mb-4">
+                <div>
                     <h2 class="text-4xl font-bold">Diklat 3-in-1</h2>
                     <h4 class="text-2xl font-semibold mt-2 mb-4">Pelatihan, Sertifikasi, & Penempatan Kerja</h4>
                 </div>

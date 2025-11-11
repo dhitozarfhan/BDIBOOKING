@@ -181,7 +181,7 @@ class Wbs extends Component
 
         // Data laporan per bulan
         $this->reportCountData = DB::table('wbs')
-            ->selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+            ->selectRaw('EXTRACT(MONTH FROM created_at) as month, COUNT(*) as count')
             ->whereYear('created_at', $year)
             ->groupBy('month')
             ->orderBy('month')
@@ -191,7 +191,7 @@ class Wbs extends Component
         // Waktu rata-rata penyelesaian per bulan
         $this->timeToAnswerData = DB::table('wbs')
             ->join('wbs_processes', 'wbs.id', '=', 'wbs_processes.wbs_id')
-            ->selectRaw('MONTH(wbs.created_at) as month, AVG(DATEDIFF(wbs_processes.waktu_publish, wbs.created_at)) as avg_days')
+            ->selectRaw('EXTRACT(MONTH FROM wbs.created_at) as month, AVG(EXTRACT(DAY FROM (wbs_processes.waktu_publish - wbs.created_at))) as avg_days')
             ->whereYear('wbs.created_at', $year)
             ->whereNotNull('wbs_processes.waktu_publish')
             ->where('wbs_processes.status', 'T') // Completed status
@@ -220,6 +220,12 @@ class Wbs extends Component
             ->whereYear('wbs.created_at', $year)
             ->groupBy('wbs_processes.status')
             ->get()
+            ->map(function ($item) {
+                return [
+                    'status' => $item->status,
+                    'count' => $item->count
+                ];
+            })
             ->toArray();
     }
 
