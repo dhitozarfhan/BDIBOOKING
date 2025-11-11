@@ -173,6 +173,20 @@
                     window.location.reload();
                 }
             });
+
+            // Re-apply theme after Livewire navigation
+            document.addEventListener('livewire:navigated', () => {
+                try {
+                    const mode = localStorage.getItem('theme-mode') || 'default';
+                    let resolved = 'light';
+                    if (mode === 'prefersdark') {
+                        resolved = 'dark';
+                    } else {
+                        resolved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    }
+                    document.documentElement.setAttribute('data-theme', resolved);
+                } catch (_) {}
+            });
         });
         document.addEventListener("DOMContentLoaded", () => {
             const btn = document.getElementById("backToTopBtn");
