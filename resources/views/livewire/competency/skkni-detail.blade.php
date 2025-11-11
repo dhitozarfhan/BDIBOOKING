@@ -151,35 +151,39 @@
                                     </div>
                                 </div>
                             </div>
-                        @else
-                            <div class="overflow-x-auto">
-                                <table class="table table-zebra w-full">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>{{ __('competency.unit_code') }}</th>
-                                            <th>{{ __('competency.unit_title') }}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($units as $index => $unit)
-                                            <tr>
-                                                <td>{{ $index + 1 }}</td>
-                                                <td>{{ $unit['code'] ?? '-' }}</td>
-                                                <td>{{ $unit['title'] ?? '-' }}</td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="3" class="text-center text-base-content/60 py-6">
-                                                    <em>{{ __('competency.item_not_found', ['item' => __('competency.unit')]) }}</em>
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
-                        @endif
-                    </div>
+                                                    @else
+                                                        <div class="overflow-x-auto">
+                                                            <table class="table table-zebra w-full">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>#</th>
+                                                                        <th>{{ __('competency.unit_code') }}</th>
+                                                                        <th>{{ __('competency.unit_title') }}</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @forelse ($units as $index => $unit)
+                                                                        <tr>
+                                                                            <td>{{ $units->firstItem() + $index }}</td>
+                                                                            <td>{{ $unit['code'] ?? '-' }}</td>
+                                                                            <td>{{ $unit['title'] ?? '-' }}</td>
+                                                                        </tr>
+                                                                    @empty
+                                                                        <tr>
+                                                                            <td colspan="3" class="text-center text-base-content/60 py-6">
+                                                                                <em>{{ __('competency.item_not_found', ['item' => __('competency.unit')]) }}</em>
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforelse
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        @if ($units->hasPages())
+                                                            <div class="mt-4">
+                                                                {{ $units->links() }}
+                                                            </div>
+                                                        @endif
+                                                    @endif                    </div>
 
                     <div class="card-footer flex flex-col sm:flex-row justify-center items-center gap-4 bg-base-200/60 px-8 py-4 border-t border-base-300 mt-6">
                         @if (!empty($skkni['skkni_id']))
