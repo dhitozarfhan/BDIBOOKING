@@ -63,6 +63,12 @@
                         <a href="{{ route('wbs.form') }}" class="btn btn-primary">
                             <i class="bi bi-chat-left-text-fill"></i> {{ __('Report Form') }}
                         </a>
+                        <a href="{{ route('wbs.status') }}" class="btn btn-info">
+                            <i class="bi bi-check-circle-fill"></i> {{ __('Report Status') }}
+                        </a>
+                        <a href="{{ route('wbs.report') }}" class="btn btn-accent">
+                            <i class="bi bi-bar-chart-fill"></i> {{ __('Statistical Report') }}
+                        </a>
                     </div>
                 </div>
             </div>

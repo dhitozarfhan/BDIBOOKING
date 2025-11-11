@@ -1,7 +1,7 @@
 <div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
         {{-- Breadcrumbs --}}
-        <nav class="text-sm breadcrumbs mb-4">
+        <nav class="text-sm breadcrumbs">
             <ul>
                 <li><a href="{{ url('/') }}"><i class="bi bi-house-fill"></i></a></li>
                 <li>Diklat 3-in-1</li>

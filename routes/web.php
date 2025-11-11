@@ -103,6 +103,8 @@ Route::get('/gratification/response', App\Livewire\Gratification\Response::class
 // Rute untuk Laporan WBS
 Route::get('/wbs', App\Livewire\Wbs\Wbs::class)->name('wbs');
 Route::get('/wbs/form', App\Livewire\Wbs\Wbs::class)->name('wbs.form');
+Route::get('/wbs/status', App\Livewire\Wbs\Wbs::class)->name('wbs.status');
+Route::get('/wbs/report', App\Livewire\Wbs\Wbs::class)->name('wbs.report');
 
 
 /*
