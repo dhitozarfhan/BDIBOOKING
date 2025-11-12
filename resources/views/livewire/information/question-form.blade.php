@@ -16,7 +16,7 @@
                     </div>
                 @endif
                 <form wire:submit.prevent="save" class="my-5 space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 gap-6">
                         <!-- Subject -->
                         <div class="form-control">
                             <label for="subject" class="label"><span class="label-text font-medium">{{ __('information.subject') }}</span></label>
@@ -144,7 +144,6 @@
         </div>
         <div class="lg:col-span-4">
             <div class="bg-base-100 rounded-lg shadow p-6">
-                <h3 class="text-xl font-bold text-base-content mb-4">{{ __('Information') }}</h3>
                 @include('components.information-sidebar')
             </div>
         </div>
