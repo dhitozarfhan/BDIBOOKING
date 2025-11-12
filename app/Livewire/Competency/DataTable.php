@@ -151,7 +151,7 @@ class DataTable extends Component
                 ['key' => 'logo', 'label' => '', 'type' => 'image'],
                 ['key' => 'nama', 'label' => __('competency.lsp_name'), 'type' => 'link'],
                 ['key' => 'jenis', 'label' => __('competency.lsp_type')],
-                ['key' => 'alamat', 'label' => __('competency.address')],
+                ['key' => 'alamat', 'label' => __('competency.address'), 'type' => 'tooltip'],
                 ['key' => 'kode_kota', 'label' => __('competency.city_code')],
                 ['key' => 'kota', 'label' => __('competency.city')],
                 ['key' => 'provinsi', 'label' => __('competency.province')],
