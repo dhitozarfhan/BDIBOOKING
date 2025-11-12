@@ -1,9 +1,9 @@
 <div class="container max-w-7xl flex mx-auto px-4 mt-10">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
         <div class="lg:col-span-8">
-            <div class="bg-base-100 p-8 rounded-lg shadow-md w-full mb-16 border border-base-300">
+            <div class="w-full mb-16">
                 <h1 class="text-4xl font-bold text-base-content">{{ __('information.public_question') }}</h1>
-                <hr class="my-8">
+                <br>
                 @if (session()->has('message'))
                     <div class="alert alert-success shadow-lg" role="alert">
                         <i class="bi bi-check-circle-fill"></i>
@@ -63,7 +63,7 @@
                                     <div class="flex items-center justify-center w-full h-32 border-2 border-dashed border-success rounded-xl bg-base-200/50 overflow-hidden">
                                         @if($identity_card_attachment instanceof \Illuminate\Http\UploadedFile && $identity_card_attachment->guessExtension() && in_array($identity_card_attachment->guessExtension(), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']))
                                             <div class="relative w-full h-full flex items-center justify-center">
-                                                <img src="{{ $identity_card_attachment->temporaryUrl() }}" alt="{{ __('ID Card Preview') }}" class="object-contain max-h-24 max-w-full">
+                                                <img src="{{ $identity_card_attachment->temporaryUrl() }}" alt="{{ __('ID Card Preview') }}" class="w-full" style="aspect-ratio: 2/1; object-fit: contain;">
                                                 <button wire:click="$set('identity_card_attachment', null)" type="button" class="absolute top-2 right-2 btn btn-xs btn-circle btn-error">
                                                     <i class="bi bi-x-lg"></i>
                                                 </button>
