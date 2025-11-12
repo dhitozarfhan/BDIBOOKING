@@ -37,7 +37,7 @@
 
     <div class="space-y-16 sm:space-y-24 mt-10">
         <!-- Hero Section -->
-        <section class="pt-12 px-4 sm:px-6 lg:px-8">
+        <section>
             <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-base-content sm:text-6xl">Inkubator Bisnis Pazti Bisa (Ibiza)</h1>
             <p class="mt-6 text-lg leading-8 text-base-content/80">Menjadi wirausaha tangguh di industri plastik, kerajinan, dan produk kulit.</p>
             <div class="mt-10 flex items-center gap-x-6">
@@ -49,18 +49,18 @@
         </section>
 
         <!-- Description Section -->
-        <section class="bg-base-200/50 rounded-2xl p-8 md:p-12">
+        <section class="bg-base-200/50 rounded-2xl mt-12 md:p-12">
             <div class="mx-auto max-w-7xl">
                 <div class="grid grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:grid-cols-2 lg:items-start">
                     <div class="lg:pr-4">
-                        <div class="lg:max-w-lg">
+                        <div class="lg:max-w-lg mx-auto text-center">
                             <h2 class="text-base font-semibold leading-7 text-primary">Tentang Program</h2>
                             <p class="mt-2 text-3xl font-bold tracking-tight text-base-content sm:text-4xl">Membentuk Wirausaha Industri Unggul</p>
                             <p class="mt-6 text-lg leading-8 text-base-content/80">
                                 Balai Diklat Industri Yogyakarta mengambil semangat bahwa Inkubator Bisnis Pazti Bisa (Ibiza) agar para tenant memiliki jiwa optimis dalam mengembangkan usaha barunya.
                             </p>
                         </div>
-                        <div class="mt-8 border-t border-base-300 pt-8">
+                        <div class="mt-2 border-t border-base-300 pt-8">
                             <h3 class="text-lg font-semibold text-base-content">Fokus Bidang Industri</h3>
                             <div class="mt-4 flex flex-wrap gap-4">
                                 <span class="badge badge-lg badge-success badge-outline"><i class="bi bi-box-fill mr-2"></i> Plastik</span>
@@ -96,8 +96,8 @@
         </section>
 
         <!-- Services Section -->
-        <section class="px-4 sm:px-6 lg:px-8">
-            <div class="mx-auto max-w-7xl">
+        <section>
+            <div class="mx-auto max-w-7xl mt-12">
                 <div class="text-center max-w-2xl mx-auto">
                     <h2 class="text-3xl font-bold tracking-tight text-base-content sm:text-4xl">Layanan Inkubasi</h2>
                     <p class="mt-4 text-lg leading-8 text-base-content/80">
