@@ -105,7 +105,7 @@
                                                 @endforeach
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody x-data="{ expandedRow: null }">
                                             @foreach ($rows as $row)
                                                 <tr class="hover align-top">
                                                     @foreach ($columns as $column)
@@ -214,6 +214,29 @@
                                                                         </div>
                                                                     @else
                                                                         {{ $value ?? '-' }}
+                                                                    @endif
+                                                                    @break
+
+                                                                @case('tooltip')
+                                                                    @if ($value)
+                                                                        @php $rowKey = $loop->parent->index; @endphp
+                                                                        <div x-data="{ fullText: '{{ e($value) }}', truncatedText: '{{ e(\Illuminate\Support\Str::limit($value, 40)) }}' }">
+                                                                            <span
+                                                                                x-show="expandedRow !== {{ $rowKey }}"
+                                                                                @click="expandedRow = {{ $rowKey }}"
+                                                                                class="cursor-pointer"
+                                                                                x-text="truncatedText"
+                                                                            ></span>
+                                                                            <span
+                                                                                x-show="expandedRow === {{ $rowKey }}"
+                                                                                @click="expandedRow = null"
+                                                                                class="cursor-pointer"
+                                                                                x-text="fullText"
+                                                                                style="display: none;"
+                                                                            ></span>
+                                                                        </div>
+                                                                    @else
+                                                                        -
                                                                     @endif
                                                                     @break
 
