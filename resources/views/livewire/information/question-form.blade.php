@@ -63,7 +63,7 @@
                                     <div class="flex items-center justify-center w-full h-32 border-2 border-dashed border-success rounded-xl bg-base-200/50 overflow-hidden">
                                         @if($identity_card_attachment instanceof \Illuminate\Http\UploadedFile && $identity_card_attachment->guessExtension() && in_array($identity_card_attachment->guessExtension(), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']))
                                             <div class="relative w-full h-full flex items-center justify-center">
-                                                <img src="{{ $identity_card_attachment->temporaryUrl() }}" alt="{{ __('ID Card Preview') }}" class="w-full" style="aspect-ratio: 2/1; object-fit: contain;">
+                                                <img src="{{ $identity_card_attachment->temporaryUrl() }}" alt="{{ __('ID Card Preview') }}" class="w-full" style="aspect-ratio: 1/2; object-fit: contain;">
                                                 <button wire:click="$set('identity_card_attachment', null)" type="button" class="absolute top-2 right-2 btn btn-xs btn-circle btn-error">
                                                     <i class="bi bi-x-lg"></i>
                                                 </button>

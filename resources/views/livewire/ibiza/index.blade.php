@@ -35,12 +35,12 @@
         </nav>
     @endif
 
-    <div class="space-y-16 sm:space-y-24">
+    <div class="space-y-16 sm:space-y-24 mt-10">
         <!-- Hero Section -->
-        <section class="text-center pt-12 px-4 sm:px-6 lg:px-8">
+        <section class="pt-12 px-4 sm:px-6 lg:px-8">
             <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-base-content sm:text-6xl">Inkubator Bisnis Pazti Bisa (Ibiza)</h1>
-            <p class="mt-6 max-w-2xl mx-auto text-lg leading-8 text-base-content/80">Menjadi wirausaha tangguh di industri plastik, kerajinan, dan produk kulit.</p>
-            <div class="mt-10 flex items-center justify-center gap-x-6">
+            <p class="mt-6 text-lg leading-8 text-base-content/80">Menjadi wirausaha tangguh di industri plastik, kerajinan, dan produk kulit.</p>
+            <div class="mt-10 flex items-center gap-x-6">
                 <a href="#" class="btn btn-primary btn-lg shadow-lg hover:shadow-xl transition-shadow">
                     <i class="bi bi-rocket-takeoff-fill mr-2"></i>
                     Daftar Sekarang
