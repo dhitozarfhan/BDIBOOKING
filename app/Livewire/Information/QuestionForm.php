@@ -3,15 +3,19 @@
 namespace App\Livewire\Information;
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 use App\Models\Question;
 use Illuminate\Support\Str;
 
 class QuestionForm extends Component
 {
+    use WithFileUploads;
     public $subject;
     public $content;
     public $name;
+    public $identity_number;
+    public $identity_card_attachment;
     public $mobile;
     public $email;
 
@@ -19,6 +23,8 @@ class QuestionForm extends Component
         'subject' => 'required',
         'content' => 'required',
         'name' => 'required',
+        'identity_number' => 'nullable|string',
+        'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
         'mobile' => 'required',
         'email' => 'required|email',
     ];
@@ -27,10 +33,17 @@ class QuestionForm extends Component
     {
         $this->validate();
 
+        $identityCardPath = null;
+        if ($this->identity_card_attachment) {
+            $identityCardPath = $this->identity_card_attachment->store('identity_cards', 'public');
+        }
+
         Question::create([
             'subject' => $this->subject,
             'content' => $this->content,
             'name' => $this->name,
+            'identity_number' => $this->identity_number,
+            'identity_card_attachment' => $identityCardPath,
             'mobile' => $this->mobile,
             'email' => $this->email,
         ]);
