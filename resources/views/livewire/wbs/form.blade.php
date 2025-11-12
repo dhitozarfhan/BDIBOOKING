@@ -115,15 +115,24 @@
                         </label>
                         <div class="relative">
                             @if ($identity_card_attachment)
-                                <div class="flex items-center justify-center w-full h-32 border-2 border-dashed border-success rounded-xl bg-base-200/50">
-                                    <div class="text-center p-4">
-                                        <i class="bi bi-file-earmark-check-fill text-4xl text-success mb-2"></i>
-                                        <p class="text-sm font-semibold text-base-content truncate" title="{{ $identity_card_attachment->getClientOriginalName() }}">{{ $identity_card_attachment->getClientOriginalName() }}</p>
-                                        <p class="text-xs text-base-content/60">({{ round($identity_card_attachment->getSize() / 1024) }} KB)</p>
-                                        <button wire:click="$set('identity_card_attachment', null)" type="button" class="btn btn-xs btn-ghost text-error mt-2">
-                                            <i class="bi bi-x-lg"></i> {{ __('Remove') }}
-                                        </button>
-                                    </div>
+                                <div class="flex items-center justify-center w-full h-32 border-2 border-dashed border-success rounded-xl bg-base-200/50 overflow-hidden">
+                                    @if($identity_card_attachment instanceof \Illuminate\Http\UploadedFile && $identity_card_attachment->guessExtension() && in_array($identity_card_attachment->guessExtension(), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']))
+                                        <div class="relative w-full h-full flex items-center justify-center">
+                                            <img src="{{ $identity_card_attachment->temporaryUrl() }}" alt="{{ __('ID Card Preview') }}" class="object-contain max-h-24 max-w-full">
+                                            <button wire:click="$set('identity_card_attachment', null)" type="button" class="absolute top-2 right-2 btn btn-xs btn-circle btn-error">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        </div>
+                                    @else
+                                        <div class="text-center p-4">
+                                            <i class="bi bi-file-earmark-check-fill text-4xl text-success mb-2"></i>
+                                            <p class="text-sm font-semibold text-base-content truncate" title="{{ $identity_card_attachment->getClientOriginalName() }}">{{ $identity_card_attachment->getClientOriginalName() }}</p>
+                                            <p class="text-xs text-base-content/60">({{ round($identity_card_attachment->getSize() / 1024) }} KB)</p>
+                                            <button wire:click="$set('identity_card_attachment', null)" type="button" class="btn btn-xs btn-ghost text-error mt-2">
+                                                <i class="bi bi-x-lg"></i> {{ __('Remove') }}
+                                            </button>
+                                        </div>
+                                    @endif
                                 </div>
                             @else
                                 <div class="flex items-center justify-center w-full">
