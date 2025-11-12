@@ -176,12 +176,9 @@ class DataTable extends Component
                 ['key' => 'jenis', 'label' => __('competency.tuk_type')],
                 ['key' => 'lsp', 'label' => __('competency.lsp_name'), 'type' => 'link'],
                 ['key' => 'alamat', 'label' => __('competency.address')],
-                ['key' => 'kode_kota', 'label' => __('competency.city_code')],
                 ['key' => 'kota', 'label' => __('competency.city')],
                 ['key' => 'provinsi', 'label' => __('competency.province')],
                 ['key' => 'mobile', 'label' => __('competency.handphone')],
-                ['key' => 'telepon', 'label' => __('competency.phone')],
-                ['key' => 'fax', 'label' => __('competency.fax')],
                 ['key' => 'email', 'label' => __('competency.email')],
             ],
             'scheme' => [
@@ -351,12 +348,9 @@ class DataTable extends Component
                         : null,
                 ],
                 'alamat' => $item['alamat'] ?? '-',
-                'kode_kota' => $item['id_kota'] ?? '-',
                 'kota' => $item['kota'] ?? '-',
                 'provinsi' => $item['provinsi'] ?? '-',
                 'mobile' => $item['mobile'] ?? '-',
-                'telepon' => $item['telepon'] ?? '-',
-                'fax' => $item['fax'] ?? '-',
                 'email' => $item['email'] ?? '-',
             ];
         }, $items);
