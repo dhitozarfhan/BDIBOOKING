@@ -175,7 +175,7 @@ class DataTable extends Component
                 ['key' => 'nama', 'label' => __('competency.tuk_name')],
                 ['key' => 'jenis', 'label' => __('competency.tuk_type')],
                 ['key' => 'lsp', 'label' => __('competency.lsp_name'), 'type' => 'link'],
-                ['key' => 'alamat', 'label' => __('competency.address')],
+                ['key' => 'alamat', 'label' => __('competency.address'), 'type' => 'tooltip'],
                 ['key' => 'kota', 'label' => __('competency.city')],
                 ['key' => 'provinsi', 'label' => __('competency.province')],
                 ['key' => 'mobile', 'label' => __('competency.handphone')],
