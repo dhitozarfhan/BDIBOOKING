@@ -37,22 +37,22 @@
                     <div class="card-body">
                         <div class="tabs tabs-boxed mb-6">
                             <button wire:click="setTab('lsp')"
-                                class="tab {{ $activeTab === 'lsp' ? 'tab-active' : '' }}">
+                                class="tab {{ $activeTab === 'lsp' ? 'tab-active text-blue-600 font-bold' : '' }}">
                                 <i class="bi bi-list-ul mr-2"></i>
                                 {{ __('competency.details') }}
                             </button>
                             <button wire:click="setTab('assessor')"
-                                class="tab {{ $activeTab === 'assessor' ? 'tab-active' : '' }}">
+                                class="tab {{ $activeTab === 'assessor' ? 'tab-active text-blue-600 font-bold' : '' }}">
                                 <i class="bi bi-people mr-2"></i>
                                 {{ __('competency.assessor_data') }}
                             </button>
                             <button wire:click="setTab('tuk')"
-                                class="tab {{ $activeTab === 'tuk' ? 'tab-active' : '' }}">
+                                class="tab {{ $activeTab === 'tuk' ? 'tab-active text-blue-600 font-bold' : '' }}">
                                 <i class="bi bi-building mr-2"></i>
                                 {{ __('competency.tuk_data') }}
                             </button>
                             <button wire:click="setTab('scheme')"
-                                class="tab {{ $activeTab === 'scheme' ? 'tab-active' : '' }}">
+                                class="tab {{ $activeTab === 'scheme' ? 'tab-active text-blue-600 font-bold' : '' }}">
                                 <i class="bi bi-diagram-3 mr-2"></i>
                                 {{ __('competency.scheme_data') }}
                             </button>
