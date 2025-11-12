@@ -37,11 +37,11 @@
                     <div class="card-body">
                         <div class="tabs tabs-boxed mb-6">
                             <button wire:click="switchTab('details')"
-                                class="tab {{ $activeTab === 'details' ? 'tab-active' : '' }}">
+                                class="tab {{ $activeTab === 'details' ? 'tab-active text-blue-600 font-bold' : '' }}">
                                 {{ __('competency.details') }}
                             </button>
                             <button wire:click="switchTab('units')"
-                                class="tab {{ $activeTab === 'units' ? 'tab-active' : '' }}">
+                                class="tab {{ $activeTab === 'units' ? 'tab-active text-blue-600 font-bold' : '' }}">
                                 {{ __('competency.competency_unit') }}
                             </button>
                         </div>
