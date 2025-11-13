@@ -6,7 +6,7 @@ use App\Enums\PermissionType;
 use App\Filament\Resources\WbsResource\Pages;
 use App\Filament\Resources\WbsResource\RelationManagers\ReportAnswersRelationManager;
 use App\Models\ResponseStatus;
-use App\Models\User;
+use App\Models\Employee; // Corrected from User
 use App\Models\Violation;
 use App\Models\Wbs;
 use App\Models\WbsProcess;
@@ -194,7 +194,7 @@ class WbsResource extends Resource
                             ->openable(),
                         Forms\Components\Select::make('disposition_to')
                             ->label(__('Disposition To'))
-                            ->options(User::all()->pluck('name', 'id'))
+                            ->options(Employee::all()->pluck('name', 'id')) // Corrected from User
                             ->searchable(),
                     ])
                     ->action(function (array $data, $record) {
