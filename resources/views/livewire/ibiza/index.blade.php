@@ -36,11 +36,10 @@
     @endif
 
     <div class="space-y-16 sm:space-y-24 mt-10">
-        <!-- Hero Section -->
-        <section>
+        <section class="text-center">
             <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-base-content sm:text-6xl">Inkubator Bisnis Pazti Bisa (Ibiza)</h1>
             <p class="mt-6 text-lg leading-8 text-base-content/80">Menjadi wirausaha tangguh di industri plastik, kerajinan, dan produk kulit.</p>
-            <div class="mt-10 flex items-center gap-x-6">
+            <div class="mt-10 flex items-center gap-x-6 justify-center">
                 <a href="#" class="btn btn-primary btn-lg shadow-lg hover:shadow-xl transition-shadow">
                     <i class="bi bi-rocket-takeoff-fill mr-2"></i>
                     Daftar Sekarang
@@ -60,16 +59,15 @@
                                 Balai Diklat Industri Yogyakarta mengambil semangat bahwa Inkubator Bisnis Pazti Bisa (Ibiza) agar para tenant memiliki jiwa optimis dalam mengembangkan usaha barunya.
                             </p>
                         </div>
-                        <div class="mt-2 border-t border-base-300 pt-8">
+                        <div class="mt-2 pt-8 text-center">
                             <h3 class="text-lg font-semibold text-base-content">Fokus Bidang Industri</h3>
-                            <div class="mt-4 flex flex-wrap gap-4">
+                            <div class="mt-4 flex flex-wrap gap-4 justify-center">
                                 <span class="badge badge-lg badge-success badge-outline"><i class="bi bi-box-fill mr-2"></i> Plastik</span>
                                 <span class="badge badge-lg badge-info badge-outline"><i class="bi bi-gem mr-2"></i> Kerajinan Kulit</span>
                                 <span class="badge badge-lg badge-error badge-outline"><i class="bi bi-handbag-fill mr-2"></i> Produk Kulit</span>
                             </div>
                         </div>
                     </div>
-
 
                     <div class="lg:pl-4 text-base-content/80 space-y-6 text-base leading-7">
                         <div>
@@ -81,7 +79,7 @@
                                 <b>Undang-undang No. 3 Tahun 2014</b> tentang Perindustrian menyebutkan bahwa pembinaan wirausaha industri juga mencakup pembinaan wirausaha yang bertujuan untuk menciptakan wirausaha yang berkarakter, bermental kewirausahaan, serta berkompetensi di bidang usahanya.
                             </p>
                         </div>
-                        <div class="border-t border-base-300 pt-6">
+                        <div class="pt-6">
                             <h3 class="font-semibold text-base-content">Mengapa Inkubator?</h3>
                             <p class="mt-2">
                                 Bisnis pada tahap pemula (<em>start up</em>) menghadapi risiko kegagalan yang tinggi. Inkubator hadir sebagai infrastruktur untuk memperkecil risiko tersebut dengan menyediakan fasilitas dan aktivitas bagi pengusaha pemula (tenant).
