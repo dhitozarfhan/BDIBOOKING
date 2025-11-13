@@ -26,6 +26,11 @@ class WbsResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Report');
+    }
+
     public static function getNavigationSort(): ?int
     {
         return 7; // Position after Gratification (6)
@@ -34,9 +39,8 @@ class WbsResource extends Resource
     public static function canViewAny(): bool
     {
         $user = Auth::user();
-        // Allow access to users with Employee permission OR specific NIP
-        return $user->hasPermissionTo(PermissionType::Employee->value) || 
-               ($user->nip === '198707182009111001') ?? false;
+        // Allow access to users with Complaints permission
+        return $user->hasPermissionTo(PermissionType::Complaints->value);
     }
 
     public static function canCreate(): bool
@@ -47,22 +51,15 @@ class WbsResource extends Resource
     public static function canView($record): bool
     {
         $user = Auth::user();
-        return $user->hasPermissionTo(PermissionType::Employee->value) || 
-               ($user->nip === '198707182009111001') ?? false;
+        return $user->hasPermissionTo(PermissionType::Complaints->value);
     }
 
-    public static function canEdit($record): bool
-    {
-        $user = Auth::user();
-        return $user->hasPermissionTo(PermissionType::Employee->value) || 
-               ($user->nip === '198707182009111001') ?? false;
-    }
+
 
     public static function canDelete($record): bool
     {
         $user = Auth::user();
-        return $user->hasPermissionTo(PermissionType::Employee->value) || 
-               ($user->nip === '198707182009111001') ?? false;
+        return $user->hasPermissionTo(PermissionType::Complaints->value);
     }
 
     public static function getModelLabel(): string
