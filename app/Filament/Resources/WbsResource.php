@@ -5,13 +5,17 @@ namespace App\Filament\Resources;
 use App\Enums\PermissionType;
 use App\Filament\Resources\WbsResource\Pages;
 use App\Filament\Resources\WbsResource\RelationManagers\ReportAnswersRelationManager;
+use App\Models\ResponseStatus;
+use App\Models\User;
 use App\Models\Violation;
 use App\Models\Wbs;
+use App\Models\WbsProcess;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Table;
@@ -171,6 +175,42 @@ class WbsResource extends Resource
             ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\ViewAction::make(),
+                Action::make('reply')
+                    ->label('Balas')
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->color('info')
+                    ->form([
+                        Forms\Components\Select::make('response_status_id')
+                            ->label(__('Response Status'))
+                            ->options(ResponseStatus::all()->pluck('name', 'id')),
+                        Forms\Components\RichEditor::make('answer')
+                            ->label(__('Answer')),
+                        Forms\Components\FileUpload::make('answer_attachment')
+                            ->label(__('Answer Attachment'))
+                            ->disk('public')
+                            ->directory('wbs/answers')
+                            ->visibility('private')
+                            ->downloadable()
+                            ->openable(),
+                        Forms\Components\Select::make('disposition_to')
+                            ->label(__('Disposition To'))
+                            ->options(User::all()->pluck('name', 'id'))
+                            ->searchable(),
+                    ])
+                    ->action(function (array $data, $record) {
+                        $process = new WbsProcess();
+                        $process->wbs_id = $record->id;
+                        $process->response_status_id = $data['response_status_id'] ?? $record->latestProcess->response_status_id ?? 1;
+                        $process->answer = $data['answer'];
+                        $process->answer_attachment = $data['answer_attachment'];
+                        $process->disposition_to = $data['disposition_to'];
+
+                        if ($data['answer'] || $data['answer_attachment']) {
+                            $process->published_at = now();
+                        }
+
+                        $process->save();
+                    }),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
