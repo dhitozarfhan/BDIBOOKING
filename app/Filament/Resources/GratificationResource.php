@@ -6,11 +6,14 @@ use App\Enums\PermissionType;
 use App\Filament\Resources\GratificationResource\Pages;
 use App\Filament\Resources\GratificationResource\RelationManagers\ReportAnswersRelationManager;
 use App\Models\Gratification;
+use App\Models\GratificationProcess;
+use App\Models\ResponseStatus;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Table;
@@ -40,30 +43,6 @@ class GratificationResource extends Resource
         $user = Auth::user();
         // Allow access to users with Complaints permission
         return $user->hasPermissionTo(PermissionType::Complaints->value);
-    }
-
-    public static function canCreate(): bool
-    {
-        return false; // Should only come from form, not manual creation
-    }
-
-    public static function canView($record): bool
-    {
-        $user = Auth::user();
-        return $user->hasPermissionTo(PermissionType::Complaints->value);
-    }
-
-
-
-    public static function canDelete($record): bool
-    {
-        $user = Auth::user();
-        return $user->hasPermissionTo(PermissionType::Complaints->value);
-    }
-
-    public static function getModelLabel(): string
-    {
-        return __('Gratification Report');
     }
 
     public static function form(Form $form): Form
@@ -160,12 +139,35 @@ class GratificationResource extends Resource
                     ->sortable(),
             ])
             ->filters([
+                // You can add filters here if needed
             ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Action::make('reply')
+                    ->label('Balas')
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->color('info')
+                    ->form([
+                        Forms\Components\Select::make('response_status_id')
+                            ->label(__('Response Status'))
+                            ->options(ResponseStatus::all()->pluck('name', 'id'))
+                            ->required(),
+                        Forms\Components\RichEditor::make('answer')
+                            ->label(__('Answer'))
+                            ->required(),
+                    ])
+                    ->action(function (array $data, $record) {
+                        GratificationProcess::create([
+                            'gratification_id' => $record->id,
+                            'response_status_id' => $data['response_status_id'],
+                            'answer' => $data['answer'],
+                            'user_id' => auth()->id(),
+                            'published_at' => now(),
+                        ]);
+                    }),
             ])
             ->bulkActions([
+                // You can add bulk actions here if needed
             ]);
     }
 
@@ -181,7 +183,6 @@ class GratificationResource extends Resource
         return [
             'index' => Pages\ListGratifications::route('/'),
             'view' => Pages\ViewGratification::route('/{record}'),
-            'edit' => Pages\EditGratification::route('/{record}/edit'),
         ];
     }
 }
