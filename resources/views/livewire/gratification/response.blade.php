@@ -78,13 +78,13 @@
                                     </th>
                                     <td class="whitespace-pre-wrap">{{ $reportDetail->content }}</td>
                                 </tr>
-                                <tr>
-                                    <th class="bg-base-200 font-semibold text-base-content align-top">
+                                <tr @if($reportDetail->status === \App\Enums\ResponseStatus::Termination) class="bg-success/10" @endif>
+                                    <th class="@if($reportDetail->status !== \App\Enums\ResponseStatus::Termination) bg-base-200 @endif font-semibold text-base-content align-top">
                                         <i class="bi bi-reply mr-2 text-secondary"></i>{{ __('Answer') }}
                                     </th>
-                                    <td class="whitespace-pre-wrap">
+                                    <td class="whitespace-pre-wrap text-sm" style="vertical-align: top; text-align: left;">
                                         @if($reportDetail->status === \App\Enums\ResponseStatus::Termination)
-                                            <div class="bg-success/10 border-l-4 border-success p-3 rounded">
+                                            <div class="[&>p]:m-0">
                                                 {!! $reportDetail->answer ?? __('No answer available.') !!}
                                             </div>
                                         @else

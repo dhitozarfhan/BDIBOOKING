@@ -70,7 +70,7 @@
                             <input 
                                 id="reporter_name" 
                                 type="text" 
-                                class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200" 
+                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200" 
                                 wire:model.lazy="reporter_name"
                                 placeholder="{{ __('Enter full name') }}">
                         </div>
@@ -95,9 +95,9 @@
                             <input 
                                 id="identity_number" 
                                 type="text" 
-                                class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200" 
+                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200" 
                                 wire:model.lazy="identity_number"
-                                placeholder="{{ __('Example: 3174012345678901') }}">
+                                placeholder="{{ __('Enter identity number') }}">
                         </div>
                         @error('identity_number') 
                         <label class="label">
@@ -192,9 +192,9 @@
                             <input 
                                 id="occupation" 
                                 type="text" 
-                                class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200" 
+                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200" 
                                 wire:model.lazy="occupation"
-                                placeholder="{{ __('Example: Civil Servant') }}">
+                                placeholder="{{ __('Enter occupation') }}">
                         </div>
                         @error('occupation') 
                         <label class="label">
@@ -217,9 +217,9 @@
                             <input 
                                 id="phone" 
                                 type="text" 
-                                class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200" 
+                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200" 
                                 wire:model.lazy="phone"
-                                placeholder="{{ __('Example: 08123456789') }}">
+                                placeholder="{{ __('Enter phone number') }}">
                         </div>
                         @error('phone') 
                         <label class="label">
@@ -242,9 +242,9 @@
                             <input 
                                 id="email" 
                                 type="email" 
-                                class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200" 
+                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200" 
                                 wire:model.lazy="email"
-                                placeholder="{{ __('example@email.com') }}">
+                                placeholder="{{ __('Enter email address') }}">
                         </div>
                         @error('email') 
                         <label class="label">
@@ -274,7 +274,7 @@
                             <input 
                                 id="report_title" 
                                 type="text" 
-                                class="input input-bordered w-full pl-11 focus:input-secondary transition-all duration-200" 
+                                class="input input-bordered w-full pl-12 focus:input-secondary transition-all duration-200" 
                                 wire:model.lazy="report_title"
                                 placeholder="{{ __('Brief summary of your report') }}">
                         </div>

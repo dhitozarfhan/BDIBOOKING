@@ -77,13 +77,13 @@
                                     </th>
                                     <td class="whitespace-pre-wrap">{{ $reportDetail->report_description }}</td>
                                 </tr>
-                                <tr>
-                                    <th class="bg-base-200 font-semibold text-base-content align-top">
+                                <tr @if($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Termination && $reportDetail->processes->last()?->answer) class="bg-success/10" @endif>
+                                    <th class="@if(!($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Termination && $reportDetail->processes->last()?->answer)) bg-base-200 @endif font-semibold text-base-content align-top">
                                         <i class="bi bi-reply mr-2 text-secondary"></i>{{ __('Answer') }}
                                     </th>
-                                    <td class="whitespace-pre-wrap">
+                                    <td class="whitespace-pre-wrap text-sm" style="vertical-align: top; text-align: left;">
                                         @if($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Termination && $reportDetail->processes->last()?->answer)
-                                            <div class="bg-success/10 border-l-4 border-success p-3 rounded">
+                                            <div class="[&>p]:m-0">
                                                 {!! $reportDetail->processes->last()->answer !!}
                                             </div>
                                         @else
