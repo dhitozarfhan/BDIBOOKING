@@ -85,7 +85,7 @@
                                     <td class="whitespace-pre-wrap">
                                         @if($reportDetail->status === \App\Enums\ResponseStatus::Termination)
                                             <div class="bg-success/10 border-l-4 border-success p-3 rounded">
-                                                {{ $reportDetail->answer ?? __('No answer available.') }}
+                                                {!! $reportDetail->answer ?? __('No answer available.') !!}
                                             </div>
                                         @else
                                             <div class="bg-base-200 border-l-4 border-base-300 p-3 rounded text-base-content/60 italic">

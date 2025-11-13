@@ -54,7 +54,8 @@ class ReportAnswersRelationManager extends RelationManager
                 TextColumn::make('answer')
                     ->label(__('Answer'))
                     ->limit(50)
-                    ->wrap(),
+                    ->wrap()
+                    ->html(),
                 TextColumn::make('created_at')
                     ->label(__('Created At'))
                     ->dateTime('d/m/Y H:i'),
