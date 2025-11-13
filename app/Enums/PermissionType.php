@@ -17,4 +17,5 @@ enum PermissionType : string
     case Menu = 'kelola menu';
     case Archives = 'kelola arsip';
     case Finance = 'kelola keuangan';
+    case Complaints = 'kelola pengaduan';
 }
