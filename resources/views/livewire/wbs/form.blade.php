@@ -95,9 +95,12 @@
                             <input
                                 id="identity_number"
                                 type="text"
-                                class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="identity_number"
-                                placeholder="{{ __('Example: 3174012345678901') }}">
+                                placeholder="{{ __('Enter identity number') }}">
+                        </div>
+                        <div class="px-4">
+                            <span class="text-xs text-base-content/60">{{ __('Example: 3174012345678901') }}</span>
                         </div>
                         @error('identity_number')
                         <label class="label">
@@ -140,7 +143,6 @@
                                         <div wire:loading.remove wire:target="identity_card_attachment" class="flex flex-col items-center justify-center pt-5 pb-6">
                                             <i class="bi bi-cloud-arrow-up-fill text-4xl text-base-content/40 mb-2"></i>
                                             <p class="mb-1 text-sm text-base-content/80"><span class="font-semibold">{{ __('Click to upload') }}</span> {{ __('or drag & drop') }}</p>
-                                            <p class="text-xs text-base-content/60">{{ __('Image (JPG, PNG, etc. Max 2MB)') }}</p>
                                         </div>
                                         <div wire:loading wire:target="identity_card_attachment" class="w-full h-full flex flex-col items-center justify-center">
                                             <span class="loading loading-spinner loading-lg text-primary"></span>
@@ -150,6 +152,9 @@
                                     </label>
                                 </div>
                             @endif
+                        </div>
+                        <div class="px-4">
+                            <span class="text-xs text-base-content/60">{{ __('Image (JPG, PNG, etc. Max 2MB)') }}</span>
                         </div>
                         @error('identity_card_attachment')
                         <label class="label">
@@ -192,9 +197,12 @@
                             <input
                                 id="occupation"
                                 type="text"
-                                class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="occupation"
-                                placeholder="{{ __('Example: Civil Servant') }}">
+                                placeholder="{{ __('Enter occupation') }}">
+                        </div>
+                        <div class="px-4">
+                            <span class="text-xs text-base-content/60">{{ __('Example: Civil Servant') }}</span>
                         </div>
                         @error('occupation')
                         <label class="label">
@@ -217,9 +225,12 @@
                             <input
                                 id="phone"
                                 type="text"
-                                class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="phone"
-                                placeholder="{{ __('Example: 08123456789') }}">
+                                placeholder="{{ __('Enter phone number') }}">
+                        </div>
+                        <div class="px-4">
+                            <span class="text-xs text-base-content/60">{{ __('Example: 08123456789') }}</span>
                         </div>
                         @error('phone')
                         <label class="label">
@@ -242,9 +253,12 @@
                             <input
                                 id="email"
                                 type="email"
-                                class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="email"
-                                placeholder="{{ __('example@email.com') }}">
+                                placeholder="{{ __('Enter email address') }}">
+                        </div>
+                        <div class="px-4">
+                            <span class="text-xs text-base-content/60">{{ __('Example: example@email.com') }}</span>
                         </div>
                         @error('email')
                         <label class="label">
@@ -297,7 +311,7 @@
                             <input
                                 id="report_title"
                                 type="text"
-                                class="input input-bordered w-full pl-11 focus:input-secondary transition-all duration-200"
+                                class="input input-bordered w-full pl-12 focus:input-secondary transition-all duration-200"
                                 wire:model.lazy="report_title"
                                 placeholder="{{ __('Brief summary of your report') }}">
                         </div>
@@ -321,9 +335,9 @@
                             class="textarea textarea-bordered w-full focus:textarea-secondary transition-all duration-200 resize-none"
                             wire:model.lazy="report_description"
                             placeholder="{{ __('Describe the reported incident in detail') }}"></textarea>
-                        <label class="label">
-                            <span class="label-text-alt text-base-content/60">{{ __('Include as much clear information as possible to facilitate the investigation process') }}</span>
-                        </label>
+                        <div class="px-4">
+                            <span class="text-xs text-base-content/60">{{ __('Include as much clear information as possible to facilitate the investigation process') }}</span>
+                        </div>
                         @error('report_description')
                         <label class="label">
                             <span class="label-text-alt text-error flex items-center">
@@ -356,7 +370,6 @@
                                         <div wire:loading.remove wire:target="attachment" class="flex flex-col items-center justify-center pt-5 pb-6">
                                             <i class="bi bi-cloud-arrow-up-fill text-4xl text-base-content/40 mb-2"></i>
                                             <p class="mb-1 text-sm text-base-content/80"><span class="font-semibold">{{ __('Click to upload') }}</span> {{ __('or drag & drop') }}</p>
-                                            <p class="text-xs text-base-content/60">{{ __('DOC, PDF, ZIP (Max 10MB)') }}</p>
                                         </div>
                                         <div wire:loading wire:target="attachment" class="w-full h-full flex flex-col items-center justify-center">
                                             <span class="loading loading-spinner loading-lg text-primary"></span>
@@ -366,6 +379,9 @@
                                     </label>
                                 </div>
                             @endif
+                        </div>
+                        <div class="px-4">
+                            <span class="text-xs text-base-content/60">{{ __('DOC, PDF, ZIP (Max 10MB)') }}</span>
                         </div>
                         @error('attachment')
                         <label class="label">

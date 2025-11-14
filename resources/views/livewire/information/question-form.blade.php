@@ -24,7 +24,7 @@
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                                     <i class="bi bi-chat-left-text-fill text-gray-400"></i>
                                 </span>
-                                <input type="text" id="subject" wire:model="subject" class="input input-bordered w-full pl-10" placeholder="{{ __('Subject of your question') }}">
+                                <input type="text" id="subject" wire:model="subject" class="input input-bordered w-full pl-12" placeholder="{{ __('Subject of your question') }}">
                             </div>
                             @error('subject') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
                         </div>
@@ -36,7 +36,7 @@
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                                     <i class="bi bi-person-fill text-gray-400"></i>
                                 </span>
-                                <input type="text" id="name" wire:model="name" class="input input-bordered w-full pl-10" placeholder="{{ __('Your full name') }}">
+                                <input type="text" id="name" wire:model="name" class="input input-bordered w-full pl-12" placeholder="{{ __('Your full name') }}">
                             </div>
                             @error('name') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
                         </div>
@@ -48,7 +48,7 @@
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                                     <i class="bi bi-credit-card-fill text-gray-400"></i>
                                 </span>
-                                <input type="text" id="identity_number" wire:model="identity_number" class="input input-bordered w-full pl-10" placeholder="{{ __('Your identity number') }}">
+                                <input type="text" id="identity_number" wire:model="identity_number" class="input input-bordered w-full pl-12" placeholder="{{ __('Your identity number') }}">
                             </div>
                             @error('identity_number') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
                         </div>
@@ -85,7 +85,6 @@
                                             <div wire:loading.remove wire:target="identity_card_attachment" class="flex flex-col items-center justify-center pt-5 pb-6">
                                                 <i class="bi bi-cloud-arrow-up-fill text-4xl text-base-content/40 mb-2"></i>
                                                 <p class="mb-1 text-sm text-base-content/80"><span class="font-semibold">{{ __('Click to upload') }}</span> {{ __('or drag & drop') }}</p>
-                                                <p class="text-xs text-base-content/60">{{ __('Image (Max 2MB)') }}</p>
                                             </div>
                                             <div wire:loading wire:target="identity_card_attachment" class="w-full h-full flex flex-col items-center justify-center">
                                                 <span class="loading loading-spinner loading-lg text-primary"></span>
@@ -95,6 +94,9 @@
                                         </label>
                                     </div>
                                 @endif
+                            </div>
+                            <div class="px-4">
+                                <span class="text-xs text-base-content/60">{{ __('Image (Max 2MB)') }}</span>
                             </div>
                             @error('identity_card_attachment') 
                             <label class="label">
@@ -112,7 +114,7 @@
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                                     <i class="bi bi-telephone-fill text-gray-400"></i>
                                 </span>
-                                <input type="text" id="mobile" wire:model="mobile" class="input input-bordered w-full pl-10" placeholder="{{ __('e.g., 08123456789') }}">
+                                <input type="text" id="mobile" wire:model="mobile" class="input input-bordered w-full pl-12" placeholder="{{ __('e.g., 08123456789') }}">
                             </div>
                             @error('mobile') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
                         </div>
@@ -124,7 +126,7 @@
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                                     <i class="bi bi-envelope-fill text-gray-400"></i>
                                 </span>
-                                <input type="email" id="email" wire:model="email" class="input input-bordered w-full pl-10" placeholder="{{ __('your.email@example.com') }}">
+                                <input type="email" id="email" wire:model="email" class="input input-bordered w-full pl-12" placeholder="{{ __('your.email@example.com') }}">
                             </div>
                             @error('email') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
                         </div>
@@ -133,7 +135,7 @@
                     <!-- Message -->
                     <div class="form-control">
                         <label for="content" class="label"><span class="label-text font-medium">{{ __('information.message') }}</span></label>
-                        <textarea id="content" wire:model="content" rows="6" class="textarea textarea-bordered w-full" placeholder="{{ __('Write your question or message here...') }}"></textarea>
+                        <textarea id="content" wire:model="content" rows="6" class="textarea textarea-bordered w-full px-4 py-3" placeholder="{{ __('Write your question or message here...') }}"></textarea>
                         @error('content') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
                     </div>
 
