@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('response_status_id')->default(1)->constrained('response_statuses');
             $table->text('answer')->nullable(); // Answer/response to the report
             $table->string('answer_attachment')->nullable(); // Answer attachment similar to attachment in gratifications table
-            $table->timestamp('published_at')->nullable(); // Time the answer was published
             $table->timestamps();
         });
     }

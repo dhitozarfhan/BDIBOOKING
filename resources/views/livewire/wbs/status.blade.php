@@ -1,5 +1,5 @@
 @section('title', __('WBS Report Status'))
-<div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg" style="min-height: 43.5vh;">
+<div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg" style="min-height: 45vh;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @php
             $breadcrumbs = [

@@ -18,4 +18,7 @@ enum PermissionType : string
     case Archives = 'kelola arsip';
     case Finance = 'kelola keuangan';
     case Complaints = 'kelola pengaduan';
+    case GratificationResponses = 'tanggapi gratifikasi';
+    case WBSResponses = 'tanggapi wbs';
+    case QuestionResponses = 'kelola pertanyaan masyarakat';
 }
