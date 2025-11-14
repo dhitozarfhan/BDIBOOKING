@@ -484,5 +484,11 @@
     "Answer": "Answer",
     "Answer Attachment": "Answer Attachment",
     "Disposition To": "Disposition To",
-    "Public Complaint": "Public Complaint"
+    "Public Complaint": "Public Complaint",
+    "Gratification": "Gratification",
+    "Subject": "Subject",
+    "Name": "Name",
+    "Mobile": "Mobile",
+    "Email": "Email",
+    "Submitted At": "Submitted At"
 }
