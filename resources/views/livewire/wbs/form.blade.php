@@ -70,7 +70,7 @@
                             <input
                                 id="reporter_name"
                                 type="text"
-                                class="input input-bordered w-full pl-11 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="reporter_name"
                                 placeholder="{{ __('Enter full name') }}">
                         </div>
