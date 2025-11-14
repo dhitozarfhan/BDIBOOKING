@@ -1,5 +1,5 @@
 @section('title', __('Gratification Report Status'))
-<<div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg" style="min-height: 43.5vh;">
+<div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg" style="min-height: 43.5vh;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @php
             $breadcrumbs = [
@@ -22,8 +22,8 @@
                         <span class="label-text">{{ __('Registration Code') }} <span class="text-red-500">*</span></span>
                     </label>
                     <div class="relative">
-                        <i class="bi bi-upc-scan absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        <input id="registration_code" type="text" class="input input-bordered w-full pl-10" wire:model.lazy="registration_code">
+                        <i class="bi bi-upc-scan absolute left-3 top-1/2 text-gray-400"></i>
+                        <input id="registration_code" type="text" class="input input-bordered w-full pl-12" wire:model.lazy="registration_code">
                     </div>
                     @error('registration_code') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
                 </div>
