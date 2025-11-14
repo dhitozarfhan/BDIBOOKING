@@ -143,37 +143,7 @@ class GratificationResource extends Resource
             ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Action::make('reply')
-                    ->label('Balas')
-                    ->icon('heroicon-o-chat-bubble-left-right')
-                    ->color('info')
-                    ->form([
-                        Forms\Components\Select::make('response_status_id')
-                            ->label(__('Response Status'))
-                            ->options(ResponseStatus::all()->pluck('name', 'id')),
-                        Forms\Components\RichEditor::make('answer')
-                            ->label(__('Answer')),
-                        Forms\Components\FileUpload::make('answer_attachment')
-                            ->label(__('Answer Attachment'))
-                            ->disk('public')
-                            ->directory('gratifications/answers')
-                            ->visibility('private')
-                            ->downloadable()
-                            ->openable(),
-                    ])
-                    ->action(function (array $data, $record) {
-                        $process = new GratificationProcess();
-                        $process->gratification_id = $record->id;
-                        $process->response_status_id = $data['response_status_id'] ?? $record->latestProcess->response_status_id ?? 1;
-                        $process->answer = $data['answer'];
-                        $process->answer_attachment = $data['answer_attachment'];
 
-                        if ($data['answer'] || $data['answer_attachment']) {
-                            $process->published_at = now();
-                        }
-
-                        $process->save();
-                    }),
             ])
             ->bulkActions([
                 // You can add bulk actions here if needed

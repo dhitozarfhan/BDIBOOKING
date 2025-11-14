@@ -15,33 +15,7 @@ class ReportAnswersRelationManager extends RelationManager
 {
     protected static string $relationship = 'processes';
 
-    public function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('response_status_id')
-                    ->label(__('Response Status'))
-                    ->options(fn () => ResponseStatus::all()->pluck('name', 'id'))
-                    ->required(),
-                Forms\Components\Textarea::make('answer')
-                    ->label(__('Answer'))
-                    ->required()
-                    ->rows(6)
-                    ->columnSpanFull(),
-                Forms\Components\DateTimePicker::make('published_at')
-                    ->label(__('Published At'))
-                    ->seconds(false)
-                    ->native(false)
-                    ->displayFormat('d F Y H:i'),
-                Forms\Components\FileUpload::make('answer_attachment')
-                    ->label(__('Answer Attachment'))
-                    ->disk('public')
-                    ->directory('gratifications/answers')
-                    ->visibility('private')
-                    ->downloadable()
-                    ->openable(),
-            ]);
-    }
+
 
     public function table(Table $table): Table
     {
@@ -67,9 +41,41 @@ class ReportAnswersRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
+                Tables\Actions\Action::make('reply')
+                    ->label('Tambahkan Balasan')
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->color('info')
+                    ->form([
+                        Forms\Components\Select::make('response_status_id')
+                            ->label(__('Response Status'))
+                            ->options(fn () => \App\Models\ResponseStatus::all()->pluck('name', 'id'))
+                            ->required(),
+                        Forms\Components\RichEditor::make('answer')
+                            ->label(__('Answer')),
+                        Forms\Components\FileUpload::make('answer_attachment')
+                            ->label(__('Answer Attachment'))
+                            ->disk('public')
+                            ->directory('gratifications/answers')
+                            ->visibility('private')
+                            ->downloadable()
+                            ->openable(),
+                    ])
+                    ->action(function (array $data, $livewire) {
+                        $process = new \App\Models\GratificationProcess();
+                        $process->gratification_id = $livewire->ownerRecord->id;
+                        $process->response_status_id = $data['response_status_id'] ?? $livewire->ownerRecord->latestProcess->response_status_id ?? 1;
+                        $process->answer = $data['answer'];
+                        $process->answer_attachment = $data['answer_attachment'];
+
+                        if ($data['answer'] || $data['answer_attachment']) {
+                            $process->published_at = now();
+                        }
+
+                        $process->save();
+                    }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
