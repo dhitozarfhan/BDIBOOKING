@@ -23,8 +23,6 @@ class ViewGratification extends ViewRecord
     {
         return [
             Actions\LocaleSwitcher::make(),
-            Actions\EditAction::make(),
-            Actions\DeleteAction::make(),
         ];
     }
 
@@ -52,6 +50,7 @@ class ViewGratification extends ViewRecord
                                 TextEntry::make('report_description')
                                     ->label(__('Report Description'))
                                     ->html()
+                                    ->icon('heroicon-o-document-text'),
                             ])->columns(1),
                     ])->columnSpan(2),
 
@@ -84,7 +83,6 @@ class ViewGratification extends ViewRecord
                 ]),
 
                 Section::make(__('Attachments'))
-                    ->collapsible()
                     ->schema([
                         Grid::make(2)->schema([
                             ImageEntry::make('identity_card_attachment')
