@@ -52,7 +52,6 @@ class ViewGratification extends ViewRecord
                                 TextEntry::make('report_description')
                                     ->label(__('Report Description'))
                                     ->html()
-                                    ->collapsible(),
                             ])->columns(1),
                     ])->columnSpan(2),
 
