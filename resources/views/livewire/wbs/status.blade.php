@@ -4,7 +4,7 @@
         @php
             $breadcrumbs = [
                 ['label' => __('Beranda'), 'url' => route('home')],
-                ['label' => __('WBS Reporting'), 'url' => route('wbs')],
+                ['label' => __('WBS Report'), 'url' => route('wbs')],
                 ['label' => __('Report Status')]
             ];
         @endphp
