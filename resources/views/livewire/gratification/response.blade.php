@@ -1,3 +1,5 @@
+@section('title', __('Gratification Report Response'))
+
 <div>
     <div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -13,7 +15,6 @@
             <h2 class="text-2xl font-bold text-base-content mt-4">
                 {{ __('Gratification Report Response') }}
             </h2>
-
 
             @if($reportDetail)
                 <div class="mt-6">
@@ -78,7 +79,6 @@
                                     </th>
                                     <td class="whitespace-pre-wrap">{{ $reportDetail->content }}</td>
                                 </tr>
-                                </tr>
                                 @if($reportDetail->status === \App\Enums\ResponseStatus::Termination && $reportDetail->attachment)
                                     <tr>
                                         <th class="bg-base-200 font-semibold text-base-content">
@@ -132,28 +132,29 @@
                             </tbody>
                         </table>
                     </div>
-                    @if($reportDetail->status === \App\Enums\ResponseStatus::Termination)
-                        <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">
-                            <h3 class="text-lg font-semibold text-base-content mb-3">
-                                {{ __('Answer') }}
-                            </h3>
+
+                    {{-- Card untuk Answer, muncul di semua status --}}
+                    <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">
+                        <h3 class="text-lg font-semibold text-base-content mb-3">
+                            {{ __('Answer') }}
+                        </h3>
+                        @if($reportDetail->answer)
                             <div class="whitespace-pre-wrap text-sm text-left">
-                                {!! $reportDetail->answer ?? __('No answer available.') !!}
+                                {!! $reportDetail->answer !!}
                             </div>
-                        </div>
-                    @else
-                        <div class="mt-6 bg-base-200 border-l-4 border-base-300 p-3 rounded text-base-content/60 italic">
-                            <h3 class="text-lg font-semibold text-base-content mb-3">
-                                {{ __('Answer') }}
-                            </h3>
-                            <div class="whitespace-pre-wrap text-sm text-left">
+                        @else
+                            <div class="whitespace-pre-wrap text-sm text-left text-base-content/60 italic">
                                 {{ __('No official response to this report yet.') }}
                             </div>
-                        </div>
-                    @endif
+                        @endif
+                    </div>
+
                     <div class="mt-6">
                         <a href="{{ route('gratification.status') }}" class="btn btn-ghost btn-outline" wire:navigate>
-                           {{ __('Back') }}
+                           {{ __('Back to Status Check') }}
+                        </a>
+                        <a href="{{ route('gratification') }}" class="btn btn-primary" wire:navigate>
+                            {{ __('Back to Home') }}
                         </a>
                     </div>
                 </div>
