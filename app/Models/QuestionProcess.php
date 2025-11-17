@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class GratificationProcess extends Model
+class QuestionProcess extends Model
 {
+    //
     use HasFactory;
 
     protected $fillable = [
-        'gratification_id',
+        'question_id',
         'response_status_id',
         'answer',
         'answer_attachment',
@@ -20,9 +21,9 @@ class GratificationProcess extends Model
         'response_status_id' => \App\Enums\ResponseStatus::class,
     ];
 
-    public function gratification()
+    public function question()
     {
-        return $this->belongsTo(Gratification::class);
+        return $this->belongsTo(Question::class);
     }
 
     public function responseStatus()
