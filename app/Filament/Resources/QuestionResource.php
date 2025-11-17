@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\PermissionType;
 use App\Filament\Resources\QuestionResource\Pages;
 use App\Models\Question;
 use Filament\Forms;
@@ -9,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class QuestionResource extends Resource
 {
@@ -24,6 +26,12 @@ class QuestionResource extends Resource
     public static function getModelLabel(): string
     {
         return __('Public Complaint');
+    }
+
+    public static function canViewAny(): bool
+    {
+        $user = Auth::user();
+        return $user->hasPermissionTo(PermissionType::Complaints->value);
     }
 
     public static function canCreate(): bool

@@ -1,4 +1,4 @@
-@section('title', __('WBS Reporting'))
+@section('title', __('WBS Report'))
 
 <div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -7,12 +7,12 @@
                 @php
                     $breadcrumbs = [
                         ['label' => __('Beranda'), 'url' => route('home')],
-                        ['label' => __('WBS Reporting')]
+                        ['label' => __('WBS Report')]
                     ];
                 @endphp
                 @include('livewire.wbs.partials.breadcrumb', ['items' => $breadcrumbs])
                 <h2 class="text-2xl font-bold text-base-content mt-4">
-                    {{ __('WBS Reporting') }}
+                    {{ __('WBS Report') }}
                 </h2>
 
                 <div class="mt-4 prose max-w-none">

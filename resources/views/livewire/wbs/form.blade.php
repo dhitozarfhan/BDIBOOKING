@@ -5,7 +5,7 @@
         @php
             $breadcrumbs = [
                 ['label' => __('Beranda'), 'url' => route('home')],
-                ['label' => __('WBS Reporting'), 'url' => route('wbs')],
+                ['label' => __('WBS Report'), 'url' => route('wbs')],
                 ['label' => __('Report Form')]
             ];
         @endphp
@@ -44,7 +44,7 @@
                     <div class="ml-4 flex-1">
                         <h4 class="font-bold text-base mb-2">{{ __('Important Information') }}</h4>
                         <p class="text-sm leading-relaxed">
-                            WBS (Whistle Blowing System) adalah sistem pelaporan pelanggaran yang dapat digunakan oleh pegawai atau masyarakat untuk melaporkan dugaan pelanggaran yang terjadi di lingkungan BDI Yogyakarta.
+                            {{ __('WBS (Whistle Blowing System) adalah sistem pelaporan pelanggaran yang dapat digunakan oleh pegawai atau masyarakat untuk melaporkan dugaan pelanggaran yang terjadi di lingkungan BDI Yogyakarta.') }}
                         </p>
                     </div>
                 </div>
