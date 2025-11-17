@@ -77,21 +77,6 @@
                                     </th>
                                     <td class="whitespace-pre-wrap">{{ $reportDetail->report_description }}</td>
                                 </tr>
-                                <tr @if($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Termination && $reportDetail->processes->last()?->answer) class="bg-success/10" @endif>
-                                    <th class="@if(!($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Termination && $reportDetail->processes->last()?->answer)) bg-base-200 @endif font-semibold text-base-content align-top">
-                                        <i class="bi bi-reply mr-2 text-secondary"></i>{{ __('Answer') }}
-                                    </th>
-                                    <td class="whitespace-pre-wrap text-sm" style="vertical-align: top; text-align: left;">
-                                        @if($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Termination && $reportDetail->processes->last()?->answer)
-                                            <div class="[&>p]:m-0">
-                                                {!! $reportDetail->processes->last()->answer !!}
-                                            </div>
-                                        @else
-                                            <div class="bg-base-200 border-l-4 border-base-300 p-3 rounded text-base-content/60 italic">
-                                                {{ __('No official response to this report yet.') }}
-                                            </div>
-                                        @endif
-                                    </td>
                                 </tr>
                                 @if($reportDetail->attachment)
                                     <tr>
@@ -121,6 +106,25 @@
                             </tbody>
                         </table>
                     </div>
+                    @if($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Termination && $reportDetail->processes->last()?->answer)
+                        <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">
+                            <h3 class="text-lg font-semibold text-base-content mb-3">
+                                {{ __('Jawaban') }}
+                            </h3>
+                            <div class="whitespace-pre-wrap text-sm text-left">
+                                {!! $reportDetail->processes->last()->answer !!}
+                            </div>
+                        </div>
+                    @else
+                        <div class="mt-6 bg-base-200 border-l-4 border-base-300 p-3 rounded text-base-content/60 italic">
+                            <h3 class="text-lg font-semibold text-base-content mb-3">
+                                {{ __('Jawaban') }}
+                            </h3>
+                            <div class="whitespace-pre-wrap text-sm text-left">
+                                {{ __('No official response to this report yet.') }}
+                            </div>
+                        </div>
+                    @endif
                     <div class="mt-6">
                         <a href="{{ route('wbs.status') }}" class="btn btn-ghost">
                             {{ __('Back to Status Check') }}
