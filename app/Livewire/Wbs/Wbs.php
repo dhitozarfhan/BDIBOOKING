@@ -199,9 +199,9 @@ class Wbs extends Component
         // Waktu rata-rata penyelesaian per bulan
         $this->timeToAnswerData = DB::table('wbs')
             ->join('wbs_processes', 'wbs.id', '=', 'wbs_processes.wbs_id')
-            ->selectRaw('EXTRACT(MONTH FROM wbs.created_at) as month, AVG(EXTRACT(DAY FROM (wbs_processes.published_at - wbs.created_at))) as avg_days')
+            ->selectRaw('EXTRACT(MONTH FROM wbs.created_at) as month, AVG(EXTRACT(DAY FROM (wbs_processes.created_at - wbs.created_at))) as avg_days')
             ->whereYear('wbs.created_at', $year)
-            ->whereNotNull('wbs_processes.published_at')
+            ->whereNotNull('wbs_processes.created_at')
             ->where('wbs_processes.response_status_id', ResponseStatus::Termination->value) // Completed status
             ->groupBy('month')
             ->orderBy('month')
