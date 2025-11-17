@@ -63,6 +63,13 @@ class ViewGratification extends ViewRecord
                                 TextEntry::make('identity_number')
                                     ->label(__('Identity Number'))
                                     ->icon('heroicon-o-identification'),
+                                ImageEntry::make('identity_card_attachment')
+                                    ->label(__('ID Card Scan'))
+                                    ->disk('public')
+                                    ->width('100%')
+                                    ->height('auto')
+                                    ->columnSpanFull()
+                                    ->visible(fn ($state) => !empty($state)),
                                 TextEntry::make('occupation')
                                     ->label(__('Occupation'))
                                     ->icon('heroicon-o-briefcase'),
@@ -85,13 +92,6 @@ class ViewGratification extends ViewRecord
                 Section::make(__('Attachments'))
                     ->schema([
                         Grid::make(2)->schema([
-                            ImageEntry::make('identity_card_attachment')
-                                ->label(__('ID Card Scan'))
-                                ->disk('public')
-                                ->visibility('private')
-                                ->width(200)
-                                ->height(150)
-                                ->visible(fn ($state) => !empty($state)),
                             TextEntry::make('attachment')
                                 ->label(__('Supporting Data'))
                                 ->formatStateUsing(function ($state) {
@@ -109,7 +109,7 @@ class ViewGratification extends ViewRecord
                                 ->html()
                                 ->visible(fn ($state) => !empty($state)),
                         ]),
-                    ])->columns(1),
+                    ]),
             ]);
     }
 }
