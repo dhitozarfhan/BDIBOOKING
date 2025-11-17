@@ -151,7 +151,6 @@ class Gratification extends Component
             'gratification_id' => $gratification->id,
             'response_status_id' => ResponseStatus::Initiation->value,
             'answer' => null,
-            'published_at' => null,
         ]);
 
         session()->flash('message', 'Laporan gratifikasi Anda telah berhasil dikirim dengan kode register: ');
@@ -228,9 +227,9 @@ class Gratification extends Component
         // Waktu rata-rata penyelesaian per bulan
         $this->timeToAnswerData = DB::table('gratifications')
             ->join('gratification_processes', 'gratifications.id', '=', 'gratification_processes.gratification_id')
-            ->selectRaw('EXTRACT(MONTH FROM gratifications.created_at) as month, AVG(EXTRACT(DAY FROM (gratification_processes.published_at - gratifications.created_at))) as avg_days')
+            ->selectRaw('EXTRACT(MONTH FROM gratifications.created_at) as month, AVG(EXTRACT(DAY FROM (gratification_processes.created_at - gratifications.created_at))) as avg_days')
             ->whereYear('gratifications.created_at', $year)
-            ->whereNotNull('gratification_processes.published_at')
+            ->whereNotNull('gratification_processes.created_at')
             ->where('gratification_processes.response_status_id', ResponseStatus::Termination->value) // Completed status
             ->groupBy('month')
             ->orderBy('month')

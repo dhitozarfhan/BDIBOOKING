@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             TagSeeder::class,
             ArticleTypeSeeder::class,
 
+            ResponseStatusSeeder::class,
             ArticleSeeder::class,
             NavigationSeeder::class,
         ]);
