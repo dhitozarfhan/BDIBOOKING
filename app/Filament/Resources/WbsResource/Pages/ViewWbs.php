@@ -23,8 +23,6 @@ class ViewWbs extends ViewRecord
     {
         return [
             Actions\LocaleSwitcher::make(),
-            Actions\EditAction::make(),
-            Actions\DeleteAction::make(),
         ];
     }
 
