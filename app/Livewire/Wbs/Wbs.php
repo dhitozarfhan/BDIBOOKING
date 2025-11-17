@@ -146,7 +146,6 @@ class Wbs extends Component
             'wbs_id' => $wbs->id,
             'response_status_id' => ResponseStatus::Initiation->value,
             'answer' => null,
-            'published_at' => null,
         ]);
 
         session()->flash('message', 'Laporan WBS Anda telah berhasil dikirim dengan kode register: ');

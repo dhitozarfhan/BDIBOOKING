@@ -126,8 +126,8 @@ class ArticleResource extends Resource
                                 // ->minutesStep(15)
                                 ->default(now())
                                 ->required()
-                                ->native(false)
-                                ->displayFormat('d F Y H:i')
+                                ->displayFormat('Y-m-d H:i:s')
+                                ->format('Y-m-d H:i:s'),
                         ]),
 
                         Forms\Components\TextInput::make('title')
