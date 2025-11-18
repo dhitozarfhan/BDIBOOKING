@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('response_status_id')->default(1)->constrained('response_statuses');
             $table->text('answer')->nullable(); // Answer/response to the report
             $table->string('answer_attachment')->nullable(); // Answer attachment
-            $table->foreignId('disposition_to')->nullable()->constrained('users')->onDelete('set null');
+            $table->boolean('is_completed')->default(false);  // Indicates if the process is completed            
             $table->timestamps();
         });
     }
