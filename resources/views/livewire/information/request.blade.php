@@ -65,7 +65,7 @@
                             <input 
                                 id="name" 
                                 type="text" 
-                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200" 
+                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
                                 wire:model="name"
                                 placeholder="{{ __('Enter full name') }}">
                         </div>
@@ -90,7 +90,7 @@
                             <input 
                                 id="id_card_number" 
                                 type="text" 
-                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200" 
+                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
                                 wire:model="id_card_number"
                                 placeholder="{{ __('Enter ID card number') }}">
                         </div>
@@ -135,7 +135,7 @@
                             <input 
                                 id="occupation" 
                                 type="text" 
-                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200" 
+                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
                                 wire:model="occupation"
                                 placeholder="{{ __('Enter occupation') }}">
                         </div>
@@ -160,7 +160,7 @@
                             <input 
                                 id="mobile" 
                                 type="text" 
-                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200" 
+                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
                                 wire:model="mobile"
                                 placeholder="{{ __('Enter phone number') }}">
                         </div>
@@ -185,7 +185,7 @@
                             <input 
                                 id="email" 
                                 type="email" 
-                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200" 
+                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
                                 wire:model="email"
                                 placeholder="{{ __('Enter email address') }}">
                         </div>
@@ -284,7 +284,7 @@
                         <textarea 
                             id="content" 
                             rows="10"
-                            class="textarea textarea-bordered w-full focus:textarea-secondary transition-all duration-200 resize-none" 
+                            class="textarea textarea-bordered w-full px-4 py-3 focus:textarea-secondary transition-all duration-200 resize-none" 
                             wire:model="content"
                             placeholder="{{ __('Describe the information you are requesting...') }}"></textarea>
                         <label class="label">
@@ -307,7 +307,7 @@
                         <textarea 
                             id="used_for" 
                             rows="8"
-                            class="textarea textarea-bordered w-full focus:textarea-secondary transition-all duration-200 resize-none" 
+                            class="textarea textarea-bordered w-full px-4 py-3 focus:textarea-secondary transition-all duration-200 resize-none" 
                             wire:model="used_for"
                             placeholder="{{ __('Explain how you will use this information...') }}"></textarea>
                         @error('used_for') 
