@@ -6,6 +6,10 @@ use App\Enums\ResponseStatus;
 use App\Filament\Resources\DispositionResource\Pages;
 use App\Models\Gratification;
 use App\Models\Wbs;
+use Filament\Forms;
+use Filament\Notifications\Notification;
+use App\Models\WbsProcess;
+use App\Models\GratificationProcess;
 use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -97,6 +101,9 @@ class DispositionResource extends Resource
                     ->label('Report Title')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('source')
+                    ->label('Source')
+                    ->badge(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime()
@@ -106,7 +113,52 @@ class DispositionResource extends Resource
                 //
             ])
             ->actions([
-                //
+                Tables\Actions\Action::make('Balas')
+                    ->label(__('Reply'))
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->form([
+                        Forms\Components\Textarea::make('answer')
+                            ->label(__('Answer'))
+                            ->required(),
+                        Forms\Components\FileUpload::make('answer_attachment')
+                            ->label(__('Answer Attachment'))
+                            ->disk('public')
+                            ->directory('dispositions'),
+                    ])
+                    ->action(function (array $data, $record): void {
+                        $process = null;
+                        if ($record->source === 'Wbs') {
+                            $process = WbsProcess::where('wbs_id', $record->id)
+                                ->where('response_status_id', ResponseStatus::Disposition)
+                                ->latest()
+                                ->first();
+                        } elseif ($record->source === 'Gratification') {
+                            $process = GratificationProcess::where('gratification_id', $record->id)
+                                ->where('response_status_id', ResponseStatus::Disposition)
+                                ->latest()
+                                ->first();
+                        }
+
+                        if ($process) {
+                            $process->update([
+                                'answer' => $data['answer'],
+                                'answer_attachment' => $data['answer_attachment'],
+                                'user_id' => auth()->id(),
+                            ]);
+
+                            Notification::make()
+                                ->title('Berhasil')
+                                ->success()
+                                ->body('Balasan disposisi telah berhasil disimpan.')
+                                ->send();
+                        } else {
+                            Notification::make()
+                                ->title('Gagal')
+                                ->danger()
+                                ->body('Proses disposisi tidak ditemukan.')
+                                ->send();
+                        }
+                    }),
             ])
             ->bulkActions([
                 //

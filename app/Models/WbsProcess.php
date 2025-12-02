@@ -12,9 +12,9 @@ class WbsProcess extends Model
     protected $fillable = [
         'wbs_id',
         'response_status_id',
+        'user_id',
         'answer',
         'answer_attachment',
-        'published_at',
     ];
 
     protected $casts = [

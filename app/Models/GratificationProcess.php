@@ -12,6 +12,7 @@ class GratificationProcess extends Model
     protected $fillable = [
         'gratification_id',
         'response_status_id',
+        'user_id',
         'answer',
         'answer_attachment',
     ];
