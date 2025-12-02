@@ -21,11 +21,19 @@ class InformationRequestResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     
-    protected static ?string $navigationGroup = 'Public Services';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Report');
+    }
+    
+    public static function getNavigationLabel(): string
+    {
+        return __('Information Request');
+    }
     
     public static function getNavigationSort(): ?int
     {
-        return 12;
+        return 8; // After WBS (7)
     }
     
     public static function getModelLabel(): string
