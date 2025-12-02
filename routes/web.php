@@ -57,6 +57,10 @@ Route::fallback(function () {
 
 Route::get('/information', App\Livewire\Articles\Information::class)->name('articles.information');
 Route::get('/information/question', App\Livewire\Information\QuestionForm::class)->name('information.question');
+Route::get('/information/request', App\Livewire\Information\Request::class)->name('information.request');
+Route::get('/information/provision', function() {
+    return view('information.provision');
+})->name('information.provision');
 
 Route::get('/{article_type}', App\Livewire\Articles\Index::class)
     ->whereIn('article_type', ['news','gallery','page'])
