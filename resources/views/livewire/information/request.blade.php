@@ -1,126 +1,242 @@
-<div class="container max-w-7xl flex mx-auto px-4 mt-10">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        <div class="lg:col-span-8">
-            <div class="w-full mb-16">
-                {{-- Breadcrumbs --}}
-                @php
-                    $breadcrumbs = [
-                        ['label' => __('Home'), 'url' => route('home')],
-                        ['label' => __('Public Information Request Form')]
-                    ];
-                @endphp
-                @if(view()->exists('livewire.gratification.partials.breadcrumb'))
-                    @include('livewire.gratification.partials.breadcrumb', ['items' => $breadcrumbs])
-                @endif
-                
-                <h1 class="text-4xl font-bold text-base-content mb-6 mt-4">{{ __('Public Information Request Form') }}</h1>
-                
-                @if (session()->has('message'))
-                    <div class="alert alert-success shadow-lg mb-6" role="alert">
-                        <i class="bi bi-check-circle-fill"></i>
-                        <span>{{ session('message') }}</span>
+@section('title', __('Public Information Request Form'))
+
+<div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        @php
+            $breadcrumbs = [
+                ['label' => __('Home'), 'url' => route('home')],
+                ['label' => __('Public Information Request Form')]
+            ];
+        @endphp
+        @include('livewire.gratification.partials.breadcrumb', ['items' => $breadcrumbs])
+        <h2 class="text-2xl font-bold text-base-content mt-4">
+            {{ __('Public Information Request Form') }}
+        </h2>
+
+        <br>
+
+        {{-- Alert Messages --}}
+        @if (session()->has('message'))
+            <div class="mb-6 alert alert-success shadow-lg animate-fade-in">
+                <div class="flex items-start w-full">
+                    <div class="flex-shrink-0">
+                        <i class="bi bi-check-circle-fill text-2xl"></i>
                     </div>
-                @else
-                    <div class="alert alert-info shadow-lg mb-6" role="alert">
-                        <i class="bi bi-info-circle-fill"></i>
-                        <p class="m-0">{{ __('Please fill out the form below to request public information. All fields marked with * are required.') }}</p>
+                    <div class="ml-4 flex-1">
+                        <h3 class="font-bold text-lg">{{ __('Success!') }}</h3>
+                        <p class="mt-1">{{ session('message') }}</p>
+                        <p class="text-sm mt-2 opacity-90">{{ __('Thank you for your request. We will process it soon.') }}</p>
                     </div>
-                @endif
+                </div>
+            </div>
+        @else
+            <div class="mb-6 alert alert-info shadow-lg">
+                <div class="flex items-start w-full">
+                    <div class="flex-shrink-0">
+                        <i class="bi bi-info-circle-fill text-2xl"></i>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h4 class="font-bold text-base mb-2">{{ __('Important Information') }}</h4>
+                        <p class="text-sm leading-relaxed">
+                            {{ __('Please fill out this form to request public information. All fields marked with * are required.') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        @endif
 
-                <form wire:submit.prevent="save" class="my-5 space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Left Column - Applicant Information -->
-                        <div class="space-y-6">
-                            <div class="flex items-center space-x-3 mb-4 pb-2 border-b-2 border-primary">
-                                <h4 class="text-xl font-bold text-base-content">{{ __('Applicant Information') }}</h4>
+        {{-- Form Container --}}
+        <form wire:submit.prevent="save">
+            <div class="flex flex-col lg:flex-row gap-8 mb-8">
+                {{-- Kolom Kiri - Informasi Pemohon --}}
+                <div class="lg:w-1/2 space-y-6">
+                    <div class="flex items-center space-x-3 mb-6 pb-2 border-primary">
+                        <h4 class="text-xl font-bold text-base-content">{{ __('Applicant Information') }}</h4>
+                    </div>
+                    {{-- Applicant Name --}}
+                    <div class="form-control">
+                        <label for="name" class="label">
+                            <span class="label-text font-semibold">{{ __('Applicant Name') }} <span class="text-error">*</span></span>
+                        </label>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="bi bi-person-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
-                            <!-- Name -->
-                            <div class="form-control">
-                                <label for="name" class="label">
-                                    <span class="label-text font-medium"><i class="bi bi-person-fill mr-2"></i>{{ __('Applicant Name') }} *</span>
-                                </label>
-                                <input type="text" id="name" wire:model="name" class="input input-bordered w-full" placeholder="{{ __('Full Name') }}">
-                                @error('name') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
-                            </div>
+                            <input 
+                                id="name" 
+                                type="text" 
+                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200" 
+                                wire:model="name"
+                                placeholder="{{ __('Enter full name') }}">
+                        </div>
+                        @error('name') 
+                        <label class="label">
+                            <span class="label-text-alt text-error flex items-center">
+                                <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
+                            </span>
+                        </label>
+                        @enderror
+                    </div>
 
-                            <!-- ID Card Number -->
-                            <div class="form-control">
-                                <label for="id_card_number" class="label">
-                                    <span class="label-text font-medium"><i class="bi bi-credit-card-fill mr-2"></i>{{ __('ID Card Number') }} *</span>
-                                </label>
-                                <input type="text" id="id_card_number" wire:model="id_card_number" class="input input-bordered w-full" placeholder="{{ __('ID Card Number') }}">
-                                @error('id_card_number') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
+                    {{-- ID Card Number --}}
+                    <div class="form-control">
+                        <label for="id_card_number" class="label">
+                            <span class="label-text font-semibold">{{ __('ID Card Number') }} <span class="text-error">*</span></span>
+                        </label>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="bi bi-card-heading text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
+                            <input 
+                                id="id_card_number" 
+                                type="text" 
+                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200" 
+                                wire:model="id_card_number"
+                                placeholder="{{ __('Enter ID card number') }}">
+                        </div>
+                        @error('id_card_number') 
+                        <label class="label">
+                            <span class="label-text-alt text-error flex items-center">
+                                <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
+                            </span>
+                        </label>
+                        @enderror
+                    </div>
 
-                            <!-- Address -->
-                            <div class="form-control">
-                                <label for="address" class="label">
-                                    <span class="label-text font-medium"><i class="bi bi-geo-alt-fill mr-2"></i>{{ __('Address') }} *</span>
-                                </label>
-                                <textarea id="address" wire:model="address" rows="3" class="textarea textarea-bordered w-full" placeholder="{{ __('Full Address') }}"></textarea>
-                                @error('address') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
-                            </div>
+                    {{-- Address --}}
+                    <div class="form-control">
+                        <label for="address" class="label">
+                            <span class="label-text font-semibold">{{ __('Address') }} <span class="text-error">*</span></span>
+                        </label>
+                        <textarea 
+                            id="address" 
+                            rows="3"
+                            class="textarea textarea-bordered w-full focus:textarea-primary transition-all duration-200 resize-none" 
+                            wire:model="address"
+                            placeholder="{{ __('Enter full address') }}"></textarea>
+                        @error('address') 
+                        <label class="label">
+                            <span class="label-text-alt text-error flex items-center">
+                                <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
+                            </span>
+                        </label>
+                        @enderror
+                    </div>
 
-                            <!-- Occupation -->
-                            <div class="form-control">
-                                <label for="occupation" class="label">
-                                    <span class="label-text font-medium"><i class="bi bi-briefcase-fill mr-2"></i>{{ __('Occupation') }} *</span>
-                                </label>
-                                <input type="text" id="occupation" wire:model="occupation" class="input input-bordered w-full" placeholder="{{ __('Occupation') }}">
-                                @error('occupation') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
+                    {{-- Occupation --}}
+                    <div class="form-control">
+                        <label for="occupation" class="label">
+                            <span class="label-text font-semibold">{{ __('Occupation') }}</span>
+                        </label>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="bi bi-briefcase-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
+                            <input 
+                                id="occupation" 
+                                type="text" 
+                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200" 
+                                wire:model="occupation"
+                                placeholder="{{ __('Enter occupation') }}">
+                        </div>
+                        @error('occupation') 
+                        <label class="label">
+                            <span class="label-text-alt text-error flex items-center">
+                                <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
+                            </span>
+                        </label>
+                        @enderror
+                    </div>
 
-                            <!-- Mobile -->
-                            <div class="form-control">
-                                <label for="mobile" class="label">
-                                    <span class="label-text font-medium"><i class="bi bi-telephone-fill mr-2"></i>{{ __('Mobile Number') }} *</span>
-                                </label>
-                                <input type="text" id="mobile" wire:model="mobile" class="input input-bordered w-full" placeholder="{{ __('Mobile Number') }}">
-                                @error('mobile') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
+                    {{-- Mobile --}}
+                    <div class="form-control">
+                        <label for="mobile" class="label">
+                            <span class="label-text font-semibold">{{ __('Mobile Number') }} <span class="text-error">*</span></span>
+                        </label>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="bi bi-telephone-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
+                            <input 
+                                id="mobile" 
+                                type="text" 
+                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200" 
+                                wire:model="mobile"
+                                placeholder="{{ __('Enter phone number') }}">
+                        </div>
+                        @error('mobile') 
+                        <label class="label">
+                            <span class="label-text-alt text-error flex items-center">
+                                <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
+                            </span>
+                        </label>
+                        @enderror
+                    </div>
 
-                            <!-- Email -->
-                            <div class="form-control">
-                                <label for="email" class="label">
-                                    <span class="label-text font-medium"><i class="bi bi-envelope-fill mr-2"></i>{{ __('Email') }} *</span>
-                                </label>
-                                <input type="email" id="email" wire:model="email" class="input input-bordered w-full" placeholder="{{ __('Email Address') }}">
-                                @error('email') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
+                    {{-- Email --}}
+                    <div class="form-control">
+                        <label for="email" class="label">
+                            <span class="label-text font-semibold">{{ __('Email') }}</span>
+                        </label>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="bi bi-envelope-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
+                            <input 
+                                id="email" 
+                                type="email" 
+                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200" 
+                                wire:model="email"
+                                placeholder="{{ __('Enter email address') }}">
+                        </div>
+                        @error('email') 
+                        <label class="label">
+                            <span class="label-text-alt text-error flex items-center">
+                                <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
+                            </span>
+                        </label>
+                        @enderror
+                    </div>
 
-                            <!-- Grab Method -->
-                            <div class="form-control">
-                                <label class="label">
-                                    <span class="label-text font-medium">{{ __('Information Acquisition Method') }} *</span>
-                                </label>
-                                <div class="space-y-2">
-                                    <label class="cursor-pointer flex items-center space-x-2">
-                                        <input type="checkbox" wire:model.live="grab_method" value="see" class="checkbox checkbox-sm">
-                                        <span class="label-text">{{ __('See/View') }}</span>
-                                    </label>
-                                    <label class="cursor-pointer flex items-center space-x-2">
-                                        <input type="checkbox" wire:model.live="grab_method" value="read" class="checkbox checkbox-sm">
-                                        <span class="label-text">{{ __('Read') }}</span>
-                                    </label>
-                                    <label class="cursor-pointer flex items-center space-x-2">
-                                        <input type="checkbox" wire:model.live="grab_method" value="hear" class="checkbox checkbox-sm">
-                                        <span class="label-text">{{ __('Listen/Hear') }}</span>
-                                    </label>
-                                    <label class="cursor-pointer flex items-center space-x-2">
-                                        <input type="checkbox" wire:model.live="grab_method" value="write" class="checkbox checkbox-sm">
-                                        <span class="label-text">{{ __('Record/Write') }}</span>
-                                    </label>
-                                    <label class="cursor-pointer flex items-center space-x-2">
-                                        <input type="checkbox" wire:model.live="grab_method" value="hardcopy" class="checkbox checkbox-sm">
-                                        <span class="label-text">{{ __('Get Hardcopy') }}</span>
-                                    </label>
-                                    <label class="cursor-pointer flex items-center space-x-2">
-                                        <input type="checkbox" wire:model.live="grab_method" value="softcopy" class="checkbox checkbox-sm">
-                                        <span class="label-text">{{ __('Get Softcopy') }}</span>
-                                    </label>
-                                </div>
-                                @error('grab_method') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
+                    {{-- Grab Method --}}
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">{{ __('Information Acquisition Method') }} <span class="text-error">*</span></span>
+                        </label>
+                        <div class="space-y-2 pl-2">
+                            <div class="flex items-center">
+                                <input id="grab_see" type="checkbox" wire:model.live="grab_method" value="see" class="checkbox checkbox-primary">
+                                <label for="grab_see" class="ml-3 text-base-content cursor-pointer">{{ __('See/View') }}</label>
                             </div>
+                            <div class="flex items-center">
+                                <input id="grab_read" type="checkbox" wire:model.live="grab_method" value="read" class="checkbox checkbox-primary">
+                                <label for="grab_read" class="ml-3 text-base-content cursor-pointer">{{ __('Read') }}</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="grab_hear" type="checkbox" wire:model.live="grab_method" value="hear" class="checkbox checkbox-primary">
+                                <label for="grab_hear" class="ml-3 text-base-content cursor-pointer">{{ __('Listen/Hear') }}</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="grab_write" type="checkbox" wire:model.live="grab_method" value="write" class="checkbox checkbox-primary">
+                                <label for="grab_write" class="ml-3 text-base-content cursor-pointer">{{ __('Record/Write') }}</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="grab_hardcopy" type="checkbox" wire:model.live="grab_method" value="hardcopy" class="checkbox checkbox-primary">
+                                <label for="grab_hardcopy" class="ml-3 text-base-content cursor-pointer">{{ __('Get Hardcopy') }}</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="grab_softcopy" type="checkbox" wire:model.live="grab_method" value="softcopy" class="checkbox checkbox-primary">
+                                <label for="grab_softcopy" class="ml-3 text-base-content cursor-pointer">{{ __('Get Softcopy') }}</label>
+                            </div>
+                        </div>
+                        @error('grab_method') 
+                        <label class="label">
+                            <span class="label-text-alt text-error flex items-center">
+                                <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
+                            </span>
+                        </label>
+                        @enderror
+                    </div>
 
                             <!-- Delivery Method (conditional) -->
                             @if($show_delivery_method)
@@ -155,28 +271,53 @@
                             @endif
                         </div>
 
-                        <!-- Right Column - Request Details -->
-                        <div class="space-y-6">
-                            <div class="flex items-center space-x-3 mb-4 pb-2 border-b-2 border-secondary">
-                                <h4 class="text-xl font-bold text-base-content">{{ __('Request Details') }}</h4>
-                            </div>
-                            <!-- Request Content -->
-                            <div class="form-control">
-                                <label for="content" class="label">
-                                    <span class="label-text font-medium">{{ __('Information Requested') }} *</span>
-                                </label>
-                                <textarea id="content" wire:model="content" rows="8" class="textarea textarea-bordered w-full" placeholder="{{ __('Describe the information you are requesting...') }}"></textarea>
-                                @error('content') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
-                            </div>
+                {{-- Kolom Kanan - Detail Permohonan --}}
+                <div class="lg:w-1/2 space-y-6">
+                    <div class="flex items-center space-x-3 mb-6 pb-2 border-secondary">
+                        <h4 class="text-xl font-bold text-base-content">{{ __('Request Details') }}</h4>
+                    </div>
+                    {{-- Request Content --}}
+                    <div class="form-control">
+                        <label for="content" class="label">
+                            <span class="label-text font-semibold">{{ __('Information Requested') }} <span class="text-error">*</span></span>
+                        </label>
+                        <textarea 
+                            id="content" 
+                            rows="10"
+                            class="textarea textarea-bordered w-full focus:textarea-secondary transition-all duration-200 resize-none" 
+                            wire:model="content"
+                            placeholder="{{ __('Describe the information you are requesting...') }}"></textarea>
+                        <label class="label">
+                            <span class="label-text-alt text-base-content/60">{{ __('Be as specific as possible') }}</span>
+                        </label>
+                        @error('content') 
+                        <label class="label">
+                            <span class="label-text-alt text-error flex items-center">
+                                <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
+                            </span>
+                        </label>
+                        @enderror
+                    </div>
 
-                            <!-- Used For -->
-                            <div class="form-control">
-                                <label for="used_for" class="label">
-                                    <span class="label-text font-medium">{{ __('Purpose of Request') }} *</span>
-                                </label>
-                                <textarea id="used_for" wire:model="used_for" rows="6" class="textarea textarea-bordered w-full" placeholder="{{ __('Explain how you will use this information...') }}"></textarea>
-                                @error('used_for') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
-                            </div>
+                    {{-- Purpose --}}
+                    <div class="form-control">
+                        <label for="used_for" class="label">
+                            <span class="label-text font-semibold">{{ __('Purpose of Request') }} <span class="text-error">*</span></span>
+                        </label>
+                        <textarea 
+                            id="used_for" 
+                            rows="8"
+                            class="textarea textarea-bordered w-full focus:textarea-secondary transition-all duration-200 resize-none" 
+                            wire:model="used_for"
+                            placeholder="{{ __('Explain how you will use this information...') }}"></textarea>
+                        @error('used_for') 
+                        <label class="label">
+                            <span class="label-text-alt text-error flex items-center">
+                                <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
+                            </span>
+                        </label>
+                        @enderror
+                    </div>
 
                             <!-- Terms Acceptance -->
                             <div class="form-control">
@@ -210,37 +351,66 @@
                                 </div>
                             </div>
 
-                            <!-- Submit Button -->
-                            <div class="flex justify-end items-center gap-4 pt-4">
-                                <div wire:loading wire:target="save" class="flex items-center text-sm text-primary">
-                                    <span class="loading loading-spinner loading-sm mr-2"></span>
-                                    {{ __('Submitting...') }}
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-lg shadow-lg hover:shadow-xl transition-all duration-200" wire:loading.attr="disabled">
-                                    <i class="bi bi-send-fill"></i>
-                                    {{ __('Submit Request') }}
-                                </button>
+                    {{-- Submit Button --}}
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t-2 border-base-300">
+                        <div class="flex items-center text-sm text-base-content/70">
+                            <i class="bi bi-shield-lock-fill text-success text-lg mr-2"></i>
+                            <span>{{ __('Your information will be kept confidential') }}</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div wire:loading wire:target="save" class="flex items-center text-sm text-secondary">
+                                <span class="loading loading-spinner loading-sm mr-2"></span>
+                                {{ __('Submitting...') }}
                             </div>
+                            <button type="submit" class="btn btn-primary shadow-lg hover:shadow-xl transition-all duration-200" wire:loading.attr="disabled">
+                                <i class="bi bi-send-fill"></i>
+                                {{ __('Submit Request') }}
+                            </button>
                         </div>
                     </div>
-                </form>
-            </div>
-        </div>
-        
-        <div class="lg:col-span-4">
-            <div class="bg-base-200 p-4 rounded-lg shadow-sm mt-12">
-                <h2 class="text-2xl font-bold text-base-content mb-4">{{ __('Contact Us') }}</h2>
-                <div class="space-y-2 text-base-content/80">
-                    <p><i class="bi bi-telephone-fill mr-2"></i> <strong>{{ __('Phone') }}:</strong> 0274-487711</p>
-                    <p><i class="bi bi-printer-fill mr-2"></i> <strong>{{ __('Fax') }}:</strong> 0274-487711</p>
-                    <p><i class="bi bi-geo-alt-fill mr-2"></i> <strong>{{ __('Address') }}:</strong> BDI Yogyakarta, Jl. Babarsari No. 245, Yogyakarta</p>
-                    <p><i class="bi bi-envelope-fill mr-2"></i> <strong>{{ __('Email') }}:</strong> info@bdiyk.id</p>
-                </div>
-                <div class="mt-6">
-                    <h2 class="text-2xl font-bold text-base-content mb-4">{{ __('Maps') }}</h2>
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.164483635528!2d110.401864!3d-7.816401!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a57156a828f41%3A0x310b8a2efcab039a!2sBalai%20Diklat%20Industri%20Yogyakarta!5e0!3m2!1sen!2sid!4v1730698774152!5m2!1sen!2sid" class="w-full h-72 border-0 rounded-md" allowfullscreen="" loading="lazy"></iframe>
                 </div>
             </div>
+        </form>
+        {{-- Additional Info --}}
+        <div class="mt-6 text-center text-sm text-base-content/60">
+            <p>{{ __('Need help? Contact us at') }} <a href="mailto:info@bdiyk.id" class="link link-primary font-medium">info@bdiyk.id</a></p>
         </div>
     </div>
 </div>
+
+@push('scripts')
+<style>
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-fade-in {
+        animation: fade-in 0.5s ease-out;
+    }
+
+    /* Custom focus styles untuk dark mode */
+    .input:focus, .textarea:focus, .select:focus {
+        outline: 2px solid hsl(var(--p));
+        outline-offset: 2px;
+    }
+
+    /* Smooth transitions untuk theme switching */
+    * {
+        transition-property: background-color, border-color, color, fill, stroke;
+        transition-duration: 200ms;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Override transition untuk form inputs */
+    .input, .textarea, .select, .btn {
+        transition-property: background-color, border-color, color, box-shadow, transform;
+    }
+</style>
+@endpush
