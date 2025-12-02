@@ -2,7 +2,18 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
         <div class="lg:col-span-8">
             <div class="w-full mb-16">
-                <h1 class="text-4xl font-bold text-base-content mb-6">{{ __('Public Information Request Form') }}</h1>
+                {{-- Breadcrumbs --}}
+                @php
+                    $breadcrumbs = [
+                        ['label' => __('Home'), 'url' => route('home')],
+                        ['label' => __('Public Information Request Form')]
+                    ];
+                @endphp
+                @if(view()->exists('livewire.gratification.partials.breadcrumb'))
+                    @include('livewire.gratification.partials.breadcrumb', ['items' => $breadcrumbs])
+                @endif
+                
+                <h1 class="text-4xl font-bold text-base-content mb-6 mt-4">{{ __('Public Information Request Form') }}</h1>
                 
                 @if (session()->has('message'))
                     <div class="alert alert-success shadow-lg mb-6" role="alert">
@@ -18,8 +29,11 @@
 
                 <form wire:submit.prevent="save" class="my-5 space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Left Column -->
+                        <!-- Left Column - Applicant Information -->
                         <div class="space-y-6">
+                            <div class="flex items-center space-x-3 mb-4 pb-2 border-b-2 border-primary">
+                                <h4 class="text-xl font-bold text-base-content">{{ __('Applicant Information') }}</h4>
+                            </div>
                             <!-- Name -->
                             <div class="form-control">
                                 <label for="name" class="label">
@@ -141,8 +155,11 @@
                             @endif
                         </div>
 
-                        <!-- Right Column -->
+                        <!-- Right Column - Request Details -->
                         <div class="space-y-6">
+                            <div class="flex items-center space-x-3 mb-4 pb-2 border-b-2 border-secondary">
+                                <h4 class="text-xl font-bold text-base-content">{{ __('Request Details') }}</h4>
+                            </div>
                             <!-- Request Content -->
                             <div class="form-control">
                                 <label for="content" class="label">
@@ -211,8 +228,18 @@
         </div>
         
         <div class="lg:col-span-4">
-            <div class="bg-base-100 rounded-lg shadow p-6 sticky top-4">
-                @include('components.information-sidebar')
+            <div class="bg-base-200 p-4 rounded-lg shadow-sm mt-12">
+                <h2 class="text-2xl font-bold text-base-content mb-4">{{ __('Contact Us') }}</h2>
+                <div class="space-y-2 text-base-content/80">
+                    <p><i class="bi bi-telephone-fill mr-2"></i> <strong>{{ __('Phone') }}:</strong> 0274-487711</p>
+                    <p><i class="bi bi-printer-fill mr-2"></i> <strong>{{ __('Fax') }}:</strong> 0274-487711</p>
+                    <p><i class="bi bi-geo-alt-fill mr-2"></i> <strong>{{ __('Address') }}:</strong> BDI Yogyakarta, Jl. Babarsari No. 245, Yogyakarta</p>
+                    <p><i class="bi bi-envelope-fill mr-2"></i> <strong>{{ __('Email') }}:</strong> info@bdiyk.id</p>
+                </div>
+                <div class="mt-6">
+                    <h2 class="text-2xl font-bold text-base-content mb-4">{{ __('Maps') }}</h2>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.164483635528!2d110.401864!3d-7.816401!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a57156a828f41%3A0x310b8a2efcab039a!2sBalai%20Diklat%20Industri%20Yogyakarta!5e0!3m2!1sen!2sid!4v1730698774152!5m2!1sen!2sid" class="w-full h-72 border-0 rounded-md" allowfullscreen="" loading="lazy"></iframe>
+                </div>
             </div>
         </div>
     </div>
