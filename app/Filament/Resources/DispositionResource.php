@@ -6,6 +6,7 @@ use App\Enums\ResponseStatus;
 use App\Filament\Resources\DispositionResource\Pages;
 use App\Models\Gratification;
 use App\Models\Wbs;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -13,11 +14,16 @@ use Illuminate\Database\Eloquent\Builder;
 
 class DispositionResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = Wbs::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
-    protected static ?string $navigationLabel = 'Disposition';
+    public static function getNavigationLabel(): string
+    {
+        return __('Disposition');
+    }
 
     protected static ?string $slug = 'dispositions';
 
@@ -29,6 +35,11 @@ class DispositionResource extends Resource
     public static function getNavigationSort(): ?int
     {
         return 8;
+    }
+
+    public static function getTranslatableLocales(): array
+    {
+        return ['id', 'en'];
     }
 
     public static function getModelLabel(): string

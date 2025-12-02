@@ -35,6 +35,11 @@ class WbsResource extends Resource
         return __('Report');
     }
 
+    public static function getNavigationLabel(): string
+    {
+        return __('Wbs');
+    }
+
     public static function getNavigationSort(): ?int
     {
         return 7; // Position after Gratification (6)
@@ -175,43 +180,6 @@ class WbsResource extends Resource
             ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Action::make('reply')
-                    ->label('Balas')
-                    ->icon('heroicon-o-chat-bubble-left-right')
-                    ->color('info')
-                    ->form([
-                        Forms\Components\Select::make('response_status_id')
-                            ->label(__('Response Status'))
-                            ->options(ResponseStatus::all()->pluck('name', 'id')),
-                        Forms\Components\RichEditor::make('answer')
-                            ->label(__('Answer')),
-                        Forms\Components\FileUpload::make('answer_attachment')
-                            ->label(__('Answer Attachment'))
-                            ->disk('public')
-                            ->directory('wbs/answers')
-                            ->visibility('private')
-                            ->downloadable()
-                            ->openable(),
-                        Forms\Components\Select::make('disposition_to')
-                            ->label(__('Disposition To'))
-                            ->options(Employee::all()->pluck('name', 'id')) // Corrected from User
-                            ->searchable(),
-                    ])
-                    ->action(function (array $data, $record) {
-                        $process = new WbsProcess();
-                        $process->wbs_id = $record->id;
-                        $process->response_status_id = $data['response_status_id'] ?? $record->latestProcess->response_status_id ?? 1;
-                        $process->answer = $data['answer'];
-                        $process->answer_attachment = $data['answer_attachment'];
-                        $process->disposition_to = $data['disposition_to'];
-
-                        if ($data['answer'] || $data['answer_attachment']) {
-                            $process->published_at = now();
-                        }
-
-                        $process->save();
-                    }),
-                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
             ]);
