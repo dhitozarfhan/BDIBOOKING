@@ -72,7 +72,7 @@
                             <input
                                 id="reporter_name"
                                 type="text"
-                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="reporter_name"
                                 placeholder="{{ __('Enter full name') }}">
                         </div>
@@ -97,7 +97,7 @@
                             <input
                                 id="identity_number"
                                 type="text"
-                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="identity_number"
                                 placeholder="{{ __('Enter identity number') }}">
                         </div>
@@ -175,7 +175,7 @@
                         <textarea
                             id="address"
                             rows="3"
-                            class="textarea textarea-bordered w-full focus:textarea-primary transition-all duration-200 resize-none"
+                            class="textarea textarea-bordered w-full px-4 py-3 focus:textarea-primary transition-all duration-200 resize-none"
                             wire:model.lazy="address"
                             placeholder="{{ __('Enter full address') }}"></textarea>
                         @error('address')
@@ -199,7 +199,7 @@
                             <input
                                 id="occupation"
                                 type="text"
-                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="occupation"
                                 placeholder="{{ __('Enter occupation') }}">
                         </div>
@@ -227,7 +227,7 @@
                             <input
                                 id="phone"
                                 type="text"
-                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="phone"
                                 placeholder="{{ __('Enter phone number') }}">
                         </div>
@@ -255,7 +255,7 @@
                             <input
                                 id="email"
                                 type="email"
-                                class="input input-bordered w-full pl-12 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="email"
                                 placeholder="{{ __('Enter email address') }}">
                         </div>
@@ -313,7 +313,7 @@
                             <input
                                 id="report_title"
                                 type="text"
-                                class="input input-bordered w-full pl-12 focus:input-secondary transition-all duration-200"
+                                class="input input-bordered w-full pl-11 pr-4 focus:input-secondary transition-all duration-200"
                                 wire:model.lazy="report_title"
                                 placeholder="{{ __('Brief summary of your report') }}">
                         </div>
@@ -334,7 +334,7 @@
                         <textarea
                             id="report_description"
                             rows="10"
-                            class="textarea textarea-bordered w-full focus:textarea-secondary transition-all duration-200 resize-none"
+                            class="textarea textarea-bordered w-full px-4 py-3 focus:textarea-secondary transition-all duration-200 resize-none"
                             wire:model.lazy="report_description"
                             placeholder="{{ __('Describe the reported incident in detail') }}"></textarea>
                         <div class="px-4">
