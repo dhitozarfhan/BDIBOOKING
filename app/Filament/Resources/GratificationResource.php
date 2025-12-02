@@ -33,9 +33,19 @@ class GratificationResource extends Resource
         return __('Report');
     }
 
+    public static function getNavigationLabel(): string
+    {
+        return __('Gratification');
+    }
+
     public static function getNavigationSort(): ?int
     {
         return 6; // Position after Article (5)
+    }
+
+    public static function getTranslatableLocales(): array
+    {
+        return ['id', 'en'];
     }
 
     public static function canViewAny(): bool
