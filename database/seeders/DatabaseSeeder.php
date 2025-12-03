@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             ResponseStatusSeeder::class,
             ArticleSeeder::class,
             NavigationSeeder::class,
+            ReportTypeSeeder::class,
         ]);
     }
 }

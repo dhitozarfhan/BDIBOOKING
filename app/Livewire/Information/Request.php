@@ -106,6 +106,9 @@ class Request extends Component
 
         $this->validate();
 
+        // Generate registration code
+        $registrationCode = $this->generateKodeRegister();
+
         InformationRequest::create([
             'name' => $this->name,
             'id_card_number' => $this->id_card_number,
@@ -121,9 +124,11 @@ class Request extends Component
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
             'status' => 'pending',
+            'registration_code' => $registrationCode,
         ]);
 
-        session()->flash('message', __('Your information request has been submitted successfully. We will process your request shortly.'));
+        session()->flash('message', __('Your information request has been submitted successfully. We will process your request shortly. Registration Code: ') . $registrationCode);
+        session()->flash('registration_code', $registrationCode);
 
         $this->reset([
             'name', 'id_card_number', 'address', 'occupation', 'mobile', 'email',
@@ -132,6 +137,16 @@ class Request extends Component
         
         $this->show_delivery_method = false;
         $this->refreshCaptcha();
+    }
+
+    private function generateKodeRegister()
+    {
+        do {
+            $kode = strtoupper(substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 6));
+            $exists = InformationRequest::where('registration_code', $kode)->exists();
+        } while ($exists);
+
+        return $kode;
     }
 
     public function render()

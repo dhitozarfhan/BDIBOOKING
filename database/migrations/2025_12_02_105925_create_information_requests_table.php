@@ -47,6 +47,9 @@ return new class extends Migration
             $table->index('status');
             $table->index('email');
             $table->index('created_at');
+            
+            //registration_code
+            $table->string('registration_code')->nullable()->unique();
         });
     }
 

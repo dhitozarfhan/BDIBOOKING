@@ -15,5 +15,6 @@ class Question extends Model
         'name',
         'mobile',
         'email',
+        'registration_code',
     ];
 }
