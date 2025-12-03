@@ -11,7 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class ReportAnswersRelationManager extends RelationManager
+class ProcessRelationManager extends RelationManager
 {
     protected static string $relationship = 'reportProcesses';
 

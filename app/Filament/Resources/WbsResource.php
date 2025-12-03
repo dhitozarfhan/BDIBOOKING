@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\PermissionType;
 use App\Filament\Resources\WbsResource\Pages;
-use App\Filament\Resources\WbsResource\RelationManagers\ReportAnswersRelationManager;
+use App\Filament\Resources\WbsResource\RelationManagers\ProcessRelationManager;
 use App\Models\ResponseStatus;
 use App\Models\Employee; // Corrected from User
 use App\Models\Violation;
@@ -187,7 +187,7 @@ class WbsResource extends Resource
     public static function getRelations(): array
     {
         return [
-            ReportAnswersRelationManager::class,
+            ProcessRelationManager::class,
         ];
     }
 
