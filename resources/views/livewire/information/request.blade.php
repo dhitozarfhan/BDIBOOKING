@@ -24,7 +24,12 @@
                     </div>
                     <div class="ml-4 flex-1">
                         <h3 class="font-bold text-lg">{{ __('Success!') }}</h3>
-                        <p class="mt-1">{{ session('message') }}</p>
+                        <p class="mt-1">
+                            {{ session('message') }}
+                            <span class="badge badge-success badge-lg ml-2 font-semibold">
+                                {{ session('registration_code') }}
+                            </span>
+                        </p>
                         <p class="text-sm mt-2 opacity-90">{{ __('Thank you for your request. We will process it soon.') }}</p>
                     </div>
                 </div>
@@ -66,7 +71,7 @@
                                 id="name" 
                                 type="text" 
                                 class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
-                                wire:model="name"
+                                wire:model.lazy="name"
                                 placeholder="{{ __('Enter full name') }}">
                         </div>
                         @error('name') 
@@ -91,7 +96,7 @@
                                 id="id_card_number" 
                                 type="text" 
                                 class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
-                                wire:model="id_card_number"
+                                wire:model.lazy="id_card_number"
                                 placeholder="{{ __('Enter ID card number') }}">
                         </div>
                         @error('id_card_number') 
@@ -112,7 +117,7 @@
                             id="address" 
                             rows="3"
                             class="textarea textarea-bordered w-full focus:textarea-primary transition-all duration-200 resize-none" 
-                            wire:model="address"
+                            wire:model.lazy="address"
                             placeholder="{{ __('Enter full address') }}"></textarea>
                         @error('address') 
                         <label class="label">
@@ -136,7 +141,7 @@
                                 id="occupation" 
                                 type="text" 
                                 class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
-                                wire:model="occupation"
+                                wire:model.lazy="occupation"
                                 placeholder="{{ __('Enter occupation') }}">
                         </div>
                         @error('occupation') 
@@ -161,7 +166,7 @@
                                 id="mobile" 
                                 type="text" 
                                 class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
-                                wire:model="mobile"
+                                wire:model.lazy="mobile"
                                 placeholder="{{ __('Enter phone number') }}">
                         </div>
                         @error('mobile') 
@@ -186,7 +191,7 @@
                                 id="email" 
                                 type="email" 
                                 class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
-                                wire:model="email"
+                                wire:model.lazy="email"
                                 placeholder="{{ __('Enter email address') }}">
                         </div>
                         @error('email') 
@@ -285,7 +290,7 @@
                             id="content" 
                             rows="10"
                             class="textarea textarea-bordered w-full px-4 py-3 focus:textarea-secondary transition-all duration-200 resize-none" 
-                            wire:model="content"
+                            wire:model.lazy="content"
                             placeholder="{{ __('Describe the information you are requesting...') }}"></textarea>
                         <label class="label">
                             <span class="label-text-alt text-base-content/60">{{ __('Be as specific as possible') }}</span>
@@ -308,7 +313,7 @@
                             id="used_for" 
                             rows="8"
                             class="textarea textarea-bordered w-full px-4 py-3 focus:textarea-secondary transition-all duration-200 resize-none" 
-                            wire:model="used_for"
+                            wire:model.lazy="used_for"
                             placeholder="{{ __('Explain how you will use this information...') }}"></textarea>
                         @error('used_for') 
                         <label class="label">
@@ -328,28 +333,7 @@
                                 @error('rule_accepted') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
                             </div>
 
-                            <!-- Captcha -->
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="form-control">
-                                    <label for="captcha" class="label">
-                                        <span class="label-text font-medium"><i class="bi bi-shield-check mr-2"></i>{{ __('Enter Captcha') }} *</span>
-                                    </label>
-                                    <input type="text" id="captcha" wire:model="captcha" class="input input-bordered w-full" placeholder="{{ __('Captcha Code') }}">
-                                    @error('captcha') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
-                                </div>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <a wire:click="refreshCaptcha" class="label-text link link-primary cursor-pointer">
-                                            <i class="bi bi-arrow-clockwise mr-1"></i>{{ __('Refresh Captcha') }}
-                                        </a>
-                                    </label>
-                                    <div class="bg-base-200 rounded-lg p-4 text-center border-2 border-base-300">
-                                        <span class="text-2xl font-bold tracking-widest select-none" style="font-family: monospace; letter-spacing: 0.3em;">
-                                            {{ session('captcha_value', $captcha_value) }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+
 
                     {{-- Submit Button --}}
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t-2 border-base-300">
