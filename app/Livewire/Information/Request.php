@@ -74,7 +74,7 @@ class Request extends Component
         // Generate registration code
         $registrationCode = $this->generateKodeRegister();
 
-        InformationRequest::create([
+        $infoRequest = InformationRequest::create([
             'name' => $this->name,
             'id_card_number' => $this->id_card_number,
             'address' => $this->address,
@@ -88,8 +88,15 @@ class Request extends Component
             'rule_accepted' => $this->rule_accepted,
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
-            'status' => 'pending',
             'registration_code' => $registrationCode,
+        ]);
+
+        // Buat "wadah jawaban"-nya (ReportProcess) secara otomatis
+        // Asumsi: ID 1 di tabel response_statuses adalah untuk status awal/baru ('Initiation').
+        // Pastikan tabel `response_statuses` Anda sudah terisi dengan seeder.
+        $infoRequest->process()->create([
+            'response_status_id' => 1,
+            'is_completed' => false,
         ]);
 
         session()->flash('message', __('Your information request has been submitted successfully. We will process your request shortly. Registration Code: '));

@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ReportAnswersRelationManager extends RelationManager
 {
-    protected static string $relationship = 'processes';
+    protected static string $relationship = 'reportProcesses';
 
     public function form(Form $form): Form
     {
