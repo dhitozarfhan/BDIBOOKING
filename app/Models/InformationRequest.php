@@ -26,6 +26,7 @@ class InformationRequest extends Model
         'rule_accepted',
         'ip_address',
         'user_agent',
+        'registration_code',
     ];
 
     protected $casts = [

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('identity_number')->nullable();
             $table->string('identity_card_attachment')->nullable();
+            $table->string('registration_code')->nullable()->unique();
             $table->timestamps();
         });
     }

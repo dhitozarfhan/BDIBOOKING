@@ -38,6 +38,9 @@ class QuestionForm extends Component
             $identityCardPath = $this->identity_card_attachment->store('identity_cards', 'public');
         }
 
+        // Generate registration code
+        $registrationCode = $this->generateKodeRegister();
+
         Question::create([
             'subject' => $this->subject,
             'content' => $this->content,
@@ -46,11 +49,23 @@ class QuestionForm extends Component
             'identity_card_attachment' => $identityCardPath,
             'mobile' => $this->mobile,
             'email' => $this->email,
+            'registration_code' => $registrationCode,
         ]);
 
-        session()->flash('message', 'Question successfully submitted.');
+        session()->flash('message', 'Question successfully submitted. Registration Code: ' . $registrationCode);
+        session()->flash('registration_code', $registrationCode);
 
         $this->reset();
+    }
+
+    private function generateKodeRegister()
+    {
+        do {
+            $kode = strtoupper(substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 6));
+            $exists = Question::where('registration_code', $kode)->exists();
+        } while ($exists);
+
+        return $kode;
     }
 
     public function render()
