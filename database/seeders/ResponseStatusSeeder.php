@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Enums\ResponseStatus as EnumsResponseStatus;
+use App\Enums\ResponseStatus;
 use App\Models\ResponseStatus;
 use Illuminate\Database\Seeder;
 
@@ -13,15 +13,14 @@ class ResponseStatusSeeder extends Seeder
      */
     public function run(): void
     {
-        ResponseStatus::truncate();
+        if (ResponseStatus::count()) {
+            ResponseStatus::truncate();
+        }
 
-        $datas = [
-            ['id' => EnumsResponseStatus::Initiation->value, 'name' => 'Initiation'],
-            ['id' => EnumsResponseStatus::Process->value, 'name' => 'Process'],
-            ['id' => EnumsResponseStatus::Disposition->value, 'name' => 'Disposition'],
-            ['id' => EnumsResponseStatus::Termination->value, 'name' => 'Termination'],
-        ];
-
-        ResponseStatus::insert($datas);
+        foreach (ResponseStatus::cases() as $status) {
+            // 'id' akan diisi otomatis oleh database
+            // 'name' akan diisi dengan value dari enum (contoh: 'initiation')
+            ResponseStatus::create(['name' => $status->value]);
+        }
     }
 }
