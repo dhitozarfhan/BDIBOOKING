@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Wbs extends Model
 {
@@ -34,8 +35,11 @@ class Wbs extends Model
         return $this->belongsTo(Violation::class);
     }
 
-    public function processes()
+    /**
+     * Get the report's processing record.
+     */
+    public function process(): MorphOne
     {
-        return $this->hasMany(WbsProcess::class, 'wbs_id');
+        return $this->morphOne(ReportProcess::class, 'reportable');
     }
 }
