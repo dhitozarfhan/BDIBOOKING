@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\InformationRequestStatus;
 use App\Enums\PermissionType;
 use App\Filament\Resources\InformationRequestResource\Pages;
 use App\Models\InformationRequest;
+use App\Models\ResponseStatus; // Added
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -148,18 +148,14 @@ class InformationRequestResource extends Resource
                 Forms\Components\Section::make(__('Processing'))
                     ->columnSpan(1)
                     ->schema([
-                        Forms\Components\Select::make('status')
+                        Forms\Components\Select::make('process.response_status_id')
                             ->label(__('Status'))
-                            ->options([
-                                'pending' => __('Pending'),
-                                'processing' => __('Processing'),
-                                'approved' => __('Approved'),
-                                'rejected' => __('Rejected'),
-                            ])
+                            ->relationship('process.responseStatus', 'name')
+                            ->options(ResponseStatus::all()->pluck('name', 'id')->toArray()) // Use ResponseStatus model
                             ->required()
                             ->native(false),
                             
-                        Forms\Components\Textarea::make('notes')
+                        Forms\Components\Textarea::make('process.answer')
                             ->label(__('Admin Notes'))
                             ->rows(6)
                             ->columnSpanFull(),
@@ -171,7 +167,7 @@ class InformationRequestResource extends Resource
                             ->native(false)
                             ->displayFormat('d F Y H:i'),
                             
-                        Forms\Components\DateTimePicker::make('processed_at')
+                        Forms\Components\DateTimePicker::make('process.updated_at') // Use process.updated_at
                             ->label(__('Processed At'))
                             ->disabled()
                             ->dehydrated(false)
@@ -205,17 +201,16 @@ class InformationRequestResource extends Resource
                     ->label(__('Mobile'))
                     ->searchable(),
                     
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\TextColumn::make('process.responseStatus.name') // Mengambil nama status dari relasi
                     ->label(__('Status'))
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'pending' => 'warning',
-                        'processing' => 'info',
-                        'approved' => 'success',
-                        'rejected' => 'danger',
+                    ->color(fn ($state): string => match ($state) { // Menyesuaikan warna dengan nama status baru
+                        'Initiation' => 'warning',
+                        'Process' => 'info',
+                        'Disposition' => 'primary',
+                        'Termination' => 'success',
                         default => 'gray',
                     })
-                    ->formatStateUsing(fn (string $state): string => __(ucfirst($state)))
                     ->sortable(),
                     
                 Tables\Columns\TextColumn::make('created_at')
@@ -223,21 +218,16 @@ class InformationRequestResource extends Resource
                     ->dateTime('d M Y H:i')
                     ->sortable(),
                     
-                Tables\Columns\TextColumn::make('processed_at')
+                Tables\Columns\TextColumn::make('process.updated_at') // Mengambil waktu proses dari relasi
                     ->label(__('Processed'))
                     ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('status')
+                Tables\Filters\SelectFilter::make('process.response_status_id') // Memfilter berdasarkan id dari relasi
                     ->label(__('Status'))
-                    ->options([
-                        'pending' => __('Pending'),
-                        'processing' => __('Processing'),
-                        'approved' => __('Approved'),
-                        'rejected' => __('Rejected'),
-                    ])
+                    ->options(ResponseStatus::all()->pluck('name', 'id')->toArray()) // Mengambil opsi filter dari model
                     ->multiple(),
                     
                 Tables\Filters\Filter::make('created_at')

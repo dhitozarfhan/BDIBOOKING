@@ -9,7 +9,6 @@ use App\Models\ResponseStatus;
 use App\Models\Employee; // Corrected from User
 use App\Models\Violation;
 use App\Models\Wbs;
-use App\Models\WbsProcess;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Concerns\Translatable;
@@ -167,7 +166,7 @@ class WbsResource extends Resource
                     ->label(__('Type of Violation'))
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('latestProcess.responseStatus.name')
+                TextColumn::make('process.responseStatus.name')
                     ->label(__('Status'))
                     ->badge()
                     ->sortable(),

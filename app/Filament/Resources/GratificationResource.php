@@ -6,7 +6,6 @@ use App\Enums\PermissionType;
 use App\Filament\Resources\GratificationResource\Pages;
 use App\Filament\Resources\GratificationResource\RelationManagers\ReportAnswersRelationManager;
 use App\Models\Gratification;
-use App\Models\GratificationProcess;
 use App\Models\ResponseStatus;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -139,7 +138,7 @@ class GratificationResource extends Resource
                     ->searchable()
                     ->wrap()
                     ->sortable(),
-                TextColumn::make('latestProcess.responseStatus.name')
+                TextColumn::make('process.responseStatus.name')
                     ->label(__('Status'))
                     ->badge()
                     ->sortable(),

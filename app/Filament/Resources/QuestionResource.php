@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use App\Models\ResponseStatus; // Added
 
 class QuestionResource extends Resource
 {
@@ -42,23 +43,68 @@ class QuestionResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
+            ->columns(3)
             ->schema([
-                Forms\Components\TextInput::make('subject')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\RichEditor::make('content')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('mobile')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Section::make(__('Question Details'))
+                    ->columnSpan(2)
+                    ->schema([
+                        Forms\Components\TextInput::make('subject')
+                            ->required()
+                            ->maxLength(255)
+                            ->disabled()
+                            ->dehydrated(false),
+                        Forms\Components\RichEditor::make('content')
+                            ->required()
+                            ->columnSpanFull()
+                            ->disabled()
+                            ->dehydrated(false),
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255)
+                            ->disabled()
+                            ->dehydrated(false),
+                        Forms\Components\TextInput::make('mobile')
+                            ->required()
+                            ->maxLength(255)
+                            ->disabled()
+                            ->dehydrated(false),
+                        Forms\Components\TextInput::make('email')
+                            ->email()
+                            ->required()
+                            ->maxLength(255)
+                            ->disabled()
+                            ->dehydrated(false),
+                    ]),
+
+                Forms\Components\Section::make(__('Processing'))
+                    ->columnSpan(1)
+                    ->schema([
+                        Forms\Components\Select::make('process.response_status_id')
+                            ->label(__('Status'))
+                            ->relationship('process.responseStatus', 'name')
+                            ->options(ResponseStatus::all()->pluck('name', 'id')->toArray())
+                            ->required()
+                            ->native(false),
+                            
+                        Forms\Components\Textarea::make('process.answer')
+                            ->label(__('Admin Notes'))
+                            ->rows(6)
+                            ->columnSpanFull(),
+                            
+                        Forms\Components\DateTimePicker::make('created_at')
+                            ->label(__('Submitted At'))
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->native(false)
+                            ->displayFormat('d F Y H:i'),
+                            
+                        Forms\Components\DateTimePicker::make('process.updated_at')
+                            ->label(__('Processed At'))
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->native(false)
+                            ->displayFormat('d F Y H:i'),
+                    ]),
             ]);
     }
 
@@ -78,6 +124,17 @@ class QuestionResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->label(__('Email'))
                     ->searchable(),
+                Tables\Columns\TextColumn::make('process.responseStatus.name') // Added status column
+                    ->label(__('Status'))
+                    ->badge()
+                    ->color(fn ($state): string => match ($state) {
+                        'Initiation' => 'warning',
+                        'Process' => 'info',
+                        'Disposition' => 'primary',
+                        'Termination' => 'success',
+                        default => 'gray',
+                    })
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('Submitted At'))
                     ->dateTime('d/m/Y H:i')
@@ -99,7 +156,7 @@ class QuestionResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ReportAnswersRelationManager::class,
         ];
     }
 
