@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Enums\ReportType as EnumsReportType;
+use App\Enums\ReportType;
 use App\Models\ReportType;
 use Illuminate\Database\Seeder;
 
@@ -13,13 +13,12 @@ class ReportTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        ReportType::truncate();
-
-        $datas = [];
-        foreach (EnumsReportType::cases() as $case) {
-            $datas[] = ['name' => $case->name];
+        if (ReportType::count()) {
+            ReportType::truncate();
         }
 
-        ReportType::insert($datas);
+        foreach (ReportType::cases() as $type) {
+            ReportType::create(['name' => $type->value]);
+        }
     }
 }
