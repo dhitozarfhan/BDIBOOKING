@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Gratification extends Model
 {
@@ -23,14 +24,11 @@ class Gratification extends Model
         'registration_code',
     ];
 
-    public function processes()
+    /**
+     * Get the report's processing record.
+     */
+    public function process(): MorphOne
     {
-        return $this->hasMany(GratificationProcess::class, 'gratification_id');
-    }
-    
-    public function latestProcess()
-    {
-        return $this->hasOne(GratificationProcess::class, 'gratification_id')
-                   ->latestOfMany();
+        return $this->morphOne(ReportProcess::class, 'reportable');
     }
 }

@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use App\Enums\InformationRequestStatus;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class InformationRequest extends Model
 {
@@ -19,10 +18,6 @@ class InformationRequest extends Model
         'used_for',
         'grab_method',
         'delivery_method',
-        'status',
-        'notes',
-        'processed_by',
-        'processed_at',
         'rule_accepted',
         'ip_address',
         'user_agent',
@@ -32,13 +27,14 @@ class InformationRequest extends Model
     protected $casts = [
         'grab_method' => 'array',
         'delivery_method' => 'array',
-        'status' => InformationRequestStatus::class,
         'rule_accepted' => 'boolean',
-        'processed_at' => 'datetime',
     ];
 
-    public function processedBy(): BelongsTo
+    /**
+     * Get the report's processing record.
+     */
+    public function process(): MorphOne
     {
-        return $this->belongsTo(User::class, 'processed_by');
+        return $this->morphOne(ReportProcess::class, 'reportable');
     }
 }
