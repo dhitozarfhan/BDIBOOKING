@@ -13,18 +13,13 @@ class ReportTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        // Mengosongkan tabel, sama seperti di contoh
         ReportType::truncate();
 
-        // Membuat array data dengan struktur ['id' => ..., 'name' => ...], sama seperti di contoh
-        $datas = [
-            ['id' => EnumsReportType::GRATIFICATION->value, 'name' => 'GRATIFICATION'],
-            ['id' => EnumsReportType::WBS->value, 'name' => 'WBS'],
-            ['id' => EnumsReportType::PUBLIC_COMPLAINT->value, 'name' => 'PUBLIC_COMPLAINT'],
-            ['id' => EnumsReportType::INFORMATION_REQUEST->value, 'name' => 'INFORMATION_REQUEST'],
-        ];
+        $datas = [];
+        foreach (EnumsReportType::cases() as $case) {
+            $datas[] = ['name' => $case->name];
+        }
 
-        // Memasukkan data ke tabel, sama seperti di contoh
         ReportType::insert($datas);
     }
 }
