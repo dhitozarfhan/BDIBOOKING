@@ -29,10 +29,6 @@ class Request extends Component
     // Compliance
     public $rule_accepted = false;
     
-    // Captcha
-    public $captcha = '';
-    public $captcha_value = '';
-
     protected function rules()
     {
         return [
@@ -47,7 +43,6 @@ class Request extends Component
             'grab_method' => 'required|array|min:1',
             'delivery_method' => 'required_if:show_delivery_method,true|array|min:1',
             'rule_accepted' => 'accepted',
-            'captcha' => 'required|string',
         ];
     }
 
@@ -57,13 +52,7 @@ class Request extends Component
         'delivery_method.required_if' => 'Please select at least one delivery method.',
         'delivery_method.min' => 'Please select at least one delivery method.',
         'rule_accepted.accepted' => 'You must accept the terms and conditions.',
-        'captcha.required' => 'Please enter the captcha code.',
     ];
-
-    public function mount()
-    {
-        $this->generateCaptcha();
-    }
 
     public function updated($propertyName)
     {
@@ -78,32 +67,8 @@ class Request extends Component
         }
     }
 
-    public function generateCaptcha()
-    {
-        // Simple captcha implementation
-        $characters = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
-        $this->captcha_value = '';
-        for ($i = 0; $i < 6; $i++) {
-            $this->captcha_value .= $characters[rand(0, strlen($characters) - 1)];
-        }
-        session(['captcha_value' => $this->captcha_value]);
-    }
-
-    public function refreshCaptcha()
-    {
-        $this->generateCaptcha();
-        $this->captcha = '';
-    }
-
     public function save()
     {
-        // Validate captcha
-        if (strtoupper($this->captcha) !== session('captcha_value')) {
-            $this->addError('captcha', 'Captcha code is incorrect.');
-            $this->refreshCaptcha();
-            return;
-        }
-
         $this->validate();
 
         // Generate registration code
@@ -127,16 +92,15 @@ class Request extends Component
             'registration_code' => $registrationCode,
         ]);
 
-        session()->flash('message', __('Your information request has been submitted successfully. We will process your request shortly. Registration Code: ') . $registrationCode);
+        session()->flash('message', __('Your information request has been submitted successfully. We will process your request shortly. Registration Code: '));
         session()->flash('registration_code', $registrationCode);
 
         $this->reset([
             'name', 'id_card_number', 'address', 'occupation', 'mobile', 'email',
-            'content', 'used_for', 'grab_method', 'delivery_method', 'rule_accepted', 'captcha'
+            'content', 'used_for', 'grab_method', 'delivery_method', 'rule_accepted'
         ]);
         
         $this->show_delivery_method = false;
-        $this->refreshCaptcha();
     }
 
     private function generateKodeRegister()
