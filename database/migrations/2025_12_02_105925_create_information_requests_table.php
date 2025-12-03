@@ -30,11 +30,7 @@ return new class extends Migration
             $table->json('grab_method'); // see, read, hear, write, hardcopy, softcopy
             $table->json('delivery_method')->nullable(); // direct, courier, post, fax, email
             
-            // Status & Processing
-            $table->string('status')->default('pending'); // pending, processing, approved, rejected
-            $table->text('notes')->nullable(); // Admin notes
-            $table->foreignId('processed_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->timestamp('processed_at')->nullable();
+            // Status & Processing is now handled by the ReportProcess model
             
             // Compliance & Security
             $table->boolean('rule_accepted')->default(false);
@@ -44,7 +40,6 @@ return new class extends Migration
             $table->timestamps();
             
             // Indexes
-            $table->index('status');
             $table->index('email');
             $table->index('created_at');
             
