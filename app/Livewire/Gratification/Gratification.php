@@ -4,7 +4,7 @@ namespace App\Livewire\Gratification;
 
 use App\Enums\ResponseStatus;
 use App\Models\Gratification as GratificationModel;
-use App\Models\GratificationProcess;
+use App\Models\ReportProcess;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -147,8 +147,7 @@ class Gratification extends Component
         ]);
 
         // Create the initial process record for the gratification
-        GratificationProcess::create([
-            'gratification_id' => $gratification->id,
+        $gratification->reportProcesses()->create([
             'response_status_id' => ResponseStatus::Initiation->value,
             'answer' => null,
         ]);
@@ -179,7 +178,7 @@ class Gratification extends Component
         $gratification = GratificationModel::where('registration_code', $this->registration_code)->first();
 
         if ($gratification) {
-            $process = $gratification->processes()->latest()->first();
+            $process = $gratification->reportProcesses()->latest()->first();
 
             $reportDetail = new \stdClass();
             $reportDetail->subject = $gratification->report_title;
@@ -226,11 +225,14 @@ class Gratification extends Component
 
         // Waktu rata-rata penyelesaian per bulan
         $this->timeToAnswerData = DB::table('gratifications')
-            ->join('gratification_processes', 'gratifications.id', '=', 'gratification_processes.gratification_id')
-            ->selectRaw('EXTRACT(MONTH FROM gratifications.created_at) as month, AVG(EXTRACT(DAY FROM (gratification_processes.created_at - gratifications.created_at))) as avg_days')
+            ->join('report_processes', function ($join) {
+                $join->on('gratifications.id', '=', 'report_processes.reportable_id')
+                     ->where('report_processes.reportable_type', '=', GratificationModel::class);
+            })
+            ->selectRaw('EXTRACT(MONTH FROM gratifications.created_at) as month, AVG(EXTRACT(DAY FROM (report_processes.created_at - gratifications.created_at))) as avg_days')
             ->whereYear('gratifications.created_at', $year)
-            ->whereNotNull('gratification_processes.created_at')
-            ->where('gratification_processes.response_status_id', ResponseStatus::Termination->value) // Completed status
+            ->whereNotNull('report_processes.created_at')
+            ->where('report_processes.response_status_id', ResponseStatus::Termination->value) // Completed status
             ->groupBy('month')
             ->orderBy('month')
             ->pluck('avg_days', 'month')
@@ -240,21 +242,21 @@ class Gratification extends Component
             ->toArray();
 
         // Distribusi status
-        $lastProcessSubquery = DB::table('gratification_processes')
-            ->select('gratification_id', DB::raw('MAX(id) as latest_process_id'))
-            ->groupBy('gratification_id');
+        $lastProcessSubquery = DB::table('report_processes')
+            ->select('reportable_id', DB::raw('MAX(id) as latest_process_id'))
+            ->where('reportable_type', GratificationModel::class)
+            ->groupBy('reportable_id');
 
         $this->statusData = DB::table('gratifications')
             ->joinSub($lastProcessSubquery, 'latest_processes', function ($join) {
-                $join->on('gratifications.id', '=', 'latest_processes.gratification_id');
+                $join->on('gratifications.id', '=', 'latest_processes.reportable_id');
             })
-            ->join('gratification_processes', function ($join) {
-                $join->on('gratifications.id', '=', 'gratification_processes.gratification_id')
-                     ->on('gratification_processes.id', '=', 'latest_processes.latest_process_id');
+            ->join('report_processes', function ($join) {
+                $join->on('report_processes.id', '=', 'latest_processes.latest_process_id');
             })
-            ->select('gratification_processes.response_status_id', DB::raw('COUNT(*) as count'))
+            ->select('report_processes.response_status_id', DB::raw('COUNT(*) as count'))
             ->whereYear('gratifications.created_at', $year)
-            ->groupBy('gratification_processes.response_status_id')
+            ->groupBy('report_processes.response_status_id')
             ->get()
             ->map(function ($item) {
                 return [
