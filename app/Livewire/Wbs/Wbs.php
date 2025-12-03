@@ -5,7 +5,7 @@ namespace App\Livewire\Wbs;
 use App\Enums\ResponseStatus;
 use App\Models\Wbs as WbsModel;
 use App\Models\Violation;
-use App\Models\WbsProcess;
+use App\Models\ReportProcess;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -142,8 +142,7 @@ class Wbs extends Component
         ]);
 
         // Create the initial process record for the WBS
-        WbsProcess::create([
-            'wbs_id' => $wbs->id,
+        $wbs->reportProcesses()->create([
             'response_status_id' => ResponseStatus::Initiation->value,
             'answer' => null,
         ]);
@@ -175,7 +174,7 @@ class Wbs extends Component
             'registration_code' => 'required|string|exists:wbs,registration_code'
         ]);
 
-        $wbs = WbsModel::with('processes')->where('registration_code', $this->registration_code)->first();
+        $wbs = WbsModel::with('reportProcesses')->where('registration_code', $this->registration_code)->first();
         
         if ($wbs) {
             $this->reportDetail = $wbs;
@@ -198,11 +197,14 @@ class Wbs extends Component
 
         // Waktu rata-rata penyelesaian per bulan
         $this->timeToAnswerData = DB::table('wbs')
-            ->join('wbs_processes', 'wbs.id', '=', 'wbs_processes.wbs_id')
-            ->selectRaw('EXTRACT(MONTH FROM wbs.created_at) as month, AVG(EXTRACT(DAY FROM (wbs_processes.created_at - wbs.created_at))) as avg_days')
+            ->join('report_processes', function ($join) {
+                $join->on('wbs.id', '=', 'report_processes.reportable_id')
+                     ->where('report_processes.reportable_type', '=', WbsModel::class);
+            })
+            ->selectRaw('EXTRACT(MONTH FROM wbs.created_at) as month, AVG(EXTRACT(DAY FROM (report_processes.created_at - wbs.created_at))) as avg_days')
             ->whereYear('wbs.created_at', $year)
-            ->whereNotNull('wbs_processes.created_at')
-            ->where('wbs_processes.response_status_id', ResponseStatus::Termination->value) // Completed status
+            ->whereNotNull('report_processes.created_at')
+            ->where('report_processes.response_status_id', ResponseStatus::Termination->value) // Completed status
             ->groupBy('month')
             ->orderBy('month')
             ->pluck('avg_days', 'month')
@@ -212,21 +214,21 @@ class Wbs extends Component
             ->toArray();
 
         // Distribusi status
-        $lastProcessSubquery = DB::table('wbs_processes')
-            ->select('wbs_id', DB::raw('MAX(id) as latest_process_id'))
-            ->groupBy('wbs_id');
+        $lastProcessSubquery = DB::table('report_processes')
+            ->select('reportable_id', DB::raw('MAX(id) as latest_process_id'))
+            ->where('reportable_type', WbsModel::class)
+            ->groupBy('reportable_id');
 
         $this->statusData = DB::table('wbs')
             ->joinSub($lastProcessSubquery, 'latest_processes', function ($join) {
-                $join->on('wbs.id', '=', 'latest_processes.wbs_id');
+                $join->on('wbs.id', '=', 'latest_processes.reportable_id');
             })
-            ->join('wbs_processes', function ($join) {
-                $join->on('wbs.id', '=', 'wbs_processes.wbs_id')
-                     ->on('wbs_processes.id', '=', 'latest_processes.latest_process_id');
+            ->join('report_processes', function ($join) {
+                $join->on('report_processes.id', '=', 'latest_processes.latest_process_id');
             })
-            ->select('wbs_processes.response_status_id', DB::raw('COUNT(*) as count'))
+            ->select('report_processes.response_status_id', DB::raw('COUNT(*) as count'))
             ->whereYear('wbs.created_at', $year)
-            ->groupBy('wbs_processes.response_status_id')
+            ->groupBy('report_processes.response_status_id')
             ->get()
             ->map(function ($item) {
                 return [
