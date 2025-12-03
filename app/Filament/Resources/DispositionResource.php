@@ -6,6 +6,8 @@ use App\Enums\ResponseStatus;
 use App\Filament\Resources\DispositionResource\Pages;
 use App\Models\Gratification;
 use App\Models\Wbs;
+use App\Models\ReportProcess;
+use App\Models\Question;
 use Filament\Forms;
 use Filament\Notifications\Notification;
 use App\Models\WbsProcess;
@@ -20,7 +22,7 @@ class DispositionResource extends Resource
 {
     use Translatable;
 
-    protected static ?string $model = Wbs::class;
+    protected static ?string $model = ReportProcess::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
@@ -58,51 +60,44 @@ class DispositionResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $wbsQuery = Wbs::query()
-            ->whereHas('processes', function (Builder $query) {
-                $query->where('response_status_id', ResponseStatus::Disposition);
-            })
-            ->select([
-                'id',
-                'reporter_name',
-                'report_title',
-                'created_at',
-                \DB::raw("'Wbs' as source"),
+        return parent::getEloquentQuery()
+            ->where('response_status_id', ResponseStatus::Disposition->value)
+            ->whereIn('reportable_type', [
+                Wbs::class,
+                Gratification::class,
+                \App\Models\Question::class,
             ]);
-
-        $gratificationQuery = Gratification::query()
-            ->whereHas('processes', function (Builder $query) {
-                $query->where('response_status_id', ResponseStatus::Disposition);
-            })
-            ->select([
-                'id',
-                'reporter_name',
-                'report_title',
-                'created_at',
-                \DB::raw("'Gratification' as source"),
-            ]);
-
-        $unionQuery = $wbsQuery->union($gratificationQuery);
-
-        // We need to remove the default ordering that Filament applies.
-        // We can do this by ordering by a column that exists in both queries.
-        return Wbs::query()->fromSub($unionQuery, 'sub')->orderBy('created_at', 'desc');
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('reporter_name')
+                Tables\Columns\TextColumn::make('reportable.reporter_name')
                     ->label('Reporter Name')
-                    ->searchable()
+                    ->formatStateUsing(fn ($state, $record) => $record->reportable->reporter_name ?? $record->reportable->name)
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHasMorph('reportable', [Wbs::class, Gratification::class], function (Builder $query) use ($search) {
+                            $query->where('reporter_name', 'like', "%{$search}%");
+                        })->orWhereHasMorph('reportable', [Question::class], function (Builder $query) use ($search) {
+                            $query->where('name', 'like', "%{$search}%");
+                        });
+                    })
                     ->sortable(),
-                Tables\Columns\TextColumn::make('report_title')
+                Tables\Columns\TextColumn::make('reportable.report_title')
                     ->label('Report Title')
-                    ->searchable()
+                    ->formatStateUsing(fn ($state, $record) => $record->reportable->report_title ?? $record->reportable->subject)
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHasMorph('reportable', [Wbs::class, Gratification::class], function (Builder $query) use ($search) {
+                            $query->where('report_title', 'like', "%{$search}%");
+                        })->orWhereHasMorph('reportable', [Question::class], function (Builder $query) use ($search) {
+                            $query->where('subject', 'like', "%{$search}%");
+                        });
+                    })
                     ->sortable(),
-                Tables\Columns\TextColumn::make('source')
+                Tables\Columns\TextColumn::make('reportable_type')
                     ->label('Source')
+                    ->formatStateUsing(fn (string $state): string => class_basename($state))
                     ->badge(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created At')
@@ -125,39 +120,19 @@ class DispositionResource extends Resource
                             ->disk('public')
                             ->directory('dispositions'),
                     ])
-                    ->action(function (array $data, $record): void {
-                        $process = null;
-                        if ($record->source === 'Wbs') {
-                            $process = WbsProcess::where('wbs_id', $record->id)
-                                ->where('response_status_id', ResponseStatus::Disposition)
-                                ->latest()
-                                ->first();
-                        } elseif ($record->source === 'Gratification') {
-                            $process = GratificationProcess::where('gratification_id', $record->id)
-                                ->where('response_status_id', ResponseStatus::Disposition)
-                                ->latest()
-                                ->first();
-                        }
+                    ->action(function (array $data, ReportProcess $record): void {
+                        $record->update([
+                            'answer' => $data['answer'],
+                            'answer_attachment' => $data['answer_attachment'],
+                            'user_id' => auth()->id(),
+                            'response_status_id' => ResponseStatus::Termination,
+                        ]);
 
-                        if ($process) {
-                            $process->update([
-                                'answer' => $data['answer'],
-                                'answer_attachment' => $data['answer_attachment'],
-                                'user_id' => auth()->id(),
-                            ]);
-
-                            Notification::make()
-                                ->title('Berhasil')
-                                ->success()
-                                ->body('Balasan disposisi telah berhasil disimpan.')
-                                ->send();
-                        } else {
-                            Notification::make()
-                                ->title('Gagal')
-                                ->danger()
-                                ->body('Proses disposisi tidak ditemukan.')
-                                ->send();
-                        }
+                        Notification::make()
+                            ->title('Berhasil')
+                            ->success()
+                            ->body('Balasan disposisi telah berhasil disimpan.')
+                            ->send();
                     }),
             ])
             ->bulkActions([
