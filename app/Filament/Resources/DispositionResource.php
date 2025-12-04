@@ -124,7 +124,6 @@ class DispositionResource extends Resource
                         $record->update([
                             'answer' => $data['answer'],
                             'answer_attachment' => $data['answer_attachment'],
-                            'user_id' => auth()->id(),
                             'response_status_id' => ResponseStatus::Termination,
                         ]);
 

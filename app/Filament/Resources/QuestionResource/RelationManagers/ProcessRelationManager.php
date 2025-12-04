@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\GratificationResource\RelationManagers;
+namespace App\Filament\Resources\QuestionResource\RelationManagers;
 
 use App\Models\ResponseStatus;
 use Filament\Forms;
@@ -10,12 +10,33 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
 
-class ReportAnswersRelationManager extends RelationManager
+class ProcessRelationManager extends RelationManager
 {
     protected static string $relationship = 'reportProcesses';
 
-
+    public function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\Select::make('response_status_id')
+                    ->label(__('Response Status'))
+                    ->options(fn () => ResponseStatus::all()->pluck('name', 'id'))
+                    ->required(),
+                Forms\Components\Textarea::make('answer')
+                    ->label(__('Answer'))
+                    ->required()
+                    ->rows(6)
+                    ->columnSpanFull(),
+                Forms\Components\FileUpload::make('answer_attachment')
+                    ->label(__('Answer Attachment'))
+                    ->disk('public')
+                    ->directory('questions/answers')
+                    ->downloadable()
+                    ->openable(),
+            ]);
+    }
 
     public function table(Table $table): Table
     {
@@ -60,21 +81,24 @@ class ReportAnswersRelationManager extends RelationManager
                     ->form([
                         Forms\Components\Select::make('response_status_id')
                             ->label(__('Response Status'))
-                            ->options(fn () => \App\Models\ResponseStatus::all()->pluck('name', 'id'))
+                            ->options(fn () => ResponseStatus::all()->pluck('name', 'id'))
                             ->required(),
-                        Forms\Components\RichEditor::make('answer')
-                            ->label(__('Answer')),
+                        Forms\Components\Textarea::make('answer')
+                            ->label(__('Answer'))
+                            ->required()
+                            ->rows(6)
+                            ->columnSpanFull(),
                         Forms\Components\FileUpload::make('answer_attachment')
                             ->label(__('Answer Attachment'))
                             ->disk('public')
-                            ->directory('gratifications/answers')
+                            ->directory('questions/answers')
                             ->downloadable()
                             ->openable(),
                     ])
                     ->action(function (array $data, $livewire) {
                         $process = new \App\Models\ReportProcess();
                         $process->reportable_id = $livewire->ownerRecord->id;
-                        $process->reportable_type = \App\Models\Gratification::class;
+                        $process->reportable_type = \App\Models\Question::class;
                         $process->response_status_id = $data['response_status_id'] ?? $livewire->ownerRecord->latestProcess->response_status_id ?? 1;
                         $process->answer = $data['answer'];
                         $process->answer_attachment = $data['answer_attachment'];
@@ -87,14 +111,17 @@ class ReportAnswersRelationManager extends RelationManager
                     ->form([
                         Forms\Components\Select::make('response_status_id')
                             ->label(__('Response Status'))
-                            ->options(fn () => \App\Models\ResponseStatus::all()->pluck('name', 'id'))
+                            ->options(fn () => ResponseStatus::all()->pluck('name', 'id'))
                             ->required(),
-                        Forms\Components\RichEditor::make('answer')
-                            ->label(__('Answer')),
+                        Forms\Components\Textarea::make('answer')
+                            ->label(__('Answer'))
+                            ->required()
+                            ->rows(6)
+                            ->columnSpanFull(),
                         Forms\Components\FileUpload::make('answer_attachment')
                             ->label(__('Answer Attachment'))
                             ->disk('public')
-                            ->directory('gratifications/answers')
+                            ->directory('questions/answers')
                             ->downloadable()
                             ->openable(),
                     ]),
