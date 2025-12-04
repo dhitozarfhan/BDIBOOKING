@@ -5,6 +5,7 @@ namespace App\Filament\Resources\InformationRequestResource\Pages;
 use App\Filament\Resources\InformationRequestResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
 
 class EditInformationRequest extends EditRecord
 {

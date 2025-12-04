@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\PermissionType;
 use App\Filament\Resources\InformationRequestResource\Pages;
+use App\Filament\Resources\InformationRequestResource\RelationManagers\ProcessRelationManager;
 use App\Models\InformationRequest;
 use App\Models\ResponseStatus; // Added
 use Filament\Forms;
@@ -144,41 +145,6 @@ class InformationRequestResource extends Resource
                             ->disabled()
                             ->dehydrated(false),
                     ]),
-                    
-                Forms\Components\Section::make(__('Processing'))
-                    ->columnSpan(1)
-                    ->schema([
-                        Forms\Components\Select::make('process.response_status_id')
-                            ->label(__('Status'))
-                            ->relationship('process.responseStatus', 'name')
-                            ->options(ResponseStatus::all()->pluck('name', 'id')->toArray()) // Use ResponseStatus model
-                            ->required()
-                            ->native(false),
-                            
-                        Forms\Components\Textarea::make('process.answer')
-                            ->label(__('Admin Notes'))
-                            ->rows(6)
-                            ->columnSpanFull(),
-                            
-                        Forms\Components\DateTimePicker::make('created_at')
-                            ->label(__('Submitted At'))
-                            ->disabled()
-                            ->dehydrated(false)
-                            ->native(false)
-                            ->displayFormat('d F Y H:i'),
-                            
-                        Forms\Components\DateTimePicker::make('process.updated_at') // Use process.updated_at
-                            ->label(__('Processed At'))
-                            ->disabled()
-                            ->dehydrated(false)
-                            ->native(false)
-                            ->displayFormat('d F Y H:i'),
-                            
-                        Forms\Components\TextInput::make('ip_address')
-                            ->label(__('IP Address'))
-                            ->disabled()
-                            ->dehydrated(false),
-                    ]),
             ]);
     }
 
@@ -262,7 +228,7 @@ class InformationRequestResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ProcessRelationManager::class,
         ];
     }
 
