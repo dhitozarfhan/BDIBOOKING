@@ -2,9 +2,12 @@
 
 namespace App\Filament\Resources\WbsResource\RelationManagers;
 
+use App\Enums\ResponseStatus as EnumsResponseStatus;
+use App\Models\Employee;
 use App\Models\ResponseStatus;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -22,11 +25,17 @@ class ProcessRelationManager extends RelationManager
                 Forms\Components\Select::make('response_status_id')
                     ->label(__('Response Status'))
                     ->options(fn () => ResponseStatus::all()->pluck('name', 'id'))
-                    ->required(),
-                Forms\Components\Textarea::make('answer')
-                    ->label(__('Answer'))
                     ->required()
-                    ->rows(6)
+                    ->live(),
+                Forms\Components\Select::make('disposition_to_employee_id')
+                    ->label(__('Disposition To'))
+                    ->options(Employee::all()->pluck('name', 'id'))
+                    ->searchable()
+                    ->visible(fn (Get $get): bool => (int) $get('response_status_id') === EnumsResponseStatus::Disposition->value)
+                    ->required(fn (Get $get): bool => (int) $get('response_status_id') === EnumsResponseStatus::Disposition->value),
+                Forms\Components\RichEditor::make('answer')
+                    ->label(__('Answer'))
+                    ->required(fn (Get $get): bool => (int) $get('response_status_id') !== EnumsResponseStatus::Disposition->value)
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('answer_attachment')
                     ->label(__('Answer Attachment'))
@@ -80,11 +89,17 @@ class ProcessRelationManager extends RelationManager
                         Forms\Components\Select::make('response_status_id')
                             ->label(__('Response Status'))
                             ->options(fn () => \App\Models\ResponseStatus::all()->pluck('name', 'id'))
-                            ->required(),
-                        Forms\Components\Textarea::make('answer')
-                            ->label(__('Answer'))
                             ->required()
-                            ->rows(6)
+                            ->live(),
+                        Forms\Components\Select::make('disposition_to_employee_id')
+                            ->label(__('Disposition To'))
+                            ->options(Employee::all()->pluck('name', 'id'))
+                            ->searchable()
+                            ->visible(fn (Get $get): bool => (int) $get('response_status_id') === EnumsResponseStatus::Disposition->value)
+                            ->required(fn (Get $get): bool => (int) $get('response_status_id') === EnumsResponseStatus::Disposition->value),
+                        Forms\Components\RichEditor::make('answer')
+                            ->label(__('Answer'))
+                            ->required(fn (Get $get): bool => (int) $get('response_status_id') !== EnumsResponseStatus::Disposition->value)
                             ->columnSpanFull(),
                         Forms\Components\FileUpload::make('answer_attachment')
                             ->label(__('Answer Attachment'))
@@ -100,6 +115,7 @@ class ProcessRelationManager extends RelationManager
                         $process->response_status_id = $data['response_status_id'] ?? $livewire->ownerRecord->latestProcess->response_status_id ?? 1;
                         $process->answer = $data['answer'];
                         $process->answer_attachment = $data['answer_attachment'];
+                        $process->disposition_to_employee_id = $data['disposition_to_employee_id'] ?? null;
                         $process->save();
                     }),
             ])
@@ -110,11 +126,17 @@ class ProcessRelationManager extends RelationManager
                         Forms\Components\Select::make('response_status_id')
                             ->label(__('Response Status'))
                             ->options(fn () => \App\Models\ResponseStatus::all()->pluck('name', 'id'))
-                            ->required(),
-                        Forms\Components\Textarea::make('answer')
-                            ->label(__('Answer'))
                             ->required()
-                            ->rows(6)
+                            ->live(),
+                        Forms\Components\Select::make('disposition_to_employee_id')
+                            ->label(__('Disposition To'))
+                            ->options(Employee::all()->pluck('name', 'id'))
+                            ->searchable()
+                            ->visible(fn (Get $get): bool => (int) $get('response_status_id') === EnumsResponseStatus::Disposition->value)
+                            ->required(fn (Get $get): bool => (int) $get('response_status_id') === EnumsResponseStatus::Disposition->value),
+                        Forms\Components\RichEditor::make('answer')
+                            ->label(__('Answer'))
+                            ->required(fn (Get $get): bool => (int) $get('response_status_id') !== EnumsResponseStatus::Disposition->value)
                             ->columnSpanFull(),
                         Forms\Components\FileUpload::make('answer_attachment')
                             ->label(__('Answer Attachment'))

@@ -30,6 +30,11 @@ class QuestionResource extends Resource
         return __('Public Complaint');
     }
 
+    public static function getNavigationSort(): ?int
+    {
+        return 9; // Position after other reports
+    }
+
     public static function canViewAny(): bool
     {
         $user = Auth::user();
@@ -85,6 +90,7 @@ class QuestionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('subject')
                     ->label(__('Subject'))
@@ -101,13 +107,6 @@ class QuestionResource extends Resource
                 Tables\Columns\TextColumn::make('process.responseStatus.name') // Shows latest status
                     ->label(__('Status'))
                     ->badge()
-                    ->color(fn ($state): string => match ($state) {
-                        'Initiation' => 'warning',
-                        'Process' => 'info',
-                        'Disposition' => 'primary',
-                        'Termination' => 'success',
-                        default => 'gray',
-                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('Submitted At'))
