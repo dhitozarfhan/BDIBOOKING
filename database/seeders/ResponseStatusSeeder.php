@@ -20,7 +20,7 @@ class ResponseStatusSeeder extends Seeder
         foreach (ResponseStatusEnum::cases() as $status) {
             // 'id' akan diisi otomatis oleh database
             // 'name' akan diisi dengan value dari enum (contoh: 'initiation')
-            ResponseStatus::create(['name' => $status->value]);
+            ResponseStatus::create(['name' => $status->name]);
         }
     }
 }

@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\PermissionType;
 use App\Filament\Resources\GratificationResource\Pages;
-use App\Filament\Resources\GratificationResource\RelationManagers\ReportAnswersRelationManager;
+use App\Filament\Resources\GratificationResource\RelationManagers\ProcessRelationManager;
 use App\Models\Gratification;
 use App\Models\ResponseStatus;
 use Filament\Forms;
@@ -167,7 +167,7 @@ class GratificationResource extends Resource
     public static function getRelations(): array
     {
         return [
-            ReportAnswersRelationManager::class,
+            ProcessRelationManager::class,
         ];
     }
 

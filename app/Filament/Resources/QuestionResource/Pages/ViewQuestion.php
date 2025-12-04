@@ -48,6 +48,21 @@ class ViewQuestion extends ViewRecord
                                             ->label(__('Mobile')),
                                         TextEntry::make('email')
                                             ->label(__('Email')),
+                                        TextEntry::make('registration_code')
+                                            ->label(__('Registration Code')),
+                                    ])->columns(1),
+
+                                Section::make(__('Latest Status'))
+                                    ->schema([
+                                        TextEntry::make('process.responseStatus.name')
+                                            ->label(__('Status')),
+                                        TextEntry::make('process.answer')
+                                            ->label(__('Latest Answer'))
+                                            ->default('-'),
+                                        TextEntry::make('process.created_at')
+                                            ->label(__('Processed At'))
+                                            ->dateTime('d F Y H:i')
+                                            ->default('-'),
                                     ])->columns(1),
                             ])->columnSpan(1),
                     ]),

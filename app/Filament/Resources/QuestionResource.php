@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\PermissionType;
 use App\Filament\Resources\QuestionResource\Pages;
-use App\Filament\Resources\WbsResource\RelationManagers\ProcessRelationManager;
+use App\Filament\Resources\QuestionResource\RelationManagers\ProcessRelationManager;
 use App\Models\Question;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -44,10 +44,8 @@ class QuestionResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->columns(3)
             ->schema([
                 Forms\Components\Section::make(__('Question Details'))
-                    ->columnSpan(2)
                     ->schema([
                         Forms\Components\TextInput::make('subject')
                             ->required()
@@ -75,36 +73,11 @@ class QuestionResource extends Resource
                             ->maxLength(255)
                             ->disabled()
                             ->dehydrated(false),
-                    ]),
-
-                Forms\Components\Section::make(__('Processing'))
-                    ->columnSpan(1)
-                    ->schema([
-                        Forms\Components\Select::make('process.response_status_id')
-                            ->label(__('Status'))
-                            ->relationship('process.responseStatus', 'name')
-                            ->options(ResponseStatus::all()->pluck('name', 'id')->toArray())
+                        Forms\Components\TextInput::make('registration_code')
+                            ->label(__('Registration Code'))
                             ->required()
-                            ->native(false),
-                            
-                        Forms\Components\Textarea::make('process.answer')
-                            ->label(__('Admin Notes'))
-                            ->rows(6)
-                            ->columnSpanFull(),
-                            
-                        Forms\Components\DateTimePicker::make('created_at')
-                            ->label(__('Submitted At'))
-                            ->disabled()
-                            ->dehydrated(false)
-                            ->native(false)
-                            ->displayFormat('d F Y H:i'),
-                            
-                        Forms\Components\DateTimePicker::make('process.updated_at')
-                            ->label(__('Processed At'))
-                            ->disabled()
-                            ->dehydrated(false)
-                            ->native(false)
-                            ->displayFormat('d F Y H:i'),
+                            ->maxLength(255)
+                            ->disabled(),
                     ]),
             ]);
     }
@@ -125,7 +98,7 @@ class QuestionResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->label(__('Email'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('process.responseStatus.name') // Added status column
+                Tables\Columns\TextColumn::make('process.responseStatus.name') // Shows latest status
                     ->label(__('Status'))
                     ->badge()
                     ->color(fn ($state): string => match ($state) {
