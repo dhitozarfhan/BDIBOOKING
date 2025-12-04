@@ -81,7 +81,7 @@ class ReportAnswersRelationManager extends RelationManager
                     }),
             ])
             ->actions([
-
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
                     ->form([
                         Forms\Components\Select::make('response_status_id')
