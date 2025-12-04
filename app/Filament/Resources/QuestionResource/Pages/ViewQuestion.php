@@ -58,11 +58,12 @@ class ViewQuestion extends ViewRecord
                                             ->label(__('Status')),
                                         TextEntry::make('process.answer')
                                             ->label(__('Latest Answer'))
-                                            ->default('-'),
+                                            ->html()
+                                            ->placeholder('-'),
                                         TextEntry::make('process.created_at')
                                             ->label(__('Processed At'))
                                             ->dateTime('d F Y H:i')
-                                            ->default('-'),
+                                            ->placeholder('-'),
                                     ])->columns(1),
                             ])->columnSpan(1),
                     ]),
