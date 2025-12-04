@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ReportAnswersRelationManager extends RelationManager
 {
-    protected static string $relationship = 'processes';
+    protected static string $relationship = 'reportProcesses';
 
 
 
@@ -82,7 +82,21 @@ class ReportAnswersRelationManager extends RelationManager
             ])
             ->actions([
 
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->form([
+                        Forms\Components\Select::make('response_status_id')
+                            ->label(__('Response Status'))
+                            ->options(fn () => \App\Models\ResponseStatus::all()->pluck('name', 'id'))
+                            ->required(),
+                        Forms\Components\RichEditor::make('answer')
+                            ->label(__('Answer')),
+                        Forms\Components\FileUpload::make('answer_attachment')
+                            ->label(__('Answer Attachment'))
+                            ->disk('public')
+                            ->directory('gratifications/answers')
+                            ->downloadable()
+                            ->openable(),
+                    ]),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
