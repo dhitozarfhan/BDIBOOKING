@@ -37,4 +37,12 @@ class InformationRequest extends Model
     {
         return $this->morphOne(ReportProcess::class, 'reportable');
     }
+
+    /**
+     * Get all processing records for the report (history).
+     */
+    public function reportProcesses(): MorphMany
+    {
+        return $this->morphMany(ReportProcess::class, 'reportable');
+    }
 }

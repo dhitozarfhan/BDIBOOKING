@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\WbsResource\RelationManagers;
+namespace App\Filament\Resources\InformationRequestResource\RelationManagers;
 
 use App\Models\ResponseStatus;
 use Filament\Forms;
@@ -31,7 +31,7 @@ class ProcessRelationManager extends RelationManager
                 Forms\Components\FileUpload::make('answer_attachment')
                     ->label(__('Answer Attachment'))
                     ->disk('public')
-                    ->directory('wbs/answers')
+                    ->directory('information-requests/answers')
                     ->downloadable()
                     ->openable(),
             ]);
@@ -89,14 +89,14 @@ class ProcessRelationManager extends RelationManager
                         Forms\Components\FileUpload::make('answer_attachment')
                             ->label(__('Answer Attachment'))
                             ->disk('public')
-                            ->directory('wbs/answers')
+                            ->directory('information-requests/answers')
                             ->downloadable()
                             ->openable(),
                     ])
                     ->action(function (array $data, $livewire) {
                         $process = new \App\Models\ReportProcess();
                         $process->reportable_id = $livewire->ownerRecord->id;
-                        $process->reportable_type = \App\Models\Wbs::class;
+                        $process->reportable_type = \App\Models\InformationRequest::class;
                         $process->response_status_id = $data['response_status_id'] ?? $livewire->ownerRecord->latestProcess->response_status_id ?? 1;
                         $process->answer = $data['answer'];
                         $process->answer_attachment = $data['answer_attachment'];
@@ -119,7 +119,7 @@ class ProcessRelationManager extends RelationManager
                         Forms\Components\FileUpload::make('answer_attachment')
                             ->label(__('Answer Attachment'))
                             ->disk('public')
-                            ->directory('wbs/answers')
+                            ->directory('information-requests/answers')
                             ->downloadable()
                             ->openable(),
                     ]),
