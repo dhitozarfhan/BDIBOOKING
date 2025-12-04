@@ -64,6 +64,12 @@ class WbsResource extends Resource
 
 
 
+    public static function canEdit($record): bool
+    {
+        $user = Auth::user();
+        return $user->hasPermissionTo(PermissionType::Complaints->value);
+    }
+
     public static function canDelete($record): bool
     {
         $user = Auth::user();
@@ -179,6 +185,7 @@ class WbsResource extends Resource
             ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
             ]);

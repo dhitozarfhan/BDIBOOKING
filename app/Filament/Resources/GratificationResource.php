@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\PermissionType;
 use App\Filament\Resources\GratificationResource\Pages;
-use App\Filament\Resources\WbsResource\RelationManagers\ProcessRelationManager;
+use App\Filament\Resources\GratificationResource\RelationManagers\ReportAnswersRelationManager;
 use App\Models\Gratification;
 use App\Models\ResponseStatus;
 use Filament\Forms;
@@ -51,6 +51,12 @@ class GratificationResource extends Resource
     {
         $user = Auth::user();
         // Allow access to users with Complaints permission
+        return $user->hasPermissionTo(PermissionType::Complaints->value);
+    }
+
+    public static function canEdit($record): bool
+    {
+        $user = Auth::user();
         return $user->hasPermissionTo(PermissionType::Complaints->value);
     }
 
@@ -152,7 +158,7 @@ class GratificationResource extends Resource
             ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\ViewAction::make(),
-
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 // You can add bulk actions here if needed
@@ -162,7 +168,7 @@ class GratificationResource extends Resource
     public static function getRelations(): array
     {
         return [
-            ProcessRelationManager::class,
+            ReportAnswersRelationManager::class,
         ];
     }
 
@@ -171,6 +177,7 @@ class GratificationResource extends Resource
         return [
             'index' => Pages\ListGratifications::route('/'),
             'view' => Pages\ViewGratification::route('/{record}'),
+            'edit' => Pages\EditGratification::route('/{record}/edit'),
         ];
     }
 }
