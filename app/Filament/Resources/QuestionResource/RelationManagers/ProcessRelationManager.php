@@ -101,7 +101,7 @@ class ProcessRelationManager extends RelationManager
                             ->required(fn (Get $get): bool => (int) $get('response_status_id') === EnumsResponseStatus::Disposition->value),
                         Forms\Components\RichEditor::make('answer')
                             ->label(__('Answer'))
-                            ->required()
+                            ->required(fn (Get $get): bool => (int) $get('response_status_id') !== EnumsResponseStatus::Disposition->value)
                             ->columnSpanFull(),
                         Forms\Components\FileUpload::make('answer_attachment')
                             ->label(__('Answer Attachment'))
@@ -138,7 +138,7 @@ class ProcessRelationManager extends RelationManager
                             ->required(fn (Get $get): bool => (int) $get('response_status_id') === EnumsResponseStatus::Disposition->value),
                         Forms\Components\RichEditor::make('answer')
                             ->label(__('Answer'))
-                            ->required()
+                            ->required(fn (Get $get): bool => (int) $get('response_status_id') !== EnumsResponseStatus::Disposition->value)
                             ->columnSpanFull(),
                         Forms\Components\FileUpload::make('answer_attachment')
                             ->label(__('Answer Attachment'))
