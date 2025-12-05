@@ -12,6 +12,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Facades\Storage;
+use App\Enums\ResponseStatus;
 
 class ViewGratification extends ViewRecord
 {
@@ -24,6 +25,18 @@ class ViewGratification extends ViewRecord
         return [
             Actions\LocaleSwitcher::make(),
         ];
+    }
+
+    public function mount(int | string $record): void
+    {
+        parent::mount($record);
+
+        $record = $this->getRecord();
+        if ($record->process && $record->process->response_status_id === ResponseStatus::Initiation->value) {
+            $record->process->update([
+                'response_status_id' => ResponseStatus::Process->value,
+            ]);
+        }
     }
 
     public function infolist(Infolist $infolist): Infolist

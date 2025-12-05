@@ -49,7 +49,11 @@ class InformationRequestResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return Auth::check() && (Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ?? false);
+        return Auth::check() && (
+            Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ??
+            Auth::user()->hasPermissionTo(PermissionType::Complaints->value) ??
+            false
+        );
     }
 
     public static function canCreate(): bool
@@ -59,22 +63,38 @@ class InformationRequestResource extends Resource
 
     public static function canView(Model $record): bool
     {
-        return Auth::check() && (Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ?? false);
+        return Auth::check() && (
+            Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ??
+            Auth::user()->hasPermissionTo(PermissionType::Complaints->value) ??
+            false
+        );
     }
 
     public static function canEdit(Model $record): bool
     {
-        return Auth::check() && (Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ?? false);
+        return Auth::check() && (
+            Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ??
+            Auth::user()->hasPermissionTo(PermissionType::Complaints->value) ??
+            false
+        );
     }
 
     public static function canDelete(Model $record): bool
     {
-        return Auth::check() && (Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ?? false);
+        return Auth::check() && (
+            Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ??
+            Auth::user()->hasPermissionTo(PermissionType::Complaints->value) ??
+            false
+        );
     }
 
     public static function canDeleteAny(): bool
     {
-        return Auth::check() && (Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ?? false);
+        return Auth::check() && (
+            Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ??
+            Auth::user()->hasPermissionTo(PermissionType::Complaints->value) ??
+            false
+        );
     }
 
     public static function form(Form $form): Form

@@ -10,12 +10,25 @@ use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
+use App\Enums\ResponseStatus;
 
 class ViewQuestion extends ViewRecord
 {
     use ViewRecord\Concerns\Translatable;
 
     protected static string $resource = QuestionResource::class;
+
+    public function mount(int | string $record): void
+    {
+        parent::mount($record);
+
+        $record = $this->getRecord();
+        if ($record->process && $record->process->response_status_id === ResponseStatus::Initiation->value) {
+            $record->process->update([
+                'response_status_id' => ResponseStatus::Process->value,
+            ]);
+        }
+    }
 
     public function infolist(Infolist $infolist): Infolist
     {

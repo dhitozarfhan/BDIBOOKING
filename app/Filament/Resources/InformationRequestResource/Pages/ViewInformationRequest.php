@@ -5,6 +5,7 @@ namespace App\Filament\Resources\InformationRequestResource\Pages;
 use App\Filament\Resources\InformationRequestResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
+use App\Enums\ResponseStatus;
 
 class ViewInformationRequest extends ViewRecord
 {
@@ -15,5 +16,17 @@ class ViewInformationRequest extends ViewRecord
         return [
             Actions\EditAction::make(),
         ];
+    }
+
+    public function mount(int | string $record): void
+    {
+        parent::mount($record);
+
+        $record = $this->getRecord();
+        if ($record->process && $record->process->response_status_id === ResponseStatus::Initiation->value) {
+            $record->process->update([
+                'response_status_id' => ResponseStatus::Process->value,
+            ]);
+        }
     }
 }
