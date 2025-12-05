@@ -133,21 +133,17 @@
                         </table>
                     </div>
 
-                    {{-- Card untuk Answer, muncul di semua status --}}
-                    <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">
-                        <h3 class="text-lg font-semibold text-base-content mb-3">
-                            {{ __('Answer') }}
-                        </h3>
-                        @if($reportDetail->answer)
+                    {{-- Card untuk Answer, hanya muncul jika proses selesai --}}
+                    @if($reportDetail->status === \App\Enums\ResponseStatus::Termination && $reportDetail->answer)
+                        <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">
+                            <h3 class="text-lg font-semibold text-base-content mb-3">
+                                {{ __('Answer') }}
+                            </h3>
                             <div class="whitespace-pre-wrap text-sm text-left">
                                 {!! $reportDetail->answer !!}
                             </div>
-                        @else
-                            <div class="whitespace-pre-wrap text-sm text-left text-base-content/60 italic">
-                                {{ __('No official response to this report yet.') }}
-                            </div>
-                        @endif
-                    </div>
+                        </div>
+                    @endif
 
                     <div class="mt-6">
                         <a href="{{ route('gratification.status') }}" class="btn btn-ghost btn-outline" wire:navigate>
