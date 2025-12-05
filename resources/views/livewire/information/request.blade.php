@@ -350,6 +350,9 @@
                                 <i class="bi bi-send-fill"></i>
                                 {{ __('Submit Request') }}
                             </button>
+                            <a href="{{ route('information.request.status') }}" class="btn btn-outline btn-primary shadow-lg hover:shadow-xl transition-all duration-200">
+                                <i class="bi bi-search"></i> {{ __('Check Status') }}
+                            </a>
                         </div>
                     </div>
                 </div>

@@ -57,7 +57,9 @@ Route::fallback(function () {
 
 Route::get('/information', App\Livewire\Articles\Information::class)->name('articles.information');
 Route::get('/information/question', App\Livewire\Information\QuestionForm::class)->name('information.question');
+Route::get('/information/question/status', App\Livewire\Information\QuestionForm::class)->name('information.question.status');
 Route::get('/information/request', App\Livewire\Information\Request::class)->name('information.request');
+Route::get('/information/request/status', App\Livewire\Information\Request::class)->name('information.request.status');
 Route::get('/information/provision', function() {
     abort(404);
 })->name('information.provision');
