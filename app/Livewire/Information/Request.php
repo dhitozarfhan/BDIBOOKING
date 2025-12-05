@@ -3,10 +3,16 @@
 namespace App\Livewire\Information;
 
 use App\Models\InformationRequest;
+use App\Enums\ResponseStatus;
 use Livewire\Component;
 
 class Request extends Component
 {
+    // View State
+    public $currentView = 'form';
+    public $registration_code = '';
+    public $reportDetail;
+    public $statusError = '';
     // Personal Information
     public $name = '';
     public $id_card_number = '';
@@ -31,6 +37,12 @@ class Request extends Component
     
     protected function rules()
     {
+        if ($this->currentView === 'status') {
+            return [
+                'registration_code' => 'required|string|max:255',
+            ];
+        }
+
         return [
             'name' => 'required|string|max:255',
             'id_card_number' => 'required|string|max:255',
@@ -53,6 +65,16 @@ class Request extends Component
         'delivery_method.min' => 'Please select at least one delivery method.',
         'rule_accepted.accepted' => 'You must accept the terms and conditions.',
     ];
+
+    public function mount()
+    {
+        $currentRoute = request()->route()->getName();
+        if (str_contains($currentRoute, 'information.request.status')) {
+            $this->currentView = 'status';
+        } else {
+            $this->currentView = 'form';
+        }
+    }
 
     public function updated($propertyName)
     {
@@ -120,8 +142,63 @@ class Request extends Component
         return $kode;
     }
 
+    public function checkStatus()
+    {
+        $this->validate([
+            'registration_code' => 'required|string|max:255',
+        ]);
+
+        $infoRequest = InformationRequest::where('registration_code', $this->registration_code)->first();
+
+        if ($infoRequest) {
+            $process = $infoRequest->process; // HasOne relation
+
+            $reportDetail = new \stdClass();
+            $reportDetail->subject = __('Information Request');
+            $reportDetail->name = $infoRequest->name;
+            $reportDetail->mobile = $infoRequest->mobile ? substr($infoRequest->mobile, 0, -4) . 'xxxx' : '-';
+            $reportDetail->time_insert = $infoRequest->created_at;
+            $reportDetail->content = $infoRequest->content;
+
+            if ($process) {
+                $reportDetail->status = $process->response_status_id;
+                $reportDetail->answer = $process->answer;
+                $reportDetail->answer_attachment = $process->answer_attachment;
+            } else {
+                $reportDetail->status = ResponseStatus::Initiation->value;
+                $reportDetail->answer = null;
+                $reportDetail->answer_attachment = null;
+            }
+            
+            // Add process history if needed, or just use the single process record
+            // For consistency with WBS/Gratification which might have multiple processes (though usually one active flow)
+            // We'll just pass the single process for now as per current structure
+
+            $this->reportDetail = $reportDetail;
+            $this->currentView = 'response';
+
+        } else {
+            session()->flash('statusError', __('Registration code not found.'));
+            return redirect()->route('information.request.status');
+        }
+    }
+
+    public function setView($view)
+    {
+        $this->currentView = $view;
+        if ($view === 'form') {
+            $this->reset(['registration_code', 'statusError', 'reportDetail']);
+        }
+    }
+
     public function render()
     {
+        if ($this->currentView === 'status') {
+            return view('livewire.information.request-status');
+        } elseif ($this->currentView === 'response') {
+            return view('livewire.information.request-response');
+        }
+        
         return view('livewire.information.request');
     }
 }

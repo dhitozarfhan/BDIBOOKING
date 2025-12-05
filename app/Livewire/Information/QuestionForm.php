@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 
 use App\Models\Question;
+use App\Enums\ResponseStatus;
 use Illuminate\Support\Str;
 
 class QuestionForm extends Component
@@ -19,15 +20,40 @@ class QuestionForm extends Component
     public $mobile;
     public $email;
 
-    protected $rules = [
-        'subject' => 'required',
-        'content' => 'required',
-        'name' => 'required',
-        'identity_number' => 'nullable|string',
-        'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
-        'mobile' => 'required',
-        'email' => 'required|email',
-    ];
+    // View State
+    public $currentView = 'form';
+    public $registration_code = '';
+    public $reportDetail;
+    public $statusError = '';
+
+    protected function rules()
+    {
+        if ($this->currentView === 'status') {
+            return [
+                'registration_code' => 'required|string|max:255',
+            ];
+        }
+
+        return [
+            'subject' => 'required',
+            'content' => 'required',
+            'name' => 'required',
+            'identity_number' => 'nullable|string',
+            'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
+            'mobile' => 'required',
+            'email' => 'required|email',
+        ];
+    }
+
+    public function mount()
+    {
+        $currentRoute = request()->route()->getName();
+        if (str_contains($currentRoute, 'information.question.status')) {
+            $this->currentView = 'status';
+        } else {
+            $this->currentView = 'form';
+        }
+    }
 
     public function save()
     {
@@ -41,7 +67,7 @@ class QuestionForm extends Component
         // Generate registration code
         $registrationCode = $this->generateKodeRegister();
 
-        Question::create([
+        $question = Question::create([
             'subject' => $this->subject,
             'content' => $this->content,
             'name' => $this->name,
@@ -50,6 +76,12 @@ class QuestionForm extends Component
             'mobile' => $this->mobile,
             'email' => $this->email,
             'registration_code' => $registrationCode,
+        ]);
+
+        // Create initial process
+        $question->process()->create([
+            'response_status_id' => ResponseStatus::Initiation->value,
+            'is_completed' => false,
         ]);
 
         session()->flash('message', 'Question successfully submitted. Registration Code: ' . $registrationCode);
@@ -68,8 +100,59 @@ class QuestionForm extends Component
         return $kode;
     }
 
+    public function checkStatus()
+    {
+        $this->validate([
+            'registration_code' => 'required|string|max:255',
+        ]);
+
+        $question = Question::where('registration_code', $this->registration_code)->first();
+
+        if ($question) {
+            $process = $question->process; // HasOne relation
+
+            $reportDetail = new \stdClass();
+            $reportDetail->subject = $question->subject;
+            $reportDetail->name = $question->name;
+            $reportDetail->mobile = $question->mobile ? substr($question->mobile, 0, -4) . 'xxxx' : '-';
+            $reportDetail->time_insert = $question->created_at;
+            $reportDetail->content = $question->content;
+
+            if ($process) {
+                $reportDetail->status = $process->response_status_id;
+                $reportDetail->answer = $process->answer;
+                $reportDetail->answer_attachment = $process->answer_attachment;
+            } else {
+                $reportDetail->status = ResponseStatus::Initiation->value;
+                $reportDetail->answer = null;
+                $reportDetail->answer_attachment = null;
+            }
+
+            $this->reportDetail = $reportDetail;
+            $this->currentView = 'response';
+
+        } else {
+            session()->flash('statusError', __('Registration code not found.'));
+            return redirect()->route('information.question.status');
+        }
+    }
+
+    public function setView($view)
+    {
+        $this->currentView = $view;
+        if ($view === 'form') {
+            $this->reset(['registration_code', 'statusError', 'reportDetail']);
+        }
+    }
+
     public function render()
     {
+        if ($this->currentView === 'status') {
+            return view('livewire.information.question-status');
+        } elseif ($this->currentView === 'response') {
+            return view('livewire.information.question-response');
+        }
+
         return view('livewire.information.question-form');
     }
 }
