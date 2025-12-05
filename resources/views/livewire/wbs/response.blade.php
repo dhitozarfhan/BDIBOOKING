@@ -48,19 +48,19 @@
                                         <i class="bi bi-flag mr-2 text-primary"></i>{{ __('Report Status') }}
                                     </th>
                                     <td>
-                                        @if($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Initiation)
+                                        @if($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Initiation->value)
                                             <span class="badge badge-warning gap-2">
                                                 <i class="bi bi-hourglass-split"></i>{{ __('Initiation') }}
                                             </span>
-                                        @elseif($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Process)
+                                        @elseif($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Process->value)
                                             <span class="badge badge-info gap-2">
                                                 <i class="bi bi-arrow-repeat"></i>{{ __('Process') }}
                                             </span>
-                                        @elseif($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Disposition)
+                                        @elseif($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Disposition->value)
                                             <span class="badge badge-primary gap-2">
                                                 <i class="bi bi-send-check"></i>{{ __('Disposition') }}
                                             </span>
-                                        @elseif($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Termination)
+                                        @elseif($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Termination->value)
                                             <span class="badge badge-success gap-2">
                                                 <i class="bi bi-check-circle"></i>{{ __('Completed') }}
                                             </span>
