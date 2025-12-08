@@ -8,7 +8,7 @@
                 ['label' => __('Public Information Request Form')]
             ];
         @endphp
-        @include('livewire.gratification.partials.breadcrumb', ['items' => $breadcrumbs])
+        @include('livewire.information.partials.breadcrumb', ['items' => $breadcrumbs])
         <h2 class="text-2xl font-bold text-base-content mt-4">
             {{ __('Public Information Request Form') }}
         </h2>

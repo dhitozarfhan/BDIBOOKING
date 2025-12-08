@@ -1,104 +1,135 @@
-<div class="container mx-auto px-4 py-8">
-    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="bg-primary-600 px-6 py-4 flex justify-between items-center">
-            <h2 class="text-xl font-bold text-white">{{ __('Request Status Details') }}</h2>
-            <a href="{{ route('information.request.status') }}" class="text-white hover:text-gray-200 text-sm font-medium">
-                &larr; {{ __('Check Another Code') }}
-            </a>
-        </div>
+@section('title', __('Information Request Response'))
 
-        <div class="p-6">
-            <!-- Report Info -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">{{ __('Reporter Information') }}</h3>
-                    <dl class="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">{{ __('Name') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900">{{ $reportDetail->name }}</dd>
-                        </div>
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">{{ __('Mobile') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900">{{ $reportDetail->mobile }}</dd>
-                        </div>
-                        <div class="sm:col-span-2">
-                            <dt class="text-sm font-medium text-gray-500">{{ __('Submitted At') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900">{{ \Carbon\Carbon::parse($reportDetail->time_insert)->format('d F Y H:i') }}</dd>
-                        </div>
-                    </dl>
-                </div>
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">{{ __('Request Details') }}</h3>
-                    <dl class="grid grid-cols-1 gap-x-4 gap-y-4">
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">{{ __('Content') }}</dt>
-                            <dd class="mt-1 text-sm text-gray-900">{{ $reportDetail->content }}</dd>
-                        </div>
-                    </dl>
-                </div>
-            </div>
+<div>
+    <div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            @php
+                $breadcrumbs = [
+                    ['label' => __('Beranda'), 'url' => route('home')],
+                    ['label' => __('Public Information Request'), 'url' => route('information.request')],
+                    ['label' => __('Request Status'), 'url' => route('information.request.status')],
+                    ['label' => __('Request Response')]
+                ];
+            @endphp
+            @include('livewire.information.partials.breadcrumb', ['items' => $breadcrumbs])
+            <h2 class="text-2xl font-bold text-base-content mt-4">
+                {{ __('Information Request Response') }}
+            </h2>
 
-            <!-- Status Timeline -->
-            <div class="mb-8">
-                <h3 class="text-lg font-semibold text-gray-800 mb-6 border-b pb-2">{{ __('Status History') }}</h3>
-                
-                <div class="relative">
-                    <!-- Status Item -->
-                    <div class="mb-8 flex justify-between items-center w-full right-timeline">
-                        <div class="order-1 w-5/12"></div>
-                        <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
-                            <h1 class="mx-auto font-semibold text-lg text-white">1</h1>
-                        </div>
-                        <div class="order-1 bg-gray-100 rounded-lg shadow-xl w-5/12 px-6 py-4">
-                            <h3 class="mb-3 font-bold text-gray-800 text-xl">{{ __('Current Status') }}</h3>
-                            <p class="text-sm leading-snug tracking-wide text-gray-900 text-opacity-100">
-                                @if($reportDetail->status == \App\Enums\ResponseStatus::Initiation->value)
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                        {{ __('Initiation') }}
-                                    </span>
-                                @elseif($reportDetail->status == \App\Enums\ResponseStatus::Process->value)
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                        {{ __('Process') }}
-                                    </span>
-                                @elseif($reportDetail->status == \App\Enums\ResponseStatus::Disposition->value)
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
-                                        {{ __('Disposition') }}
-                                    </span>
-                                @elseif($reportDetail->status == \App\Enums\ResponseStatus::Termination->value)
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        {{ __('Termination') }}
-                                    </span>
+            @if($reportDetail)
+                <div class="mt-6">
+                    <div class="bg-base-100 rounded-xl shadow-md border border-base-300 overflow-hidden">
+                        <table class="table table-zebra w-full">
+                            <tbody>
+                                <tr>
+                                    <th class="w-1/3 bg-base-200 font-semibold text-base-content">
+                                        <i class="bi bi-person mr-2 text-primary"></i>{{ __('Requester Name') }}
+                                    </th>
+                                    <td class="font-medium">{{ $reportDetail->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-base-200 font-semibold text-base-content">
+                                        <i class="bi bi-telephone mr-2 text-primary"></i>{{ __('Requester Phone') }}
+                                    </th>
+                                    <td>{{ $reportDetail->mobile }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-base-200 font-semibold text-base-content">
+                                        <i class="bi bi-calendar-event mr-2 text-primary"></i>{{ __('Request Date') }}
+                                    </th>
+                                    <td>{{ $reportDetail->time_insert ? \Carbon\Carbon::parse($reportDetail->time_insert)->format('d/m/Y H:i') : 'N/A' }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-base-200 font-semibold text-base-content">
+                                        <i class="bi bi-flag mr-2 text-primary"></i>{{ __('Request Status') }}
+                                    </th>
+                                    <td>
+                                        @if($reportDetail->status === \App\Enums\ResponseStatus::Initiation->value)
+                                            <span class="badge badge-warning gap-2">
+                                                <i class="bi bi-hourglass-split"></i>{{ __('Initiation') }}
+                                            </span>
+                                        @elseif($reportDetail->status === \App\Enums\ResponseStatus::Process->value)
+                                            <span class="badge badge-info gap-2">
+                                                <i class="bi bi-arrow-repeat"></i>{{ __('Process') }}
+                                            </span>
+                                        @elseif($reportDetail->status === \App\Enums\ResponseStatus::Disposition->value)
+                                            <span class="badge badge-primary gap-2">
+                                                <i class="bi bi-send-check"></i>{{ __('Disposition') }}
+                                            </span>
+                                        @elseif($reportDetail->status === \App\Enums\ResponseStatus::Termination->value)
+                                            <span class="badge badge-success gap-2">
+                                                <i class="bi bi-check-circle"></i>{{ __('Completed') }}
+                                            </span>
+                                        @else
+                                            <span class="badge badge-ghost gap-2">
+                                                <i class="bi bi-question-circle"></i>{{ __('Unknown Status') }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-base-200 font-semibold text-base-content align-top">
+                                        <i class="bi bi-file-text mr-2 text-primary"></i>{{ __('Request Content') }}
+                                    </th>
+                                    <td class="whitespace-pre-wrap">{{ $reportDetail->content }}</td>
+                                </tr>
+                                @if($reportDetail->answer_attachment)
+                                    <tr>
+                                        <th class="bg-base-200 font-semibold text-base-content">
+                                            <i class="bi bi-paperclip mr-2 text-secondary"></i>{{ __('Answer Attachment') }}
+                                        </th>
+                                        <td>
+                                            <div class="flex flex-col gap-2">
+                                                <a href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($reportDetail->answer_attachment) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2">
+                                                    <i class="bi bi-download"></i>
+                                                    {{ basename($reportDetail->answer_attachment) }}
+                                                </a>
+                                                @if($reportDetail->answer_attachment && pathinfo($reportDetail->answer_attachment, PATHINFO_EXTENSION) === 'pdf')
+                                                    <div class="mt-2 border rounded">
+                                                        <iframe src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($reportDetail->answer_attachment) }}"
+                                                                class="w-full h-96"
+                                                                type="application/pdf"
+                                                                title="Answer Attachment Preview">
+                                                            <p>{{ __('Your browser does not support PDF previews. Please download the file to view it.') }}</p>
+                                                        </iframe>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @endif
-                            </p>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
 
-                    @if($reportDetail->answer)
-                    <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
-                        <div class="order-1 w-5/12"></div>
-                        <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
-                            <h1 class="mx-auto text-white font-semibold text-lg">2</h1>
-                        </div>
-                        <div class="order-1 bg-green-100 rounded-lg shadow-xl w-5/12 px-6 py-4">
-                            <h3 class="mb-3 font-bold text-gray-800 text-xl">{{ __('Response') }}</h3>
-                            <p class="text-sm font-medium leading-snug tracking-wide text-gray-900 text-opacity-100">
+                    {{-- Card untuk Answer, hanya muncul jika proses selesai --}}
+                    @if($reportDetail->status === \App\Enums\ResponseStatus::Termination && $reportDetail->answer)
+                        <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">
+                            <h3 class="text-lg font-semibold text-base-content mb-3">
+                                {{ __('Answer') }}
+                            </h3>
+                            <div class="whitespace-pre-wrap text-sm text-left">
                                 {!! $reportDetail->answer !!}
-                            </p>
-                            @if($reportDetail->answer_attachment)
-                                <div class="mt-4">
-                                    <a href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($reportDetail->answer_attachment) }}" target="_blank" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                        </svg>
-                                        {{ __('Download Attachment') }}
-                                    </a>
-                                </div>
-                            @endif
+                            </div>
                         </div>
-                    </div>
                     @endif
+
+                    <div class="mt-6">
+                        <a href="{{ route('information.request.status') }}" class="btn btn-ghost btn-outline" wire:navigate>
+                           {{ __('Back to Status Check') }}
+                        </a>
+                        <a href="{{ route('information.request') }}" class="btn btn-primary" wire:navigate>
+                            {{ __('Back to Home') }}
+                        </a>
+                    </div>
                 </div>
-            </div>
+            @elseif($statusError)
+                <div class="mt-4 alert alert-error shadow-lg">
+                    <div>
+                        <span>{{ $statusError }}</span>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </div>
