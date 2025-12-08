@@ -4,6 +4,7 @@ namespace App\Livewire\Information;
 
 use App\Models\InformationRequest;
 use App\Enums\ResponseStatus;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class Request extends Component
@@ -53,7 +54,6 @@ class Request extends Component
             'content' => 'required|string',
             'used_for' => 'required|string',
             'grab_method' => 'required|array|min:1',
-            'delivery_method' => 'required_if:show_delivery_method,true|array|min:1',
             'rule_accepted' => 'accepted',
         ];
     }
@@ -61,8 +61,6 @@ class Request extends Component
     protected $messages = [
         'grab_method.required' => 'Please select at least one acquisition method.',
         'grab_method.min' => 'Please select at least one acquisition method.',
-        'delivery_method.required_if' => 'Please select at least one delivery method.',
-        'delivery_method.min' => 'Please select at least one delivery method.',
         'rule_accepted.accepted' => 'You must accept the terms and conditions.',
     ];
 
@@ -89,48 +87,111 @@ class Request extends Component
         }
     }
 
-    public function save()
-    {
-        $this->validate();
+                        public function save()
 
-        // Generate registration code
-        $registrationCode = $this->generateKodeRegister();
+                        {
 
-        $infoRequest = InformationRequest::create([
-            'name' => $this->name,
-            'id_card_number' => $this->id_card_number,
-            'address' => $this->address,
-            'occupation' => $this->occupation,
-            'mobile' => $this->mobile,
-            'email' => $this->email,
-            'content' => $this->content,
-            'used_for' => $this->used_for,
-            'grab_method' => $this->grab_method,
-            'delivery_method' => $this->delivery_method,
-            'rule_accepted' => $this->rule_accepted,
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-            'registration_code' => $registrationCode,
-        ]);
+                            try {
 
-        // Buat "wadah jawaban"-nya (ReportProcess) secara otomatis
-        // Asumsi: ID 1 di tabel response_statuses adalah untuk status awal/baru ('Initiation').
-        // Pastikan tabel `response_statuses` Anda sudah terisi dengan seeder.
-        $infoRequest->process()->create([
-            'response_status_id' => 1,
-            'is_completed' => false,
-        ]);
+                                $validatedData = $this->validate();
 
-        session()->flash('message', __('Your information request has been submitted successfully. We will process your request shortly. Registration Code: '));
-        session()->flash('registration_code', $registrationCode);
+                    
 
-        $this->reset([
-            'name', 'id_card_number', 'address', 'occupation', 'mobile', 'email',
-            'content', 'used_for', 'grab_method', 'delivery_method', 'rule_accepted'
-        ]);
-        
-        $this->show_delivery_method = false;
-    }
+                                // Generate registration code
+
+                                $registrationCode = $this->generateKodeRegister();
+
+                    
+
+                                $infoRequest = InformationRequest::create([
+
+                                    'name' => $this->name,
+
+                                    'id_card_number' => $this->id_card_number,
+
+                                    'address' => $this->address,
+
+                                    'occupation' => $this->occupation,
+
+                                    'mobile' => $this->mobile,
+
+                                    'email' => $this->email,
+
+                                    'content' => $this->content,
+
+                                    'used_for' => $this->used_for,
+
+                                    'grab_method' => $this->grab_method,
+
+                                    'delivery_method' => $this->delivery_method,
+
+                                    'rule_accepted' => $this->rule_accepted,
+
+                                    'ip_address' => request()->ip(),
+
+                                    'user_agent' => request()->userAgent(),
+
+                                    'registration_code' => $registrationCode,
+
+                                ]);
+
+                    
+
+                                // Buat "wadah jawaban"-nya (ReportProcess) secara otomatis
+
+                                $infoRequest->process()->create([
+
+                                    'response_status_id' => 1,
+
+                                    'is_completed' => false,
+
+                                ]);
+
+                    
+
+                                session()->flash('message', __('Your information request has been submitted successfully. We will process your request shortly. Registration Code: '));
+
+                                session()->flash('registration_code', $registrationCode);
+
+                    
+
+                                $this->reset([
+
+                                    'name', 'id_card_number', 'address', 'occupation', 'mobile', 'email',
+
+                                    'content', 'used_for', 'grab_method', 'delivery_method', 'rule_accepted'
+
+                                ]);
+
+                                
+
+                                $this->show_delivery_method = false;
+
+                    
+
+                            } catch (\Illuminate\Validation\ValidationException $e) {
+
+                                Log::error('Validation failed.', ['errors' => $e->errors()]);
+
+                                throw $e; // Re-throw validation exception for Livewire to handle
+
+                            } catch (\Throwable $e) {
+
+                                Log::error('An error occurred during the save process: ' . $e->getMessage(), [
+
+                                    'file' => $e->getFile(),
+
+                                    'line' => $e->getLine(),
+
+                                    'trace' => $e->getTraceAsString(),
+
+                                ]);
+
+                                session()->flash('error', 'An unexpected error occurred. Please try again later.');
+
+                            }
+
+                        }
 
     private function generateKodeRegister()
     {
