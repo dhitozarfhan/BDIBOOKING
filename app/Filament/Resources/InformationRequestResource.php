@@ -9,6 +9,7 @@ use App\Models\InformationRequest;
 use App\Models\ResponseStatus; // Added
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -45,6 +46,11 @@ class InformationRequestResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return __('Information Requests');
+    }
+
+    public static function getTranslatableLocales(): array
+    {
+        return ['id', 'en'];
     }
 
     public static function canViewAny(): bool
