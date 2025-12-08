@@ -95,72 +95,84 @@ class InformationRequestResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->columns(3)
             ->schema([
-                Forms\Components\Section::make(__('Applicant Information'))
-                    ->columnSpan(2)
+                Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->label(__('Name'))
-                            ->disabled()
-                            ->dehydrated(false),
-                            
-                        Forms\Components\TextInput::make('id_card_number')
-                            ->label(__('ID Card Number'))
-                            ->disabled()
-                            ->dehydrated(false),
-                            
-                        Forms\Components\TextInput::make('email')
-                            ->label(__('Email'))
-                            ->disabled()
-                            ->dehydrated(false),
-                            
-                        Forms\Components\TextInput::make('mobile')
-                            ->label(__('Mobile'))
-                            ->disabled()
-                            ->dehydrated(false),
-                            
-                        Forms\Components\Textarea::make('address')
-                            ->label(__('Address'))
-                            ->disabled()
-                            ->dehydrated(false)
-                            ->columnSpanFull(),
-                            
-                        Forms\Components\TextInput::make('occupation')
-                            ->label(__('Occupation'))
-                            ->disabled()
-                            ->dehydrated(false)
-                            ->columnSpanFull(),
-                    ]),
-                    
-                Forms\Components\Section::make(__('Request Details'))
-                    ->columnSpan(2)
+                        Forms\Components\Section::make(__('Request Details'))
+                            ->schema([
+                                Forms\Components\Textarea::make('content')
+                                    ->label(__('Information Requested'))
+                                    ->rows(6)
+                                    ->disabled()
+                                    ->dehydrated(false),
+                                Forms\Components\Textarea::make('used_for')
+                                    ->label(__('Purpose of Request'))
+                                    ->rows(4)
+                                    ->disabled()
+                                    ->dehydrated(false),
+                            ]),
+
+                        Forms\Components\Section::make(__('Acquisition & Delivery'))
+                            ->schema([
+                                Forms\Components\Placeholder::make('grab_method')
+                                    ->label(__('Acquisition Method'))
+                                    ->content(function (?Model $record) {
+                                        $methods = $record?->grab_method ?? [];
+                                        if (empty($methods)) {
+                                            return '-';
+                                        }
+                                        return collect($methods)->map(fn($method) => ucfirst($method))->implode(', ');
+                                    }),
+                                Forms\Components\Placeholder::make('delivery_method')
+                                    ->label(__('Delivery Method'))
+                                    ->content(function (?Model $record) {
+                                        $methods = $record?->delivery_method ?? [];
+                                        if (empty($methods)) {
+                                            return '-';
+                                        }
+                                        return collect($methods)->map(fn($method) => ucfirst($method))->implode(', ');
+                                    }),
+                            ]),
+                    ])
+                    ->columnSpan(['lg' => 2]),
+
+                Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Textarea::make('content')
-                            ->label(__('Information Requested'))
-                            ->disabled()
-                            ->dehydrated(false)
-                            ->rows(4)
-                            ->columnSpanFull(),
-                            
-                        Forms\Components\Textarea::make('used_for')
-                            ->label(__('Purpose of Request'))
-                            ->disabled()
-                            ->dehydrated(false)
-                            ->rows(3)
-                            ->columnSpanFull(),
-                            
-                        Forms\Components\TagsInput::make('grab_method')
-                            ->label(__('Acquisition Method'))
-                            ->disabled()
-                            ->dehydrated(false),
-                            
-                        Forms\Components\TagsInput::make('delivery_method')
-                            ->label(__('Delivery Method'))
-                            ->disabled()
-                            ->dehydrated(false),
-                    ]),
-            ]);
+                        Forms\Components\Section::make(__('Applicant Information'))
+                            ->schema([
+                                Forms\Components\TextInput::make('name')
+                                    ->label(__('Name'))
+                                    ->disabled()->dehydrated(false),
+                                Forms\Components\TextInput::make('id_card_number')
+                                    ->label(__('ID Card Number'))
+                                    ->disabled()->dehydrated(false),
+                                Forms\Components\TextInput::make('email')
+                                    ->label(__('Email'))
+                                    ->disabled()->dehydrated(false),
+                                Forms\Components\TextInput::make('mobile')
+                                    ->label(__('Mobile'))
+                                    ->disabled()->dehydrated(false),
+                                Forms\Components\Textarea::make('address')
+                                    ->label(__('Address'))
+                                    ->disabled()->dehydrated(false),
+                                Forms\Components\TextInput::make('occupation')
+                                    ->label(__('Occupation'))
+                                    ->disabled()->dehydrated(false),
+                            ]),
+
+                        Forms\Components\Section::make(__('Metadata'))
+                            ->schema([
+                                Forms\Components\TextInput::make('registration_code')
+                                    ->label(__('Registration Code'))
+                                    ->disabled()->dehydrated(false),
+                                Forms\Components\TextInput::make('created_at')
+                                    ->label(__('Submitted At'))
+                                    ->disabled()->dehydrated(false),
+                            ]),
+                    ])
+                    ->columnSpan(['lg' => 1]),
+            ])
+            ->columns(3);
     }
 
     public static function table(Table $table): Table
