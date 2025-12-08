@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @php
             $breadcrumbs = [
-                ['label' => __('Beranda'), 'url' => route('home')],
+                ['label' => __('Home'), 'url' => route('home')],
                 ['label' => __('Public Information Request'), 'url' => route('information.request')],
                 ['label' => __('Request Status')]
             ];
