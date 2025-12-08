@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\ResponseStatus;
+use App\Enums\PermissionType;
 use App\Filament\Resources\DispositionResource\Pages;
 use App\Models\Gratification;
 use App\Models\Wbs;
@@ -17,6 +18,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class DispositionResource extends Resource
 {
@@ -58,15 +60,33 @@ class DispositionResource extends Resource
         return __('Dispositions');
     }
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        // Only show this navigation item to users who have the permission.
+        // We use can() to check for the permission, whether it's direct or via a role.
+        // A check for 'super-admin' role is kept as a fallback.
+        return Auth::user()->hasRole('super-admin') || Auth::user()->can(PermissionType::ManageDisposition->value);
+    }
+
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
+        $query = parent::getEloquentQuery()
             ->where('response_status_id', ResponseStatus::Disposition->value)
             ->whereIn('reportable_type', [
                 Wbs::class,
                 Gratification::class,
                 \App\Models\Question::class,
             ]);
+
+        $user = Auth::user();
+
+        // If the user has the 'kelola disposisi' permission, filter the dispositions
+        // to only show records assigned to them. The User model is the Employee model.
+        if ($user && $user->can(PermissionType::ManageDisposition->value)) {
+            $query->where('disposition_to_employee_id', $user->id);
+        }
+
+        return $query;
     }
 
     public static function table(Table $table): Table
