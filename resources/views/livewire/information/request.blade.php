@@ -243,38 +243,42 @@
                         @enderror
                     </div>
 
-                            <!-- Delivery Method (conditional) -->
-                            @if($show_delivery_method)
-                                <div class="form-control" wire:transition>
-                                    <label class="label">
-                                        <span class="label-text font-medium">{{ __('Delivery Method') }} *</span>
-                                    </label>
-                                    <div class="space-y-2">
-                                        <label class="cursor-pointer flex items-center space-x-2">
-                                            <input type="checkbox" wire:model="delivery_method" value="direct" class="checkbox checkbox-sm">
-                                            <span class="label-text">{{ __('Pick Up Directly') }}</span>
-                                        </label>
-                                        <label class="cursor-pointer flex items-center space-x-2">
-                                            <input type="checkbox" wire:model="delivery_method" value="courier" class="checkbox checkbox-sm">
-                                            <span class="label-text">{{ __('Courier Service') }}</span>
-                                        </label>
-                                        <label class="cursor-pointer flex items-center space-x-2">
-                                            <input type="checkbox" wire:model="delivery_method" value="post" class="checkbox checkbox-sm">
-                                            <span class="label-text">{{ __('Postal Mail') }}</span>
-                                        </label>
-                                        <label class="cursor-pointer flex items-center space-x-2">
-                                            <input type="checkbox" wire:model="delivery_method" value="fax" class="checkbox checkbox-sm">
-                                            <span class="label-text">{{ __('Fax') }}</span>
-                                        </label>
-                                        <label class="cursor-pointer flex items-center space-x-2">
-                                            <input type="checkbox" wire:model="delivery_method" value="email" class="checkbox checkbox-sm">
-                                            <span class="label-text">{{ __('Email') }}</span>
-                                        </label>
-                                    </div>
-                                    @error('delivery_method') <span class="text-error text-sm mt-1">{{ $message }}</span> @enderror
-                                </div>
-                            @endif
+                    {{-- Delivery Method --}}
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">{{ __('Copy Delivery Method') }}</span>
+                        </label>
+                        <div class="space-y-2 pl-2">
+                            <div class="flex items-center">
+                                <input id="delivery_direct" type="checkbox" wire:model="delivery_method" value="direct" class="checkbox checkbox-primary">
+                                <label for="delivery_direct" class="ml-3 text-base-content cursor-pointer">{{ __('Pick Up Directly') }}</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="delivery_courier" type="checkbox" wire:model="delivery_method" value="courier" class="checkbox checkbox-primary">
+                                <label for="delivery_courier" class="ml-3 text-base-content cursor-pointer">{{ __('Courier Service') }}</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="delivery_post" type="checkbox" wire:model="delivery_method" value="post" class="checkbox checkbox-primary">
+                                <label for="delivery_post" class="ml-3 text-base-content cursor-pointer">{{ __('Postal Mail') }}</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="delivery_fax" type="checkbox" wire:model="delivery_method" value="fax" class="checkbox checkbox-primary">
+                                <label for="delivery_fax" class="ml-3 text-base-content cursor-pointer">{{ __('Fax') }}</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="delivery_email" type="checkbox" wire:model="delivery_method" value="email" class="checkbox checkbox-primary">
+                                <label for="delivery_email" class="ml-3 text-base-content cursor-pointer">{{ __('Email') }}</label>
+                            </div>
                         </div>
+                        @error('delivery_method') 
+                        <label class="label">
+                            <span class="label-text-alt text-error flex items-center">
+                                <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
+                            </span>
+                        </label>
+                        @enderror
+                    </div>
+                </div>
 
                 {{-- Kolom Kanan - Detail Permohonan --}}
                 <div class="lg:w-1/2 space-y-6">
