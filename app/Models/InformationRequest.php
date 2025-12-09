@@ -36,7 +36,7 @@ class InformationRequest extends Model
      */
     public function process(): MorphOne
     {
-        return $this->morphOne(ReportProcess::class, 'reportable');
+        return $this->morphOne(ReportProcess::class, 'reportable')->latestOfMany();
     }
 
     /**

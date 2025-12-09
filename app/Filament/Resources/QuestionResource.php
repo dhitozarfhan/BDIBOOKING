@@ -131,7 +131,7 @@ class QuestionResource extends Resource
                     ->modalHeading('Kirim Jawaban ke Publik')
                     ->modalDescription('Pastikan semua proses telah sesuai sebelum mengirimkan jawaban ke publik.')
                     ->modalContent(function ($record) {
-                        $processes = $record->reportProcesses()->orderBy('created_at', 'desc')->get();
+                        $processes = $record->reportProcesses()->orderBy('created_at', 'asc')->get();
                         $html = '';
                         foreach ($processes as $process) {
                             $html .= '<div class="mb-4 border-b pb-4">';
