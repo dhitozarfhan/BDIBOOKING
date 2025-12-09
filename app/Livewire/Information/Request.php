@@ -15,7 +15,7 @@ class Request extends Component
     public $reportDetail;
     public $statusError = '';
     // Personal Information
-    public $name = '';
+    public $reporter_name = '';
     public $id_card_number = '';
     public $address = '';
     public $occupation = '';
@@ -23,7 +23,7 @@ class Request extends Component
     public $email = '';
     
     // Request Details
-    public $content = '';
+    public $report_title = '';
     public $used_for = '';
     
     // Grab Method (checkboxes)
@@ -45,13 +45,13 @@ class Request extends Component
         }
 
         return [
-            'name' => 'required|string|max:255',
+            'reporter_name' => 'required|string|max:255',
             'id_card_number' => 'required|string|max:255',
             'address' => 'required|string',
             'occupation' => 'required|string|max:255',
             'mobile' => 'required|string|max:20',
             'email' => 'required|email|max:255',
-            'content' => 'required|string',
+            'report_title' => 'required|string',
             'used_for' => 'required|string',
             'grab_method' => 'required|array|min:1',
             'rule_accepted' => 'accepted',
@@ -105,7 +105,7 @@ class Request extends Component
 
                                 $infoRequest = InformationRequest::create([
 
-                                    'name' => $this->name,
+                                    'reporter_name' => $this->reporter_name,
 
                                     'id_card_number' => $this->id_card_number,
 
@@ -117,7 +117,7 @@ class Request extends Component
 
                                     'email' => $this->email,
 
-                                    'content' => $this->content,
+                                    'report_title' => $this->report_title,
 
                                     'used_for' => $this->used_for,
 
@@ -157,9 +157,9 @@ class Request extends Component
 
                                 $this->reset([
 
-                                    'name', 'id_card_number', 'address', 'occupation', 'mobile', 'email',
+                                    'reporter_name', 'id_card_number', 'address', 'occupation', 'mobile', 'email',
 
-                                    'content', 'used_for', 'grab_method', 'delivery_method', 'rule_accepted'
+                                    'report_title', 'used_for', 'grab_method', 'delivery_method', 'rule_accepted'
 
                                 ]);
 
@@ -216,10 +216,10 @@ class Request extends Component
 
             $reportDetail = new \stdClass();
             $reportDetail->subject = __('Information Request');
-            $reportDetail->name = $infoRequest->name;
+            $reportDetail->reporter_name = $infoRequest->reporter_name;
             $reportDetail->mobile = $infoRequest->mobile ? substr($infoRequest->mobile, 0, -4) . 'xxxx' : '-';
             $reportDetail->time_insert = $infoRequest->created_at;
-            $reportDetail->content = $infoRequest->content;
+            $reportDetail->report_title = $infoRequest->report_title;
 
             if ($process) {
                 $reportDetail->status = $process->response_status_id;

@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 class InformationRequest extends Model
 {
     protected $fillable = [
-        'name',
+        'reporter_name',
         'id_card_number',
         'address',
         'occupation',
         'mobile',
         'email',
-        'content',
+        'report_title',
         'used_for',
         'grab_method',
         'delivery_method',
