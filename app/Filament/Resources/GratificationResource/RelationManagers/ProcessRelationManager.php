@@ -56,7 +56,18 @@ class ProcessRelationManager extends RelationManager
             ->filters([
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->after(function (\App\Models\ReportProcess $process) {
+                        if ($process->response_status_id == \App\Enums\ResponseStatus::Process->value) {
+                            $terminationProcess = new \App\Models\ReportProcess();
+                            $terminationProcess->reportable_id = $process->reportable_id;
+                            $terminationProcess->reportable_type = $process->reportable_type;
+                            $terminationProcess->response_status_id = \App\Enums\ResponseStatus::Termination->value;
+                            $terminationProcess->answer = $process->answer;
+                            $terminationProcess->answer_attachment = $process->answer_attachment;
+                            $terminationProcess->save();
+                        }
+                    }),
                 Tables\Actions\Action::make('reply')
                     ->label('Tambahkan Balasan')
                     ->icon('heroicon-o-chat-bubble-left-right')
@@ -92,6 +103,16 @@ class ProcessRelationManager extends RelationManager
                                                 $process->answer_attachment = $data['answer_attachment'];
                                                 $process->disposition_to_employee_id = $data['disposition_to_employee_id'] ?? null;
                                                 $process->save();
+
+                                                if ($process->response_status_id == \App\Enums\ResponseStatus::Process->value) {
+                                                    $terminationProcess = new \App\Models\ReportProcess();
+                                                    $terminationProcess->reportable_id = $livewire->ownerRecord->id;
+                                                    $terminationProcess->reportable_type = \App\Models\Gratification::class;
+                                                    $terminationProcess->response_status_id = \App\Enums\ResponseStatus::Termination->value;
+                                                    $terminationProcess->answer = $data['answer'];
+                                                    $terminationProcess->answer_attachment = $data['answer_attachment'];
+                                                    $terminationProcess->save();
+                                                }
                                             }),
             ])
             ->actions([
@@ -111,7 +132,27 @@ class ProcessRelationManager extends RelationManager
                             ->directory('gratifications/answers')
                             ->downloadable()
                             ->openable(),
-                    ]),
+                    ])
+                    ->after(function (\App\Models\ReportProcess $process) {
+                        if ($process->response_status_id == \App\Enums\ResponseStatus::Process->value) {
+                            // To avoid loops, check if a termination process already exists for this answer
+                            $existingTermination = \App\Models\ReportProcess::where('reportable_id', $process->reportable_id)
+                                ->where('reportable_type', $process->reportable_type)
+                                ->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)
+                                ->where('answer', $process->answer)
+                                ->exists();
+
+                            if (!$existingTermination) {
+                                $terminationProcess = new \App\Models\ReportProcess();
+                                $terminationProcess->reportable_id = $process->reportable_id;
+                                $terminationProcess->reportable_type = $process->reportable_type;
+                                $terminationProcess->response_status_id = \App\Enums\ResponseStatus::Termination->value;
+                                $terminationProcess->answer = $process->answer;
+                                $terminationProcess->answer_attachment = $process->answer_attachment;
+                                $terminationProcess->save();
+                            }
+                        }
+                    }),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

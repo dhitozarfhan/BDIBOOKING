@@ -7,6 +7,9 @@ use App\Livewire\Competency\Index as CompetencyIndex;
 use App\Livewire\Competency\LspDetail;
 use App\Livewire\Competency\SkkniDetail;
 use App\Livewire\Training\Index as TrainingIndex;
+use App\Models\InformationRequest;
+use App\Models\Question;
+use Illuminate\Http\Request;
 
 Route::get('/', \App\Livewire\Home::class)->name('home');
 
@@ -63,6 +66,59 @@ Route::get('/information/request/status', App\Livewire\Information\Request::clas
 Route::get('/information/provision', function() {
     abort(404);
 })->name('information.provision');
+
+Route::get('/information/answer', function (Request $request) {
+    $status = $request->query('status');
+
+    $informationRequestsQuery = InformationRequest::with('reportProcesses.responseStatus');
+    $questionsQuery = Question::with('reportProcesses.responseStatus');
+
+    if ($status) {
+        switch ($status) {
+            case 'baru':
+                $informationRequestsQuery->where(function ($query) {
+                    $query->whereDoesntHave('reportProcesses')
+                          ->orWhereHas('reportProcesses', function ($q) {
+                              $q->where('response_status_id', \App\Enums\ResponseStatus::Initiation->value);
+                          });
+                });
+                $questionsQuery->where(function ($query) {
+                    $query->whereDoesntHave('reportProcesses')
+                          ->orWhereHas('reportProcesses', function ($q) {
+                              $q->where('response_status_id', \App\Enums\ResponseStatus::Initiation->value);
+                          });
+                });
+                break;
+            case 'diproses':
+                $informationRequestsQuery->whereHas('reportProcesses', function ($q) {
+                    $q->where('response_status_id', \App\Enums\ResponseStatus::Process->value);
+                })->whereDoesntHave('reportProcesses', function ($q) {
+                    $q->where('response_status_id', \App\Enums\ResponseStatus::Termination->value);
+                });
+                $questionsQuery->whereHas('reportProcesses', function ($q) {
+                    $q->where('response_status_id', \App\Enums\ResponseStatus::Process->value);
+                })->whereDoesntHave('reportProcesses', function ($q) {
+                    $q->where('response_status_id', \App\Enums\ResponseStatus::Termination->value);
+                });
+                break;
+            case 'selesai':
+                $informationRequestsQuery->whereHas('reportProcesses', function ($q) {
+                    $q->where('response_status_id', \App\Enums\ResponseStatus::Termination->value);
+                });
+                $questionsQuery->whereHas('reportProcesses', function ($q) {
+                    $q->where('response_status_id', \App\Enums\ResponseStatus::Termination->value);
+                });
+                break;
+        }
+    }
+
+    $informationRequests = $informationRequestsQuery->get();
+    $questions = $questionsQuery->get();
+
+    $items = $informationRequests->concat($questions)->sortByDesc('created_at');
+
+    return view('information.answer', compact('items'));
+})->name('information.answer');
 
 Route::get('/{article_type}', App\Livewire\Articles\Index::class)
     ->whereIn('article_type', ['news','gallery','page'])
