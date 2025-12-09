@@ -108,6 +108,13 @@ class QuestionResource extends Resource
                 Tables\Columns\TextColumn::make('process.responseStatus.name') // Shows latest status
                     ->label(__('Status'))
                     ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Initiation' => 'warning',
+                        'Process' => 'info',
+                        'Disposition' => 'primary',
+                        'Termination' => 'success',
+                        default => 'gray',
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('Submitted At'))

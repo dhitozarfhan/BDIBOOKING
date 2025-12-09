@@ -203,7 +203,7 @@ class InformationRequestResource extends Resource
                 Tables\Columns\TextColumn::make('process.responseStatus.name') // Mengambil nama status dari relasi
                     ->label(__('Status'))
                     ->badge()
-                    ->color(fn ($state): string => match ($state) { // Menyesuaikan warna dengan nama status baru
+                    ->color(fn (string $state): string => match ($state) { // Menyesuaikan warna dengan nama status baru
                         'Initiation' => 'warning',
                         'Process' => 'info',
                         'Disposition' => 'primary',

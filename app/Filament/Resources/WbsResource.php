@@ -176,6 +176,13 @@ class WbsResource extends Resource
                 TextColumn::make('process.responseStatus.name')
                     ->label(__('Status'))
                     ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Initiation' => 'warning',
+                        'Process' => 'info',
+                        'Disposition' => 'primary',
+                        'Termination' => 'success',
+                        default => 'gray',
+                    })
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->label(__('Submitted At'))
