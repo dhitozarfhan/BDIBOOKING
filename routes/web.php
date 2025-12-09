@@ -10,6 +10,7 @@ use App\Livewire\Training\Index as TrainingIndex;
 use App\Models\InformationRequest;
 use App\Models\Question;
 use Illuminate\Http\Request;
+use App\Http\Controllers\DownloadController;
 
 Route::get('/', \App\Livewire\Home::class)->name('home');
 
@@ -280,3 +281,5 @@ Route::middleware([
 });
 */
 Route::get('/ibiza', App\Livewire\Ibiza\Index::class)->name('ibiza');
+
+Route::get('/download', [DownloadController::class, 'download'])->name('download');

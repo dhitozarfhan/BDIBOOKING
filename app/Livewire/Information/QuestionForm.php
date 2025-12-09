@@ -61,7 +61,7 @@ class QuestionForm extends Component
 
         $identityCardPath = null;
         if ($this->identity_card_attachment) {
-            $identityCardPath = $this->identity_card_attachment->store('identity_cards', 'public');
+            $identityCardPath = $this->identity_card_attachment->store('identity_cards', 'private');
         }
 
         // Generate registration code

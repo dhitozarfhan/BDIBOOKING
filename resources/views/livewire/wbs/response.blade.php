@@ -84,13 +84,13 @@
                                         </th>
                                         <td>
                                             <div class="flex flex-col gap-2">
-                                                <a href="{{ Storage::url($reportDetail->attachment) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2">
+                                                <a href="{{ route('download', ['path' => $reportDetail->attachment]) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2">
                                                     <i class="bi bi-download"></i>
                                                     {{ basename($reportDetail->attachment) }}
                                                 </a>
                                                 @if(pathinfo($reportDetail->attachment, PATHINFO_EXTENSION) === 'pdf')
                                                     <div class="mt-2 border rounded">
-                                                        <iframe src="{{ Storage::url($reportDetail->attachment) }}"
+                                                        <iframe src="{{ route('download', ['path' => $reportDetail->attachment]) }}"
                                                                 class="w-full h-96"
                                                                 type="application/pdf"
                                                                 title="Report Attachment Preview">
