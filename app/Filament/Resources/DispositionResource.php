@@ -6,13 +6,12 @@ use App\Enums\ResponseStatus;
 use App\Enums\PermissionType;
 use App\Filament\Resources\DispositionResource\Pages;
 use App\Models\Gratification;
-use App\Models\Wbs;
-use App\Models\ReportProcess;
+use App\Models\InformationRequest;
 use App\Models\Question;
+use App\Models\ReportProcess;
+use App\Models\Wbs;
 use Filament\Forms;
 use Filament\Notifications\Notification;
-use App\Models\WbsProcess;
-use App\Models\GratificationProcess;
 use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -75,8 +74,8 @@ class DispositionResource extends Resource
             ->whereIn('reportable_type', [
                 Wbs::class,
                 Gratification::class,
-                \App\Models\Question::class,
-                \App\Models\InformationRequest::class,
+                Question::class,
+                InformationRequest::class,
             ]);
 
         $user = Auth::user();
@@ -98,9 +97,7 @@ class DispositionResource extends Resource
                     ->label('Reporter Name')
                     ->formatStateUsing(fn ($state, $record) => $record->reportable->reporter_name ?? $record->reportable->name)
                     ->searchable(query: function (Builder $query, string $search): Builder {
-                        return $query->whereHasMorph('reportable', [Wbs::class, Gratification::class, \App\Models\InformationRequest::class], function (Builder $query) use ($search) {
-                            $query->where('reporter_name', 'like', "%{$search}%");
-                        })->orWhereHasMorph('reportable', [Question::class], function (Builder $query) use ($search) {
+                        return $query->whereHasMorph('reportable', [Wbs::class, Gratification::class, InformationRequest::class, Question::class], function (Builder $query) use ($search) {
                             $query->where('reporter_name', 'like', "%{$search}%");
                         });
                     })
@@ -109,9 +106,7 @@ class DispositionResource extends Resource
                     ->label('Report Title')
                     ->formatStateUsing(fn ($state, $record) => $record->reportable->report_title ?? $record->reportable->subject)
                     ->searchable(query: function (Builder $query, string $search): Builder {
-                        return $query->whereHasMorph('reportable', [Wbs::class, Gratification::class, \App\Models\InformationRequest::class], function (Builder $query) use ($search) {
-                            $query->where('report_title', 'like', "%{$search}%");
-                        })->orWhereHasMorph('reportable', [Question::class], function (Builder $query) use ($search) {
+                        return $query->whereHasMorph('reportable', [Wbs::class, Gratification::class, InformationRequest::class, Question::class], function (Builder $query) use ($search) {
                             $query->where('report_title', 'like', "%{$search}%");
                         });
                     })
