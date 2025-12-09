@@ -25,7 +25,7 @@
                                     <th class="w-1/3 bg-base-200 font-semibold text-base-content">
                                         <i class="bi bi-person mr-2 text-primary"></i>{{ __('Requester Name') }}
                                     </th>
-                                    <td class="font-medium">{{ $reportDetail->name }}</td>
+                                    <td class="font-medium">{{ $reportDetail->reporter_name }}</td>
                                 </tr>
                                 <tr>
                                     <th class="bg-base-200 font-semibold text-base-content">
@@ -71,7 +71,7 @@
                                     <th class="bg-base-200 font-semibold text-base-content align-top">
                                         <i class="bi bi-file-text mr-2 text-primary"></i>{{ __('Request Content') }}
                                     </th>
-                                    <td class="whitespace-pre-wrap">{{ $reportDetail->content }}</td>
+                                    <td class="whitespace-pre-wrap">{{ $reportDetail->report_title }}</td>
                                 </tr>
                                 @if($reportDetail->answer_attachment)
                                     <tr>

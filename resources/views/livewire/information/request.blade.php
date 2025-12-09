@@ -60,7 +60,7 @@
                     </div>
                     {{-- Applicant Name --}}
                     <div class="form-control">
-                        <label for="name" class="label">
+                        <label for="reporter_name" class="label">
                             <span class="label-text font-semibold">{{ __('Applicant Name') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative group">
@@ -68,13 +68,13 @@
                                 <i class="bi bi-person-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
                             <input 
-                                id="name" 
+                                id="reporter_name" 
                                 type="text" 
                                 class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
-                                wire:model.lazy="name"
+                                wire:model.lazy="reporter_name"
                                 placeholder="{{ __('Enter full name') }}">
                         </div>
-                        @error('name') 
+                        @error('reporter_name') 
                         <label class="label">
                             <span class="label-text-alt text-error flex items-center">
                                 <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
@@ -287,19 +287,19 @@
                     </div>
                     {{-- Request Content --}}
                     <div class="form-control">
-                        <label for="content" class="label">
+                        <label for="report_title" class="label">
                             <span class="label-text font-semibold">{{ __('Information Requested') }} <span class="text-error">*</span></span>
                         </label>
                         <textarea 
-                            id="content" 
+                            id="report_title" 
                             rows="10"
                             class="textarea textarea-bordered w-full px-4 py-3 focus:textarea-secondary transition-all duration-200 resize-none" 
-                            wire:model.lazy="content"
+                            wire:model.lazy="report_title"
                             placeholder="{{ __('Describe the information you are requesting...') }}"></textarea>
                         <label class="label">
                             <span class="label-text-alt text-base-content/60">{{ __('Be as specific as possible') }}</span>
                         </label>
-                        @error('content') 
+                        @error('report_title') 
                         <label class="label">
                             <span class="label-text-alt text-error flex items-center">
                                 <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}

@@ -106,7 +106,7 @@ class InformationRequestResource extends Resource
                     ->schema([
                         Forms\Components\Section::make(__('Request Details'))
                             ->schema([
-                                Forms\Components\Textarea::make('content')
+                                Forms\Components\Textarea::make('report_title')
                                     ->label(__('Information Requested'))
                                     ->rows(6)
                                     ->disabled()
@@ -146,7 +146,7 @@ class InformationRequestResource extends Resource
                     ->schema([
                         Forms\Components\Section::make(__('Applicant Information'))
                             ->schema([
-                                Forms\Components\TextInput::make('name')
+                                Forms\Components\TextInput::make('reporter_name')
                                     ->label(__('Name'))
                                     ->disabled()->dehydrated(false),
                                 Forms\Components\TextInput::make('id_card_number')
@@ -186,7 +186,7 @@ class InformationRequestResource extends Resource
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('reporter_name')
                     ->label(__('Name'))
                     ->searchable()
                     ->sortable(),
