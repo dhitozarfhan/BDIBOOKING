@@ -80,18 +80,15 @@
                                         </th>
                                         <td>
                                             <div class="flex flex-col gap-2">
-                                                <a href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($reportDetail->answer_attachment) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2">
-                                                    <i class="bi bi-download"></i>
-                                                    {{ basename($reportDetail->answer_attachment) }}
+                                                <a href="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                                    </svg>
+                                                    Unduh Lampiran
                                                 </a>
                                                 @if($reportDetail->answer_attachment && pathinfo($reportDetail->answer_attachment, PATHINFO_EXTENSION) === 'pdf')
-                                                    <div class="mt-2 border rounded">
-                                                        <iframe src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($reportDetail->answer_attachment) }}"
-                                                                class="w-full h-96"
-                                                                type="application/pdf"
-                                                                title="Answer Attachment Preview">
-                                                            <p>{{ __('Your browser does not support PDF previews. Please download the file to view it.') }}</p>
-                                                        </iframe>
+                                                    <div class="mt-2">
+                                                        <iframe src="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" class="w-full h-64 border rounded" frameborder="0"></iframe>
                                                     </div>
                                                 @endif
                                             </div>

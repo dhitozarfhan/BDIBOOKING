@@ -121,12 +121,12 @@ class Gratification extends Component
 
         $filePath = null;
         if ($this->attachment) {
-            $filePath = $this->attachment->store('gratifications', 'public');
+            $filePath = $this->attachment->store('gratifications', 'private');
         }
 
         $identityCardPath = null;
         if ($this->identity_card_attachment) {
-            $identityCardPath = $this->identity_card_attachment->store('identity_cards', 'public');
+            $identityCardPath = $this->identity_card_attachment->store('identity_cards', 'private');
         }
 
         // Generate kode register unik

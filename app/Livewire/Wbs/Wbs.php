@@ -115,12 +115,12 @@ class Wbs extends Component
 
         $filePath = null;
         if ($this->attachment) {
-            $filePath = $this->attachment->store('wbs', 'public');
+            $filePath = $this->attachment->store('wbs', 'private');
         }
 
         $identityCardPath = null;
         if ($this->identity_card_attachment) {
-            $identityCardPath = $this->identity_card_attachment->store('identity_cards', 'public');
+            $identityCardPath = $this->identity_card_attachment->store('identity_cards', 'private');
         }
 
         // Generate kode register unik
