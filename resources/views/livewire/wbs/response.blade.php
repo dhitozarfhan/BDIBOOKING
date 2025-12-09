@@ -48,19 +48,19 @@
                                         <i class="bi bi-flag mr-2 text-primary"></i>{{ __('Report Status') }}
                                     </th>
                                     <td>
-                                        @if($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Initiation->value)
+                                        @if($reportDetail->reportProcesses->last()?->response_status_id === \App\Enums\ResponseStatus::Initiation->value)
                                             <span class="badge badge-warning gap-2">
                                                 <i class="bi bi-hourglass-split"></i>{{ __('Initiation') }}
                                             </span>
-                                        @elseif($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Process->value)
+                                        @elseif($reportDetail->reportProcesses->last()?->response_status_id === \App\Enums\ResponseStatus::Process->value)
                                             <span class="badge badge-info gap-2">
                                                 <i class="bi bi-arrow-repeat"></i>{{ __('Process') }}
                                             </span>
-                                        @elseif($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Disposition->value)
+                                        @elseif($reportDetail->reportProcesses->last()?->response_status_id === \App\Enums\ResponseStatus::Disposition->value)
                                             <span class="badge badge-primary gap-2">
                                                 <i class="bi bi-send-check"></i>{{ __('Disposition') }}
                                             </span>
-                                        @elseif($reportDetail->processes->last()?->response_status_id === \App\Enums\ResponseStatus::Termination->value)
+                                        @elseif($reportDetail->reportProcesses->last()?->response_status_id === \App\Enums\ResponseStatus::Termination->value)
                                             <span class="badge badge-success gap-2">
                                                 <i class="bi bi-check-circle"></i>{{ __('Completed') }}
                                             </span>
@@ -107,14 +107,14 @@
                     </div>
 
                     {{-- Card untuk Answer, hanya muncul jika proses selesai --}}
-                    @if($reportDetail->processes->last()?->is_completed ?? false)
+                    @if($reportDetail->reportProcesses->last()?->is_completed ?? false)
                         <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">
                             <h3 class="text-lg font-semibold text-base-content mb-3">
                                 {{ __('Jawaban') }}
                             </h3>
-                            @if($reportDetail->processes->last()?->answer)
+                            @if($reportDetail->reportProcesses->last()?->answer)
                                 <div class="whitespace-pre-wrap text-sm text-left">
-                                    {!! $reportDetail->processes->last()->answer !!}
+                                    {!! $reportDetail->reportProcesses->last()->answer !!}
                                 </div>
                             @else
                                 <div class="whitespace-pre-wrap text-sm text-left text-base-content/60 italic">
