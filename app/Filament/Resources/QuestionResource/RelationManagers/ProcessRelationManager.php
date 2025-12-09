@@ -25,7 +25,7 @@ class ProcessRelationManager extends RelationManager
             ->schema([
                 Forms\Components\Select::make('response_status_id')
                     ->label(__('Response Status'))
-                    ->options(fn () => ResponseStatus::all()->pluck('name', 'id'))
+                    ->options(fn () => ResponseStatus::where('id', '!=', \App\Enums\ResponseStatus::Initiation->value)->pluck('name', 'id'))
                     ->required()
                     ->live(),
                 Forms\Components\Select::make('disposition_to_employee_id')
@@ -101,7 +101,7 @@ class ProcessRelationManager extends RelationManager
                     ->form([
                         Forms\Components\Select::make('response_status_id')
                             ->label(__('Response Status'))
-                            ->options(fn () => ResponseStatus::all()->pluck('name', 'id'))
+                            ->options(fn () => ResponseStatus::where('id', '!=', \App\Enums\ResponseStatus::Initiation->value)->pluck('name', 'id'))
                             ->required()
                             ->live(),
                         Forms\Components\Select::make('disposition_to_employee_id')
@@ -144,50 +144,6 @@ class ProcessRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()
-                    ->form([
-                        Forms\Components\Select::make('response_status_id')
-                            ->label(__('Response Status'))
-                            ->options(fn () => ResponseStatus::all()->pluck('name', 'id'))
-                            ->required()
-                            ->live(),
-                        Forms\Components\Select::make('disposition_to_employee_id')
-                            ->label(__('Disposition To'))
-                            ->options(Employee::all()->pluck('name', 'id'))
-                            ->searchable()
-                            ->visible(fn (Get $get): bool => (int) $get('response_status_id') === EnumsResponseStatus::Disposition->value)
-                            ->required(fn (Get $get): bool => (int) $get('response_status_id') === EnumsResponseStatus::Disposition->value),
-                        Forms\Components\RichEditor::make('answer')
-                            ->label(__('Answer'))
-                            ->required(fn (Get $get): bool => (int) $get('response_status_id') !== EnumsResponseStatus::Disposition->value)
-                            ->columnSpanFull(),
-                        Forms\Components\FileUpload::make('answer_attachment')
-                            ->label(__('Answer Attachment'))
-                            ->disk('local')
-                            ->directory('questions/answers')
-                            ->downloadable()
-                            ->openable(),
-                    ])
-                    ->after(function (\App\Models\ReportProcess $process) {
-                        if ($process->response_status_id == \App\Enums\ResponseStatus::Process->value) {
-                            // To avoid loops, check if a termination process already exists for this answer
-                            $existingTermination = \App\Models\ReportProcess::where('reportable_id', $process->reportable_id)
-                                ->where('reportable_type', $process->reportable_type)
-                                ->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)
-                                ->where('answer', $process->answer)
-                                ->exists();
-
-                            if (!$existingTermination) {
-                                $terminationProcess = new \App\Models\ReportProcess();
-                                $terminationProcess->reportable_id = $process->reportable_id;
-                                $terminationProcess->reportable_type = $process->reportable_type;
-                                $terminationProcess->response_status_id = \App\Enums\ResponseStatus::Termination->value;
-                                $terminationProcess->answer = $process->answer;
-                                $terminationProcess->answer_attachment = $process->answer_attachment;
-                                $terminationProcess->save();
-                            }
-                        }
-                    }),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
