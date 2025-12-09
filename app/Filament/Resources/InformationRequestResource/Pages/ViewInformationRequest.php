@@ -24,8 +24,9 @@ class ViewInformationRequest extends ViewRecord
 
         $record = $this->getRecord();
         if ($record->process && $record->process->response_status_id === ResponseStatus::Initiation->value) {
-            $record->process->update([
+            $record->reportProcesses()->create([
                 'response_status_id' => ResponseStatus::Process->value,
+                'is_completed' => false,
             ]);
         }
     }
