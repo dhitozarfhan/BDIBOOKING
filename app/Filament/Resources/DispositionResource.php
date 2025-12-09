@@ -76,6 +76,7 @@ class DispositionResource extends Resource
                 Wbs::class,
                 Gratification::class,
                 \App\Models\Question::class,
+                \App\Models\InformationRequest::class,
             ]);
 
         $user = Auth::user();
