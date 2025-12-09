@@ -1,32 +1,51 @@
-<div class="container mx-auto px-4 py-8">
-    <div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-        <div class="bg-primary-600 px-6 py-4">
-            <h2 class="text-xl font-bold text-white">{{ __('Check Public Complaint Status') }}</h2>
-        </div>
-        
-        <div class="p-6">
-            @if (session()->has('statusError'))
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    <span class="block sm:inline">{{ session('statusError') }}</span>
-                </div>
-            @endif
+@section('title', __('Complaint Status Check'))
+<div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg" style="min-height: 45vh;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        @php
+            $breadcrumbs = [
+                ['label' => __('Beranda'), 'url' => route('home')],
+                ['label' => __('Public Complaint'), 'url' => route('information.question')],
+                ['label' => __('Report Status')]
+            ];
+        @endphp
+        @include('livewire.information.partials.breadcrumb', ['items' => $breadcrumbs])
+        <h2 class="text-2xl font-bold text-base-content mt-4">
+            {{ __('Check Public Complaint Status') }}
+        </h2>
+        <p class="mt-2 text-base-content/80">
+            {{ __('Enter the registration code to see the status of your complaint.') }}
+        </p>
 
-            <form wire:submit.prevent="checkStatus">
-                <div class="mb-4">
-                    <label for="registration_code" class="block text-gray-700 text-sm font-bold mb-2">{{ __('Registration Code') }}</label>
-                    <input type="text" wire:model="registration_code" id="registration_code" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('registration_code') border-red-500 @enderror" placeholder="Enter your registration code">
-                    @error('registration_code') <span class="text-red-500 text-xs italic">{{ $message }}</span> @enderror
+        @if (session()->has('statusError'))
+            <div class="alert alert-error mt-4">
+                <div>
+                    <i class="bi bi-exclamation-triangle-fill text-xl mr-3"></i>
+                    <span>{{ session('statusError') }}</span>
                 </div>
+            </div>
+        @endif
 
-                <div class="flex items-center justify-between">
-                    <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                        {{ __('Check Status') }}
-                    </button>
-                    <a href="{{ route('information.question') }}" class="inline-block align-baseline font-bold text-sm text-primary-600 hover:text-primary-800">
-                        {{ __('Back to Form') }}
-                    </a>
+        <form wire:submit.prevent="checkStatus" class="mt-6 space-y-6">
+            <div class="space-y-4">
+                <div>
+                    <label for="registration_code" class="label">
+                        <span class="label-text">{{ __('Registration Code') }} <span class="text-red-500">*</span></span>
+                    </label>
+                    <div class="relative">
+                        <i class="bi bi-upc-scan absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input id="registration_code" type="text" class="input input-bordered w-full pl-12" wire:model.lazy="registration_code" placeholder="{{ __('Enter your registration code') }}">
+                    </div>
+                    @error('registration_code') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
                 </div>
-            </form>
-        </div>
+            </div>
+            <div class="flex items-center gap-4 mt-6">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> {{ __('Check Status') }}
+                </button>
+                <a href="{{ route('information.question') }}" class="btn btn-ghost btn-outline" wire:navigate>
+                    {{ __('Back') }}
+                </a>
+            </div>
+        </form>
     </div>
 </div>
