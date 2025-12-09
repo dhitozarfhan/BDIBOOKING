@@ -701,5 +701,12 @@
     "Information Request Response": "Respon Permohonan Informasi",
     "Enter the registration code to see the status of your request.": "Masukkan kode registrasi untuk melihat status permohonan Anda.",
     "Copy Delivery Method": "Cara Memperoleh Salinan Informasi",
-    "Back": "Kembali"
+    "Back": "Kembali",
+    "Complaint Status Check": "Cek Status Pengaduan",
+    "Check Public Complaint Status": "Cek Status Pengaduan Masyarakat",
+    "Enter the registration code to see the status of your complaint.": "Masukkan kode registrasi untuk melihat status pengaduan Anda.",
+    "Enter your registration code": "Masukkan kode registrasi Anda",
+    "Complaint Response": "Respon Pengaduan",
+    "Back to Form": "Kembali ke Formulir",
+    "Download Attachment": "Unduh Lampiran"
 }

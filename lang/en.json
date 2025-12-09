@@ -563,5 +563,12 @@
     "Information Request Response": "Information Request Response",
     "Enter the registration code to see the status of your request.": "Enter the registration code to see the status of your request.",
     "Copy Delivery Method": "Copy Delivery Method",
-    "Back": "Back"
+    "Back": "Back",
+    "Complaint Status Check": "Complaint Status Check",
+    "Check Public Complaint Status": "Check Public Complaint Status",
+    "Enter the registration code to see the status of your complaint.": "Enter the registration code to see the status of your complaint.",
+    "Enter your registration code": "Enter your registration code",
+    "Complaint Response": "Complaint Response",
+    "Back to Form": "Back to Form",
+    "Download Attachment": "Download Attachment"
 }
