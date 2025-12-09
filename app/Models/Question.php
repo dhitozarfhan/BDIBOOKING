@@ -12,11 +12,13 @@ class Question extends Model
     use HasFactory;
 
     protected $fillable = [
-        'subject',
+        'reporter_name',
         'content',
-        'name',
+        'report_title',
         'mobile',
         'email',
+        'identity_number',
+        'identity_card_attachment',
         'registration_code',
     ];
 

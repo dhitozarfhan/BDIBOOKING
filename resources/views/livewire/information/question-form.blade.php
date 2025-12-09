@@ -48,23 +48,23 @@
         {{-- Form --}}
         <form wire:submit.prevent="save">
             <div class="grid grid-cols-1 gap-6">
-                {{-- Subject --}}
+                {{-- Reporter Name --}}
                 <div class="form-control">
-                    <label for="subject" class="label">
-                        <span class="label-text font-semibold">{{ __('information.subject') }} <span class="text-error">*</span></span>
+                    <label for="reporter_name" class="label">
+                        <span class="label-text font-semibold">{{ __('information.reporter_name') }} <span class="text-error">*</span></span>
                     </label>
                     <div class="relative group">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <i class="bi bi-chat-left-text-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
+                            <i class="bi bi-person-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                         </div>
                         <input 
                             type="text" 
-                            id="subject" 
-                            wire:model="subject" 
+                            id="reporter_name" 
+                            wire:model="reporter_name" 
                             class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
-                            placeholder="{{ __('Subject of your question') }}">
+                            placeholder="{{ __('Enter reporter name') }}">
                     </div>
-                    @error('subject') 
+                    @error('reporter_name') 
                     <label class="label">
                         <span class="label-text-alt text-error flex items-center">
                             <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}
@@ -73,23 +73,23 @@
                     @enderror
                 </div>
 
-                {{-- Name --}}
+                {{-- Report Title --}}
                 <div class="form-control">
-                    <label for="name" class="label">
-                        <span class="label-text font-semibold">{{ __('information.name') }} <span class="text-error">*</span></span>
+                    <label for="report_title" class="label">
+                        <span class="label-text font-semibold">{{ __('information.report_title') }} <span class="text-error">*</span></span>
                     </label>
                     <div class="relative group">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <i class="bi bi-person-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
+                            <i class="bi bi-chat-left-text-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                         </div>
                         <input 
                             type="text" 
-                            id="name" 
-                            wire:model="name" 
+                            id="report_title" 
+                            wire:model="report_title" 
                             class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
-                            placeholder="{{ __('Enter full name') }}">
+                            placeholder="{{ __('Enter report title') }}">
                     </div>
-                    @error('name') 
+                    @error('report_title') 
                     <label class="label">
                         <span class="label-text-alt text-error flex items-center">
                             <i class="bi bi-exclamation-circle-fill mr-1"></i>{{ $message }}

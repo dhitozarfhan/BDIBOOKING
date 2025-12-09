@@ -12,9 +12,9 @@ use Illuminate\Support\Str;
 class QuestionForm extends Component
 {
     use WithFileUploads;
-    public $subject;
+    public $reporter_name;
     public $content;
-    public $name;
+    public $report_title;
     public $identity_number;
     public $identity_card_attachment;
     public $mobile;
@@ -35,9 +35,9 @@ class QuestionForm extends Component
         }
 
         return [
-            'subject' => 'required',
+            'reporter_name' => 'required',
             'content' => 'required',
-            'name' => 'required',
+            'report_title' => 'required',
             'identity_number' => 'nullable|string',
             'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
             'mobile' => 'required',
@@ -68,9 +68,9 @@ class QuestionForm extends Component
         $registrationCode = $this->generateKodeRegister();
 
         $question = Question::create([
-            'subject' => $this->subject,
+            'reporter_name' => $this->reporter_name,
             'content' => $this->content,
-            'name' => $this->name,
+            'report_title' => $this->report_title,
             'identity_number' => $this->identity_number,
             'identity_card_attachment' => $identityCardPath,
             'mobile' => $this->mobile,
@@ -112,8 +112,8 @@ class QuestionForm extends Component
             $process = $question->process; // HasOne relation
 
             $reportDetail = new \stdClass();
-            $reportDetail->subject = $question->subject;
-            $reportDetail->name = $question->name;
+            $reportDetail->reporter_name = $question->reporter_name;
+            $reportDetail->report_title = $question->report_title;
             $reportDetail->mobile = $question->mobile ? substr($question->mobile, 0, -4) . 'xxxx' : '-';
             $reportDetail->time_insert = $question->created_at;
             $reportDetail->content = $question->content;
