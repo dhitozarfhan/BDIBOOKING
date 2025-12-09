@@ -178,7 +178,14 @@ class Gratification extends Component
         $gratification = GratificationModel::where('registration_code', $this->registration_code)->first();
 
         if ($gratification) {
-            $process = $gratification->reportProcesses()->latest()->first();
+            // Get the latest process for current status
+            $latestProcess = $gratification->process; // latestOfMany
+
+            // Get the Termination process for answer (if exists and completed)
+            $terminationProcess = $gratification->reportProcesses()
+                ->where('response_status_id', ResponseStatus::Termination->value)
+                ->where('is_completed', true)
+                ->first();
 
             $reportDetail = new \stdClass();
             $reportDetail->subject = $gratification->report_title;
@@ -187,17 +194,23 @@ class Gratification extends Component
             $reportDetail->time_insert = $gratification->created_at;
             $reportDetail->content = $gratification->report_description;
 
-            if ($process) {
-                $reportDetail->status = $process->response_status_id;
-                $reportDetail->answer = $process->answer;
+            if ($latestProcess) {
+                $reportDetail->status = $latestProcess->response_status_id;
             } else {
-                $reportDetail->status = ResponseStatus::Initiation;
-                $reportDetail->answer = null;
+                $reportDetail->status = ResponseStatus::Initiation->value;
             }
 
-            // Set both the original attachment and answer attachment
-            $reportDetail->attachment = $gratification->attachment; // Original gratification attachment
-            $reportDetail->answer_attachment = $process ? $process->answer_attachment : null; // Answer attachment from process
+            // Get answer from Termination process if completed
+            if ($terminationProcess) {
+                $reportDetail->answer = $terminationProcess->answer;
+                $reportDetail->answer_attachment = $terminationProcess->answer_attachment;
+            } else {
+                $reportDetail->answer = null;
+                $reportDetail->answer_attachment = null;
+            }
+
+            // Set original attachment
+            $reportDetail->attachment = $gratification->attachment;
 
             // Store the report detail in the session and redirect
             session()->flash('reportDetail', $reportDetail);

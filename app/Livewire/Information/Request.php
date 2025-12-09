@@ -212,7 +212,14 @@ class Request extends Component
         $infoRequest = InformationRequest::where('registration_code', $this->registration_code)->first();
 
         if ($infoRequest) {
-            $process = $infoRequest->process; // HasOne relation
+            // Get the latest process for current status
+            $latestProcess = $infoRequest->process; // latestOfMany
+
+            // Get the Termination process for answer (if exists and completed)
+            $terminationProcess = $infoRequest->reportProcesses()
+                ->where('response_status_id', ResponseStatus::Termination->value)
+                ->where('is_completed', true)
+                ->first();
 
             $reportDetail = new \stdClass();
             $reportDetail->subject = __('Information Request');
@@ -221,12 +228,17 @@ class Request extends Component
             $reportDetail->time_insert = $infoRequest->created_at;
             $reportDetail->report_title = $infoRequest->report_title;
 
-            if ($process) {
-                $reportDetail->status = $process->response_status_id;
-                $reportDetail->answer = $process->answer;
-                $reportDetail->answer_attachment = $process->answer_attachment;
+            if ($latestProcess) {
+                $reportDetail->status = $latestProcess->response_status_id;
             } else {
                 $reportDetail->status = ResponseStatus::Initiation->value;
+            }
+
+            // Get answer from Termination process if completed
+            if ($terminationProcess) {
+                $reportDetail->answer = $terminationProcess->answer;
+                $reportDetail->answer_attachment = $terminationProcess->answer_attachment;
+            } else {
                 $reportDetail->answer = null;
                 $reportDetail->answer_attachment = null;
             }

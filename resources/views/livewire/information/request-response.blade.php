@@ -86,9 +86,16 @@
                                                     </svg>
                                                     {{ __('Download Attachment') }}
                                                 </a>
-                                                @if($reportDetail->answer_attachment && pathinfo($reportDetail->answer_attachment, PATHINFO_EXTENSION) === 'pdf')
+                                                @php
+                                                    $extension = strtolower(pathinfo($reportDetail->answer_attachment, PATHINFO_EXTENSION));
+                                                @endphp
+                                                @if(in_array($extension, ['pdf']))
                                                     <div class="mt-2">
                                                         <iframe src="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" class="w-full h-64 border rounded" frameborder="0"></iframe>
+                                                    </div>
+                                                @elseif(in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                                                    <div class="mt-2">
+                                                        <img src="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" class="max-w-full h-auto rounded border" alt="{{ __('Answer Attachment') }}">
                                                     </div>
                                                 @endif
                                             </div>
@@ -100,7 +107,7 @@
                     </div>
 
                     {{-- Card untuk Answer, hanya muncul jika proses selesai --}}
-                    @if($reportDetail->status === \App\Enums\ResponseStatus::Termination && $reportDetail->answer)
+                    @if($reportDetail->status === \App\Enums\ResponseStatus::Termination->value && $reportDetail->answer)
                         <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">
                             <h3 class="text-lg font-semibold text-base-content mb-3">
                                 {{ __('Answer') }}
