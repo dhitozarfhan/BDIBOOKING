@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->string('subject');
+            $table->string('reporter_name');//before subject
             $table->text('content');
-            $table->string('name');
+            $table->string('report_title');//before name
             $table->string('mobile');
             $table->string('email');
             $table->string('identity_number')->nullable();

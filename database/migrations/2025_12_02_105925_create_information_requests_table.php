@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             
             // Personal Information
-            $table->string('name');
+            $table->string('reporter_name');//before name
             $table->string('id_card_number');
             $table->text('address');
             $table->string('occupation');
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('email');
             
             // Request Details
-            $table->text('content'); // Request details
+            $table->text('report_title'); // before content
             $table->text('used_for'); // Purpose of request
             
             // Grab & Delivery Methods (stored as JSON)

@@ -53,7 +53,8 @@ class QuestionResource extends Resource
             ->schema([
                 Forms\Components\Section::make(__('Question Details'))
                     ->schema([
-                        Forms\Components\TextInput::make('subject')
+                        Forms\Components\TextInput::make('reporter_name')
+                            ->label(__('Reporter Name'))
                             ->required()
                             ->maxLength(255)
                             ->disabled()
@@ -63,7 +64,8 @@ class QuestionResource extends Resource
                             ->columnSpanFull()
                             ->disabled()
                             ->dehydrated(false),
-                        Forms\Components\TextInput::make('name')
+                        Forms\Components\TextInput::make('report_title')
+                            ->label(__('Report Title'))
                             ->required()
                             ->maxLength(255)
                             ->disabled()
@@ -93,11 +95,11 @@ class QuestionResource extends Resource
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns([
-                Tables\Columns\TextColumn::make('subject')
-                    ->label(__('Subject'))
+                Tables\Columns\TextColumn::make('reporter_name')
+                    ->label(__('Reporter Name'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('name')
-                    ->label(__('Name'))
+                Tables\Columns\TextColumn::make('report_title')
+                    ->label(__('Report Title'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('mobile')
                     ->label(__('Mobile'))
