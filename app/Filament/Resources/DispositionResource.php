@@ -98,10 +98,10 @@ class DispositionResource extends Resource
                     ->label('Reporter Name')
                     ->formatStateUsing(fn ($state, $record) => $record->reportable->reporter_name ?? $record->reportable->name)
                     ->searchable(query: function (Builder $query, string $search): Builder {
-                        return $query->whereHasMorph('reportable', [Wbs::class, Gratification::class], function (Builder $query) use ($search) {
+                        return $query->whereHasMorph('reportable', [Wbs::class, Gratification::class, \App\Models\InformationRequest::class], function (Builder $query) use ($search) {
                             $query->where('reporter_name', 'like', "%{$search}%");
                         })->orWhereHasMorph('reportable', [Question::class], function (Builder $query) use ($search) {
-                            $query->where('name', 'like', "%{$search}%");
+                            $query->where('reporter_name', 'like', "%{$search}%");
                         });
                     })
                     ->sortable(),
@@ -109,10 +109,10 @@ class DispositionResource extends Resource
                     ->label('Report Title')
                     ->formatStateUsing(fn ($state, $record) => $record->reportable->report_title ?? $record->reportable->subject)
                     ->searchable(query: function (Builder $query, string $search): Builder {
-                        return $query->whereHasMorph('reportable', [Wbs::class, Gratification::class], function (Builder $query) use ($search) {
+                        return $query->whereHasMorph('reportable', [Wbs::class, Gratification::class, \App\Models\InformationRequest::class], function (Builder $query) use ($search) {
                             $query->where('report_title', 'like', "%{$search}%");
                         })->orWhereHasMorph('reportable', [Question::class], function (Builder $query) use ($search) {
-                            $query->where('subject', 'like', "%{$search}%");
+                            $query->where('report_title', 'like', "%{$search}%");
                         });
                     })
                     ->sortable(),
