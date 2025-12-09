@@ -109,7 +109,14 @@ class QuestionForm extends Component
         $question = Question::where('registration_code', $this->registration_code)->first();
 
         if ($question) {
-            $process = $question->process; // HasOne relation
+            // Get the latest process for current status
+            $latestProcess = $question->process; // latestOfMany
+
+            // Get the Termination process for answer (if exists and completed)
+            $terminationProcess = $question->reportProcesses()
+                ->where('response_status_id', ResponseStatus::Termination->value)
+                ->where('is_completed', true)
+                ->first();
 
             $reportDetail = new \stdClass();
             $reportDetail->reporter_name = $question->reporter_name;
@@ -118,12 +125,17 @@ class QuestionForm extends Component
             $reportDetail->time_insert = $question->created_at;
             $reportDetail->content = $question->content;
 
-            if ($process) {
-                $reportDetail->status = $process->response_status_id;
-                $reportDetail->answer = $process->answer;
-                $reportDetail->answer_attachment = $process->answer_attachment;
+            if ($latestProcess) {
+                $reportDetail->status = $latestProcess->response_status_id;
             } else {
                 $reportDetail->status = ResponseStatus::Initiation->value;
+            }
+
+            // Get answer from Termination process if completed
+            if ($terminationProcess) {
+                $reportDetail->answer = $terminationProcess->answer;
+                $reportDetail->answer_attachment = $terminationProcess->answer_attachment;
+            } else {
                 $reportDetail->answer = null;
                 $reportDetail->answer_attachment = null;
             }

@@ -39,7 +39,7 @@ class ProcessRelationManager extends RelationManager
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('answer_attachment')
                     ->label(__('Answer Attachment'))
-                    ->disk('local')
+                    ->disk('private')
                     ->directory('wbs/answers')
                     ->downloadable()
                     ->openable(),

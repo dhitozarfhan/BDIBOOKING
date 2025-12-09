@@ -133,7 +133,7 @@ class DispositionResource extends Resource
                             ->required(),
                         Forms\Components\FileUpload::make('answer_attachment')
                             ->label(__('Answer Attachment'))
-                            ->disk('public')
+                            ->disk('private')
                             ->directory('dispositions'),
                     ])
                     ->action(function (array $data, ReportProcess $record): void {
