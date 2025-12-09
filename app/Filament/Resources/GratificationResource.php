@@ -112,7 +112,7 @@ class GratificationResource extends Resource
                         Forms\Components\FileUpload::make('identity_card_attachment')
                             ->label(__('ID Card Scan'))
                             ->disk('private')
-                            ->directory('gratifications')
+                            ->directory('identity_cards')
                             ->visibility('private')
                             ->downloadable()
                             ->openable(),
