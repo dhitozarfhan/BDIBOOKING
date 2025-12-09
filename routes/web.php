@@ -70,6 +70,34 @@ Route::get('/information/provision', function() {
 Route::get('/information/answer', function (Request $request) {
     $status = $request->query('status');
 
+    // Get all items for counting
+    $allInformationRequests = InformationRequest::with('reportProcesses.responseStatus')->get();
+    $allQuestions = Question::with('reportProcesses.responseStatus')->get();
+    $allItems = $allInformationRequests->concat($allQuestions);
+
+    // Count total
+    $totalCount = $allItems->count();
+
+    // Count by status
+    $newCount = $allItems->filter(function ($item) {
+        return $item->reportProcesses->isEmpty() || 
+               $item->reportProcesses->where('response_status_id', \App\Enums\ResponseStatus::Initiation->value)->isNotEmpty();
+    })->count();
+
+    $processCount = $allItems->filter(function ($item) {
+        return $item->reportProcesses->where('response_status_id', \App\Enums\ResponseStatus::Process->value)->isNotEmpty() &&
+               $item->reportProcesses->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)->isEmpty();
+    })->count();
+
+    // For 'disposisi', you may need to check if there's a specific status for it
+    // For now, I'll set it to 0 or you can add the logic if there's a disposal status
+    $disposalCount = 0; // Update this logic based on your disposal status
+
+    $finishedCount = $allItems->filter(function ($item) {
+        return $item->reportProcesses->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)->isNotEmpty();
+    })->count();
+
+    // Filter items based on status query parameter
     $informationRequestsQuery = InformationRequest::with('reportProcesses.responseStatus');
     $questionsQuery = Question::with('reportProcesses.responseStatus');
 
@@ -101,6 +129,12 @@ Route::get('/information/answer', function (Request $request) {
                     $q->where('response_status_id', \App\Enums\ResponseStatus::Termination->value);
                 });
                 break;
+            case 'disposisi':
+                // Add logic for disposisi status if you have one
+                // For now, returning empty results
+                $informationRequestsQuery->whereRaw('1 = 0'); // No results
+                $questionsQuery->whereRaw('1 = 0'); // No results
+                break;
             case 'selesai':
                 $informationRequestsQuery->whereHas('reportProcesses', function ($q) {
                     $q->where('response_status_id', \App\Enums\ResponseStatus::Termination->value);
@@ -117,7 +151,7 @@ Route::get('/information/answer', function (Request $request) {
 
     $items = $informationRequests->concat($questions)->sortByDesc('created_at');
 
-    return view('information.answer', compact('items'));
+    return view('information.answer', compact('items', 'totalCount', 'newCount', 'processCount', 'disposalCount', 'finishedCount'));
 })->name('information.answer');
 
 Route::get('/{article_type}', App\Livewire\Articles\Index::class)
