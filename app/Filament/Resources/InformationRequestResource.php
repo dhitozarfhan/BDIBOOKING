@@ -250,15 +250,19 @@ class InformationRequestResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                \Filament\Tables\Actions\Action::make('selesai')
+                Tables\Actions\Action::make('selesai')
                     ->label('Selesai')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->visible(function ($record) {
-                        return $record->process && $record->process->responseStatus->name === 'Termination';
+                        $terminationProcess = $record->reportProcesses()->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)->first();
+                        return $terminationProcess && !$terminationProcess->is_completed;
                     })
                     ->action(function ($record) {
-                        // This will be handled by the modal
+                        $terminationProcess = $record->reportProcesses()->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)->first();
+                        if ($terminationProcess) {
+                            $terminationProcess->update(['is_completed' => true]);
+                        }
                     })
                     ->modalHeading('Kirim Jawaban ke Publik')
                     ->modalDescription('Pastikan semua proses telah sesuai sebelum mengirimkan jawaban ke publik.')
@@ -270,7 +274,7 @@ class InformationRequestResource extends Resource
                             $html .= '<p><strong>Status:</strong> <span class="badge">' . $process->responseStatus->name . '</span></p>';
                             $html .= '<p><strong>Jawaban:</strong> ' . $process->answer . '</p>';
                             if ($process->answer_attachment) {
-                                $url = route('download', ['path' => $process->answer_attachment]);
+                                $url = Illuminate\Support\Facades\Storage::disk('public')->url($process->answer_attachment);
                                 $html .= '<p><strong>Lampiran:</strong> <a href="' . $url . '" target="_blank" class="filament-link inline-flex items-center gap-1">
                                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                       <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -284,6 +288,38 @@ class InformationRequestResource extends Resource
                         return new \Illuminate\Support\HtmlString($html);
                     })
                     ->modalSubmitActionLabel('Kirim'),
+                Tables\Actions\Action::make('riwayat')
+                    ->label('Riwayat')
+                    ->icon('heroicon-o-clock')
+                    ->color('gray')
+                    ->visible(function ($record) {
+                        $terminationProcess = $record->reportProcesses()->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)->first();
+                        return $terminationProcess && $terminationProcess->is_completed;
+                    })
+                    ->modalHeading('Riwayat Proses Laporan')
+                    ->modalContent(function ($record) {
+                        $processes = $record->reportProcesses()->orderBy('created_at', 'asc')->get();
+                        $html = '';
+                        foreach ($processes as $process) {
+                            $html .= '<div class="mb-4 border-b pb-4">';
+                            $html .= '<p><strong>Status:</strong> <span class="badge">' . $process->responseStatus->name . '</span></p>';
+                            $html .= '<p><strong>Jawaban:</strong> ' . $process->answer . '</p>';
+                            if ($process->answer_attachment) {
+                                $url = Illuminate\Support\Facades\Storage::disk('public')->url($process->answer_attachment);
+                                $html .= '<p><strong>Lampiran:</strong> <a href="' . $url . '" target="_blank" class="filament-link inline-flex items-center gap-1">
+                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                      <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                    </svg>
+                                    <span>Download</span>
+                               </a></p>';
+                            }
+                            $html .= '<p><strong>Tanggal:</strong> ' . $process->created_at->format('d/m/Y H:i') . '</p>';
+                            $html .= '</div>';
+                        }
+                        return new \Illuminate\Support\HtmlString($html);
+                    })
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Tutup'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
