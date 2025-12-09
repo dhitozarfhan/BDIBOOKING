@@ -137,10 +137,13 @@ class DispositionResource extends Resource
                             ->directory('dispositions'),
                     ])
                     ->action(function (array $data, ReportProcess $record): void {
-                        $record->update([
+                        // Create new Termination record instead of updating disposition
+                        ReportProcess::create([
+                            'reportable_type' => $record->reportable_type,
+                            'reportable_id' => $record->reportable_id,
+                            'response_status_id' => ResponseStatus::Termination,
                             'answer' => $data['answer'],
                             'answer_attachment' => $data['answer_attachment'],
-                            'response_status_id' => ResponseStatus::Termination,
                         ]);
 
                         Notification::make()
