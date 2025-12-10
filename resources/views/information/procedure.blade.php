@@ -1,6 +1,6 @@
 <x-app-layout>
-    <section class="bg-gray-100 py-10">
-        <div class="container">
+    <section class="bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
             <div class="flex flex-col md:flex-row w-full gap-10">
                 <!-- Sidebar -->
                 <div class="w-full md:w-1/4 lg:w-1/4">
