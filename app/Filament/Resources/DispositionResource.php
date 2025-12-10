@@ -76,7 +76,10 @@ class DispositionResource extends Resource
                 Gratification::class,
                 Question::class,
                 InformationRequest::class,
-            ]);
+            ])
+            ->whereDoesntHave('reportable.reportProcesses', function (Builder $query) {
+                $query->where('response_status_id', ResponseStatus::Termination->value);
+            });
 
         $user = Auth::user();
 
