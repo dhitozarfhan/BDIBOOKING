@@ -35,7 +35,7 @@
                                     <th class="bg-base-200 font-semibold text-base-content">
                                         <i class="bi bi-telephone mr-2 text-primary"></i>{{ __('Reporter Phone') }}
                                     </th>
-                                    <td>{{ $reportDetail->phone }}</td>
+                                    <td>{{ $reportDetail->phone ? substr($reportDetail->phone, 0, -4) . 'xxxx' : '-' }}</td>
                                 </tr>
                                 <tr>
                                     <th class="bg-base-200 font-semibold text-base-content">
