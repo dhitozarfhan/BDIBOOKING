@@ -68,6 +68,8 @@ Route::get('/information/provision', function() {
     abort(404);
 })->name('information.provision');
 
+Route::get('/information/procedure/{type?}', [\App\Http\Controllers\InformationController::class, 'procedure'])->name('information.procedure');
+
 Route::get('/information/answer', function (Request $request) {
     $status = $request->query('status');
 
