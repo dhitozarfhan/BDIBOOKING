@@ -174,7 +174,7 @@ class Wbs extends Component
             'registration_code' => 'required|string|exists:wbs,registration_code'
         ]);
 
-        $wbs = WbsModel::with('reportProcesses')->where('registration_code', $this->registration_code)->first();
+        $wbs = WbsModel::with(['reportProcesses', 'violation'])->where('registration_code', $this->registration_code)->first();
         
         if ($wbs) {
             $this->reportDetail = $wbs;

@@ -227,6 +227,10 @@ class Request extends Component
             $reportDetail->mobile = $infoRequest->mobile ? substr($infoRequest->mobile, 0, -4) . 'xxxx' : '-';
             $reportDetail->time_insert = $infoRequest->created_at;
             $reportDetail->report_title = $infoRequest->report_title;
+            // PII removed for privacy
+            $reportDetail->used_for = $infoRequest->used_for;
+            $reportDetail->grab_method = $infoRequest->grab_method;
+            $reportDetail->delivery_method = $infoRequest->delivery_method;
 
             if ($latestProcess) {
                 $reportDetail->status = $latestProcess->response_status_id;

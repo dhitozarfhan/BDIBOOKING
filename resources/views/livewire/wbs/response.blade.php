@@ -39,6 +39,12 @@
                                 </tr>
                                 <tr>
                                     <th class="bg-base-200 font-semibold text-base-content">
+                                        <i class="bi bi-exclamation-circle mr-2 text-primary"></i>{{ __('Type of Violation') }}
+                                    </th>
+                                    <td>{{ $reportDetail->violation ? $reportDetail->violation->name : '-' }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-base-200 font-semibold text-base-content">
                                         <i class="bi bi-calendar-event mr-2 text-primary"></i>{{ __('Report Date') }}
                                     </th>
                                     <td>{{ $reportDetail->created_at ? $reportDetail->created_at->format('d/m/Y H:i') : 'N/A' }}</td>
