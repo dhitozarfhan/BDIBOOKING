@@ -142,7 +142,7 @@ class WbsResource extends Resource
                             ->openable(),
                         Forms\Components\FileUpload::make('attachment')
                             ->label(__('Supporting Data'))
-                            ->disk('local')
+                            ->disk('private')
                             ->directory('wbs')
                             ->visibility('private')
                             ->downloadable()

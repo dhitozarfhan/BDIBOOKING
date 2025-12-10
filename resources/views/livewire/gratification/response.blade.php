@@ -79,7 +79,7 @@
                                     </th>
                                     <td class="whitespace-pre-wrap">{{ $reportDetail->content }}</td>
                                 </tr>
-                                @if($reportDetail->status === \App\Enums\ResponseStatus::Termination->value && $reportDetail->attachment)
+                                @if($reportDetail->attachment)
                                     <tr>
                                         <th class="bg-base-200 font-semibold text-base-content">
                                             <i class="bi bi-paperclip mr-2 text-secondary"></i>{{ __('Report Attachment') }}
