@@ -118,7 +118,7 @@ class GratificationResource extends Resource
                             ->openable(),
                         Forms\Components\FileUpload::make('attachment')
                             ->label(__('Supporting Data'))
-                            ->disk('local')
+                            ->disk('private')
                             ->directory('gratifications')
                             ->visibility('private')
                             ->downloadable()
