@@ -128,7 +128,7 @@
                                 </div>
                             @endif
                         </div>
-                        
+
                         {{-- Answer Attachment --}}
                         @if($terminationProcess->answer_attachment)
                             <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">
@@ -145,8 +145,8 @@
                                     @endphp
                                     @if(in_array($extension, ['pdf']))
                                         <div class="mt-2 border rounded">
-                                            <iframe src="{{ route('download', ['path' => $terminationProcess->answer_attachment]) }}" 
-                                                    class="w-full h-96" 
+                                            <iframe src="{{ route('download', ['path' => $terminationProcess->answer_attachment]) }}"
+                                                    class="w-full h-96"
                                                     type="application/pdf"
                                                     title="Answer Attachment Preview">
                                                 <p>{{ __('Your browser does not support PDF previews. Please download the file to view it.') }}</p>
@@ -163,10 +163,10 @@
                     @endif
 
                     <div class="mt-6">
-                        <a href="{{ route('wbs.status') }}" class="btn btn-ghost">
+                        <a href="{{ route('wbs.status') }}" class="btn btn-ghost btn-outline" wire:navigate>
                             {{ __('Back to Status Check') }}
                         </a>
-                        <a href="{{ route('wbs') }}" class="btn btn-primary">
+                        <a href="{{ route('wbs') }}" class="btn btn-primary" wire:navigate>
                             {{ __('Back to Home') }}
                         </a>
                     </div>

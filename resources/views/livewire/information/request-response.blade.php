@@ -37,7 +37,7 @@
                                     <th class="bg-base-200 font-semibold text-base-content">
                                         <i class="bi bi-calendar-event mr-2 text-primary"></i>{{ __('Request Date') }}
                                     </th>
-                                    <td>{{ $reportDetail->time_insert ? \Carbon\Carbon::parse($reportDetail->time_insert)->format('d/m/Y H:i') : 'N/A' }}</td>
+                                    <td>{{ $reportDetail->time_insert ? $reportDetail->time_insert->format('d/m/Y H:i') : 'N/A' }}</td>
                                 </tr>
                                 <tr>
                                     <th class="bg-base-200 font-semibold text-base-content">
@@ -73,40 +73,11 @@
                                     </th>
                                     <td class="whitespace-pre-wrap">{{ $reportDetail->report_title }}</td>
                                 </tr>
-                                @if($reportDetail->answer_attachment)
-                                    <tr>
-                                        <th class="bg-base-200 font-semibold text-base-content">
-                                            <i class="bi bi-paperclip mr-2 text-secondary"></i>{{ __('Answer Attachment') }}
-                                        </th>
-                                        <td>
-                                            <div class="flex flex-col gap-2">
-                                                <a href="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                                    </svg>
-                                                    {{ __('Download Attachment') }}
-                                                </a>
-                                                @php
-                                                    $extension = strtolower(pathinfo($reportDetail->answer_attachment, PATHINFO_EXTENSION));
-                                                @endphp
-                                                @if(in_array($extension, ['pdf']))
-                                                    <div class="mt-2">
-                                                        <iframe src="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" class="w-full h-64 border rounded" frameborder="0"></iframe>
-                                                    </div>
-                                                @elseif(in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
-                                                    <div class="mt-2">
-                                                        <img src="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" class="max-w-full h-auto rounded border" alt="{{ __('Answer Attachment') }}">
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endif
                             </tbody>
                         </table>
                     </div>
 
-                    {{-- Card untuk Answer, hanya muncul jika proses selesai --}}
+                    {{-- Card untuk Answer, hanya muncul jika status Termination --}}
                     @if($reportDetail->status === \App\Enums\ResponseStatus::Termination->value && $reportDetail->answer)
                         <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">
                             <h3 class="text-lg font-semibold text-base-content mb-3">
@@ -114,6 +85,33 @@
                             </h3>
                             <div class="whitespace-pre-wrap text-sm text-left">
                                 {!! $reportDetail->answer !!}
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Answer Attachment --}}
+                    @if($reportDetail->status === \App\Enums\ResponseStatus::Termination->value && $reportDetail->answer_attachment)
+                        <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">
+                            <h3 class="text-lg font-semibold text-base-content mb-3">
+                                <i class="bi bi-paperclip mr-2 text-secondary"></i>{{ __('Answer Attachment') }}
+                            </h3>
+                            <div class="flex flex-col gap-2">
+                                <a href="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2">
+                                    <i class="bi bi-download"></i>
+                                    {{ basename($reportDetail->answer_attachment) }}
+                                </a>
+                                @php
+                                    $extension = strtolower(pathinfo($reportDetail->answer_attachment, PATHINFO_EXTENSION));
+                                @endphp
+                                @if(in_array($extension, ['pdf']))
+                                    <div class="mt-2">
+                                        <iframe src="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" class="w-full h-64 border rounded" frameborder="0"></iframe>
+                                    </div>
+                                @elseif(in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                                    <div class="mt-2">
+                                        <img src="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" class="max-w-full h-auto rounded border" alt="{{ __('Answer Attachment') }}">
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     @endif
@@ -127,11 +125,17 @@
                         </a>
                     </div>
                 </div>
-            @elseif($statusError)
-                <div class="mt-4 alert alert-error shadow-lg">
-                    <div>
-                        <span>{{ $statusError }}</span>
+            @else
+                <div class="alert alert-error mt-6">
+                    <div class="flex-1">
+                        <i class="bi bi-exclamation-triangle-fill text-xl mr-3"></i>
+                        <span>{{ __('Report not found. Please check the registration code.') }}</span>
                     </div>
+                </div>
+                <div class="mt-6">
+                    <a href="{{ route('information.request.status') }}" class="btn btn-primary">
+                        {{ __('Try Again') }}
+                    </a>
                 </div>
             @endif
         </div>
