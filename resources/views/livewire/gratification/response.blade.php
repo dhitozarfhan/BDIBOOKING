@@ -120,6 +120,38 @@
                         </div>
                     @endif
 
+                    {{-- Answer Attachment --}}
+                    @if($reportDetail->answer_attachment)
+                        <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">
+                            <h3 class="text-lg font-semibold text-base-content mb-3">
+                                <i class="bi bi-paperclip mr-2 text-secondary"></i>{{ __('Answer Attachment') }}
+                            </h3>
+                            <div class="flex flex-col gap-2">
+                                <a href="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2">
+                                    <i class="bi bi-download"></i>
+                                    {{ basename($reportDetail->answer_attachment) }}
+                                </a>
+                                @php
+                                    $extension = strtolower(pathinfo($reportDetail->answer_attachment, PATHINFO_EXTENSION));
+                                @endphp
+                                @if(in_array($extension, ['pdf']))
+                                    <div class="mt-2 border rounded">
+                                        <iframe src="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}"
+                                                class="w-full h-96"
+                                                type="application/pdf"
+                                                title="Answer Attachment Preview">
+                                            <p>{{ __('Your browser does not support PDF previews. Please download the file to view it.') }}</p>
+                                        </iframe>
+                                    </div>
+                                @elseif(in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                                    <div class="mt-2">
+                                        <img src="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" class="max-w-full h-auto rounded border" alt="{{ __('Answer Attachment') }}">
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="mt-6">
                         <a href="{{ route('gratification.status') }}" class="btn btn-ghost btn-outline" wire:navigate>
                            {{ __('Back to Status Check') }}
