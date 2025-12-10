@@ -70,59 +70,46 @@
             <div class="mb-6 bg-white rounded-lg shadow-sm">
                 <div class="p-6">
                     <form method="GET" action="{{ route('information.answer') }}">
-                        {{-- Preserve status parameter --}}
                         @if(request()->query('status'))
                             <input type="hidden" name="status" value="{{ request()->query('status') }}">
                         @endif
                         
-                        <div class="flex gap-3">
-                            {{-- Category Filter --}}
-                            <select name="category" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {{-- Row 1 --}}
+                            <select name="category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                 <option value="">Semua Kategori</option>
                                 <option value="lain-lain" {{ request()->query('category') == 'lain-lain' ? 'selected' : '' }}>Lain-lain Permohonan Informasi</option>
                                 <option value="pertanyaan" {{ request()->query('category') == 'pertanyaan' ? 'selected' : '' }}>Pertanyaan Lain</option>
                             </select>
 
-                            {{-- Month Filter --}}
-                            <select name="month" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <select name="month" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                 <option value="">Semua Bulan</option>
-                                <option value="1" {{ request()->query('month') == '1' ? 'selected' : '' }}>Januari</option>
-                                <option value="2" {{ request()->query('month') == '2' ? 'selected' : '' }}>Februari</option>
-                                <option value="3" {{ request()->query('month') == '3' ? 'selected' : '' }}>Maret</option>
-                                <option value="4" {{ request()->query('month') == '4' ? 'selected' : '' }}>April</option>
-                                <option value="5" {{ request()->query('month') == '5' ? 'selected' : '' }}>Mei</option>
-                                <option value="6" {{ request()->query('month') == '6' ? 'selected' : '' }}>Juni</option>
-                                <option value="7" {{ request()->query('month') == '7' ? 'selected' : '' }}>Juli</option>
-                                <option value="8" {{ request()->query('month') == '8' ? 'selected' : '' }}>Agustus</option>
-                                <option value="9" {{ request()->query('month') == '9' ? 'selected' : '' }}>September</option>
-                                <option value="10" {{ request()->query('month') == '10' ? 'selected' : '' }}>Oktober</option>
-                                <option value="11" {{ request()->query('month') == '11' ? 'selected' : '' }}>November</option>
-                                <option value="12" {{ request()->query('month') == '12' ? 'selected' : '' }}>Desember</option>
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <option value="{{ $i }}" {{ request()->query('month') == $i ? 'selected' : '' }}>{{ date('F', mktime(0, 0, 0, $i, 10)) }}</option>
+                                @endfor
                             </select>
 
-                            {{-- Year Filter --}}
-                            <select name="year" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                <option value="">Tahun</option>
+                            <select name="year" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">Semua Tahun</option>
                                 @for ($year = date('Y'); $year >= 2020; $year--)
                                     <option value="{{ $year }}" {{ request()->query('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
                                 @endfor
                             </select>
 
-                            {{-- Search Button --}}
-                            <button type="submit" class="px-8 py-2 font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                Cari
-                            </button>
-                        </div>
-
-                        {{-- Registration Code and Keywords Search --}}
-                        <div class="flex gap-3 mt-4">
+                            {{-- Row 2 --}}
+                            <div class="md:col-span-2">
+                                <input type="text" name="keywords" placeholder="Kata kunci..." 
+                                       value="{{ request()->query('keywords') }}"
+                                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
                             <input type="text" name="reg_code" placeholder="Kode Register" 
                                    value="{{ request()->query('reg_code') }}"
-                                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <input type="text" name="keywords" placeholder="keywords" 
-                                   value="{{ request()->query('keywords') }}"
-                                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <button type="submit" class="px-8 py-2 font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+
+                        <div class="mt-4 flex justify-end">
+                            <button type="submit" class="flex items-center px-6 py-2 font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                                 Cari
                             </button>
                         </div>
