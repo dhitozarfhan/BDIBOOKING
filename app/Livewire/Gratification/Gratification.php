@@ -190,6 +190,7 @@ class Gratification extends Component
             $reportDetail = new \stdClass();
             $reportDetail->subject = $gratification->report_title;
             $reportDetail->name = $gratification->reporter_name;
+            // PII removed for privacy
             $reportDetail->mobile = $gratification->phone ? substr($gratification->phone, 0, -4) . 'xxxx' : '-';
             $reportDetail->time_insert = $gratification->created_at;
             $reportDetail->content = $gratification->report_description;

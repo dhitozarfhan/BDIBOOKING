@@ -41,6 +41,38 @@
                                 </tr>
                                 <tr>
                                     <th class="bg-base-200 font-semibold text-base-content">
+                                        <i class="bi bi-info-circle mr-2 text-primary"></i>{{ __('Information Usage') }}
+                                    </th>
+                                    <td>{{ $reportDetail->used_for }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-base-200 font-semibold text-base-content">
+                                        <i class="bi bi-box-seam mr-2 text-primary"></i>{{ __('Acquisition Method') }}
+                                    </th>
+                                    <td>
+                                        @if(is_array($reportDetail->grab_method))
+                                            {{ implode(', ', array_map(fn($m) => ucfirst($m), $reportDetail->grab_method)) }}
+                                        @else
+                                            {{ ucfirst($reportDetail->grab_method) }}
+                                        @endif
+                                    </td>
+                                </tr>
+                                @if(!empty($reportDetail->delivery_method))
+                                <tr>
+                                    <th class="bg-base-200 font-semibold text-base-content">
+                                        <i class="bi bi-truck mr-2 text-primary"></i>{{ __('Delivery Method') }}
+                                    </th>
+                                    <td>
+                                        @if(is_array($reportDetail->delivery_method))
+                                            {{ implode(', ', array_map(fn($m) => ucfirst($m), $reportDetail->delivery_method)) }}
+                                        @else
+                                            {{ ucfirst($reportDetail->delivery_method) }}
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endif
+                                <tr>
+                                    <th class="bg-base-200 font-semibold text-base-content">
                                         <i class="bi bi-flag mr-2 text-primary"></i>{{ __('Request Status') }}
                                     </th>
                                     <td>

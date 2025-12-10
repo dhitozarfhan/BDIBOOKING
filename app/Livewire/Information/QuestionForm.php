@@ -121,6 +121,7 @@ class QuestionForm extends Component
             $reportDetail = new \stdClass();
             $reportDetail->reporter_name = $question->reporter_name;
             $reportDetail->report_title = $question->report_title;
+            // PII removed for privacy
             $reportDetail->mobile = $question->mobile ? substr($question->mobile, 0, -4) . 'xxxx' : '-';
             $reportDetail->time_insert = $question->created_at;
             $reportDetail->content = $question->content;
