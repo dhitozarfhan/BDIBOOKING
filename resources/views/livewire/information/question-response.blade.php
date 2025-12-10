@@ -22,16 +22,16 @@
                         <table class="table table-zebra w-full">
                             <tbody>
                                 <tr>
-                                    <th class="w-1/3 bg-base-200 font-semibold text-base-content">
-                                        <i class="bi bi-person mr-2 text-primary"></i>{{ __('Reporter Name') }}
-                                    </th>
-                                    <td class="font-medium">{{ $reportDetail->reporter_name }}</td>
-                                </tr>
-                                <tr>
                                     <th class="bg-base-200 font-semibold text-base-content">
                                         <i class="bi bi-chat-left-text mr-2 text-primary"></i>{{ __('Report Title') }}
                                     </th>
                                     <td>{{ $reportDetail->report_title }}</td>
+                                </tr>
+                                <tr>
+                                    <th class="w-1/3 bg-base-200 font-semibold text-base-content">
+                                        <i class="bi bi-person mr-2 text-primary"></i>{{ __('Reporter Name') }}
+                                    </th>
+                                    <td class="font-medium">{{ $reportDetail->reporter_name }}</td>
                                 </tr>
                                 <tr>
                                     <th class="bg-base-200 font-semibold text-base-content">
