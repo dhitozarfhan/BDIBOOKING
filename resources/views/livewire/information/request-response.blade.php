@@ -35,12 +35,6 @@
                                 </tr>
                                 <tr>
                                     <th class="bg-base-200 font-semibold text-base-content">
-                                        <i class="bi bi-calendar-event mr-2 text-primary"></i>{{ __('Request Date') }}
-                                    </th>
-                                    <td>{{ $reportDetail->time_insert ? $reportDetail->time_insert->format('d/m/Y H:i') : 'N/A' }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="bg-base-200 font-semibold text-base-content">
                                         <i class="bi bi-info-circle mr-2 text-primary"></i>{{ __('Information Usage') }}
                                     </th>
                                     <td>{{ $reportDetail->used_for }}</td>
@@ -71,6 +65,12 @@
                                     </td>
                                 </tr>
                                 @endif
+                                <tr>
+                                    <th class="bg-base-200 font-semibold text-base-content">
+                                        <i class="bi bi-calendar-event mr-2 text-primary"></i>{{ __('Request Date') }}
+                                    </th>
+                                    <td>{{ $reportDetail->time_insert ? $reportDetail->time_insert->format('d/m/Y H:i') : 'N/A' }}</td>
+                                </tr>
                                 <tr>
                                     <th class="bg-base-200 font-semibold text-base-content">
                                         <i class="bi bi-flag mr-2 text-primary"></i>{{ __('Request Status') }}
