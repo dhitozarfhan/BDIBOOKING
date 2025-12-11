@@ -112,16 +112,25 @@ class QuestionForm extends Component
             // Get the latest process for current status
             $latestProcess = $question->process; // latestOfMany
 
-            // Get the Termination process for answer (if exists and completed)
+            $reportDetail = new \stdClass();
+            $reportDetail->subject = $question->report_title;
+            $reportDetail->name = $question->reporter_name;
+            $reportDetail->mobile = $question->mobile ? substr($question->mobile, 0, -4) . 'xxxx' : '-';
+            $reportDetail->time_insert = $question->created_at;
+            $reportDetail->content = $question->content;
+            $reportDetail->processes = $question->reportProcesses()->with('responseStatus')->get();
+            $reportDetail->status = $latestProcess ? $latestProcess->response_status_id : ResponseStatus::Initiation->value;
+
+            // Get the latest completed termination process for the final answer
             $terminationProcess = $question->reportProcesses()
                 ->where('response_status_id', ResponseStatus::Termination->value)
                 ->where('is_completed', true)
+                ->latest()
                 ->first();
 
             $reportDetail = new \stdClass();
             $reportDetail->reporter_name = $question->reporter_name;
             $reportDetail->report_title = $question->report_title;
-            // PII removed for privacy
             $reportDetail->mobile = $question->mobile ? substr($question->mobile, 0, -4) . 'xxxx' : '-';
             $reportDetail->time_insert = $question->created_at;
             $reportDetail->content = $question->content;
@@ -141,11 +150,12 @@ class QuestionForm extends Component
                 $reportDetail->answer_attachment = null;
             }
 
-            session()->flash('reportDetail', $reportDetail);
-            return redirect()->route('information.question.response');
+            $this->reportDetail = $reportDetail;
+            $this->currentView = 'response';
 
         } else {
-            session()->flash('statusError', __('Registration code not found.'));
+            // If not found, flash an error message and redirect back
+            session()->flash('statusError', 'Kode register tidak ditemukan dalam sistem kami.');
             return redirect()->route('information.question.status');
         }
     }
