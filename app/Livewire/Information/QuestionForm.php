@@ -113,8 +113,8 @@ class QuestionForm extends Component
             $latestProcess = $question->process; // latestOfMany
 
             $reportDetail = new \stdClass();
-            $reportDetail->subject = $question->report_title;
-            $reportDetail->name = $question->reporter_name;
+            $reportDetail->report_title = $question->report_title;
+            $reportDetail->reporter_name = $question->reporter_name;
             $reportDetail->mobile = $question->mobile ? substr($question->mobile, 0, -4) . 'xxxx' : '-';
             $reportDetail->time_insert = $question->created_at;
             $reportDetail->content = $question->content;
