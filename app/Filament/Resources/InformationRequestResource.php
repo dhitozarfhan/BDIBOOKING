@@ -75,14 +75,6 @@ class InformationRequestResource extends Resource
         );
     }
 
-    public static function canEdit(Model $record): bool
-    {
-        return Auth::check() && (
-            Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ||
-            Auth::user()->hasPermissionTo(PermissionType::Complaints->value)
-        );
-    }
-
     public static function canDelete(Model $record): bool
     {
         return Auth::check() && (
@@ -103,83 +95,44 @@ class InformationRequestResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Group::make()
+                Forms\Components\Section::make(__('Request Details'))
                     ->schema([
-                        Forms\Components\Section::make(__('Request Details'))
-                            ->schema([
-                                Forms\Components\Textarea::make('report_title')
-                                    ->label(__('Information Requested'))
-                                    ->rows(6)
-                                    ->disabled()
-                                    ->dehydrated(false),
-                                Forms\Components\Textarea::make('used_for')
-                                    ->label(__('Purpose of Request'))
-                                    ->rows(4)
-                                    ->disabled()
-                                    ->dehydrated(false),
-                            ]),
-
-                        Forms\Components\Section::make(__('Acquisition & Delivery'))
-                            ->schema([
-                                Forms\Components\Placeholder::make('grab_method')
-                                    ->label(__('Acquisition Method'))
-                                    ->content(function (?Model $record) {
-                                        $methods = $record?->grab_method ?? [];
-                                        if (empty($methods)) {
-                                            return '-';
-                                        }
-                                        return collect($methods)->map(fn($method) => ucfirst($method))->implode(', ');
-                                    }),
-                                Forms\Components\Placeholder::make('delivery_method')
-                                    ->label(__('Delivery Method'))
-                                    ->content(function (?Model $record) {
-                                        $methods = $record?->delivery_method ?? [];
-                                        if (empty($methods)) {
-                                            return '-';
-                                        }
-                                        return collect($methods)->map(fn($method) => ucfirst($method))->implode(', ');
-                                    }),
-                            ]),
-                    ])
-                    ->columnSpan(['lg' => 2]),
-
-                Forms\Components\Group::make()
-                    ->schema([
-                        Forms\Components\Section::make(__('Applicant Information'))
-                            ->schema([
-                                Forms\Components\TextInput::make('reporter_name')
-                                    ->label(__('Name'))
-                                    ->disabled()->dehydrated(false),
-                                Forms\Components\TextInput::make('id_card_number')
-                                    ->label(__('ID Card Number'))
-                                    ->disabled()->dehydrated(false),
-                                Forms\Components\TextInput::make('email')
-                                    ->label(__('Email'))
-                                    ->disabled()->dehydrated(false),
-                                Forms\Components\TextInput::make('mobile')
-                                    ->label(__('Mobile'))
-                                    ->disabled()->dehydrated(false),
-                                Forms\Components\Textarea::make('address')
-                                    ->label(__('Address'))
-                                    ->disabled()->dehydrated(false),
-                                Forms\Components\TextInput::make('occupation')
-                                    ->label(__('Occupation'))
-                                    ->disabled()->dehydrated(false),
-                            ]),
-
-                        Forms\Components\Section::make(__('Metadata'))
-                            ->schema([
-                                Forms\Components\TextInput::make('registration_code')
-                                    ->label(__('Registration Code'))
-                                    ->disabled()->dehydrated(false),
-                                Forms\Components\TextInput::make('created_at')
-                                    ->label(__('Submitted At'))
-                                    ->disabled()->dehydrated(false),
-                            ]),
-                    ])
-                    ->columnSpan(['lg' => 1]),
-            ])
-            ->columns(3);
+                        Forms\Components\Textarea::make('report_title')
+                            ->label(__('Information Requested'))
+                            ->rows(6)
+                            ->disabled()
+                            ->dehydrated(false),
+                        Forms\Components\Textarea::make('used_for')
+                            ->label(__('Purpose of Request'))
+                            ->rows(4)
+                            ->disabled()
+                            ->dehydrated(false),
+                        Forms\Components\TextInput::make('reporter_name')
+                            ->label(__('Name'))
+                            ->disabled()->dehydrated(false),
+                        Forms\Components\TextInput::make('id_card_number')
+                            ->label(__('ID Card Number'))
+                            ->disabled()->dehydrated(false),
+                        Forms\Components\TextInput::make('email')
+                            ->label(__('Email'))
+                            ->disabled()->dehydrated(false),
+                        Forms\Components\TextInput::make('mobile')
+                            ->label(__('Mobile'))
+                            ->disabled()->dehydrated(false),
+                        Forms\Components\Textarea::make('address')
+                            ->label(__('Address'))
+                            ->disabled()->dehydrated(false),
+                        Forms\Components\TextInput::make('occupation')
+                            ->label(__('Occupation'))
+                            ->disabled()->dehydrated(false),
+                        Forms\Components\TextInput::make('registration_code')
+                            ->label(__('Registration Code'))
+                            ->disabled()->dehydrated(false),
+                        Forms\Components\TextInput::make('created_at')
+                            ->label(__('Submitted At'))
+                            ->disabled()->dehydrated(false),
+                    ]),
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -191,7 +144,9 @@ class InformationRequestResource extends Resource
                     ->label(__('Name'))
                     ->searchable()
                     ->sortable(),
-                    
+                Tables\Columns\TextColumn::make('report_title')
+                    ->label(__('Information Requested'))
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->label(__('Email'))
                     ->searchable()
@@ -217,37 +172,9 @@ class InformationRequestResource extends Resource
                     ->label(__('Submitted'))
                     ->dateTime('d M Y H:i')
                     ->sortable(),
-                    
-                Tables\Columns\TextColumn::make('process.updated_at') // Mengambil waktu proses dari relasi
-                    ->label(__('Processed'))
-                    ->dateTime('d M Y H:i')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('process.response_status_id') // Memfilter berdasarkan id dari relasi
-                    ->label(__('Status'))
-                    ->options(ResponseStatus::all()->pluck('name', 'id')->toArray()) // Mengambil opsi filter dari model
-                    ->multiple(),
-                    
-                Tables\Filters\Filter::make('created_at')
-                    ->form([
-                        Forms\Components\DatePicker::make('created_from')
-                            ->label(__('From')),
-                        Forms\Components\DatePicker::make('created_until')
-                            ->label(__('Until')),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['created_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                            )
-                            ->when(
-                                $data['created_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                            );
-                    })
+                //
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -340,9 +267,7 @@ class InformationRequestResource extends Resource
     {
         return [
             'index' => Pages\ListInformationRequests::route('/'),
-            // 'create' => Pages\CreateInformationRequest::route('/create'),
             'view' => Pages\ViewInformationRequest::route('/{record}'),
-            'edit' => Pages\EditInformationRequest::route('/{record}/edit'),
         ];
     }
 }
