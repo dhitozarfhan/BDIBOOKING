@@ -1,4 +1,4 @@
-@section('title', __('Complaint Response'))
+@section('title', __('Complaint Response Public'))
 
 <div>
     <div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg">
@@ -13,7 +13,7 @@
             @endphp
             @include('livewire.information.partials.breadcrumb', ['items' => $breadcrumbs])
             <h2 class="text-2xl font-bold text-base-content mt-4">
-                {{ __('Complaint Response') }}
+                {{ __('Complaint Response Public') }}
             </h2>
 
             @if($reportDetail)
