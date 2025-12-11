@@ -118,6 +118,7 @@ class QuestionForm extends Component
             $reportDetail->mobile = $question->mobile ? substr($question->mobile, 0, -4) . 'xxxx' : '-';
             $reportDetail->time_insert = $question->created_at;
             $reportDetail->content = $question->content;
+            $reportDetail->attachment = $question->identity_card_attachment;
             $reportDetail->processes = $question->reportProcesses()->with('responseStatus')->get();
             $reportDetail->status = $latestProcess ? $latestProcess->response_status_id : ResponseStatus::Initiation->value;
 
@@ -128,18 +129,7 @@ class QuestionForm extends Component
                 ->latest()
                 ->first();
 
-            $reportDetail = new \stdClass();
-            $reportDetail->reporter_name = $question->reporter_name;
-            $reportDetail->report_title = $question->report_title;
-            $reportDetail->mobile = $question->mobile ? substr($question->mobile, 0, -4) . 'xxxx' : '-';
-            $reportDetail->time_insert = $question->created_at;
-            $reportDetail->content = $question->content;
 
-            if ($latestProcess) {
-                $reportDetail->status = $latestProcess->response_status_id;
-            } else {
-                $reportDetail->status = ResponseStatus::Initiation->value;
-            }
 
             // Get answer from Termination process if completed
             if ($terminationProcess) {
@@ -150,8 +140,9 @@ class QuestionForm extends Component
                 $reportDetail->answer_attachment = null;
             }
 
-            $this->reportDetail = $reportDetail;
-            $this->currentView = 'response';
+            // Store the report detail in the session and redirect
+            session()->flash('reportDetail', $reportDetail);
+            return redirect()->route('information.question.response');
 
         } else {
             // If not found, flash an error message and redirect back
