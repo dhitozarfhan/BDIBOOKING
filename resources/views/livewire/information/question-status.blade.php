@@ -10,7 +10,7 @@
         @endphp
         @include('livewire.information.partials.breadcrumb', ['items' => $breadcrumbs])
         <h2 class="text-2xl font-bold text-base-content mt-4">
-            {{ __('Check Public Complaint Status') }}
+            {{ __('Public Complaint Status') }}
         </h2>
         <p class="mt-2 text-base-content/80">
             {{ __('Enter the registration code to see the status of your complaint.') }}
