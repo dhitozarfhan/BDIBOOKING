@@ -171,15 +171,51 @@ class Wbs extends Component
     public function checkStatus()
     {
         $this->validate([
-            'registration_code' => 'required|string|exists:wbs,registration_code'
+            'registration_code' => 'required|string|max:255',
         ]);
 
-        $wbs = WbsModel::with(['reportProcesses', 'violation'])->where('registration_code', $this->registration_code)->first();
-        
+        $wbs = WbsModel::where('registration_code', $this->registration_code)->first();
+
         if ($wbs) {
+            // Get the latest process for current status
+            $latestProcess = $wbs->process; // latestOfMany
+
+            // Get the Termination process for answer (if exists and completed)
+            $terminationProcess = $wbs->reportProcesses()
+                ->where('response_status_id', ResponseStatus::Termination->value)
+                ->where('is_completed', true)
+                ->first();
+
+            $reportDetail = new \stdClass();
+            $reportDetail->subject = $wbs->report_title;
+            $reportDetail->name = $wbs->reporter_name;
+            $reportDetail->mobile = $wbs->phone ? substr($wbs->phone, 0, -4) . 'xxxx' : '-';
+            $reportDetail->time_insert = $wbs->created_at;
+            $reportDetail->content = $wbs->report_description;
+            $reportDetail->processes = $wbs->reportProcesses()->with('responseStatus')->get();
+            $reportDetail->status = $latestProcess ? $latestProcess->response_status_id : ResponseStatus::Initiation->value;
+
+            // Get the latest completed termination process for the final answer
+            $terminationProcess = $wbs->reportProcesses()
+                ->where('response_status_id', ResponseStatus::Termination->value)
+                ->where('is_completed', true)
+                ->latest()
+                ->first();
+
+            $reportDetail->answer = $terminationProcess->answer ?? null;
+            $reportDetail->answer_attachment = $terminationProcess->answer_attachment ?? null;
+
+            // Set original attachment
+            $reportDetail->attachment = $wbs->attachment;
+
             // Store the report detail in the session and redirect
-            session()->flash('reportDetail', $wbs);
+            session()->flash('reportDetail', $reportDetail);
             return redirect()->route('wbs.response');
+
+        } else {
+            // If not found, flash an error message and redirect back
+            session()->flash('statusError', 'Kode register tidak ditemukan dalam sistem kami.');
+            return redirect()->route('wbs.status');
         }
     }
 

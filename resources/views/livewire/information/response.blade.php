@@ -1,4 +1,4 @@
-@section('title', __('Gratification Report Response'))
+@section('title', __('Question Report Response'))
 
 <div>
     <div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg">
@@ -6,14 +6,14 @@
             @php
                 $breadcrumbs = [
                     ['label' => __('Beranda'), 'url' => route('home')],
-                    ['label' => __('Gratification Reporting'), 'url' => route('gratification')],
-                    ['label' => __('Report Status'), 'url' => route('gratification.status')],
+                    ['label' => __('Question Reporting'), 'url' => route('information.question')],
+                    ['label' => __('Report Status'), 'url' => route('information.question.status')],
                     ['label' => __('Report Response')]
                 ];
             @endphp
-            @include('livewire.gratification.partials.breadcrumb', ['items' => $breadcrumbs])
+            @include('livewire.information.partials.breadcrumb', ['items' => $breadcrumbs])
             <h2 class="text-2xl font-bold text-base-content mt-4">
-                {{ __('Gratification Report Response') }}
+                {{ __('Question Report Response') }}
             </h2>
 
             @if($reportDetail)
@@ -200,10 +200,10 @@
                     @endif
 
                     <div class="mt-6">
-                        <a href="{{ route('gratification.status') }}" class="btn btn-ghost btn-outline" wire:navigate>
+                        <a href="{{ route('information.question.status') }}" class="btn btn-ghost btn-outline" wire:navigate>
                            {{ __('Back to Status Check') }}
                         </a>
-                        <a href="{{ route('gratification') }}" class="btn btn-primary" wire:navigate>
+                        <a href="{{ route('information.question') }}" class="btn btn-primary" wire:navigate>
                             {{ __('Back to Home') }}
                         </a>
                     </div>

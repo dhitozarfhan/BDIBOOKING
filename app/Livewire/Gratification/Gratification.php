@@ -181,12 +181,6 @@ class Gratification extends Component
             // Get the latest process for current status
             $latestProcess = $gratification->process; // latestOfMany
 
-            // Get the Termination process for answer (if exists and completed)
-            $terminationProcess = $gratification->reportProcesses()
-                ->where('response_status_id', ResponseStatus::Termination->value)
-                ->where('is_completed', true)
-                ->first();
-
             $reportDetail = new \stdClass();
             $reportDetail->subject = $gratification->report_title;
             $reportDetail->name = $gratification->reporter_name;
@@ -194,21 +188,18 @@ class Gratification extends Component
             $reportDetail->mobile = $gratification->phone ? substr($gratification->phone, 0, -4) . 'xxxx' : '-';
             $reportDetail->time_insert = $gratification->created_at;
             $reportDetail->content = $gratification->report_description;
+            $reportDetail->processes = $gratification->reportProcesses()->with('responseStatus')->get();
+            $reportDetail->status = $latestProcess ? $latestProcess->response_status_id : ResponseStatus::Initiation->value;
 
-            if ($latestProcess) {
-                $reportDetail->status = $latestProcess->response_status_id;
-            } else {
-                $reportDetail->status = ResponseStatus::Initiation->value;
-            }
+            // Get the latest completed termination process for the final answer
+            $terminationProcess = $gratification->reportProcesses()
+                ->where('response_status_id', ResponseStatus::Termination->value)
+                ->where('is_completed', true)
+                ->latest()
+                ->first();
 
-            // Get answer from Termination process if completed
-            if ($terminationProcess) {
-                $reportDetail->answer = $terminationProcess->answer;
-                $reportDetail->answer_attachment = $terminationProcess->answer_attachment;
-            } else {
-                $reportDetail->answer = null;
-                $reportDetail->answer_attachment = null;
-            }
+            $reportDetail->answer = $terminationProcess->answer ?? null;
+            $reportDetail->answer_attachment = $terminationProcess->answer_attachment ?? null;
 
             // Set original attachment
             $reportDetail->attachment = $gratification->attachment;
