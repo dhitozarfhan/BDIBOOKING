@@ -141,8 +141,8 @@ class QuestionForm extends Component
                 $reportDetail->answer_attachment = null;
             }
 
-            $this->reportDetail = $reportDetail;
-            $this->currentView = 'response';
+            session()->flash('reportDetail', $reportDetail);
+            return redirect()->route('information.question.response');
 
         } else {
             session()->flash('statusError', __('Registration code not found.'));
@@ -162,8 +162,6 @@ class QuestionForm extends Component
     {
         if ($this->currentView === 'status') {
             return view('livewire.information.question-status');
-        } elseif ($this->currentView === 'response') {
-            return view('livewire.information.question-response');
         }
 
         return view('livewire.information.question-form');

@@ -251,8 +251,8 @@ class Request extends Component
             // For consistency with WBS/Gratification which might have multiple processes (though usually one active flow)
             // We'll just pass the single process for now as per current structure
 
-            $this->reportDetail = $reportDetail;
-            $this->currentView = 'response';
+            session()->flash('reportDetail', $reportDetail);
+            return redirect()->route('information.request.response');
 
         } else {
             session()->flash('statusError', __('Registration code not found.'));
@@ -272,8 +272,6 @@ class Request extends Component
     {
         if ($this->currentView === 'status') {
             return view('livewire.information.request-status');
-        } elseif ($this->currentView === 'response') {
-            return view('livewire.information.request-response');
         }
         
         return view('livewire.information.request');
