@@ -177,8 +177,9 @@ class Wbs extends Component
         $wbs = WbsModel::with(['reportProcesses', 'violation'])->where('registration_code', $this->registration_code)->first();
         
         if ($wbs) {
-            $this->reportDetail = $wbs;
-            $this->currentView = 'response';
+            // Store the report detail in the session and redirect
+            session()->flash('reportDetail', $wbs);
+            return redirect()->route('wbs.response');
         }
     }
 
@@ -252,8 +253,6 @@ class Wbs extends Component
             return view('livewire.wbs.status');
         } elseif ($this->currentView === 'report') {
             return view('livewire.wbs.report');
-        } elseif ($this->currentView === 'response') {
-            return view('livewire.wbs.response');
         } else {
             return view('livewire.wbs.index');
         }

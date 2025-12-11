@@ -62,8 +62,10 @@ Route::fallback(function () {
 Route::get('/information', App\Livewire\Articles\Information::class)->name('articles.information');
 Route::get('/information/question', App\Livewire\Information\QuestionForm::class)->name('information.question');
 Route::get('/information/question/status', App\Livewire\Information\QuestionForm::class)->name('information.question.status');
+Route::get('/information/question/response', App\Livewire\Information\QuestionResponse::class)->name('information.question.response');
 Route::get('/information/request', App\Livewire\Information\Request::class)->name('information.request');
 Route::get('/information/request/status', App\Livewire\Information\Request::class)->name('information.request.status');
+Route::get('/information/request/response', App\Livewire\Information\RequestResponse::class)->name('information.request.response');
 Route::get('/information/provision', function() {
     abort(404);
 })->name('information.provision');
@@ -204,6 +206,7 @@ Route::get('/wbs', App\Livewire\Wbs\Wbs::class)->name('wbs');
 Route::get('/wbs/form', App\Livewire\Wbs\Wbs::class)->name('wbs.form');
 Route::get('/wbs/status', App\Livewire\Wbs\Wbs::class)->name('wbs.status');
 Route::get('/wbs/report', App\Livewire\Wbs\Wbs::class)->name('wbs.report');
+Route::get('/wbs/response', App\Livewire\Wbs\Response::class)->name('wbs.response');
 
 
 /*
