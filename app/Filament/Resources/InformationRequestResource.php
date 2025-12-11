@@ -97,40 +97,54 @@ class InformationRequestResource extends Resource
             ->schema([
                 Forms\Components\Section::make(__('Request Details'))
                     ->schema([
-                        Forms\Components\Textarea::make('report_title')
-                            ->label(__('Information Requested'))
-                            ->rows(6)
-                            ->disabled()
-                            ->dehydrated(false),
-                        Forms\Components\Textarea::make('used_for')
-                            ->label(__('Purpose of Request'))
-                            ->rows(4)
-                            ->disabled()
-                            ->dehydrated(false),
                         Forms\Components\TextInput::make('reporter_name')
                             ->label(__('Name'))
-                            ->disabled()->dehydrated(false),
+                            ->required()
+                            ->maxLength(255)
+                            ->disabled()
+                            ->dehydrated(false),
+                        Forms\Components\RichEditor::make('report_title')
+                            ->label(__('Information Requested'))
+                            ->required()
+                            ->columnSpanFull()
+                            ->disabled()
+                            ->dehydrated(false),
+                        Forms\Components\RichEditor::make('used_for')
+                            ->label(__('Purpose of Request'))
+                            ->required()
+                            ->columnSpanFull()
+                            ->disabled()
+                            ->dehydrated(false),
                         Forms\Components\TextInput::make('id_card_number')
                             ->label(__('ID Card Number'))
-                            ->disabled()->dehydrated(false),
-                        Forms\Components\TextInput::make('email')
-                            ->label(__('Email'))
-                            ->disabled()->dehydrated(false),
-                        Forms\Components\TextInput::make('mobile')
-                            ->label(__('Mobile'))
-                            ->disabled()->dehydrated(false),
-                        Forms\Components\Textarea::make('address')
-                            ->label(__('Address'))
-                            ->disabled()->dehydrated(false),
+                            ->disabled()
+                            ->dehydrated(false),
                         Forms\Components\TextInput::make('occupation')
                             ->label(__('Occupation'))
-                            ->disabled()->dehydrated(false),
+                            ->disabled()
+                            ->dehydrated(false),
+                        Forms\Components\TextInput::make('mobile')
+                            ->label(__('Mobile'))
+                            ->disabled()
+                            ->dehydrated(false),
+                        Forms\Components\TextInput::make('email')
+                            ->label(__('Email'))
+                            ->email()
+                            ->disabled()
+                            ->dehydrated(false),
+                        Forms\Components\Textarea::make('address')
+                            ->label(__('Address'))
+                            ->columnSpanFull()
+                            ->disabled()
+                            ->dehydrated(false),
                         Forms\Components\TextInput::make('registration_code')
                             ->label(__('Registration Code'))
-                            ->disabled()->dehydrated(false),
+                            ->disabled()
+                            ->dehydrated(false),
                         Forms\Components\TextInput::make('created_at')
                             ->label(__('Submitted At'))
-                            ->disabled()->dehydrated(false),
+                            ->disabled()
+                            ->dehydrated(false),
                     ]),
             ]);
     }
@@ -146,6 +160,7 @@ class InformationRequestResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('report_title')
                     ->label(__('Information Requested'))
+                    ->limit(50)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->label(__('Email'))
