@@ -109,6 +109,53 @@
                         </table>
                     </div>
 
+                    {{-- Riwayat Proses (Timeline) --}}
+                    @if($reportDetail->processes && $reportDetail->processes->count() > 0)
+                        <div class="mt-8">
+                            <h3 class="text-2xl font-bold text-base-content mb-4">
+                                <i class="bi bi-hourglass-split mr-2 text-primary"></i>{{ __('Response History') }}
+                            </h3>
+                            <ul class="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical">
+                                @foreach($reportDetail->processes as $process)
+                                    @php
+                                        $statusClass = '';
+                                        $icon = '';
+                                        switch ($process->response_status_id) {
+                                            case \App\Enums\ResponseStatus::Initiation->value:
+                                                $statusClass = 'bg-warning/10 text-warning-content';
+                                                $icon = 'bi-hourglass-split';
+                                                break;
+                                            case \App\Enums\ResponseStatus::Process->value:
+                                                $statusClass = 'bg-info/10 text-info-content';
+                                                $icon = 'bi-arrow-repeat';
+                                                break;
+                                            case \App\Enums\ResponseStatus::Disposition->value:
+                                                $statusClass = 'bg-primary/10 text-primary-content';
+                                                $icon = 'bi-send-check';
+                                                break;
+                                            case \App\Enums\ResponseStatus::Termination->value:
+                                                $statusClass = 'bg-success/10 text-success-content';
+                                                $icon = 'bi-check-circle';
+                                                break;
+                                        }
+                                    @endphp
+                                    <li>
+                                        <div class="timeline-middle">
+                                            <i class="bi {{ $icon }} text-2xl"></i>
+                                        </div>
+                                        <div class="timeline-end mb-10 p-4 rounded-lg shadow-md border border-base-300 {{ $statusClass }}">
+                                            <time class="font-mono italic text-sm">{{ $process->created_at->format('d/m/Y H:i') }}</time>
+                                            <div class="text-xl font-bold">{{ $process->responseStatus->name }}</div>
+                                        </div>
+                                        @if(!$loop->last)
+                                            <hr class="bg-base-300"/>
+                                        @endif
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     {{-- Card untuk Answer, hanya muncul jika status Termination --}}
                     @if($reportDetail->status === \App\Enums\ResponseStatus::Termination->value && $reportDetail->answer)
                         <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">

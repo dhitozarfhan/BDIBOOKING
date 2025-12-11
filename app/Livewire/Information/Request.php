@@ -247,9 +247,11 @@ class Request extends Component
                 $reportDetail->answer_attachment = null;
             }
             
-            // Add process history if needed, or just use the single process record
-            // For consistency with WBS/Gratification which might have multiple processes (though usually one active flow)
-            // We'll just pass the single process for now as per current structure
+            // Add process history for timeline display
+            $reportDetail->processes = $infoRequest->reportProcesses()
+                ->with('responseStatus')
+                ->orderBy('created_at', 'asc')
+                ->get();
 
             session()->flash('reportDetail', $reportDetail);
             return redirect()->route('information.request.response');
