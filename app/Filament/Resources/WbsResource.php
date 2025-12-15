@@ -48,8 +48,9 @@ class WbsResource extends Resource
     public static function canViewAny(): bool
     {
         $user = Auth::user();
-        // Allow access to users with Complaints permission
-        return $user->hasPermissionTo(PermissionType::Complaints->value);
+        // Allow access to users with Complaints permission OR WBSResponses permission
+        return $user->hasPermissionTo(PermissionType::Complaints->value) ||
+               $user->hasPermissionTo(PermissionType::WBSResponses->value);
     }
 
     public static function canCreate(): bool
@@ -60,7 +61,9 @@ class WbsResource extends Resource
     public static function canView($record): bool
     {
         $user = Auth::user();
-        return $user->hasPermissionTo(PermissionType::Complaints->value);
+        // Allow access to users with Complaints permission OR WBSResponses permission
+        return $user->hasPermissionTo(PermissionType::Complaints->value) ||
+               $user->hasPermissionTo(PermissionType::WBSResponses->value);
     }
 
 

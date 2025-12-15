@@ -51,8 +51,9 @@ class GratificationResource extends Resource
     public static function canViewAny(): bool
     {
         $user = Auth::user();
-        // Allow access to users with Complaints permission
-        return $user->hasPermissionTo(PermissionType::Complaints->value);
+        // Allow access to users with Complaints permission OR GratificationResponses permission
+        return $user->hasPermissionTo(PermissionType::Complaints->value) ||
+               $user->hasPermissionTo(PermissionType::GratificationResponses->value);
     }
 
     public static function canEdit($record): bool
