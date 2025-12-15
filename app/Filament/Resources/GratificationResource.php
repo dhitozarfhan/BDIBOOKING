@@ -57,8 +57,7 @@ class GratificationResource extends Resource
 
     public static function canEdit($record): bool
     {
-        $user = Auth::user();
-        return $user->hasPermissionTo(PermissionType::Complaints->value);
+        return false;
     }
 
     public static function form(Form $form): Form
@@ -254,7 +253,6 @@ class GratificationResource extends Resource
         return [
             'index' => Pages\ListGratifications::route('/'),
             'view' => Pages\ViewGratification::route('/{record}'),
-            'edit' => Pages\EditGratification::route('/{record}/edit'),
         ];
     }
 }

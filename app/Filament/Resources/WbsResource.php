@@ -67,14 +67,12 @@ class WbsResource extends Resource
 
     public static function canEdit($record): bool
     {
-        $user = Auth::user();
-        return $user->hasPermissionTo(PermissionType::Complaints->value);
+        return false;
     }
 
     public static function canDelete($record): bool
     {
-        $user = Auth::user();
-        return $user->hasPermissionTo(PermissionType::Complaints->value);
+        return false;
     }
 
     public static function getModelLabel(): string
@@ -280,7 +278,6 @@ class WbsResource extends Resource
         return [
             'index' => Pages\ListWbs::route('/'),
             'view' => Pages\ViewWbs::route('/{record}'),
-            'edit' => Pages\EditWbs::route('/{record}/edit'),
         ];
     }
 }

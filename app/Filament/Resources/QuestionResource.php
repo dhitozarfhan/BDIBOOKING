@@ -47,6 +47,11 @@ class QuestionResource extends Resource
         return false;
     }
 
+    public static function canDelete($record): bool
+    {
+        return false;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -200,9 +205,6 @@ class QuestionResource extends Resource
                                 ->modalCancelActionLabel('Tutup'),
                         ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
