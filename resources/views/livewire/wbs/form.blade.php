@@ -419,7 +419,7 @@
 
         <!-- Additional Info -->
         <div class="mt-6 text-center text-sm text-base-content/60">
-            <p>{{ __('Need help? Contact us at') }} <a href="mailto:info@bdiyk.id" class="link link-primary font-medium">info@bdiyk.id</a></p>
+            <p>{{ __('Need help? Contact us at') }} <a href="mailto:bdiyogyakarta@kemenperin.go.id" class="link link-primary font-medium">bdiyogyakarta@kemenperin.go.id</a></p>
         </div>
     </div>
 </div>
