@@ -77,18 +77,12 @@ class InformationRequestResource extends Resource
 
     public static function canDelete(Model $record): bool
     {
-        return Auth::check() && (
-            Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ||
-            Auth::user()->hasPermissionTo(PermissionType::Complaints->value)
-        );
+        return false;
     }
 
     public static function canDeleteAny(): bool
     {
-        return Auth::check() && (
-            Auth::user()->hasPermissionTo(PermissionType::PublicInformation->value) ||
-            Auth::user()->hasPermissionTo(PermissionType::Complaints->value)
-        );
+        return false;
     }
 
     public static function form(Form $form): Form
@@ -265,9 +259,6 @@ class InformationRequestResource extends Resource
                     ->modalCancelActionLabel('Tutup'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
