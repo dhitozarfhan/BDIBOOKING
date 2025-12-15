@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\PermissionType;
 use App\Filament\Resources\AccountResource\Pages;
 use App\Models\Account;
 use Filament\Forms;
@@ -10,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class AccountResource extends Resource
 {
@@ -22,6 +24,11 @@ class AccountResource extends Resource
     // protected static ?string $pluralModelLabel = 'Akun Keuangan';
 
     protected static ?int $navigationSort = 23;
+
+    public static function canAccess(): bool
+    {
+        return Auth::user()->hasPermissionTo(PermissionType::Finance->value);
+    }
 
     public static function getNavigationGroup(): ?string
     {

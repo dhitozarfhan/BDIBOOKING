@@ -20,7 +20,7 @@ enum PermissionType : string
     case Complaints = 'kelola pengaduan';
     case GratificationResponses = 'tanggapi gratifikasi';
     case WBSResponses = 'tanggapi wbs';
-    case QuestionResponses = 'tanggapi pertanyaan masyarakat';
+    case QuestionResponses = 'tanggapi pengaduan masyarakat';
     case InformationRequestResponses = 'tanggapi permintaan informasi';
     case ManageDisposition = 'kelola disposisi';
 
