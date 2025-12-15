@@ -142,14 +142,12 @@ class QuestionResource extends Resource
                                     $terminationProcess = $record->reportProcesses()->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)->first();
                                     return $terminationProcess &&
                                            !$terminationProcess->is_completed &&
-                                           ($user->hasPermissionTo(PermissionType::Complaints->value) ||
-                                            $user->hasPermissionTo(PermissionType::QuestionResponses->value));
+                                           $user->hasPermissionTo(PermissionType::Complaints->value);
                                 })
                                 ->action(function ($record) {
                                     $user = Auth::user();
                                     // Check if user has the required permissions
-                                    if (!$user->hasPermissionTo(PermissionType::Complaints->value) &&
-                                        !$user->hasPermissionTo(PermissionType::QuestionResponses->value)) {
+                                    if (!$user->hasPermissionTo(PermissionType::Complaints->value)) {
                                         abort(403, 'Access denied');
                                     }
 

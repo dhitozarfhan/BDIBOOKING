@@ -23,5 +23,4 @@ enum PermissionType : string
     case QuestionResponses = 'tanggapi pengaduan masyarakat';
     case InformationRequestResponses = 'tanggapi permintaan informasi';
     case ManageDisposition = 'kelola disposisi';
-
 }
