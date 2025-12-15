@@ -170,10 +170,21 @@ class GratificationResource extends Resource
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->visible(function ($record) {
+                        $user = Auth::user();
                         $terminationProcess = $record->reportProcesses()->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)->first();
-                        return $terminationProcess && !$terminationProcess->is_completed;
+                        return $terminationProcess &&
+                               !$terminationProcess->is_completed &&
+                               ($user->hasPermissionTo(PermissionType::Complaints->value) ||
+                                $user->hasPermissionTo(PermissionType::GratificationResponses->value));
                     })
                     ->action(function ($record) {
+                        $user = Auth::user();
+                        // Check if user has the required permissions
+                        if (!$user->hasPermissionTo(PermissionType::Complaints->value) &&
+                            !$user->hasPermissionTo(PermissionType::GratificationResponses->value)) {
+                            abort(403, 'Access denied');
+                        }
+
                         $terminationProcess = $record->reportProcesses()->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)->first();
                         if ($terminationProcess) {
                             $terminationProcess->update(['is_completed' => true]);
