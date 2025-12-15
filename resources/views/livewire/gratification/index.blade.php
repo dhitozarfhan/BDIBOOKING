@@ -81,7 +81,7 @@
                         <p><i class="bi bi-telephone-fill mr-2"></i> <strong>{{ __('Phone') }}:</strong> 0274-487711</p>
                         <p><i class="bi bi-printer-fill mr-2"></i> <strong>{{ __('Fax') }}:</strong> 0274-487711</p>
                         <p><i class="bi bi-geo-alt-fill mr-2"></i> <strong>{{ __('Address') }}:</strong> BDI Yogyakarta, Jl. Babarsari No. 245, Yogyakarta</p>
-                        <p><i class="bi bi-envelope-fill mr-2"></i> <strong>{{ __('Email') }}:</strong> info@bdiyk.id</p>
+                        <p><i class="bi bi-envelope-fill mr-2"></i> <strong>{{ __('Email') }}:</strong> bdiyogyakarta@kemenperin.go.id</p>
                     </div>
                     <div class="mt-6">
                         <h2 class="text-2xl font-bold text-base-content mb-4">{{ __('Maps') }}</h2>

@@ -50,7 +50,7 @@
                                                             <td width="100px">{{ $item->year }}</td>
                                                             <td width="170px" class="text-end">
                                                                 @if ($item->file)
-                                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#file-modal" data-bs-file-url={{ $item->getFile() }} data-bs-title="{{ $item->id_title }}"
+                                                                    <a href="#" data-bs-toggle="modal" data-bs-target="#file-modal" data-bs-file-url="{{ $item->getFile() }} data-bs-title="{{ $item->id_title }}"
                                                                         class="text-blue-600 hover:underline"><i class="far fa-file-pdf text-red-600 mr-2"></i>Lihat</a>
                                                                     /
                                                                     <a href="{{ $item->getFile() }}" class="text-blue-600 hover:underline">Download</a>
