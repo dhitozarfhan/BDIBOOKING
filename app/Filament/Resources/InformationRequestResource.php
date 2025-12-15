@@ -57,7 +57,9 @@ class InformationRequestResource extends Resource
     public static function canViewAny(): bool
     {
         $user = Auth::user();
-        return $user->hasPermissionTo(PermissionType::Complaints->value);
+        // Allow access to users with Complaints permission OR InformationRequestResponses permission
+        return $user->hasPermissionTo(PermissionType::Complaints->value) ||
+               $user->hasPermissionTo(PermissionType::InformationRequestResponses->value);
     }
 
     public static function canCreate(): bool
@@ -68,7 +70,9 @@ class InformationRequestResource extends Resource
     public static function canView(Model $record): bool
     {
         $user = Auth::user();
-        return $user->hasPermissionTo(PermissionType::Complaints->value);
+        // Allow access to users with Complaints permission OR InformationRequestResponses permission
+        return $user->hasPermissionTo(PermissionType::Complaints->value) ||
+               $user->hasPermissionTo(PermissionType::InformationRequestResponses->value);
     }
 
     public static function canDelete(Model $record): bool

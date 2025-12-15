@@ -39,7 +39,9 @@ class QuestionResource extends Resource
     public static function canViewAny(): bool
     {
         $user = Auth::user();
-        return $user->hasPermissionTo(PermissionType::Complaints->value);
+        // Allow access to users with Complaints permission OR QuestionResponses permission
+        return $user->hasPermissionTo(PermissionType::Complaints->value) ||
+               $user->hasPermissionTo(PermissionType::QuestionResponses->value);
     }
 
     public static function canCreate(): bool
