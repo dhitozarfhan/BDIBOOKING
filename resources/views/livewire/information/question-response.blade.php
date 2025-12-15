@@ -1,7 +1,7 @@
 @section('title', __('Complaint Response Public'))
 
 <div>
-    <div class="p-4 sm:p-8 bg-base-100 shadow sm:rounded-lg">
+    <div class="p-4 sm:p-8 bg-base-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             @php
                 $breadcrumbs = [
@@ -12,144 +12,134 @@
                 ];
             @endphp
             @include('livewire.information.partials.breadcrumb', ['items' => $breadcrumbs])
-            <h2 class="text-2xl font-bold text-base-content mt-4">
+
+            <h1 class="text-3xl font-bold text-base-content mt-4 mb-6">
                 {{ __('Complaint Response Public') }}
-            </h2>
+            </h1>
 
             @if($reportDetail)
-                <div class="mt-6">
-                    <div class="bg-base-100 rounded-xl shadow-md border border-base-300 overflow-hidden">
-                        <table class="table table-zebra w-full">
-                            <tbody>
-                                <tr>
-                                    <th class="bg-base-200 font-semibold text-base-content">
-                                        <i class="bi bi-chat-left-text mr-2 text-primary"></i>{{ __('Report Title') }}
-                                    </th>
-                                    <td>{{ $reportDetail->report_title }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="w-1/3 bg-base-200 font-semibold text-base-content">
-                                        <i class="bi bi-person mr-2 text-primary"></i>{{ __('Reporter Name') }}
-                                    </th>
-                                    <td class="font-medium">{{ $reportDetail->reporter_name }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="bg-base-200 font-semibold text-base-content">
-                                        <i class="bi bi-telephone mr-2 text-primary"></i>{{ __('Mobile') }}
-                                    </th>
-                                    <td>{{ $reportDetail->mobile }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="bg-base-200 font-semibold text-base-content">
-                                        <i class="bi bi-calendar-event mr-2 text-primary"></i>{{ __('Submitted At') }}
-                                    </th>
-                                    <td>{{ $reportDetail->time_insert ? $reportDetail->time_insert->format('d/m/Y H:i') : 'N/A' }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="bg-base-200 font-semibold text-base-content">
-                                        <i class="bi bi-flag mr-2 text-primary"></i>{{ __('Report Status') }}
-                                    </th>
-                                    <td>
-                                        @if($reportDetail->status === \App\Enums\ResponseStatus::Initiation->value)
-                                            <span class="badge badge-warning gap-2">
-                                                <i class="bi bi-hourglass-split"></i>{{ __('Initiation') }}
-                                            </span>
-                                        @elseif($reportDetail->status === \App\Enums\ResponseStatus::Process->value)
-                                            <span class="badge badge-info gap-2">
-                                                <i class="bi bi-arrow-repeat"></i>{{ __('Process') }}
-                                            </span>
-                                        @elseif($reportDetail->status === \App\Enums\ResponseStatus::Disposition->value)
-                                            <span class="badge badge-primary gap-2">
-                                                <i class="bi bi-send-check"></i>{{ __('Disposition') }}
-                                            </span>
-                                        @elseif($reportDetail->status === \App\Enums\ResponseStatus::Termination->value)
-                                            <span class="badge badge-success gap-2">
-                                                <i class="bi bi-check-circle"></i>{{ __('Completed') }}
-                                            </span>
-                                        @else
-                                            <span class="badge badge-ghost gap-2">
-                                                <i class="bi bi-question-circle"></i>{{ __('Unknown Status') }}
-                                            </span>
-                                        @endif
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="bg-base-200 font-semibold text-base-content align-top">
-                                        <i class="bi bi-file-text mr-2 text-primary"></i>{{ __('Content') }}
-                                    </th>
-                                    <td class="whitespace-pre-wrap">{{ $reportDetail->content }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                {{-- Report Details Card --}}
+                <div class="bg-base-200/50 rounded-2xl shadow-lg border border-base-300/50 overflow-hidden mb-8">
+                    <div class="p-6 border-b border-base-300/50">
+                        <h2 class="text-xl font-bold text-base-content flex items-center gap-3">
+                            <i class="bi bi-file-earmark-text text-primary"></i>
+                            <span>{{ __('Report Details') }}</span>
+                        </h2>
                     </div>
-
-                    {{-- Riwayat Jawaban --}}
-                    @if($reportDetail->processes && $reportDetail->processes->count() > 0)
-                        <div class="mt-8">
-                            <h3 class="text-2xl font-bold text-base-content mb-4">
-                                <i class="bi bi-hourglass-split mr-2 text-primary"></i>{{ __('Response History') }}
-                            </h3>
-                            <ul class="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical">
-                                @foreach($reportDetail->processes as $process)
-                                    @php
-                                        $statusClass = '';
-                                        $icon = '';
-                                        switch ($process->response_status_id) {
-                                            case \App\Enums\ResponseStatus::Initiation->value:
-                                                $statusClass = 'bg-warning/10 text-warning-content';
-                                                $icon = 'bi-hourglass-split';
-                                                break;
-                                            case \App\Enums\ResponseStatus::Process->value:
-                                                $statusClass = 'bg-info/10 text-info-content';
-                                                $icon = 'bi-arrow-repeat';
-                                                break;
-                                            case \App\Enums\ResponseStatus::Disposition->value:
-                                                $statusClass = 'bg-primary/10 text-primary-content';
-                                                $icon = 'bi-send-check';
-                                                break;
-                                            case \App\Enums\ResponseStatus::Termination->value:
-                                                $statusClass = 'bg-success/10 text-success-content';
-                                                $icon = 'bi-check-circle';
-                                                break;
-                                        }
-                                    @endphp
-                                    <li>
-                                        <div class="timeline-middle">
-                                            <i class="bi {{ $icon }} text-2xl"></i>
-                                        </div>
-                                        <div class="timeline-end mb-10 p-4 rounded-lg shadow-md border border-base-300 {{ $statusClass }}">
-                                            <time class="font-mono italic text-sm">{{ $process->created_at->format('d/m/Y H:i') }}</time>
-                                            <div class="text-xl font-bold">{{ $process->responseStatus->name }}</div>
-                                        </div>
-                                        @if(!$loop->last)
-                                            <hr class="bg-base-300"/>
-                                        @endif
-                                    </li>
-                                @endforeach
-                            </ul>
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                        <div>
+                            <p class="text-sm text-base-content/70">{{ __('Report Title') }}</p>
+                            <p class="font-semibold text-base-content">{{ $reportDetail->report_title }}</p>
                         </div>
-                    @endif
-
-                    {{-- Card untuk Answer, hanya muncul jika status Termination --}}
-                    @if($reportDetail->status === \App\Enums\ResponseStatus::Termination->value && $reportDetail->answer)
-                        <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">
-                            <h3 class="text-lg font-semibold text-base-content mb-3">
-                                {{ __('Answer') }}
-                            </h3>
-                            <div class="whitespace-pre-wrap text-sm text-left">
-                                {!! $reportDetail->answer !!}
-                            </div>
+                        <div>
+                            <p class="text-sm text-base-content/70">{{ __('Report Status') }}</p>
+                            <p class="font-semibold">
+                                @if($reportDetail->status === \App\Enums\ResponseStatus::Initiation->value)
+                                    <span class="badge badge-warning gap-2">
+                                        <i class="bi bi-hourglass-split"></i>{{ __('Initiation') }}
+                                    </span>
+                                @elseif($reportDetail->status === \App\Enums\ResponseStatus::Process->value)
+                                    <span class="badge badge-info gap-2">
+                                        <i class="bi bi-arrow-repeat"></i>{{ __('Process') }}
+                                    </span>
+                                @elseif($reportDetail->status === \App\Enums\ResponseStatus::Disposition->value)
+                                    <span class="badge badge-primary gap-2">
+                                        <i class="bi bi-send-check"></i>{{ __('Disposition') }}
+                                    </span>
+                                @elseif($reportDetail->status === \App\Enums\ResponseStatus::Termination->value)
+                                    <span class="badge badge-success gap-2">
+                                        <i class="bi bi-check-circle"></i>{{ __('Completed') }}
+                                    </span>
+                                @else
+                                    <span class="badge badge-ghost gap-2">
+                                        <i class="bi bi-question-circle"></i>{{ __('Unknown Status') }}
+                                    </span>
+                                @endif
+                            </p>
                         </div>
-                    @endif
+                        <div>
+                            <p class="text-sm text-base-content/70">{{ __('Reporter Name') }}</p>
+                            <p class="font-semibold text-base-content">{{ $reportDetail->reporter_name }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-base-content/70">{{ __('Mobile') }}</p>
+                            <p class="font-semibold text-base-content">{{ $reportDetail->mobile }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-base-content/70">{{ __('Submitted At') }}</p>
+                            <p class="font-semibold text-base-content">{{ $reportDetail->time_insert ? $reportDetail->time_insert->format('d F Y, H:i') : 'N/A' }}</p>
+                        </div>
+                        <div class="col-span-1 md:col-span-2">
+                            <p class="text-sm text-base-content/70">{{ __('Content') }}</p>
+                            <p class="font-semibold text-base-content whitespace-pre-wrap">{{ $reportDetail->content }}</p>
+                        </div>
+                    </div>
+                </div>
 
-                    {{-- Answer Attachment --}}
-                    @if($reportDetail->status === \App\Enums\ResponseStatus::Termination->value && $reportDetail->answer_attachment)
-                        <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">
-                            <h3 class="text-lg font-semibold text-base-content mb-3">
-                                <i class="bi bi-paperclip mr-2 text-secondary"></i>{{ __('Answer Attachment') }}
-                            </h3>
+                {{-- Response History --}}
+                @if($reportDetail->processes && $reportDetail->processes->count() > 0)
+                    <div class="mb-12">
+                        <h2 class="text-xl font-bold text-base-content mb-4 flex items-center gap-3">
+                            <i class="bi bi-clock-history text-primary"></i>
+                            <span>{{ __('Response History') }}</span>
+                        </h2>
+                        <ul class="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical">
+                            @foreach($reportDetail->processes as $process)
+                                @php
+                                    $isTermination = $process->response_status_id === \App\Enums\ResponseStatus::Termination->value;
+                                    $isLast = $loop->last;
+                                    $statusConfig = [
+                                        \App\Enums\ResponseStatus::Initiation->value => ['icon' => 'bi-hourglass-split', 'color' => 'bg-warning/10 text-warning-content', 'border' => 'border-warning/20'],
+                                        \App\Enums\ResponseStatus::Process->value => ['icon' => 'bi-arrow-repeat', 'color' => 'bg-info/10 text-info-content', 'border' => 'border-info/20'],
+                                        \App\Enums\ResponseStatus::Disposition->value => ['icon' => 'bi-send-check', 'color' => 'bg-primary/10 text-primary-content', 'border' => 'border-primary/20'],
+                                        \App\Enums\ResponseStatus::Termination->value => ['icon' => 'bi-check-circle-fill', 'color' => 'bg-success/10 text-success-content', 'border' => 'border-success/20'],
+                                    ];
+                                    $config = $statusConfig[$process->response_status_id] ?? ['icon' => 'bi-question-circle', 'color' => 'bg-base-300', 'border' => 'border-base-300'];
+                                @endphp
+                                <li>
+                                    <div class="timeline-middle">
+                                        <i class="bi {{ $config['icon'] }} text-2xl"></i>
+                                    </div>
+                                    <div class="timeline-end mb-10 p-6 rounded-2xl shadow-md border {{ $config['border'] }} {{ $config['color'] }}">
+                                        <time class="font-mono italic text-sm opacity-70">{{ $process->created_at->format('d F Y, H:i') }}</time>
+                                        <div class="text-xl font-bold mt-1">{{ $process->responseStatus->name }}</div>
+                                    </div>
+                                    @if(!$isLast)
+                                        <hr class="bg-base-300"/>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                {{-- Final Answer Card --}}
+                @if($reportDetail->status === \App\Enums\ResponseStatus::Termination->value && $reportDetail->answer)
+                    <div class="bg-base-200/50 rounded-2xl shadow-lg border border-base-300/50 overflow-hidden mb-8">
+                        <div class="p-6 border-b border-base-300/50">
+                            <h2 class="text-xl font-bold text-base-content flex items-center gap-3">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                <span>{{ __('Final Answer') }}</span>
+                            </h2>
+                        </div>
+                        <div class="p-6 prose max-w-none">
+                            {!! $reportDetail->answer !!}
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Answer Attachment Card --}}
+                @if($reportDetail->answer_attachment)
+                    <div class="bg-base-200/50 rounded-2xl shadow-lg border border-base-300/50 overflow-hidden mb-8">
+                        <div class="p-6 border-b border-base-300/50">
+                            <h2 class="text-xl font-bold text-base-content flex items-center gap-3">
+                                <i class="bi bi-paperclip text-secondary"></i>
+                                <span>{{ __('Answer Attachment') }}</span>
+                            </h2>
+                        </div>
+                        <div class="p-6">
                             <div class="flex flex-col gap-2">
-                                <a href="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2">
+                                <a href="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" target="_blank" class="btn btn-sm btn-outline btn-primary gap-2 w-fit">
                                     <i class="bi bi-download"></i>
                                     {{ basename($reportDetail->answer_attachment) }}
                                 </a>
@@ -157,36 +147,37 @@
                                     $extension = strtolower(pathinfo($reportDetail->answer_attachment, PATHINFO_EXTENSION));
                                 @endphp
                                 @if(in_array($extension, ['pdf']))
-                                    <div class="mt-2 border rounded">
-                                        <iframe src="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}"
-                                                class="w-full h-96"
-                                                type="application/pdf"
-                                                title="Answer Attachment Preview">
+                                    <div class="mt-2 border rounded-lg overflow-hidden">
+                                        <iframe src="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" class="w-full h-[600px]" type="application/pdf" title="Answer Attachment Preview">
                                             <p>{{ __('Your browser does not support PDF previews. Please download the file to view it.') }}</p>
                                         </iframe>
                                     </div>
                                 @elseif(in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp']))
                                     <div class="mt-2">
-                                        <img src="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" class="max-w-full h-auto rounded border" alt="{{ __('Answer Attachment') }}">
+                                        <img src="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" class="max-w-full h-auto rounded-lg border" alt="{{ __('Answer Attachment') }}">
                                     </div>
                                 @endif
                             </div>
                         </div>
-                    @endif
-
-                    <div class="mt-6">
-                        <a href="{{ route('information.question.status') }}" class="btn btn-ghost btn-outline" wire:navigate>
-                           {{ __('Back to Status Check') }}
-                        </a>
-                        <a href="{{ route('information.question') }}" class="btn btn-primary" wire:navigate>
-                            {{ __('Back to Form') }}
-                        </a>
                     </div>
+                @endif
+
+                {{-- Navigation Buttons --}}
+                <div class="mt-8 flex items-center gap-4">
+                    <a href="{{ route('information.question.status') }}" class="btn btn-ghost" wire:navigate>
+                        <i class="bi bi-arrow-left"></i>
+                        {{ __('Back to Status Check') }}
+                    </a>
+                    <a href="{{ route('information.question') }}" class="btn btn-primary" wire:navigate>
+                        <i class="bi bi-house"></i>
+                        {{ __('Back to Form') }}
+                    </a>
                 </div>
+
             @else
-                <div class="alert alert-error mt-6">
-                    <div class="flex-1">
-                        <i class="bi bi-exclamation-triangle-fill text-xl mr-3"></i>
+                <div class="mt-4 alert alert-error shadow-lg">
+                    <div>
+                        <i class="bi bi-exclamation-triangle-fill"></i>
                         <span>{{ __('Report not found. Please check the registration code.') }}</span>
                     </div>
                 </div>
