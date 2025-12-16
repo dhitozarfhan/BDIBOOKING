@@ -100,12 +100,12 @@
 
                 {{-- Response History --}}
                 @if($reportDetail->processes && $reportDetail->processes->count() > 0)
-                    <div class="mb-12">
+                    <div class="mb-8">
                         <h2 class="text-xl font-bold text-base-content mb-4 flex items-center gap-3">
                             <i class="bi bi-clock-history text-primary"></i>
                             <span>{{ __('Response History') }}</span>
                         </h2>
-                        <ul class="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical">
+                        <ul class="flex flex-col gap-y-8">
                             @foreach($reportDetail->processes as $process)
                                 @php
                                     $isTermination = $process->response_status_id === \App\Enums\ResponseStatus::Termination->value;
@@ -119,16 +119,13 @@
                                     $config = $statusConfig[$process->response_status_id] ?? ['icon' => 'bi-question-circle', 'color' => 'bg-base-300', 'border' => 'border-base-300'];
                                 @endphp
                                 <li>
-                                    <div class="timeline-middle">
+                                    <div class="p-6 rounded-2xl shadow-md border {{ $config['border'] }} {{ $config['color'] }} flex items-center gap-3">
                                         <i class="bi {{ $config['icon'] }} text-2xl"></i>
+                                        <div>
+                                            <time class="font-mono italic text-sm opacity-70">{{ $process->created_at->format('d F Y, H:i') }}</time>
+                                            <div class="text-xl font-bold mt-1">{{ $process->responseStatus->name }}</div>
+                                        </div>
                                     </div>
-                                    <div class="timeline-end mb-10 p-6 rounded-2xl shadow-md border {{ $config['border'] }} {{ $config['color'] }}">
-                                        <time class="font-mono italic text-sm opacity-70">{{ $process->created_at->format('d F Y, H:i') }}</time>
-                                        <div class="text-xl font-bold mt-1">{{ $process->responseStatus->name }}</div>
-                                    </div>
-                                    @if(!$loop->last)
-                                        <hr class="bg-base-300"/>
-                                    @endif
                                 </li>
                             @endforeach
                         </ul>
