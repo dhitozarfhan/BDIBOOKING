@@ -148,7 +148,7 @@
                                 @endphp
                                 @if(in_array($extension, ['pdf']))
                                     <div class="mt-2 border rounded-lg overflow-hidden">
-                                        <iframe src="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" class="w-full h-[600px]" type="application/pdf" title="Answer Attachment Preview">
+                                        <iframe src="{{ route('download', ['path' => $reportDetail->answer_attachment]) }}" class="w-full min-h-screen" type="application/pdf" title="Answer Attachment Preview">
                                             <p>{{ __('Your browser does not support PDF previews. Please download the file to view it.') }}</p>
                                         </iframe>
                                     </div>
