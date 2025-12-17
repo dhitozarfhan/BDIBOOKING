@@ -111,10 +111,10 @@
                                     $isTermination = $process->response_status_id === \App\Enums\ResponseStatus::Termination->value;
                                     $isLast = $loop->last;
                                     $statusConfig = [
-                                        \App\Enums\ResponseStatus::Initiation->value => ['icon' => 'bi-hourglass-split', 'color' => 'bg-warning/10 text-warning-content', 'border' => 'border-warning/20'],
-                                        \App\Enums\ResponseStatus::Process->value => ['icon' => 'bi-arrow-repeat', 'color' => 'bg-info/10 text-info-content', 'border' => 'border-info/20'],
-                                        \App\Enums\ResponseStatus::Disposition->value => ['icon' => 'bi-send-check', 'color' => 'bg-primary/10 text-primary-content', 'border' => 'border-primary/20'],
-                                        \App\Enums\ResponseStatus::Termination->value => ['icon' => 'bi-check-circle-fill', 'color' => 'bg-success/10 text-success-content', 'border' => 'border-success/20'],
+                                        \App\Enums\ResponseStatus::Initiation->value => ['icon' => 'bi-hourglass-split', 'color' => 'bg-warning/30 text-warning', 'border' => 'border-warning'],
+                                        \App\Enums\ResponseStatus::Process->value => ['icon' => 'bi-arrow-repeat', 'color' => 'bg-info/30 text-info', 'border' => 'border-info'],
+                                        \App\Enums\ResponseStatus::Disposition->value => ['icon' => 'bi-send-check', 'color' => 'bg-primary/30 text-primary', 'border' => 'border-primary'],
+                                        \App\Enums\ResponseStatus::Termination->value => ['icon' => 'bi-check-circle-fill', 'color' => 'bg-success/30 text-success', 'border' => 'border-success'],
                                     ];
                                     $config = $statusConfig[$process->response_status_id] ?? ['icon' => 'bi-question-circle', 'color' => 'bg-base-300', 'border' => 'border-base-300'];
                                 @endphp
