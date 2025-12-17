@@ -108,10 +108,10 @@
                                     $isTermination = $process->response_status_id === \App\Enums\ResponseStatus::Termination->value;
                                     $isLast = $loop->last;
                                     $statusConfig = [
-                                        \App\Enums\ResponseStatus::Initiation->value => ['icon' => 'bi-hourglass-split', 'color' => 'bg-warning/10 text-warning-content', 'border' => 'border-warning/20'],
-                                        \App\Enums\ResponseStatus::Process->value => ['icon' => 'bi-arrow-repeat', 'color' => 'bg-info/10 text-info-content', 'border' => 'border-info/20'],
-                                        \App\Enums\ResponseStatus::Disposition->value => ['icon' => 'bi-send-check', 'color' => 'bg-primary/10 text-primary-content', 'border' => 'border-primary/20'],
-                                        \App\Enums\ResponseStatus::Termination->value => ['icon' => 'bi-check-circle-fill', 'color' => 'bg-success/10 text-success-content', 'border' => 'border-success/20'],
+                                        \App\Enums\ResponseStatus::Initiation->value => ['icon' => 'bi-hourglass-split', 'color' => 'bg-warning/30 text-warning', 'border' => 'border-warning'],
+                                        \App\Enums\ResponseStatus::Process->value => ['icon' => 'bi-arrow-repeat', 'color' => 'bg-info/30 text-info', 'border' => 'border-info'],
+                                        \App\Enums\ResponseStatus::Disposition->value => ['icon' => 'bi-send-check', 'color' => 'bg-primary/30 text-primary', 'border' => 'border-primary'],
+                                        \App\Enums\ResponseStatus::Termination->value => ['icon' => 'bi-check-circle-fill', 'color' => 'bg-success/30 text-success', 'border' => 'border-success'],
                                     ];
                                     $config = $statusConfig[$process->response_status_id] ?? ['icon' => 'bi-question-circle', 'color' => 'bg-base-300', 'border' => 'border-base-300'];
                                 @endphp
@@ -121,17 +121,26 @@
                                         <div>
                                             <time class="font-mono italic text-sm opacity-70">{{ $process->created_at->format('d F Y, H:i') }}</time>
                                             <div class="text-xl font-bold mt-1">{{ $process->responseStatus->name }}</div>
-                                            @if($isTermination && $reportDetail->answer)
-                                                <div class="prose max-w-none mt-4">
-                                                    <h3 class="text-lg font-bold mb-2">{{ __('Final Answer') }}</h3>
-                                                    {!! $reportDetail->answer !!}
-                                                </div>
-                                            @endif
                                         </div>
                                     </div>
                                 </li>
                             @endforeach
                         </ul>
+                    </div>
+                @endif
+
+                {{-- Final Answer Card --}}
+                @if($reportDetail->status === \App\Enums\ResponseStatus::Termination->value && $reportDetail->answer)
+                    <div class="bg-base-200/50 rounded-2xl shadow-lg border border-base-300/50 overflow-hidden mb-8">
+                        <div class="p-6 border-b border-base-300/50">
+                            <h2 class="text-xl font-bold text-base-content flex items-center gap-3">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                <span>{{ __('Final Answer') }}</span>
+                            </h2>
+                        </div>
+                        <div class="p-6 prose max-w-none">
+                            {!! $reportDetail->answer !!}
+                        </div>
                     </div>
                 @endif
 
