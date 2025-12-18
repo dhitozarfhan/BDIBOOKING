@@ -159,7 +159,7 @@
                                             }
                                         }
                                     @endphp
-                                    <tr class="hover:bg-gray-50 transition-colors">
+                                    <tr onclick="window.location='{{ route('information.answer.detail', ['registration_code' => $item->registration_code]) }}'" class="hover:bg-gray-50 transition-colors cursor-pointer">
                                         <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
                                             {{ $item->created_at->format('d M Y') }}<br>
                                             <span class="text-xs text-gray-500">{{ $item->created_at->format('H:i') }}</span>
@@ -175,21 +175,21 @@
                                                 @if ($item instanceof \App\Models\InformationRequest)
                                                     {{ Str::limit($item->report_title, 100) }}
                                                     @if (strlen($item->report_title) > 100)
-                                                        <a href="#" class="text-blue-600 hover:underline">Lihat jawaban</a>
+                                                        <span class="text-blue-600 hover:underline">Lihat jawaban</span>
                                                     @endif
                                                 @elseif ($item instanceof \App\Models\Question)
                                                     {{ Str::limit($item->content, 100) }}
                                                     @if (strlen($item->content) > 100)
-                                                        <a href="#" class="text-blue-600 hover:underline">Lihat jawaban</a>
+                                                        <span class="text-blue-600 hover:underline">Lihat jawaban</span>
                                                     @endif
                                                 @endif
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 text-sm">
                                             @if ($item instanceof \App\Models\InformationRequest)
-                                                <a href="#" class="text-blue-600 hover:underline">Permohonan Informasi</a>
+                                                <span class="text-gray-900">Permohonan Informasi</span>
                                             @elseif ($item instanceof \App\Models\Question)
-                                                <a href="#" class="text-blue-600 hover:underline">Pengaduan Masyarakat</a>
+                                                <span class="text-gray-900">Pengaduan Masyarakat</span>
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 text-sm whitespace-nowrap">
