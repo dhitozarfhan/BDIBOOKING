@@ -78,8 +78,8 @@
                             {{-- Row 1 --}}
                             <select name="category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                 <option value="">Semua Kategori</option>
-                                <option value="lain-lain" {{ request()->query('category') == 'lain-lain' ? 'selected' : '' }}>Lain-lain Permohonan Informasi</option>
-                                <option value="pertanyaan" {{ request()->query('category') == 'pertanyaan' ? 'selected' : '' }}>Pertanyaan Lain</option>
+                                <option value="permohonan-informasi" {{ request()->query('category') == 'permohonan-informasi' ? 'selected' : '' }}>Permohonan Informasi</option>
+                                <option value="pengaduan-masyarakat" {{ request()->query('category') == 'pengaduan-masyarakat' ? 'selected' : '' }}>Pengaduan Masyarakat</option>
                             </select>
 
                             <select name="month" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
@@ -168,21 +168,28 @@
                                             {{ $item->registration_code }}
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-900">
-                                            {{ $item->name ?? 'Anonim' }}
+                                            {{ $item->reporter_name ?? 'Anonim' }}
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-700">
                                             <div class="max-w-lg">
-                                                {{ Str::limit($item->content, 100) }}
-                                                @if (strlen($item->content) > 100)
-                                                    <a href="#" class="text-blue-600 hover:underline">Lihat jawaban</a>
+                                                @if ($item instanceof \App\Models\InformationRequest)
+                                                    {{ Str::limit($item->report_title, 100) }}
+                                                    @if (strlen($item->report_title) > 100)
+                                                        <a href="#" class="text-blue-600 hover:underline">Lihat jawaban</a>
+                                                    @endif
+                                                @elseif ($item instanceof \App\Models\Question)
+                                                    {{ Str::limit($item->content, 100) }}
+                                                    @if (strlen($item->content) > 100)
+                                                        <a href="#" class="text-blue-600 hover:underline">Lihat jawaban</a>
+                                                    @endif
                                                 @endif
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 text-sm">
                                             @if ($item instanceof \App\Models\InformationRequest)
-                                                <a href="#" class="text-blue-600 hover:underline">Lain-lain Permohonan Informasi</a>
+                                                <a href="#" class="text-blue-600 hover:underline">Permohonan Informasi</a>
                                             @elseif ($item instanceof \App\Models\Question)
-                                                <a href="#" class="text-blue-600 hover:underline">Pertanyaan Lain</a>
+                                                <a href="#" class="text-blue-600 hover:underline">Pengaduan Masyarakat</a>
                                             @endif
                                         </td>
                                         <td class="px-6 py-4 text-sm whitespace-nowrap">

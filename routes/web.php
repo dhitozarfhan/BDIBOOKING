@@ -74,6 +74,11 @@ Route::get('/information/procedure/{type?}', [\App\Http\Controllers\InformationC
 
 Route::get('/information/answer', function (Request $request) {
     $status = $request->query('status');
+    $category = $request->query('category');
+    $month = $request->query('month');
+    $year = $request->query('year');
+    $keywords = $request->query('keywords');
+    $reg_code = $request->query('reg_code');
 
     // Get all items for counting
     $allInformationRequests = InformationRequest::with('reportProcesses.responseStatus')->get();
@@ -149,6 +154,40 @@ Route::get('/information/answer', function (Request $request) {
                 });
                 break;
         }
+    }
+
+    if ($category) {
+        if ($category === 'permohonan-informasi') {
+            $questionsQuery->whereRaw('1 = 0'); // Exclude questions
+        } elseif ($category === 'pengaduan-masyarakat') {
+            $informationRequestsQuery->whereRaw('1 = 0'); // Exclude information requests
+        }
+    }
+
+    if ($month) {
+        $informationRequestsQuery->whereMonth('created_at', $month);
+        $questionsQuery->whereMonth('created_at', $month);
+    }
+
+    if ($year) {
+        $informationRequestsQuery->whereYear('created_at', $year);
+        $questionsQuery->whereYear('created_at', $year);
+    }
+
+    if ($keywords) {
+        $informationRequestsQuery->where(function ($query) use ($keywords) {
+            $query->where('report_title', 'like', "%{$keywords}%")
+                  ->orWhere('reporter_name', 'like', "%{$keywords}%");
+        });
+        $questionsQuery->where(function ($query) use ($keywords) {
+            $query->where('content', 'like', "%{$keywords}%")
+                  ->orWhere('reporter_name', 'like', "%{$keywords}%");
+        });
+    }
+
+    if ($reg_code) {
+        $informationRequestsQuery->where('registration_code', 'like', "%{$reg_code}%");
+        $questionsQuery->where('registration_code', 'like', "%{$reg_code}%");
     }
 
     $informationRequests = $informationRequestsQuery->get();
