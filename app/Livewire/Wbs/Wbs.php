@@ -80,27 +80,16 @@ class Wbs extends Component
     {
         return [
             'reporter_name' => 'required|string|max:255',
-            'identity_number' => 'nullable|string|max:255',
-            'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
-            'address' => 'nullable|string',
-            'occupation' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:255',
+            'identity_number' => 'required|string|max:255',
+            'identity_card_attachment' => 'required|file|image|max:2048', // 2MB max
+            'address' => 'required|string',
+            'occupation' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
             'report_title' => 'required|string|max:255',
             'report_description' => 'required|string',
-            'attachment' => 'nullable|file|max:10240', // 10MB max
-            'violation_id' => 'nullable|exists:violations,id',
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'reporter_name.required' => 'Nama pelapor wajib diisi.',
-            'report_title.required' => 'Judul laporan wajib diisi.',
-            'report_description.required' => 'Uraian laporan wajib diisi.',
-            'attachment.max' => 'File data dukung maksimal 10MB.',
-            'violation_id.exists' => 'Pelanggaran yang dipilih tidak valid.',
+            'attachment' => 'required|file|max:10240', // 10MB max
+            'violation_id' => 'required|exists:violations,id',
         ];
     }
 

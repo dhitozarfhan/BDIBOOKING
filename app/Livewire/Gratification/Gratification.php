@@ -62,15 +62,15 @@ class Gratification extends Component
     {
         $rules = [
             'reporter_name' => 'required|string|max:255',
-            'identity_number' => 'nullable|string|max:255',
-            'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
-            'address' => 'nullable|string',
-            'occupation' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:255',
+            'identity_number' => 'required|string|max:255',
+            'identity_card_attachment' => 'required|file|image|max:2048', // 2MB max
+            'address' => 'required|string',
+            'occupation' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
             'report_title' => 'required|string|max:255',
             'report_description' => 'required|string',
-            'attachment' => 'nullable|file|max:1024', // 1MB max
+            'attachment' => 'required|file|max:1024', // 1MB max
         ];
 
         if ($this->currentView === 'form') {
@@ -81,13 +81,6 @@ class Gratification extends Component
         }
 
         return $rules;
-    }
-
-    public function messages()
-    {
-        return [
-            'registration_code.required' => 'Kode register wajib diisi.',
-        ];
     }
 
     public function updated($propertyName)
