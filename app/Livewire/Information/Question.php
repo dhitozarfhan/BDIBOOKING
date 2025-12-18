@@ -4,12 +4,11 @@ namespace App\Livewire\Information;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
-
-use App\Models\Question;
+use App\Models\Question as QuestionModel; // Beri alias pada model
 use App\Enums\ResponseStatus;
 use Illuminate\Support\Str;
 
-class QuestionForm extends Component
+class Question extends Component
 {
     use WithFileUploads;
     public $reporter_name;
@@ -38,8 +37,8 @@ class QuestionForm extends Component
             'reporter_name' => 'required',
             'content' => 'required',
             'report_title' => 'required',
-            'identity_number' => 'nullable|string',
-            'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
+            'identity_number' => 'required|string',
+            'identity_card_attachment' => 'required|file|image|max:2048', // 2MB max
             'mobile' => 'required',
             'email' => 'required|email',
         ];
@@ -67,7 +66,8 @@ class QuestionForm extends Component
         // Generate registration code
         $registrationCode = $this->generateKodeRegister();
 
-        $question = Question::create([
+        // Gunakan alias saat membuat data baru
+        $question = QuestionModel::create([
             'reporter_name' => $this->reporter_name,
             'content' => $this->content,
             'report_title' => $this->report_title,
@@ -94,7 +94,8 @@ class QuestionForm extends Component
     {
         do {
             $kode = strtoupper(substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 6));
-            $exists = Question::where('registration_code', $kode)->exists();
+            // Gunakan alias saat query
+            $exists = QuestionModel::where('registration_code', $kode)->exists();
         } while ($exists);
 
         return $kode;
@@ -106,7 +107,8 @@ class QuestionForm extends Component
             'registration_code' => 'required|string|max:255',
         ]);
 
-        $question = Question::where('registration_code', $this->registration_code)->first();
+        // Gunakan alias saat query
+        $question = QuestionModel::where('registration_code', $this->registration_code)->first();
 
         if ($question) {
             // Get the latest process for current status

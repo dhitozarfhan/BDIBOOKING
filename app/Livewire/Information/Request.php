@@ -87,111 +87,111 @@ class Request extends Component
         }
     }
 
-                        public function save()
+    public function save()
 
-                        {
+    {
 
-                            try {
+        try {
 
-                                $validatedData = $this->validate();
+            $validatedData = $this->validate();
 
-                    
 
-                                // Generate registration code
 
-                                $registrationCode = $this->generateKodeRegister();
+            // Generate registration code
 
-                    
+            $registrationCode = $this->generateKodeRegister();
 
-                                $infoRequest = InformationRequest::create([
 
-                                    'reporter_name' => $this->reporter_name,
 
-                                    'id_card_number' => $this->id_card_number,
+            $infoRequest = InformationRequest::create([
 
-                                    'address' => $this->address,
+                'reporter_name' => $this->reporter_name,
 
-                                    'occupation' => $this->occupation,
+                'id_card_number' => $this->id_card_number,
 
-                                    'mobile' => $this->mobile,
+                'address' => $this->address,
 
-                                    'email' => $this->email,
+                'occupation' => $this->occupation,
 
-                                    'report_title' => $this->report_title,
+                'mobile' => $this->mobile,
 
-                                    'used_for' => $this->used_for,
+                'email' => $this->email,
 
-                                    'grab_method' => $this->grab_method,
+                'report_title' => $this->report_title,
 
-                                    'delivery_method' => $this->delivery_method,
+                'used_for' => $this->used_for,
 
-                                    'rule_accepted' => $this->rule_accepted,
+                'grab_method' => $this->grab_method,
 
-                                    'ip_address' => request()->ip(),
+                'delivery_method' => $this->delivery_method,
 
-                                    'user_agent' => request()->userAgent(),
+                'rule_accepted' => $this->rule_accepted,
 
-                                    'registration_code' => $registrationCode,
+                'ip_address' => request()->ip(),
 
-                                ]);
+                'user_agent' => request()->userAgent(),
 
-                    
+                'registration_code' => $registrationCode,
 
-                                // Buat "wadah jawaban"-nya (ReportProcess) secara otomatis
+            ]);
 
-                                $infoRequest->process()->create([
 
-                                    'response_status_id' => 1,
 
-                                    'is_completed' => false,
+            // Buat "wadah jawaban"-nya (ReportProcess) secara otomatis
 
-                                ]);
+            $infoRequest->process()->create([
 
-                    
+                'response_status_id' => 1,
 
-                                session()->flash('message', __('Your information request has been submitted successfully. We will process your request shortly. Registration Code: '));
+                'is_completed' => false,
 
-                                session()->flash('registration_code', $registrationCode);
+            ]);
 
-                    
 
-                                $this->reset([
 
-                                    'reporter_name', 'id_card_number', 'address', 'occupation', 'mobile', 'email',
+            session()->flash('message', __('Your information request has been submitted successfully. We will process your request shortly. Registration Code: '));
 
-                                    'report_title', 'used_for', 'grab_method', 'delivery_method', 'rule_accepted'
+            session()->flash('registration_code', $registrationCode);
 
-                                ]);
 
-                                
 
-                                $this->show_delivery_method = false;
+            $this->reset([
 
-                    
+                'reporter_name', 'id_card_number', 'address', 'occupation', 'mobile', 'email',
 
-                            } catch (\Illuminate\Validation\ValidationException $e) {
+                'report_title', 'used_for', 'grab_method', 'delivery_method', 'rule_accepted'
 
-                                Log::error('Validation failed.', ['errors' => $e->errors()]);
+            ]);
 
-                                throw $e; // Re-throw validation exception for Livewire to handle
+            
 
-                            } catch (\Throwable $e) {
+            $this->show_delivery_method = false;
 
-                                Log::error('An error occurred during the save process: ' . $e->getMessage(), [
 
-                                    'file' => $e->getFile(),
 
-                                    'line' => $e->getLine(),
+        } catch (\Illuminate\Validation\ValidationException $e) {
 
-                                    'trace' => $e->getTraceAsString(),
+            Log::error('Validation failed.', ['errors' => $e->errors()]);
 
-                                ]);
+            throw $e; // Re-throw validation exception for Livewire to handle
 
-                                session()->flash('error', 'An unexpected error occurred. Please try again later.');
+        } catch (\Throwable $e) {
 
-                            }
+            Log::error('An error occurred during the save process: ' . $e->getMessage(), [
 
-                        }
+                'file' => $e->getFile(),
+
+                'line' => $e->getLine(),
+
+                'trace' => $e->getTraceAsString(),
+
+            ]);
+
+            session()->flash('error', 'An unexpected error occurred. Please try again later.');
+
+        }
+
+    }
 
     private function generateKodeRegister()
     {
