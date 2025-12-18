@@ -66,6 +66,8 @@ Route::get('/information/question/response', App\Livewire\Information\QuestionRe
 Route::get('/information/request', App\Livewire\Information\Request::class)->name('information.request');
 Route::get('/information/request/status', App\Livewire\Information\Request::class)->name('information.request.status');
 Route::get('/information/request/response', App\Livewire\Information\RequestResponse::class)->name('information.request.response');
+Route::get('/information/question/response/{registration_code}', App\Livewire\Information\QuestionResponse::class)->name('information.question.response.code');
+Route::get('/information/request/response/{registration_code}', App\Livewire\Information\RequestResponse::class)->name('information.request.response.code');
 Route::get('/information/provision', function() {
     abort(404);
 })->name('information.provision');
@@ -197,6 +199,8 @@ Route::get('/information/answer', function (Request $request) {
 
     return view('information.answer', compact('items', 'totalCount', 'newCount', 'processCount', 'disposalCount', 'finishedCount'));
 })->name('information.answer');
+
+Route::get('/information/answer/detail/{registration_code}', [\App\Http\Controllers\InformationController::class, 'showDetail'])->name('information.answer.detail');
 
 Route::get('/{article_type}', App\Livewire\Articles\Index::class)
     ->whereIn('article_type', ['news','gallery','page'])
