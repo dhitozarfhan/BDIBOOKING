@@ -162,11 +162,9 @@
                 {{-- Navigation Buttons --}}
                 <div class="mt-8 flex items-center gap-4">
                     <a href="{{ route('information.question.status') }}" class="btn btn-ghost" wire:navigate>
-                        <i class="bi bi-arrow-left"></i>
                         {{ __('Back to Status Check') }}
                     </a>
                     <a href="{{ route('information.question') }}" class="btn btn-primary" wire:navigate>
-                        <i class="bi bi-house"></i>
                         {{ __('Back to Form') }}
                     </a>
                 </div>
