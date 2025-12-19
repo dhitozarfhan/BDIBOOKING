@@ -57,6 +57,20 @@ class ViewInformationRequest extends ViewRecord
                                     ->schema([
                                         TextEntry::make('reporter_name')
                                             ->label(__('Name')),
+                                        TextEntry::make('id_card_number')
+                                            ->label(__('ID Card Number')),
+                                        TextEntry::make('identity_card_attachment')
+                                            ->label(__('ID Card Attachment'))
+                                            ->formatStateUsing(function ($state) {
+                                                if (empty($state)) {
+                                                    return '-';
+                                                }
+                                                $url = route('download', ['path' => $state]);
+                                                return '<img src="' . $url . '" style="width: 100%; height: auto;" alt="ID Card Scan" class="rounded-lg border">';
+                                            })
+                                            ->html()
+                                            ->columnSpanFull()
+                                            ->visible(fn ($state) => !empty($state)),
                                         TextEntry::make('mobile')
                                             ->label(__('Mobile')),
                                         TextEntry::make('email')
