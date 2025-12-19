@@ -101,7 +101,7 @@
                 {{-- Identity Number --}}
                 <div class="form-control">
                     <label for="identity_number" class="label">
-                        <span class="label-text font-semibold">{{ __('information.identity_number') }}</span>
+                        <span class="label-text font-semibold">{{ __('information.identity_number') }} <span class="text-error">*</span></span>
                     </label>
                     <div class="relative group">
                         <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">
@@ -126,7 +126,7 @@
                 {{-- Identity Card Attachment --}}
                 <div class="form-control">
                     <label for="identity_card_attachment" class="label">
-                        <span class="label-text font-semibold">{{ __('information.identity_card_attachment') }}</span>
+                        <span class="label-text font-semibold">{{ __('information.identity_card_attachment') }} <span class="text-error">*</span></span>
                     </label>
                     <div class="relative">
                         @if ($identity_card_attachment)
@@ -205,7 +205,7 @@
                 {{-- Email --}}
                 <div class="form-control">
                     <label for="email" class="label">
-                        <span class="label-text font-semibold">{{ __('information.email') }}</span>
+                        <span class="label-text font-semibold">{{ __('information.email') }} <span class="text-error">*</span></span>
                     </label>
                     <div class="relative group">
                         <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">

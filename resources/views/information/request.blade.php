@@ -12,7 +12,7 @@
                                 <div class="form-group mb-4">
                                     <label for="name" class="block text-gray-700">
                                         <i class="fas fa-user"></i>
-                                        {{ __('information.applicant_name') }}
+                                        {{ __('information.applicant_name') }} <span class="text-error">*</span>
                                     </label>
                                     <div class="flex items-center">
                                         <input type="text" name="name" value="{{ old('name') }}"
@@ -22,7 +22,7 @@
                                 <div class="form-group mb-4">
                                     <label for="id_card_number" class="block text-gray-700">
                                         <i class="fas fa-list-alt"></i>
-                                        {{ __('information.applicant_id_card_number') }}
+                                        {{ __('information.applicant_id_card_number') }} <span class="text-error">*</span>
                                     </label>
                                     <div class="flex items-center">
                                         <input type="text" name="id_card_number" value="{{ old('id_card_number') }}"
@@ -32,7 +32,7 @@
                                 <div class="form-group mb-4">
                                     <label for="address" class="block text-gray-700">
                                         <i class="fas fa-map-marker"></i>
-                                        {{ __('information.applicant_address') }}
+                                        {{ __('information.applicant_address') }} <span class="text-error">*</span>
                                     </label>
                                     <div class="flex items-center">
                                         <input type="text" name="address" value="{{ old('address') }}"
@@ -42,7 +42,7 @@
                                 <div class="form-group mb-4">
                                     <label for="occupation" class="block text-gray-700">
                                         <i class="fas fa-suitcase"></i>
-                                        {{ __('information.applicant_occupation') }}
+                                        {{ __('information.applicant_occupation') }} <span class="text-error">*</span>
                                     </label>
                                     <div class="flex items-center">
                                         <input type="text" name="occupation" value="{{ old('occupation') }}"
@@ -52,7 +52,7 @@
                                 <div class="form-group mb-4">
                                     <label for="mobile" class="block text-gray-700">
                                         <i class="fas fa-phone"></i>
-                                        {{ __('information.applicant_mobile') }}
+                                        {{ __('information.applicant_mobile') }} <span class="text-error">*</span>
                                     </label>
                                     <div class="flex items-center">
                                         <input type="text" name="mobile" value="{{ old('mobile') }}"
@@ -62,14 +62,14 @@
                                 <div class="form-group mb-4">
                                     <label for="email" class="block text-gray-700">
                                         <i class="fas fa-envelope"></i>
-                                        {{ __('information.applicant_email') }}
+                                        {{ __('information.applicant_email') }} <span class="text-error">*</span>
                                     </label>
                                     <div class="flex items-center">
                                         <input type="text" name="email" value="{{ old('email') }}"
                                             class="form-control w-full p-2 border border-gray-300 rounded-md"/>
                                     </div>
                                 </div>
-                                <label>{{ __('information.applicant_grab_method') }}</label>
+                                <label>{{ __('information.applicant_grab_method') }} <span class="text-error">*</span></label>
                                 <div class="flex items-center">
                                     <input id="default-checkbox" type="checkbox" name="grab_method[]" value="see" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded " {{ in_array('see', old('grab_method', [])) ? 'checked' : '' }}>
                                     <label for="default-checkbox" class="ms-2 text-gray-900">{{ __('information.applicant_see') }}</label>
@@ -98,7 +98,7 @@
                             <div>
                                 <div class="form-group mb-4">
                                     <label for="content" class="block text-gray-700">
-                                        {{ __('information.applicant_request') }}
+                                        {{ __('information.applicant_request') }} <span class="text-error">*</span>
                                     </label>
                                     <div class="flex items-center">
                                         <textarea name="content" class="form-control w-full p-2 border border-gray-300 rounded-md h-60">
@@ -107,7 +107,7 @@
                                 </div>
                                 <div class="form-group mb-4">
                                     <label for="used_for" class="block text-gray-700">
-                                        {{ __('information.applicant_used_for') }}
+                                        {{ __('information.applicant_used_for') }} <span class="text-error">*</span>
                                     </label>
                                     <div class="flex items-center">
                                         <textarea name="used_for" class="form-control w-full p-2 border border-gray-300 rounded-md h-60">
@@ -116,7 +116,7 @@
                                 </div>
                                 <div class="flex items-center">
                                     <input id="default-checkbox" type="checkbox" name="rule" value="accept" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded" {{ old('rule') == 'accept' ? 'checked' : '' }}>
-                                    <label for="default-checkbox" class="ms-2 text-gray-900">{!! __('information.applicant_provision') !!}</label>
+                                    <label for="default-checkbox" class="ms-2 text-gray-900">{!! __('information.applicant_provision') !!} <span class="text-error">*</span></label>
                                 </div>
                                 <div class="mt-4">
                                     <button type="submit" class="btn btn-primary text-base text-white w-28">
