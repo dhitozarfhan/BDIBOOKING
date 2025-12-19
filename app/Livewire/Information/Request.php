@@ -54,15 +54,16 @@ class Request extends Component
             'report_title' => 'required|string',
             'used_for' => 'required|string',
             'grab_method' => 'required|array|min:1',
+            'delivery_method' => 'required|array|min:1',
             'rule_accepted' => 'accepted',
         ];
     }
 
-    protected $messages = [
-        'grab_method.required' => 'Please select at least one acquisition method.',
-        'grab_method.min' => 'Please select at least one acquisition method.',
-        'rule_accepted.accepted' => 'You must accept the terms and conditions.',
-    ];
+    // protected $messages = [
+    //     'grab_method.required' => 'Please select at least one acquisition method.',
+    //     'grab_method.min.required' => 'Please select at least one acquisition method.',
+    //     'rule_accepted.accepted' => 'You must accept the terms and conditions.',
+    // ];
 
     public function mount()
     {
