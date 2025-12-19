@@ -52,8 +52,14 @@ class GratificationResource extends Resource
     {
         $user = Auth::user();
         // Allow access to users with Complaints permission OR GratificationResponses permission
-        return $user->hasPermissionTo(PermissionType::Complaints->value) ||
-               $user->hasPermissionTo(PermissionType::GratificationResponses->value);
+        // Use defensive programming to handle cases where permissions don't exist in DB yet
+        $complaintsPermissionExists = \Spatie\Permission\Models\Permission::where('name', PermissionType::Complaints->value)->exists();
+        $gratificationResponsesPermissionExists = \Spatie\Permission\Models\Permission::where('name', PermissionType::GratificationResponses->value)->exists();
+
+        $hasComplaintsPermission = $complaintsPermissionExists ? $user->hasPermissionTo(PermissionType::Complaints->value) : false;
+        $hasGratificationResponsesPermission = $gratificationResponsesPermissionExists ? $user->hasPermissionTo(PermissionType::GratificationResponses->value) : false;
+
+        return $hasComplaintsPermission || $hasGratificationResponsesPermission;
     }
 
     public static function canEdit($record): bool
@@ -173,14 +179,21 @@ class GratificationResource extends Resource
                     ->visible(function ($record) {
                         $user = Auth::user();
                         $terminationProcess = $record->reportProcesses()->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)->first();
+                        // Use defensive programming for permission check
+                        $complaintsPermissionExists = \Spatie\Permission\Models\Permission::where('name', PermissionType::Complaints->value)->exists();
+                        $hasComplaintsPermission = $complaintsPermissionExists ? $user->hasPermissionTo(PermissionType::Complaints->value) : false;
                         return $terminationProcess &&
                                !$terminationProcess->is_completed &&
-                               $user->hasPermissionTo(PermissionType::Complaints->value);
+                               $hasComplaintsPermission;
                     })
                     ->action(function ($record) {
                         $user = Auth::user();
+                        // Use defensive programming for permission check
+                        $complaintsPermissionExists = \Spatie\Permission\Models\Permission::where('name', PermissionType::Complaints->value)->exists();
+                        $hasComplaintsPermission = $complaintsPermissionExists ? $user->hasPermissionTo(PermissionType::Complaints->value) : false;
+
                         // Check if user has the required permissions
-                        if (!$user->hasPermissionTo(PermissionType::Complaints->value)) {
+                        if (!$hasComplaintsPermission) {
                             abort(403, 'Access denied');
                         }
 

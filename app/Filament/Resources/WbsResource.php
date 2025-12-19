@@ -49,8 +49,14 @@ class WbsResource extends Resource
     {
         $user = Auth::user();
         // Allow access to users with Complaints permission OR WBSResponses permission
-        return $user->hasPermissionTo(PermissionType::Complaints->value) ||
-               $user->hasPermissionTo(PermissionType::WBSResponses->value);
+        // Use defensive programming to handle cases where permissions don't exist in DB yet
+        $complaintsPermissionExists = \Spatie\Permission\Models\Permission::where('name', PermissionType::Complaints->value)->exists();
+        $wbsResponsesPermissionExists = \Spatie\Permission\Models\Permission::where('name', PermissionType::WBSResponses->value)->exists();
+
+        $hasComplaintsPermission = $complaintsPermissionExists ? $user->hasPermissionTo(PermissionType::Complaints->value) : false;
+        $hasWBSResponsesPermission = $wbsResponsesPermissionExists ? $user->hasPermissionTo(PermissionType::WBSResponses->value) : false;
+
+        return $hasComplaintsPermission || $hasWBSResponsesPermission;
     }
 
     public static function canCreate(): bool
@@ -62,8 +68,14 @@ class WbsResource extends Resource
     {
         $user = Auth::user();
         // Allow access to users with Complaints permission OR WBSResponses permission
-        return $user->hasPermissionTo(PermissionType::Complaints->value) ||
-               $user->hasPermissionTo(PermissionType::WBSResponses->value);
+        // Use defensive programming to handle cases where permissions don't exist in DB yet
+        $complaintsPermissionExists = \Spatie\Permission\Models\Permission::where('name', PermissionType::Complaints->value)->exists();
+        $wbsResponsesPermissionExists = \Spatie\Permission\Models\Permission::where('name', PermissionType::WBSResponses->value)->exists();
+
+        $hasComplaintsPermission = $complaintsPermissionExists ? $user->hasPermissionTo(PermissionType::Complaints->value) : false;
+        $hasWBSResponsesPermission = $wbsResponsesPermissionExists ? $user->hasPermissionTo(PermissionType::WBSResponses->value) : false;
+
+        return $hasComplaintsPermission || $hasWBSResponsesPermission;
     }
 
 
@@ -201,14 +213,21 @@ class WbsResource extends Resource
                                 ->visible(function ($record) {
                                     $user = Auth::user();
                                     $terminationProcess = $record->reportProcesses()->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)->first();
+                                    // Use defensive programming for permission check
+                                    $complaintsPermissionExists = \Spatie\Permission\Models\Permission::where('name', PermissionType::Complaints->value)->exists();
+                                    $hasComplaintsPermission = $complaintsPermissionExists ? $user->hasPermissionTo(PermissionType::Complaints->value) : false;
                                     return $terminationProcess &&
                                            !$terminationProcess->is_completed &&
-                                           $user->hasPermissionTo(PermissionType::Complaints->value);
+                                           $hasComplaintsPermission;
                                 })
                                 ->action(function ($record) {
                                     $user = Auth::user();
+                                    // Use defensive programming for permission check
+                                    $complaintsPermissionExists = \Spatie\Permission\Models\Permission::where('name', PermissionType::Complaints->value)->exists();
+                                    $hasComplaintsPermission = $complaintsPermissionExists ? $user->hasPermissionTo(PermissionType::Complaints->value) : false;
+
                                     // Check if user has the required permissions
-                                    if (!$user->hasPermissionTo(PermissionType::Complaints->value)) {
+                                    if (!$hasComplaintsPermission) {
                                         abort(403, 'Access denied');
                                     }
 
