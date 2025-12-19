@@ -78,11 +78,16 @@ class ViewWbs extends ViewRecord
                                 TextEntry::make('identity_number')
                                     ->label(__('Identity Number'))
                                     ->icon('heroicon-o-identification'),
-                                ImageEntry::make('identity_card_attachment')
+                                TextEntry::make('identity_card_attachment')
                                     ->label(__('ID Card Scan'))
-                                    ->disk('private')
-                                    ->width('100%')
-                                    ->height('auto')
+                                    ->formatStateUsing(function ($state) {
+                                        if (empty($state)) {
+                                            return '-';
+                                        }
+                                        $url = route('download', ['path' => $state]);
+                                        return '<img src="' . $url . '" style="width: 100%; height: auto;" alt="ID Card Scan" class="rounded-lg border">';
+                                    })
+                                    ->html()
                                     ->columnSpanFull()
                                     ->visible(fn ($state) => !empty($state)),
                                 TextEntry::make('occupation')
