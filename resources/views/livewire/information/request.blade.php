@@ -246,7 +246,7 @@
                     {{-- Delivery Method --}}
                     <div class="form-control">
                         <label class="label">
-                            <span class="label-text font-semibold">{{ __('Copy Delivery Method') }}</span>
+                            <span class="label-text font-semibold">{{ __('Copy Delivery Method') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="space-y-2 pl-2">
                             <div class="flex items-center">
