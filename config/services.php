@@ -57,6 +57,22 @@ return [
         'key_name' => env('SIPPA_API_KEY_NAME', 'SRV-KEY'),
     ],
 
+    'wbs' => [
+        'disk' => env('WBS_DISK', 'private'),
+    ],
+
+    'gratification' => [
+        'disk' => env('GRATIFICATION_DISK', 'private'),
+    ],
+
+    'question' => [
+        'disk' => env('QUESTION_DISK', 'private'),
+    ],
+
+    'information_request' => [
+        'disk' => env('INFORMATION_REQUEST_DISK', 'private'),
+    ],
+
     'disk'  => [
         'employee'  => [
             'image'     => 'employee/images',
