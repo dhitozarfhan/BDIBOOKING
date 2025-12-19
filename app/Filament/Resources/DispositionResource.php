@@ -142,6 +142,7 @@ class DispositionResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\Action::make('Balas')
                     ->label(__('Reply'))
                     ->icon('heroicon-o-chat-bubble-left-right')
@@ -195,6 +196,7 @@ class DispositionResource extends Resource
     {
         return [
             'index' => Pages\ListDispositions::route('/'),
+            'view' => Pages\ViewDisposition::route('/{record}'),
         ];
     }
 }
