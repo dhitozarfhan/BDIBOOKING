@@ -6,14 +6,18 @@ use App\Models\InformationRequest;
 use App\Enums\ResponseStatus;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Request extends Component
 {
+    use WithFileUploads;
+
     // View State
     public $currentView = 'form';
     public $registration_code = '';
     public $reportDetail;
     public $statusError = '';
+    public $identity_card_attachment;
     // Personal Information
     public $reporter_name = '';
     public $id_card_number = '';
@@ -47,6 +51,7 @@ class Request extends Component
         return [
             'reporter_name' => 'required|string|max:255',
             'id_card_number' => 'required|string|max:255',
+            'identity_card_attachment' => 'required|file|image|max:2048', // 2MB max
             'address' => 'required|string',
             'occupation' => 'required|string|max:255',
             'mobile' => 'required|string|max:20',
@@ -94,103 +99,115 @@ class Request extends Component
 
         try {
 
-            $validatedData = $this->validate();
-
-
-
-            // Generate registration code
-
-            $registrationCode = $this->generateKodeRegister();
-
-
-
-            $infoRequest = InformationRequest::create([
-
-                'reporter_name' => $this->reporter_name,
-
-                'id_card_number' => $this->id_card_number,
-
-                'address' => $this->address,
-
-                'occupation' => $this->occupation,
-
-                'mobile' => $this->mobile,
-
-                'email' => $this->email,
-
-                'report_title' => $this->report_title,
-
-                'used_for' => $this->used_for,
-
-                'grab_method' => $this->grab_method,
-
-                'delivery_method' => $this->delivery_method,
-
-                'rule_accepted' => $this->rule_accepted,
-
-                'ip_address' => request()->ip(),
-
-                'user_agent' => request()->userAgent(),
-
-                'registration_code' => $registrationCode,
-
-            ]);
-
-
-
-            // Buat "wadah jawaban"-nya (ReportProcess) secara otomatis
-
-            $infoRequest->process()->create([
-
-                'response_status_id' => 1,
-
-                'is_completed' => false,
-
-            ]);
-
-
-
-            session()->flash('message', __('Your information request has been submitted successfully. We will process your request shortly. Registration Code: '));
-
-            session()->flash('registration_code', $registrationCode);
-
-
-
-            $this->reset([
-
-                'reporter_name', 'id_card_number', 'address', 'occupation', 'mobile', 'email',
-
-                'report_title', 'used_for', 'grab_method', 'delivery_method', 'rule_accepted'
-
-            ]);
+                        $validatedData = $this->validate();
 
             
 
-            $this->show_delivery_method = false;
+                        // Generate registration code
 
+                        $registrationCode = $this->generateKodeRegister();
 
+            
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+                        $identityCardPath = null;
 
-            Log::error('Validation failed.', ['errors' => $e->errors()]);
+                        if ($this->identity_card_attachment) {
 
-            throw $e; // Re-throw validation exception for Livewire to handle
+                            $identityCardPath = $this->identity_card_attachment->store('identity_cards', 'private');
 
-        } catch (\Throwable $e) {
+                        }
 
-            Log::error('An error occurred during the save process: ' . $e->getMessage(), [
+            
 
-                'file' => $e->getFile(),
+                        $infoRequest = InformationRequest::create([
 
-                'line' => $e->getLine(),
+                            'reporter_name' => $this->reporter_name,
 
-                'trace' => $e->getTraceAsString(),
+                            'id_card_number' => $this->id_card_number,
 
-            ]);
+                            'identity_card_attachment' => $identityCardPath,
 
-            session()->flash('error', 'An unexpected error occurred. Please try again later.');
+                            'address' => $this->address,
 
-        }
+                            'occupation' => $this->occupation,
+
+                            'mobile' => $this->mobile,
+
+                            'email' => $this->email,
+
+                            'report_title' => $this->report_title,
+
+                            'used_for' => $this->used_for,
+
+                            'grab_method' => $this->grab_method,
+
+                            'delivery_method' => $this->delivery_method,
+
+                            'rule_accepted' => $this->rule_accepted,
+
+                            'ip_address' => request()->ip(),
+
+                            'user_agent' => request()->userAgent(),
+
+                            'registration_code' => $registrationCode,
+
+                        ]);
+
+            
+
+                        // Buat "wadah jawaban"-nya (ReportProcess) secara otomatis
+
+                        $infoRequest->process()->create([
+
+                            'response_status_id' => 1,
+
+                            'is_completed' => false,
+
+                        ]);
+
+            
+
+                        session()->flash('message', __('Your information request has been submitted successfully. We will process your request shortly. Registration Code: '));
+
+                        session()->flash('registration_code', $registrationCode);
+
+            
+
+                        $this->reset([
+
+                            'reporter_name', 'id_card_number', 'address', 'occupation', 'mobile', 'email',
+
+                            'report_title', 'used_for', 'grab_method', 'delivery_method', 'rule_accepted', 'identity_card_attachment'
+
+                        ]);
+
+                        
+
+                        $this->show_delivery_method = false;
+
+            
+
+                    } catch (\Illuminate\Validation\ValidationException $e) {
+
+                        Log::error('Validation failed.', ['errors' => $e->errors()]);
+
+                        throw $e; // Re-throw validation exception for Livewire to handle
+
+                    } catch (\Throwable $e) {
+
+                        Log::error('An error occurred during the save process: ' . $e->getMessage(), [
+
+                            'file' => $e->getFile(),
+
+                            'line' => $e->getLine(),
+
+                            'trace' => $e->getTraceAsString(),
+
+                        ]);
+
+                        session()->flash('error', 'An unexpected error occurred. Please try again later.');
+
+                    }
 
     }
 

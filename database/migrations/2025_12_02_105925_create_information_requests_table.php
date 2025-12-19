@@ -17,6 +17,7 @@ return new class extends Migration
             // Personal Information
             $table->string('reporter_name');//before name
             $table->string('id_card_number');
+            $table->string('identity_card_attachment')->nullable();
             $table->text('address');
             $table->string('occupation');
             $table->string('mobile');
