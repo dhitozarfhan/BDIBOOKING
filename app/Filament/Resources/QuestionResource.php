@@ -83,6 +83,21 @@ class QuestionResource extends Resource
                             ->maxLength(255)
                             ->disabled()
                             ->dehydrated(false),
+                        Forms\Components\TextInput::make('identity_number')
+                            ->label(__('Identity Number'))
+                            ->required()
+                            ->maxLength(255)
+                            ->disabled()
+                            ->dehydrated(false),
+                        Forms\Components\FileUpload::make('identity_card_attachment')
+                            ->label(__('ID Card Scan'))
+                            ->disk('private')
+                            ->directory('identity_cards')
+                            ->visibility('private')
+                            ->downloadable()
+                            ->openable()
+                            ->disabled()
+                            ->dehydrated(false),
                         Forms\Components\TextInput::make('mobile')
                             ->required()
                             ->maxLength(255)

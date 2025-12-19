@@ -58,6 +58,20 @@ class ViewQuestion extends ViewRecord
                                     ->schema([
                                         TextEntry::make('name')
                                             ->label(__('Name')),
+                                        TextEntry::make('identity_number')
+                                            ->label(__('Identity Number')),
+                                        TextEntry::make('identity_card_attachment')
+                                            ->label(__('ID Card Scan'))
+                                            ->formatStateUsing(function ($state) {
+                                                if (empty($state)) {
+                                                    return '-';
+                                                }
+                                                $url = route('download', ['path' => $state]);
+                                                return '<img src="' . $url . '" style="width: 100%; height: auto;" alt="ID Card Scan" class="rounded-lg border">';
+                                            })
+                                            ->html()
+                                            ->columnSpanFull()
+                                            ->visible(fn ($state) => !empty($state)),
                                         TextEntry::make('mobile')
                                             ->label(__('Mobile')),
                                         TextEntry::make('email')
