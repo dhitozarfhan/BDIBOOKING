@@ -99,48 +99,48 @@ class ProcessRelationManager extends RelationManager
                     ->label('Tambahkan Balasan')
                     ->icon('heroicon-o-chat-bubble-left-right')
                     ->color('info')
-                                            ->form([
-                                                Forms\Components\Select::make('response_status_id')
-                                                    ->label(__('Response Status'))
-                                                    ->options(fn () => \App\Models\ResponseStatus::where('id', '!=', \App\Enums\ResponseStatus::Initiation->value)->pluck('name', 'id'))
-                                                    ->required()
-                                                    ->live(),
-                                                Forms\Components\Select::make('disposition_to_employee_id')
-                                                    ->label(__('Disposition To'))
-                                                    ->options(Employee::all()->pluck('name', 'id'))
-                                                    ->searchable()
-                                                    ->visible(fn (Get $get): bool => (int) $get('response_status_id') === EnumsResponseStatus::Disposition->value)
-                                                    ->required(fn (Get $get): bool => (int) $get('response_status_id') === EnumsResponseStatus::Disposition->value),
-                                                Forms\Components\RichEditor::make('answer')
-                                                    ->label(__('Answer'))
-                                                    ->required(fn (Get $get): bool => (int) $get('response_status_id') !== EnumsResponseStatus::Disposition->value),
-                                                Forms\Components\FileUpload::make('answer_attachment')
-                                                    ->label(__('Answer Attachment'))
-                                                    ->disk('private')
-                                                    ->directory('gratifications/answers')
-                                                    ->downloadable()
-                                                    ->openable(),
-                                            ])
-                                            ->action(function (array $data, $livewire) {
-                                                $process = new \App\Models\ReportProcess();
-                                                $process->reportable_id = $livewire->ownerRecord->id;
-                                                $process->reportable_type = \App\Models\Gratification::class;
-                                                $process->response_status_id = $data['response_status_id'] ?? $livewire->ownerRecord->latestProcess->response_status_id ?? 1;
-                                                $process->answer = $data['answer'];
-                                                $process->answer_attachment = $data['answer_attachment'];
-                                                $process->disposition_to_employee_id = $data['disposition_to_employee_id'] ?? null;
-                                                $process->save();
+                ->form([
+                    Forms\Components\Select::make('response_status_id')
+                        ->label(__('Response Status'))
+                        ->options(fn () => \App\Models\ResponseStatus::where('id', '!=', \App\Enums\ResponseStatus::Initiation->value)->pluck('name', 'id'))
+                        ->required()
+                        ->live(),
+                    Forms\Components\Select::make('disposition_to_employee_id')
+                        ->label(__('Disposition To'))
+                        ->options(Employee::all()->pluck('name', 'id'))
+                        ->searchable()
+                        ->visible(fn (Get $get): bool => (int) $get('response_status_id') === EnumsResponseStatus::Disposition->value)
+                        ->required(fn (Get $get): bool => (int) $get('response_status_id') === EnumsResponseStatus::Disposition->value),
+                    Forms\Components\RichEditor::make('answer')
+                        ->label(__('Answer'))
+                        ->required(fn (Get $get): bool => (int) $get('response_status_id') !== EnumsResponseStatus::Disposition->value),
+                    Forms\Components\FileUpload::make('answer_attachment')
+                        ->label(__('Answer Attachment'))
+                        ->disk('private')
+                        ->directory('gratifications/answers')
+                        ->downloadable()
+                        ->openable(),
+                ])
+                ->action(function (array $data, $livewire) {
+                    $process = new \App\Models\ReportProcess();
+                    $process->reportable_id = $livewire->ownerRecord->id;
+                    $process->reportable_type = \App\Models\Gratification::class;
+                    $process->response_status_id = $data['response_status_id'] ?? $livewire->ownerRecord->latestProcess->response_status_id ?? 1;
+                    $process->answer = $data['answer'];
+                    $process->answer_attachment = $data['answer_attachment'];
+                    $process->disposition_to_employee_id = $data['disposition_to_employee_id'] ?? null;
+                    $process->save();
 
-                                                if ($process->response_status_id == \App\Enums\ResponseStatus::Process->value) {
-                                                    $terminationProcess = new \App\Models\ReportProcess();
-                                                    $terminationProcess->reportable_id = $livewire->ownerRecord->id;
-                                                    $terminationProcess->reportable_type = \App\Models\Gratification::class;
-                                                    $terminationProcess->response_status_id = \App\Enums\ResponseStatus::Termination->value;
-                                                    $terminationProcess->answer = $data['answer'];
-                                                    $terminationProcess->answer_attachment = $data['answer_attachment'];
-                                                    $terminationProcess->save();
-                                                }
-                                            }),
+                    if ($process->response_status_id == \App\Enums\ResponseStatus::Process->value) {
+                        $terminationProcess = new \App\Models\ReportProcess();
+                        $terminationProcess->reportable_id = $livewire->ownerRecord->id;
+                        $terminationProcess->reportable_type = \App\Models\Gratification::class;
+                        $terminationProcess->response_status_id = \App\Enums\ResponseStatus::Termination->value;
+                        $terminationProcess->answer = $data['answer'];
+                        $terminationProcess->answer_attachment = $data['answer_attachment'];
+                        $terminationProcess->save();
+                    }
+                }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

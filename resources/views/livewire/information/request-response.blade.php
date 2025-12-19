@@ -30,63 +30,6 @@
                         <div>
                             <p class="text-sm text-base-content/70">{{ __('Requester Name') }}</p>
                             <p class="font-semibold text-base-content">{{ $reportDetail->reporter_name }}</p>
-
-                    {{-- Riwayat Proses (Timeline) --}}
-                    @if($reportDetail->processes && $reportDetail->processes->count() > 0)
-                        <div class="mt-8">
-                            <h3 class="text-2xl font-bold text-base-content mb-4">
-                                <i class="bi bi-hourglass-split mr-2 text-primary"></i>{{ __('Response History') }}
-                            </h3>
-                            <ul class="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical">
-                                @foreach($reportDetail->processes as $process)
-                                    @php
-                                        $statusClass = '';
-                                        $icon = '';
-                                        switch ($process->response_status_id) {
-                                            case \App\Enums\ResponseStatus::Initiation->value:
-                                                $statusClass = 'bg-warning/10 text-warning-content';
-                                                $icon = 'bi-hourglass-split';
-                                                break;
-                                            case \App\Enums\ResponseStatus::Process->value:
-                                                $statusClass = 'bg-info/10 text-info-content';
-                                                $icon = 'bi-arrow-repeat';
-                                                break;
-                                            case \App\Enums\ResponseStatus::Disposition->value:
-                                                $statusClass = 'bg-primary/10 text-primary-content';
-                                                $icon = 'bi-send-check';
-                                                break;
-                                            case \App\Enums\ResponseStatus::Termination->value:
-                                                $statusClass = 'bg-success/10 text-success-content';
-                                                $icon = 'bi-check-circle';
-                                                break;
-                                        }
-                                    @endphp
-                                    <li>
-                                        <div class="timeline-middle">
-                                            <i class="bi {{ $icon }} text-2xl"></i>
-                                        </div>
-                                        <div class="timeline-end mb-10 p-4 rounded-lg shadow-md border border-base-300 {{ $statusClass }}">
-                                            <time class="font-mono italic text-sm">{{ $process->created_at->format('d/m/Y H:i') }}</time>
-                                            <div class="text-xl font-bold">{{ $process->responseStatus->name }}</div>
-                                        </div>
-                                        @if(!$loop->last)
-                                            <hr class="bg-base-300"/>
-                                        @endif
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    {{-- Card untuk Answer, hanya muncul jika status Termination --}}
-                    @if($reportDetail->status === \App\Enums\ResponseStatus::Termination->value && $reportDetail->answer)
-                        <div class="mt-6 bg-base-100 rounded-xl shadow-md border border-base-300 p-4">
-                            <h3 class="text-lg font-semibold text-base-content mb-3">
-                                {{ __('Answer') }}
-                            </h3>
-                            <div class="whitespace-pre-wrap text-sm text-left">
-                                {!! $reportDetail->answer !!}
-                            </div>
                         </div>
                         <div>
                             <p class="text-sm text-base-content/70">{{ __('Request Status') }}</p>
@@ -119,6 +62,10 @@
                             <p class="font-semibold text-base-content">{{ $reportDetail->mobile }}</p>
                         </div>
                         <div>
+                            <p class="text-sm text-base-content/70">{{ __('Request Date') }}</p>
+                            <p class="font-semibold text-base-content">{{ $reportDetail->time_insert ? $reportDetail->time_insert->format('d F Y, H:i') : 'N/A' }}</p>
+                        </div>
+                        <div>
                             <p class="text-sm text-base-content/70">{{ __('Information Usage') }}</p>
                             <p class="font-semibold text-base-content">{{ $reportDetail->used_for }}</p>
                         </div>
@@ -144,10 +91,6 @@
                                 </p>
                             </div>
                         @endif
-                        <div>
-                            <p class="text-sm text-base-content/70">{{ __('Request Date') }}</p>
-                            <p class="font-semibold text-base-content">{{ $reportDetail->time_insert ? $reportDetail->time_insert->format('d F Y, H:i') : 'N/A' }}</p>
-                        </div>
                         <div class="col-span-1 md:col-span-2">
                             <p class="text-sm text-base-content/70">{{ __('Request Content') }}</p>
                             <p class="font-semibold text-base-content whitespace-pre-wrap">{{ $reportDetail->report_title }}</p>
@@ -165,8 +108,6 @@
                         <ul class="flex flex-col gap-y-8">
                             @foreach($reportDetail->processes as $process)
                                 @php
-                                    $isTermination = $process->response_status_id === \App\Enums\ResponseStatus::Termination->value;
-                                    $isLast = $loop->last;
                                     $statusConfig = [
                                         \App\Enums\ResponseStatus::Initiation->value => ['icon' => 'bi-hourglass-split', 'color' => 'bg-warning/30 text-warning', 'border' => 'border-warning'],
                                         \App\Enums\ResponseStatus::Process->value => ['icon' => 'bi-arrow-repeat', 'color' => 'bg-info/30 text-info', 'border' => 'border-info'],
@@ -246,7 +187,7 @@
                     </a>
                     <a href="{{ route('information.request') }}" class="btn btn-primary" wire:navigate>
                         <i class="bi bi-house"></i>
-                        {{ __('Back to Home') }}
+                        {{ __('Back to Form') }}
                     </a>
                 </div>
 
