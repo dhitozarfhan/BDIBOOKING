@@ -64,13 +64,13 @@
                             <span class="label-text font-semibold">{{ __('Applicant Name') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <div class="absolute inset-y-0 left-0  flex items-center pointer-events-none">
                                 <i class="bi bi-person-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
                             <input 
                                 id="reporter_name" 
                                 type="text" 
-                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
+                                class="input input-bordered w-full pr-4 focus:input-primary transition-all duration-200" 
                                 wire:model.lazy="reporter_name"
                                 placeholder="{{ __('Enter full name') }}">
                         </div>
@@ -89,13 +89,13 @@
                             <span class="label-text font-semibold">{{ __('ID Card Number') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">
                                 <i class="bi bi-card-heading text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
                             <input 
                                 id="id_card_number" 
                                 type="text" 
-                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
+                                class="input input-bordered w-full pr-4 focus:input-primary transition-all duration-200" 
                                 wire:model.lazy="id_card_number"
                                 placeholder="{{ __('Enter ID card number') }}">
                         </div>
@@ -134,13 +134,13 @@
                             <span class="label-text font-semibold">{{ __('Occupation') }}</span>
                         </label>
                         <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">
                                 <i class="bi bi-briefcase-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
                             <input 
                                 id="occupation" 
                                 type="text" 
-                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
+                                class="input input-bordered w-full pr-4 focus:input-primary transition-all duration-200" 
                                 wire:model.lazy="occupation"
                                 placeholder="{{ __('Enter occupation') }}">
                         </div>
@@ -159,13 +159,13 @@
                             <span class="label-text font-semibold">{{ __('Mobile Number') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">
                                 <i class="bi bi-telephone-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
                             <input 
                                 id="mobile" 
                                 type="text" 
-                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
+                                class="input input-bordered w-full pr-4 focus:input-primary transition-all duration-200" 
                                 wire:model.lazy="mobile"
                                 placeholder="{{ __('Enter phone number') }}">
                         </div>
@@ -184,13 +184,13 @@
                             <span class="label-text font-semibold">{{ __('Email') }}</span>
                         </label>
                         <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">
                                 <i class="bi bi-envelope-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
                             <input 
                                 id="email" 
                                 type="email" 
-                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
+                                class="input input-bordered w-full pr-4 focus:input-primary transition-all duration-200" 
                                 wire:model.lazy="email"
                                 placeholder="{{ __('Enter email address') }}">
                         </div>
