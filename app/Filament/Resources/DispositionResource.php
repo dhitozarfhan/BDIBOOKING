@@ -83,9 +83,9 @@ class DispositionResource extends Resource
 
         $user = Auth::user();
 
-        // If the user has the 'kelola disposisi' permission, filter the dispositions
-        // to only show records assigned to them. The User model is the Employee model.
-        if ($user && $user->can(PermissionType::ManageDisposition->value)) {
+        // If the user is NOT a super-admin, they can ONLY see dispositions assigned to them.
+        // This applies regardless of whether they have 'Complaints' or 'ManageDisposition' permissions.
+        if ($user && !$user->hasRole('super-admin')) {
             $query->where('disposition_to_employee_id', $user->id);
         }
 
