@@ -54,14 +54,14 @@
                         <span class="label-text font-semibold">{{ __('information.reporter_name') }} <span class="text-error">*</span></span>
                     </label>
                     <div class="relative group">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">
                             <i class="bi bi-person-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                         </div>
                         <input 
                             type="text" 
                             id="reporter_name" 
                             wire:model="reporter_name" 
-                            class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
+                            class="input input-bordered w-full pr-4 focus:input-primary transition-all duration-200" 
                             placeholder="{{ __('Enter reporter name') }}">
                     </div>
                     @error('reporter_name') 
@@ -79,14 +79,14 @@
                         <span class="label-text font-semibold">{{ __('information.report_title') }} <span class="text-error">*</span></span>
                     </label>
                     <div class="relative group">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">
                             <i class="bi bi-chat-left-text-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                         </div>
                         <input 
                             type="text" 
                             id="report_title" 
                             wire:model="report_title" 
-                            class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
+                            class="input input-bordered w-full pr-4 focus:input-primary transition-all duration-200" 
                             placeholder="{{ __('Enter report title') }}">
                     </div>
                     @error('report_title') 
@@ -104,14 +104,14 @@
                         <span class="label-text font-semibold">{{ __('information.identity_number') }}</span>
                     </label>
                     <div class="relative group">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">
                             <i class="bi bi-card-heading text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                         </div>
                         <input 
                             type="text" 
                             id="identity_number" 
                             wire:model="identity_number" 
-                            class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
+                            class="input input-bordered w-full pr-4 focus:input-primary transition-all duration-200" 
                             placeholder="{{ __('Enter identity number') }}">
                     </div>
                     @error('identity_number') 
@@ -183,14 +183,14 @@
                         <span class="label-text font-semibold">{{ __('information.mobilephone') }} <span class="text-error">*</span></span>
                     </label>
                     <div class="relative group">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">
                             <i class="bi bi-telephone-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                         </div>
                         <input 
                             type="text" 
                             id="mobile" 
                             wire:model="mobile" 
-                            class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
+                            class="input input-bordered w-full pr-4 focus:input-primary transition-all duration-200" 
                             placeholder="{{ __('Example: 08123456789') }}">
                     </div>
                     @error('mobile') 
@@ -208,14 +208,14 @@
                         <span class="label-text font-semibold">{{ __('information.email') }}</span>
                     </label>
                     <div class="relative group">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <div class="absolute inset-y-0 left-0 flex items-center pointer-events-none">
                             <i class="bi bi-envelope-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                         </div>
                         <input 
                             type="email" 
                             id="email" 
                             wire:model="email" 
-                            class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200" 
+                            class="input input-bordered w-full pr-4 focus:input-primary transition-all duration-200" 
                             placeholder="{{ __('Enter email address') }}">
                     </div>
                     @error('email') 

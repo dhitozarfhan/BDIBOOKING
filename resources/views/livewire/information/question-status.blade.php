@@ -33,7 +33,7 @@
                     </label>
                     <div class="relative">
                         <i class="bi bi-upc-scan absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        <input id="registration_code" type="text" class="input input-bordered w-full pl-12" wire:model.lazy="registration_code" placeholder="{{ __('Enter your registration code') }}">
+                        <input id="registration_code" type="text" class="input input-bordered w-full" wire:model.lazy="registration_code" placeholder="{{ __('Enter your registration code') }}">
                     </div>
                     @error('registration_code') <span class="text-red-500 text-sm mt-2">{{ $message }}</span> @enderror
                 </div>
