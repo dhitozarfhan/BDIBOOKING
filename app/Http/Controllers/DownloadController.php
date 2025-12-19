@@ -27,6 +27,7 @@ class DownloadController extends Controller
             'gratifications' => 'gratification.disk',
             'questions' => 'question.disk',
             'information-requests' => 'information_request.disk',
+            'identity_cards' => 'gratification.disk',
         ];
 
         $disk = null;
