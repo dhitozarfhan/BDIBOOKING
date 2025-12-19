@@ -66,13 +66,13 @@
                             <span class="label-text font-semibold">{{ __('Reporter Name') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <div class="absolute inset-y-0 left-0  flex items-center pointer-events-none">
                                 <i class="bi bi-person-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
                             <input
                                 id="reporter_name"
                                 type="text"
-                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full  pr-4 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="reporter_name"
                                 placeholder="{{ __('Enter full name') }}">
                         </div>
@@ -88,16 +88,16 @@
                     <!-- Identity Number -->
                     <div class="form-control">
                         <label for="identity_number" class="label">
-                            <span class="label-text font-semibold">{{ __('Identity Number (KTP/SIM)') }}</span>
+                            <span class="label-text font-semibold">{{ __('Identity Number (KTP)') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <div class="absolute inset-y-0 left-0  flex items-center pointer-events-none">
                                 <i class="bi bi-card-heading text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
                             <input
                                 id="identity_number"
                                 type="text"
-                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full  pr-4 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="identity_number"
                                 placeholder="{{ __('Enter identity number') }}">
                         </div>
@@ -116,7 +116,7 @@
                     <!-- Identity Card Attachment -->
                     <div class="form-control">
                         <label for="identity_card_attachment" class="label">
-                            <span class="label-text font-semibold">{{ __('ID Card Scan') }}</span>
+                            <span class="label-text font-semibold">{{ __('ID Card Scan') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative">
                             @if ($identity_card_attachment)
@@ -170,7 +170,7 @@
                     <!-- Address -->
                     <div class="form-control">
                         <label for="address" class="label">
-                            <span class="label-text font-semibold">{{ __('Address') }}</span>
+                            <span class="label-text font-semibold">{{ __('Address') }} <span class="text-error">*</span></span>
                         </label>
                         <textarea
                             id="address"
@@ -190,16 +190,16 @@
                     <!-- Occupation -->
                     <div class="form-control">
                         <label for="occupation" class="label">
-                            <span class="label-text font-semibold">{{ __('Occupation') }}</span>
+                            <span class="label-text font-semibold">{{ __('Occupation') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <div class="absolute inset-y-0 left-0  flex items-center pointer-events-none">
                                 <i class="bi bi-briefcase-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
                             <input
                                 id="occupation"
                                 type="text"
-                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full  pr-4 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="occupation"
                                 placeholder="{{ __('Enter occupation') }}">
                         </div>
@@ -218,16 +218,16 @@
                     <!-- Phone -->
                     <div class="form-control">
                         <label for="phone" class="label">
-                            <span class="label-text font-semibold">{{ __('Phone') }}</span>
+                            <span class="label-text font-semibold">{{ __('Phone') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <div class="absolute inset-y-0 left-0  flex items-center pointer-events-none">
                                 <i class="bi bi-telephone-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
                             <input
                                 id="phone"
                                 type="text"
-                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full  pr-4 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="phone"
                                 placeholder="{{ __('Enter phone number') }}">
                         </div>
@@ -246,16 +246,16 @@
                     <!-- Email -->
                     <div class="form-control">
                         <label for="email" class="label">
-                            <span class="label-text font-semibold">{{ __('Email') }}</span>
+                            <span class="label-text font-semibold">{{ __('Email') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <div class="absolute inset-y-0 left-0  flex items-center pointer-events-none">
                                 <i class="bi bi-envelope-fill text-base-content/40 group-focus-within:text-primary transition-colors"></i>
                             </div>
                             <input
                                 id="email"
                                 type="email"
-                                class="input input-bordered w-full pl-11 pr-4 focus:input-primary transition-all duration-200"
+                                class="input input-bordered w-full  pr-4 focus:input-primary transition-all duration-200"
                                 wire:model.lazy="email"
                                 placeholder="{{ __('Enter email address') }}">
                         </div>
@@ -281,7 +281,7 @@
                     <!-- Jenis Pelanggaran -->
                     <div class="form-control">
                         <label for="violation_id" class="label">
-                            <span class="label-text font-semibold">{{ __('Type of Violation') }}</span>
+                            <span class="label-text font-semibold">{{ __('Type of Violation') }} <span class="text-error">*</span></span>
                         </label>
                         <select
                             id="violation_id"
@@ -307,13 +307,13 @@
                             <span class="label-text font-semibold">{{ __('Report Title') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <div class="absolute inset-y-0 left-0  flex items-center pointer-events-none">
                                 <i class="bi bi-chat-left-text-fill text-base-content/40 group-focus-within:text-secondary transition-colors"></i>
                             </div>
                             <input
                                 id="report_title"
                                 type="text"
-                                class="input input-bordered w-full pl-11 pr-4 focus:input-secondary transition-all duration-200"
+                                class="input input-bordered w-full  pr-4 focus:input-secondary transition-all duration-200"
                                 wire:model.lazy="report_title"
                                 placeholder="{{ __('Brief summary of your report') }}">
                         </div>
@@ -352,7 +352,7 @@
                     <!-- Attachment -->
                     <div class="form-control">
                         <label for="attachment" class="label">
-                            <span class="label-text font-semibold">{{ __('Supporting Data') }}</span>
+                            <span class="label-text font-semibold">{{ __('Supporting Data') }} <span class="text-error">*</span></span>
                         </label>
                         <div class="relative">
                             @if ($attachment)
