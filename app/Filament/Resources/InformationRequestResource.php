@@ -125,6 +125,15 @@ class InformationRequestResource extends Resource
                             ->label(__('ID Card Number'))
                             ->disabled()
                             ->dehydrated(false),
+                        Forms\Components\FileUpload::make('identity_card_attachment')
+                            ->label(__('ID Card Attachment'))
+                            ->disk('private')
+                            ->directory('identity_cards')
+                            ->visibility('private')
+                            ->downloadable()
+                            ->openable()
+                            ->disabled()
+                            ->dehydrated(false),
                         Forms\Components\TextInput::make('occupation')
                             ->label(__('Occupation'))
                             ->disabled()

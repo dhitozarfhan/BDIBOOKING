@@ -11,6 +11,7 @@ class InformationRequest extends Model
     protected $fillable = [
         'reporter_name',
         'id_card_number',
+        'identity_card_attachment',
         'address',
         'occupation',
         'mobile',
@@ -26,6 +27,7 @@ class InformationRequest extends Model
     ];
 
     protected $casts = [
+        'identity_card_attachment' => 'string',
         'grab_method' => 'array',
         'delivery_method' => 'array',
         'rule_accepted' => 'boolean',
