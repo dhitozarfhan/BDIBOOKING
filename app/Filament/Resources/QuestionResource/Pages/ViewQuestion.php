@@ -80,19 +80,6 @@ class ViewQuestion extends ViewRecord
                                             ->label(__('Registration Code')),
                                     ])->columns(1),
 
-                                Section::make(__('Latest Status'))
-                                    ->schema([
-                                        TextEntry::make('process.responseStatus.name')
-                                            ->label(__('Status')),
-                                        TextEntry::make('process.answer')
-                                            ->label(__('Latest Answer'))
-                                            ->html()
-                                            ->placeholder('-'),
-                                        TextEntry::make('process.created_at')
-                                            ->label(__('Processed At'))
-                                            ->dateTime('d F Y H:i')
-                                            ->placeholder('-'),
-                                    ])->columns(1),
                             ])->columnSpan(1),
                     ]),
             ]);
