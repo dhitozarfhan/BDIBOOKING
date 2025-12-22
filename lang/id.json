@@ -144,6 +144,7 @@
     "information.identity_card_attachment": "Lampiran Kartu Identitas",
     "information.identity_number": "Nomor Identitas (KTP)",
     "information.mobilephone": "Telepon Seluler",
+    "information.public_question": "Pengaduan Masyarakat",
     "information.reporter_name": "Nama Pelapor",
     "information.report_title": "Judul Pertanyaan",
     "Enter reporter name": "Masukkan nama pelapor",
@@ -548,7 +549,7 @@
     "Success!": "Berhasil!",
     "Thank you for your participation in maintaining integrity.": "Terima kasih atas partisipasi Anda dalam menjaga integritas.",
     "Important Information": "Informasi Penting",
-    "gratification.form.info_text": "Setiap laporan akan dijaga kerahasiannya dan dalam hal terdapat bukti yang cukup akan ditindaklanjuti pada proses investigasi selanjutnya. Keberadaan pelaporan gratifikasi menciptakan sistem saling mengawasi terhadap etika, kesesuaian perilaku dan ketaatan prosedur kerja.",
+    "gratification.form.info_text": "Setiap laporan akan dijaga kerahasiaannya dan dalam hal terdapat bukti yang cukup akan ditindaklanjuti pada proses investigasi selanjutnya. Keberadaan pelaporan gratifikasi menciptakan sistem saling mengawasi terhadap etika, kesesuaian perilaku dan ketaatan prosedur kerja.",
     "Enter full name": "Masukkan nama lengkap",
     "Identity Number (KTP/SIM)": "Nomor Identitas (KTP/SIM)",
     "Example: 3174012345678901": "Contoh: 3174012345678901",
@@ -718,6 +719,8 @@
     "Enter occupation": "Masukkan pekerjaan",
     "Enter phone number": "Masukkan nomor telepon",
     "Your information will be kept confidential": "Informasi Anda akan dijaga kerahasiaannya",
-    "Submitting...": "Mengirim..."
-    
+    "Submitting...": "Mengirim...",
+    "Your information request has been submitted successfully. We will process your request shortly. Registration Code: :code": "Permohonan informasi Anda telah berhasil dikirim. Kami akan segera memproses permohonan Anda. Kode Registrasi: :code",
+    "Question successfully submitted. Registration Code: :code": "Pertanyaan berhasil dikirim. Kode Registrasi: :code"
+
 }

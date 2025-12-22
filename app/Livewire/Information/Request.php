@@ -167,7 +167,7 @@ class Request extends Component
 
             
 
-                        session()->flash('message', __('Your information request has been submitted successfully. We will process your request shortly. Registration Code: '));
+                        session()->flash('message', __('Your information request has been submitted successfully. We will process your request shortly. Registration Code: :code', ['code' => $registrationCode]));
 
                         session()->flash('registration_code', $registrationCode);
 

@@ -568,6 +568,8 @@
     "Enter occupation": "Enter occupation",
     "Enter phone number": "Enter phone number",
     "Your information will be kept confidential": "Your information will be kept confidential",
-    "Submitting...": "Submitting..."
-    
+    "Submitting...": "Submitting...",
+    "Your information request has been submitted successfully. We will process your request shortly. Registration Code: :code": "Your information request has been submitted successfully. We will process your request shortly. Registration Code: :code",
+    "Question successfully submitted. Registration Code: :code": "Question successfully submitted. Registration Code: :code"
+
 }
