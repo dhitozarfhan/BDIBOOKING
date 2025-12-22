@@ -93,7 +93,7 @@ class DispositionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('reportable.reporter_name')
-                    ->label('Reporter Name')
+                    ->label(__('Reporter Name'))
                     ->formatStateUsing(fn ($state, $record) => $record->reportable->reporter_name ?? $record->reportable->name)
                     ->searchable(query: function (Builder $query, string $search): Builder {
                         return $query->whereHasMorph('reportable', [Wbs::class, Gratification::class, InformationRequest::class, Question::class], function (Builder $query) use ($search) {
@@ -102,7 +102,7 @@ class DispositionResource extends Resource
                     })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('reportable.report_title')
-                    ->label('Report Title')
+                    ->label(__('Report Title'))
                     ->formatStateUsing(fn ($state, $record) => $record->reportable->report_title ?? $record->reportable->subject)
                     ->searchable(query: function (Builder $query, string $search): Builder {
                         return $query->whereHasMorph('reportable', [Wbs::class, Gratification::class, InformationRequest::class, Question::class], function (Builder $query) use ($search) {
@@ -111,11 +111,11 @@ class DispositionResource extends Resource
                     })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('reportable_type')
-                    ->label('Source')
+                    ->label(__('Source'))
                     ->formatStateUsing(fn (string $state): string => class_basename($state))
                     ->badge(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Created At')
+                    ->label(__('Created At'))
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('answer_attachment')
@@ -170,9 +170,9 @@ class DispositionResource extends Resource
                         ]);
 
                         Notification::make()
-                            ->title('Berhasil')
+                            ->title(__('Berhasil'))
                             ->success()
-                            ->body('Balasan disposisi telah berhasil disimpan.')
+                            ->body(__('Balasan disposisi telah berhasil disimpan.'))
                             ->send();
                     }),
             ])

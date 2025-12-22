@@ -203,7 +203,7 @@ class InformationRequestResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\Action::make('selesai')
-                    ->label('Selesai')
+                    ->label(__('Selesai'))
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->visible(function ($record) {
@@ -232,8 +232,8 @@ class InformationRequestResource extends Resource
                             $terminationProcess->update(['is_completed' => true]);
                         }
                     })
-                    ->modalHeading('Kirim Jawaban ke Publik')
-                    ->modalDescription('Pastikan semua proses telah sesuai sebelum mengirimkan jawaban ke publik.')
+                    ->modalHeading(__('Kirim Jawaban ke Publik'))
+                    ->modalDescription(__('Pastikan semua proses telah sesuai sebelum mengirimkan jawaban ke publik.'))
                     ->modalContent(function ($record) {
                         $processes = $record->reportProcesses()->orderBy('created_at', 'asc')->get();
                         $html = '';
@@ -255,16 +255,16 @@ class InformationRequestResource extends Resource
                         }
                         return new \Illuminate\Support\HtmlString($html);
                     })
-                    ->modalSubmitActionLabel('Kirim'),
+                    ->modalSubmitActionLabel(__('Kirim')),
                 Tables\Actions\Action::make('riwayat')
-                    ->label('Riwayat')
+                    ->label(__('Riwayat'))
                     ->icon('heroicon-o-clock')
                     ->color('gray')
                     ->visible(function ($record) {
                         $terminationProcess = $record->reportProcesses()->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)->first();
                         return $terminationProcess && $terminationProcess->is_completed;
                     })
-                    ->modalHeading('Riwayat Proses Laporan')
+                    ->modalHeading(__('Riwayat Proses Laporan'))
                     ->modalContent(function ($record) {
                         $processes = $record->reportProcesses()->orderBy('created_at', 'asc')->get();
                         $html = '';
@@ -287,7 +287,7 @@ class InformationRequestResource extends Resource
                         return new \Illuminate\Support\HtmlString($html);
                     })
                     ->modalSubmitAction(false)
-                    ->modalCancelActionLabel('Tutup'),
+                    ->modalCancelActionLabel(__('Tutup')),
             ])
             ->bulkActions([
             ]);

@@ -95,7 +95,7 @@ class ProcessRelationManager extends RelationManager
                         }
                     }),
                 Tables\Actions\Action::make('reply')
-                    ->label('Tambahkan Balasan')
+                    ->label(__('Tambahkan Balasan'))
                     ->icon('heroicon-o-chat-bubble-left-right')
                     ->color('info')
                     ->form([
