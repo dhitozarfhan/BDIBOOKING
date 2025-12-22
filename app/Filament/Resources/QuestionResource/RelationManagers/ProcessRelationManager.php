@@ -38,21 +38,12 @@ class ProcessRelationManager extends RelationManager
                     ->label(__('Answer'))
                     ->required(fn (Get $get): bool => (int) $get('response_status_id') !== EnumsResponseStatus::Disposition->value)
                     ->columnSpanFull(),
-                Forms\Components\RichEditor::make('answer')
-                    ->label(__('Answer'))
-                    ->required(fn (Get $get): bool => (int) $get('response_status_id') !== EnumsResponseStatus::Disposition->value),
-                \Asmit\FilamentUpload\Forms\Components\AdvancedFileUpload::make('answer_attachment')
+                Forms\Components\FileUpload::make('answer_attachment')
                     ->label(__('Answer Attachment'))
                     ->disk('private')
-                    ->directory('gratifications/answers')
+                    ->directory('questions/answers')
                     ->downloadable()
-                    ->openable()
-                    ->pdfPreviewHeight(400)
-                    ->pdfDisplayPage(1)
-                    ->pdfToolbar(true)
-                    ->pdfZoomLevel(100)
-                    ->pdfFitType(\Asmit\FilamentUpload\Enums\PdfViewFit::FIT)
-                    ->pdfNavPanes(true),
+                    ->openable(),
             ]);
     }
 
@@ -106,8 +97,8 @@ class ProcessRelationManager extends RelationManager
                 Tables\Actions\Action::make('reply')
                     ->label(__('Tambahkan Balasan'))
                     ->icon('heroicon-o-chat-bubble-left-right')
-                    ->color('info')
                     ->visible(fn ($livewire) => ! $livewire->ownerRecord->process?->is_completed)
+                    ->color('info')
                     ->form([
                         Forms\Components\Select::make('response_status_id')
                             ->label(__('Response Status'))
