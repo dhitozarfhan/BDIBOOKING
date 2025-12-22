@@ -14,8 +14,6 @@ use App\Enums\ResponseStatus;
 
 class ViewQuestion extends ViewRecord
 {
-    use ViewRecord\Concerns\Translatable;
-
     protected static string $resource = QuestionResource::class;
 
     public function mount(int | string $record): void

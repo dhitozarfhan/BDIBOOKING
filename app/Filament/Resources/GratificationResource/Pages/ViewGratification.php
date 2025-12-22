@@ -16,14 +16,11 @@ use App\Enums\ResponseStatus;
 
 class ViewGratification extends ViewRecord
 {
-    use ViewRecord\Concerns\Translatable;
-
     protected static string $resource = GratificationResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\LocaleSwitcher::make(),
         ];
     }
 

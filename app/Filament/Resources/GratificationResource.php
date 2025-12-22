@@ -9,7 +9,6 @@ use App\Models\Gratification;
 use App\Models\ResponseStatus;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
@@ -22,8 +21,6 @@ use Illuminate\Support\Facades\Storage;
 
 class GratificationResource extends Resource
 {
-    use Translatable;
-
     protected static ?string $model = Gratification::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
@@ -41,11 +38,6 @@ class GratificationResource extends Resource
     public static function getNavigationSort(): ?int
     {
         return 6; // Position after Article (5)
-    }
-
-    public static function getTranslatableLocales(): array
-    {
-        return ['id', 'en'];
     }
 
     public static function canViewAny(): bool

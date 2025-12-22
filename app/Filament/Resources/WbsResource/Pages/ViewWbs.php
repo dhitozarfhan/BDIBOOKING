@@ -16,14 +16,11 @@ use App\Enums\ResponseStatus;
 
 class ViewWbs extends ViewRecord
 {
-    use ViewRecord\Concerns\Translatable;
-
     protected static string $resource = WbsResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
-            Actions\LocaleSwitcher::make(),
         ];
     }
 

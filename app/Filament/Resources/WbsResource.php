@@ -11,7 +11,6 @@ use App\Models\Violation;
 use App\Models\Wbs;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
@@ -24,8 +23,6 @@ use Illuminate\Support\Facades\Storage;
 
 class WbsResource extends Resource
 {
-    use Translatable;
-
     protected static ?string $model = Wbs::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
