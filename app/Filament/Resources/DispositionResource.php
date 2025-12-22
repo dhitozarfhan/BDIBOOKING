@@ -69,8 +69,20 @@ class DispositionResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery()
-            ->where('response_status_id', ResponseStatus::Disposition->value)
+        $user = Auth::user();
+        
+        // Start with base query
+        $query = parent::getEloquentQuery();
+        
+        // IMPORTANT: Apply personalization filter FIRST!
+        // Non-super-admin employees can ONLY see dispositions assigned to them.
+        // Super-admin can see all dispositions (no filter applied).
+        if ($user && !$user->hasRole('super-admin')) {
+            $query->where('disposition_to_employee_id', $user->id);
+        }
+        
+        // Then apply other filters
+        $query->where('response_status_id', ResponseStatus::Disposition->value)
             ->whereIn('reportable_type', [
                 Wbs::class,
                 Gratification::class,
@@ -80,14 +92,6 @@ class DispositionResource extends Resource
             ->whereDoesntHave('reportable.reportProcesses', function (Builder $query) {
                 $query->where('response_status_id', ResponseStatus::Termination->value);
             });
-
-        $user = Auth::user();
-
-        // If the user is NOT a super-admin, they can ONLY see dispositions assigned to them.
-        // This applies regardless of whether they have 'Complaints' or 'ManageDisposition' permissions.
-        if ($user && !$user->hasRole('super-admin')) {
-            $query->where('disposition_to_employee_id', $user->id);
-        }
 
         return $query;
     }
