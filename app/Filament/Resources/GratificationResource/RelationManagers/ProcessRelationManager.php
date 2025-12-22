@@ -39,12 +39,18 @@ class ProcessRelationManager extends RelationManager
                 Forms\Components\RichEditor::make('answer')
                     ->label(__('Answer'))
                     ->required(fn (Get $get): bool => (int) $get('response_status_id') !== EnumsResponseStatus::Disposition->value),
-                Forms\Components\FileUpload::make('answer_attachment')
+                \Asmit\FilamentUpload\Forms\Components\AdvancedFileUpload::make('answer_attachment')
                     ->label(__('Answer Attachment'))
                     ->disk('private')
                     ->directory('gratifications/answers')
                     ->downloadable()
-                    ->openable(),
+                    ->openable()
+                    ->pdfPreviewHeight(400)
+                    ->pdfDisplayPage(1)
+                    ->pdfToolbar(true)
+                    ->pdfZoomLevel(100)
+                    ->pdfFitType(\Asmit\FilamentUpload\Enums\PdfViewFit::FIT)
+                    ->pdfNavPanes(true),
             ]);
     }
 
@@ -114,12 +120,18 @@ class ProcessRelationManager extends RelationManager
                     Forms\Components\RichEditor::make('answer')
                         ->label(__('Answer'))
                         ->required(fn (Get $get): bool => (int) $get('response_status_id') !== EnumsResponseStatus::Disposition->value),
-                    Forms\Components\FileUpload::make('answer_attachment')
+                    \Asmit\FilamentUpload\Forms\Components\AdvancedFileUpload::make('answer_attachment')
                         ->label(__('Answer Attachment'))
                         ->disk('private')
                         ->directory('gratifications/answers')
                         ->downloadable()
-                        ->openable(),
+                        ->openable()
+                        ->pdfPreviewHeight(400)
+                        ->pdfDisplayPage(1)
+                        ->pdfToolbar(true)
+                        ->pdfZoomLevel(100)
+                        ->pdfFitType(\Asmit\FilamentUpload\Enums\PdfViewFit::FIT)
+                        ->pdfNavPanes(true),
                 ])
                 ->action(function (array $data, $livewire) {
                     $process = new \App\Models\ReportProcess();
