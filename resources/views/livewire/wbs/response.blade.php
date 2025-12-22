@@ -120,7 +120,19 @@
                                         <i class="bi {{ $config['icon'] }} text-2xl"></i>
                                         <div>
                                             <time class="font-mono italic text-sm opacity-70">{{ $process->created_at->format('d F Y, H:i') }}</time>
-                                            <div class="text-xl font-bold mt-1">{{ $process->responseStatus->name }}</div>
+                                            <div class="text-xl font-bold mt-1">
+                                                @if($process->response_status_id === \App\Enums\ResponseStatus::Initiation->value)
+                                                    {{ __('Initiation') }}
+                                                @elseif($process->response_status_id === \App\Enums\ResponseStatus::Process->value)
+                                                    {{ __('Process') }}
+                                                @elseif($process->response_status_id === \App\Enums\ResponseStatus::Disposition->value)
+                                                    {{ __('Disposition') }}
+                                                @elseif($process->response_status_id === \App\Enums\ResponseStatus::Termination->value)
+                                                    {{ __('Completed') }}
+                                                @else
+                                                    {{ __('Unknown Status') }}
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </li>

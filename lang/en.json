@@ -159,6 +159,7 @@
     "Fax": "Fax",
     "File": "File",
     "Files": "Files",
+    "Final Answer": "Final Answer",
     "Finish enabling two factor authentication.": "Finish enabling two factor authentication.",
     "Footer About Message": "BDI Yogyakarta has the task of implementing education and training for industrial human resources through <b>3-in-1 Training <\/b> (Training-Competency Certification-Job Placement) and <b>business incubators to bring up industrial entrepreneurship.<\/b>",
     "For your security, please confirm your password to continue.": "For your security, please confirm your password to continue.",
@@ -348,6 +349,7 @@
     "Remove Team Member": "Remove Team Member",
     "Reply": "Reply",
     "Report": "Report",
+    "Report Attachment": "Report Attachment",
     "Report Content": "Report Content",
     "Report Date": "Report Date",
     "Report Description": "Report Description",
@@ -375,6 +377,7 @@
     "Reset Content": "Reset Content",
     "Reset Password": "Reset Password",
     "Reset Password Notification": "Reset Password Notification",
+    "Response History": "Response History",
     "Response Status": "Response Status",
     "Restore": "Restore",
     "Restore :name": "Restore :name",
@@ -571,5 +574,4 @@
     "Submitting...": "Submitting...",
     "Your information request has been submitted successfully. We will process your request shortly. Registration Code: :code": "Your information request has been submitted successfully. We will process your request shortly. Registration Code: :code",
     "Question successfully submitted. Registration Code: :code": "Question successfully submitted. Registration Code: :code"
-
 }

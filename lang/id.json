@@ -115,6 +115,7 @@
     "Failed Dependency": "Dependensi gagal",
     "File": "Mengajukan",
     "Files": "File",
+    "Final Answer": "Jawaban Akhir",
     "Finish enabling two factor authentication.": "Selesai mengaktifkan dua otentikasi faktor.",
     "For your security, please confirm your password to continue.": "Untuk kemanan Anda, harap konfirmasi kata sandi untuk melanjutkan.",
     "Forbidden": "Dilarang",
@@ -605,6 +606,7 @@
     "Report Subject": "Subjek Laporan",
     "Reporter Phone": "Telepon Pelapor",
     "Report Date": "Tanggal Laporan",
+    "Report Attachment": "Lampiran Laporan",
     "Report Content": "Isi Laporan",
     "No answer available.": "Jawaban tidak tersedia.",
     "No official response to this report yet.": "Belum terdapat tanggapan resmi atas laporan ini.",
@@ -626,6 +628,7 @@
     "Submitted At": "Dikirim Pada",
     "Reply": "Balas",
     "Response Status": "Status Respon",
+    "Response History": "Riwayat Respon",
     "Answer": "Jawaban",
     "Answer Attachment": "Lampiran Jawaban",
     "Disposition To": "Disposisi Kepada",
@@ -722,5 +725,4 @@
     "Submitting...": "Mengirim...",
     "Your information request has been submitted successfully. We will process your request shortly. Registration Code: :code": "Permohonan informasi Anda telah berhasil dikirim. Kami akan segera memproses permohonan Anda. Kode Registrasi: :code",
     "Question successfully submitted. Registration Code: :code": "Pertanyaan berhasil dikirim. Kode Registrasi: :code"
-
 }
