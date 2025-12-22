@@ -724,20 +724,16 @@
     "Enter phone number": "Masukkan nomor telepon",
     "Your information will be kept confidential": "Informasi Anda akan dijaga kerahasiaannya",
     "Submitting...": "Mengirim...",
-    "Your information request has been submitted successfully. We will process your request shortly. Registration Code: :code": "Permohonan informasi Anda telah berhasil dikirim. Kami akan segera memproses permohonan Anda. Kode Registrasi: :code",
-    "Question successfully submitted. Registration Code: :code": "Pertanyaan berhasil dikirim. Kode Registrasi: :code",
+    "Your information request has been submitted successfully. We will process your request shortly. Registration Code:": "Permohonan informasi Anda telah berhasil dikirim. Kami akan segera memproses permohonan Anda. Kode Registrasi:",
+    "Question successfully submitted. Registration Code:": "Pertanyaan berhasil dikirim. Kode Registrasi:",
     "Reg Code": "Kd Reg",
     "Inquirer": "Penanya",
     "Anonymous": "Anonim",
     "View answer": "Lihat jawaban",
     "No data to display.": "Tidak ada data untuk ditampilkan.",
-    "Search": "Cari",
     "Reg Time": "Waktu Reg",
-    "Registration Code": "Kode Register",
     "Keyword...": "Kata kunci...",
     "All": "Semua",
     "New Question": "Pertanyaan Baru",
-    "Processing": "Sedang Diproses",
-    "Disposition": "Disposisi",
-    "Completed": "Selesai"
+    "Registration code not found. Please double-check the code you entered.": "Kode registrasi tidak ditemukan. Silakan periksa kembali kode yang Anda masukkan."
 }

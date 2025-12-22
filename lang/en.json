@@ -573,8 +573,8 @@
     "Enter phone number": "Enter phone number",
     "Your information will be kept confidential": "Your information will be kept confidential",
     "Submitting...": "Submitting...",
-    "Your information request has been submitted successfully. We will process your request shortly. Registration Code: :code": "Your information request has been submitted successfully. We will process your request shortly. Registration Code: :code",
-    "Question successfully submitted. Registration Code: :code": "Question successfully submitted. Registration Code: :code",
+    "Your information request has been submitted successfully. We will process your request shortly. Registration Code:": "Your information request has been submitted successfully. We will process your request shortly. Registration Code:",
+    "Question successfully submitted. Registration Code:": "Question successfully submitted. Registration Code:",
     "Kd Reg": "Reg Code",
     "Penanya": "Inquirer",
     "Anonim": "Anonymous",
@@ -588,5 +588,6 @@
     "Pertanyaan Baru": "New Question",
     "Sedang Diproses": "Processing",
     "Disposisi": "Disposition",
-    "Selesai": "Completed"
+    "Selesai": "Completed",
+    "Registration code not found. Please double-check the code you entered.": "Registration code not found. Please double-check the code you entered."
 }

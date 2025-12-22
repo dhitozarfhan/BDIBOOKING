@@ -167,7 +167,7 @@ class Request extends Component
 
             
 
-                        session()->flash('message', __('Your information request has been submitted successfully. We will process your request shortly. Registration Code: :code', ['code' => $registrationCode]));
+                        session()->flash('message', __('Your information request has been submitted successfully. We will process your request shortly. Registration Code:' . $registrationCode));
 
                         session()->flash('registration_code', $registrationCode);
 
@@ -276,7 +276,7 @@ class Request extends Component
             return redirect()->route('information.request.response');
 
         } else {
-            session()->flash('statusError', __('Registration code not found.'));
+            session()->flash('statusError', __('Registration code not found. Please double-check the code you entered.'));
             return redirect()->route('information.request.status');
         }
     }

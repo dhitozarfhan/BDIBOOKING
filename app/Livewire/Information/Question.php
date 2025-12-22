@@ -84,7 +84,7 @@ class Question extends Component
             'is_completed' => false,
         ]);
 
-        session()->flash('message', __('Question successfully submitted. Registration Code: :code', ['code' => $registrationCode]));
+        session()->flash('message', __('Question successfully submitted. Registration Code:') . ' ' . $registrationCode);
         session()->flash('registration_code', $registrationCode);
 
         // Dispatch browser event to scroll to top
@@ -151,7 +151,7 @@ class Question extends Component
 
         } else {
             // If not found, flash an error message and redirect back
-            session()->flash('statusError', 'Kode register tidak ditemukan dalam sistem kami.');
+            session()->flash('statusError', __('Registration code not found. Please double-check the code you entered.'));
             return redirect()->route('information.question.status');
         }
     }

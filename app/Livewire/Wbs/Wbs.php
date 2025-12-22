@@ -136,7 +136,7 @@ class Wbs extends Component
             'answer' => null,
         ]);
 
-        session()->flash('message', 'Laporan WBS Anda telah berhasil dikirim dengan kode register: ');
+        session()->flash('message', 'Laporan WBS Anda telah berhasil dikirim dengan kode register: ' . $registrationCode);
         session()->flash('registration_code', $registrationCode);
 
         // Dispatch browser event to scroll to top
@@ -206,7 +206,7 @@ class Wbs extends Component
 
         } else {
             // If not found, flash an error message and redirect back
-            session()->flash('statusError', 'Kode register tidak ditemukan dalam sistem kami.');
+            session()->flash('statusError', __('Registration code not found. Please double-check the code you entered.'));
             return redirect()->route('wbs.status');
         }
     }
