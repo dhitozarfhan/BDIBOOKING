@@ -671,6 +671,7 @@
     "Information Requested": "Informasi yang Diminta",
     "Purpose of Request": "Tujuan Permohonan",
     "Information Acquisition Method": "Cara Memperoleh Informasi",
+    "Acquisition Method": "Cara Memperoleh Informasi",
     "See/View": "Lihat/Melihat",
     "Read": "Membaca",
     "Listen/Hear": "Mendengar",
@@ -724,5 +725,19 @@
     "Your information will be kept confidential": "Informasi Anda akan dijaga kerahasiaannya",
     "Submitting...": "Mengirim...",
     "Your information request has been submitted successfully. We will process your request shortly. Registration Code: :code": "Permohonan informasi Anda telah berhasil dikirim. Kami akan segera memproses permohonan Anda. Kode Registrasi: :code",
-    "Question successfully submitted. Registration Code: :code": "Pertanyaan berhasil dikirim. Kode Registrasi: :code"
+    "Question successfully submitted. Registration Code: :code": "Pertanyaan berhasil dikirim. Kode Registrasi: :code",
+    "Reg Code": "Kd Reg",
+    "Inquirer": "Penanya",
+    "Anonymous": "Anonim",
+    "View answer": "Lihat jawaban",
+    "No data to display.": "Tidak ada data untuk ditampilkan.",
+    "Search": "Cari",
+    "Reg Time": "Waktu Reg",
+    "Registration Code": "Kode Register",
+    "Keyword...": "Kata kunci...",
+    "All": "Semua",
+    "New Question": "Pertanyaan Baru",
+    "Processing": "Sedang Diproses",
+    "Disposition": "Disposisi",
+    "Completed": "Selesai"
 }

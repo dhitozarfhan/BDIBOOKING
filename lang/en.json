@@ -210,6 +210,7 @@
     "Important Information": "Important Information",
     "Include as much clear information as possible to facilitate the investigation process": "Include as much clear information as possible to facilitate the investigation process",
     "Information Acquisition Method": "Information Acquisition Method",
+    "Acquisition Method": "Acquisition Method",
     "Information Request": "Information Request",
     "Information Request Response": "Information Request Response",
     "Information Request Status": "Information Request Status",
@@ -573,5 +574,19 @@
     "Your information will be kept confidential": "Your information will be kept confidential",
     "Submitting...": "Submitting...",
     "Your information request has been submitted successfully. We will process your request shortly. Registration Code: :code": "Your information request has been submitted successfully. We will process your request shortly. Registration Code: :code",
-    "Question successfully submitted. Registration Code: :code": "Question successfully submitted. Registration Code: :code"
+    "Question successfully submitted. Registration Code: :code": "Question successfully submitted. Registration Code: :code",
+    "Kd Reg": "Reg Code",
+    "Penanya": "Inquirer",
+    "Anonim": "Anonymous",
+    "Lihat jawaban": "View answer",
+    "Tidak ada data untuk ditampilkan.": "No data to display.",
+    "Cari": "Search",
+    "Waktu Reg": "Reg Time",
+    "Kode Register": "Registration Code",
+    "Kata kunci...": "Keyword...",
+    "Semua": "All",
+    "Pertanyaan Baru": "New Question",
+    "Sedang Diproses": "Processing",
+    "Disposisi": "Disposition",
+    "Selesai": "Completed"
 }
