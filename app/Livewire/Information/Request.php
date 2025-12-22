@@ -171,7 +171,8 @@ class Request extends Component
 
                         session()->flash('registration_code', $registrationCode);
 
-            
+                        // Dispatch browser event to scroll to top
+                        $this->dispatch('scroll-to-top');
 
                         $this->reset([
 

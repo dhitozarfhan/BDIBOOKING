@@ -278,6 +278,42 @@
 </div>
 
 @push('scripts')
+<script>
+    // Listen for the scroll-to-top event from Livewire
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('scroll-to-top', () => {
+            // Scroll to the very top of the page
+            window.scrollTo({ 
+                top: 0, 
+                behavior: 'smooth' 
+            });
+            
+            // Also try to scroll to the navbar/header if it exists
+            setTimeout(() => {
+                const navbar = document.querySelector('nav') || document.querySelector('header');
+                if (navbar) {
+                    navbar.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }
+            }, 100);
+        });
+    });
+    
+    // Also check on page load if success message exists and scroll to it
+    window.addEventListener('DOMContentLoaded', () => {
+        const successAlert = document.querySelector('.alert-success');
+        if (successAlert) {
+            setTimeout(() => {
+                window.scrollTo({ 
+                    top: 0, 
+                    behavior: 'smooth' 
+                });
+            }, 300);
+        }
+    });
+</script>
 <style>
     @keyframes fade-in {
         from {
