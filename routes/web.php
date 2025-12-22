@@ -126,7 +126,6 @@ Route::get('/wbs/status', App\Livewire\Wbs\Wbs::class)->name('wbs.status');
 Route::get('/wbs/report', App\Livewire\Wbs\Wbs::class)->name('wbs.report');
 Route::get('/wbs/response', App\Livewire\Wbs\Response::class)->name('wbs.response');
 
-
 /*
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\BlogController;
