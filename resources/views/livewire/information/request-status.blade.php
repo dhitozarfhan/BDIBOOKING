@@ -15,6 +15,16 @@
         <p class="mt-2 text-base-content/80">
             {{ __('Enter the registration code to see the status of your request.') }}
         </p>
+
+        @if (session()->has('statusError'))
+            <div class="alert alert-error mt-4">
+                <div>
+                    <i class="bi bi-exclamation-triangle-fill text-xl mr-3"></i>
+                    <span>{{ session('statusError') }}</span>
+                </div>
+            </div>
+        @endif
+
         <form wire:submit.prevent="checkStatus" class="mt-6 space-y-6">
             <div class="space-y-4">
                 <div>
