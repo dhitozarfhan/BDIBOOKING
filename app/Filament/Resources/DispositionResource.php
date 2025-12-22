@@ -12,7 +12,6 @@ use App\Models\ReportProcess;
 use App\Models\Wbs;
 use Filament\Forms;
 use Filament\Notifications\Notification;
-use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -21,8 +20,6 @@ use Illuminate\Support\Facades\Auth;
 
 class DispositionResource extends Resource
 {
-    use Translatable;
-
     protected static ?string $model = ReportProcess::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
@@ -42,11 +39,6 @@ class DispositionResource extends Resource
     public static function getNavigationSort(): ?int
     {
         return 8;
-    }
-
-    public static function getTranslatableLocales(): array
-    {
-        return ['id', 'en'];
     }
 
     public static function getModelLabel(): string
