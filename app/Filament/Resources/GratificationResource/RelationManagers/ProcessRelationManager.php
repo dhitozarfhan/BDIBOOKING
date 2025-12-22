@@ -105,6 +105,7 @@ class ProcessRelationManager extends RelationManager
                     ->label(__('Tambahkan Balasan'))
                     ->icon('heroicon-o-chat-bubble-left-right')
                     ->color('info')
+                    ->visible(fn ($livewire) => ! $livewire->ownerRecord->process?->is_completed)
                 ->form([
                     Forms\Components\Select::make('response_status_id')
                         ->label(__('Response Status'))
