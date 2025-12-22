@@ -84,7 +84,7 @@ class Question extends Component
             'is_completed' => false,
         ]);
 
-        session()->flash('message', __('Question successfully submitted. Registration Code:') . ' ' . $registrationCode);
+        session()->flash('message', __('Question successfully submitted. Registration Code:'));
         session()->flash('registration_code', $registrationCode);
 
         // Dispatch browser event to scroll to top

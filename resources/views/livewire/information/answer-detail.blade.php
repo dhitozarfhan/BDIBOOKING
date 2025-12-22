@@ -196,7 +196,6 @@
             {{-- Navigation Buttons --}}
             <div class="mt-8 flex items-center gap-4">
                 <a href="{{ route('information.answer') }}" class="btn btn-ghost">
-                    <i class="bi bi-arrow-left"></i>
                     {{ __('Back to Answer List') }}
                 </a>
             </div>
@@ -209,7 +208,7 @@
                 </div>
             </div>
             <div class="mt-6">
-                <a href="{{ route('information.answer') }}" class="btn btn-primary">
+                <a href="{{ route('information.answer') }}" class="btn btn-ghost btn-outline">
                     {{ __('Back to Answer List') }}
                 </a>
             </div>

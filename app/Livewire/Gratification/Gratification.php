@@ -145,7 +145,7 @@ class Gratification extends Component
             'answer' => null,
         ]);
 
-            session()->flash('statusError', __('Registration code not found.'));
+        session()->flash('message', __('Your Gratification Report has been successfully submitted with the registration code:'));
         session()->flash('registration_code', $registrationCode);
         
         // Dispatch browser event to scroll to top

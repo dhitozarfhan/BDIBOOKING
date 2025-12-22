@@ -25,6 +25,9 @@
                     <div class="ml-4 flex-1">
                         <h3 class="font-bold text-lg">{{ __('Success!') }}</h3>
                         <p class="mt-1">{{ session('message') }}</p>
+                        <span class="badge badge-success badge-lg ml-2 font-semibold">
+                            {{ session('registration_code') }}
+                        </span>
                         <p class="text-sm mt-2 opacity-90">{{ __('Thank you for your question. We will respond soon.') }}</p>
                     </div>
                 </div>

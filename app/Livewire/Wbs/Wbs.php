@@ -136,7 +136,7 @@ class Wbs extends Component
             'answer' => null,
         ]);
 
-        session()->flash('message', 'Laporan WBS Anda telah berhasil dikirim dengan kode register: ' . $registrationCode);
+        session()->flash('message', 'Laporan WBS Anda telah berhasil dikirim dengan kode register: ');
         session()->flash('registration_code', $registrationCode);
 
         // Dispatch browser event to scroll to top
