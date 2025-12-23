@@ -45,6 +45,84 @@ class ViewInformationRequest extends ViewRecord
                                         TextEntry::make('used_for')
                                             ->label(__('Purpose of Request'))
                                             ->html(),
+                                        TextEntry::make('grab_method')
+                                            ->label(__('information.applicant_grab_method'))
+                                            ->formatStateUsing(function ($state) {
+                                                if (empty($state)) {
+                                                    return '-';
+                                                }
+                                                if (is_array($state)) {
+                                                    return implode(', ', array_map(function($m) {
+                                                        $translated = __($m);
+                                                        // If translation doesn't exist, use a default mapping
+                                                        if ($translated === $m) {
+                                                            $mapping = [
+                                                                'see' => __('See/View'),
+                                                                'read' => __('Read'),
+                                                                'hear' => __('Listen/Hear'),
+                                                                'write' => __('Record/Write'),
+                                                                'hardcopy' => __('Get Hardcopy'),
+                                                                'softcopy' => __('Get Softcopy'),
+                                                            ];
+                                                            return $mapping[$m] ?? ucfirst($m);
+                                                        }
+                                                        return $translated;
+                                                    }, $state));
+                                                }
+                                                $translated = __($state);
+                                                // If translation doesn't exist, use a default mapping
+                                                if ($translated === $state) {
+                                                    $mapping = [
+                                                        'see' => __('See/View'),
+                                                        'read' => __('Read'),
+                                                        'hear' => __('Listen/Hear'),
+                                                        'write' => __('Record/Write'),
+                                                        'hardcopy' => __('Get Hardcopy'),
+                                                        'softcopy' => __('Get Softcopy'),
+                                                    ];
+                                                    return $mapping[$state] ?? ucfirst($state);
+                                                }
+                                                return $translated;
+                                            })
+                                            ->html(),
+                                        TextEntry::make('delivery_method')
+                                            ->label(__('Copy Delivery Method'))
+                                            ->formatStateUsing(function ($state) {
+                                                if (empty($state)) {
+                                                    return '-';
+                                                }
+                                                if (is_array($state)) {
+                                                    return implode(', ', array_map(function($m) {
+                                                        $translated = __($m);
+                                                        // If translation doesn't exist, use a default mapping
+                                                        if ($translated === $m) {
+                                                            $mapping = [
+                                                                'direct' => __('Pick Up Directly'),
+                                                                'courier' => __('Courier Service'),
+                                                                'post' => __('Postal Mail'),
+                                                                'fax' => __('Fax'),
+                                                                'email' => __('Email'),
+                                                            ];
+                                                            return $mapping[$m] ?? ucfirst($m);
+                                                        }
+                                                        return $translated;
+                                                    }, $state));
+                                                }
+                                                $translated = __($state);
+                                                // If translation doesn't exist, use a default mapping
+                                                if ($translated === $state) {
+                                                    $mapping = [
+                                                        'direct' => __('Pick Up Directly'),
+                                                        'courier' => __('Courier Service'),
+                                                        'post' => __('Postal Mail'),
+                                                        'fax' => __('Fax'),
+                                                        'email' => __('Email'),
+                                                    ];
+                                                    return $mapping[$state] ?? ucfirst($state);
+                                                }
+                                                return $translated;
+                                            })
+                                            ->html(),
                                         TextEntry::make('created_at')
                                             ->label(__('Submitted At'))
                                             ->dateTime('d F Y H:i'),

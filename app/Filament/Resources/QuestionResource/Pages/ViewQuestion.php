@@ -39,7 +39,7 @@ class ViewQuestion extends ViewRecord
                             ->schema([
                                 Section::make(__('Question Details'))
                                     ->schema([
-                                        TextEntry::make('subject')
+                                        TextEntry::make('report_title')
                                             ->label(__('Subject')),
                                         TextEntry::make('content')
                                             ->label(__('Content'))
@@ -54,7 +54,7 @@ class ViewQuestion extends ViewRecord
                             ->schema([
                                 Section::make(__('Reporter Information'))
                                     ->schema([
-                                        TextEntry::make('name')
+                                        TextEntry::make('reporter_name')
                                             ->label(__('Name')),
                                         TextEntry::make('identity_number')
                                             ->label(__('Identity Number')),
