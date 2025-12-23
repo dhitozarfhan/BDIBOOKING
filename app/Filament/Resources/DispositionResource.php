@@ -5,6 +5,10 @@ namespace App\Filament\Resources;
 use App\Enums\ResponseStatus;
 use App\Enums\PermissionType;
 use App\Filament\Resources\DispositionResource\Pages;
+use App\Filament\Resources\GratificationResource;
+use App\Filament\Resources\InformationRequestResource;
+use App\Filament\Resources\QuestionResource;
+use App\Filament\Resources\WbsResource;
 use App\Models\Gratification;
 use App\Models\InformationRequest;
 use App\Models\Question;
@@ -123,7 +127,9 @@ class DispositionResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label(__('View Disposition'))
+                    ->icon('heroicon-o-eye'),
                 Tables\Actions\Action::make('Balas')
                     ->label(__('Reply'))
                     ->icon('heroicon-o-chat-bubble-left-right')

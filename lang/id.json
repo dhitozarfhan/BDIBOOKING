@@ -748,5 +748,7 @@
     "post": "Pos",
     "fax": "Faksimile",
     "email": "Email",
-    "Information Usage": "Tujuan Penggunaan Informasi"
+    "Information Usage": "Tujuan Penggunaan Informasi",
+    "View Disposition": "Lihat Disposisi",
+    "View Report": "Lihat Laporan"
 }
