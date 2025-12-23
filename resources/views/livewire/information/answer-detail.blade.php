@@ -3,19 +3,11 @@
 <div class="p-4 sm:p-8 bg-base-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @php
-            if ($type === 'question') {
-                $breadcrumbs = [
-                    ['label' => __('Beranda'), 'url' => route('home')],
-                    ['label' => __('Public Complaint'), 'url' => route('information.question')],
-                    ['label' => __('Report Response')]
-                ];
-            } else {
-                $breadcrumbs = [
-                    ['label' => __('Home'), 'url' => route('home')],
-                    ['label' => __('Public Information Request'), 'url' => route('information.request')],
-                    ['label' => __('Request Response')]
-                ];
-            }
+            $breadcrumbs = [
+                ['label' => __('Home'), 'url' => route('home')],
+                ['label' => __('Information Answer'), 'url' => route('information.answer')],
+                ['label' => $type === 'question' ? __('Complaint Response Public') : __('Information Request Response')]
+            ];
         @endphp
         @include('livewire.information.partials.breadcrumb', ['items' => $breadcrumbs])
 
