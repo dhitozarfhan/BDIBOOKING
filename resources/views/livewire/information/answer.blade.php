@@ -1,4 +1,16 @@
 <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    @php
+        $breadcrumbs = [
+            ['label' => __('Home'), 'url' => route('home')],
+            ['label' => __('Information Answer')]
+        ];
+    @endphp
+    @include('livewire.information.partials.breadcrumb', ['items' => $breadcrumbs])
+
+    <h1 class="text-3xl font-bold text-base-content mt-4 mb-6">
+        {{ __('Information Answer') }}
+    </h1>
+
     <div class="flex min-h-screen bg-base-200 rounded-lg overflow-hidden shadow-sm">
         {{-- Sidebar --}}
         <div class="w-64 bg-base-100 shadow-sm">

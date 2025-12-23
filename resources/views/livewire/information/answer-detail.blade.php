@@ -17,7 +17,7 @@
                 ];
             }
         @endphp
-        {{-- @include('livewire.information.partials.breadcrumb', ['items' => $breadcrumbs]) --}}
+        @include('livewire.information.partials.breadcrumb', ['items' => $breadcrumbs])
 
         <h1 class="text-3xl font-bold text-base-content mt-4 mb-6">
             {{ $type === 'question' ? __('Complaint Response Public') : __('Information Request Response') }}
@@ -135,7 +135,7 @@
                                     <i class="bi {{ $config['icon'] }} text-2xl"></i>
                                     <div>
                                         <time class="font-mono italic text-sm opacity-70">{{ $process->created_at->format('d F Y, H:i') }}</time>
-                                        <div class="text-xl font-bold mt-1">{{ $process->responseStatus->name }}</div>
+                                        <div class="text-xl font-bold mt-1">{{ __($process->responseStatus->name) }}</div>
                                     </div>
                                 </div>
                             </li>
