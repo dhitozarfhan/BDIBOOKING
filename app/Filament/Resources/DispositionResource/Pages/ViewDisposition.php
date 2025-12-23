@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\DispositionResource\Pages;
 
+use App\Enums\ResponseStatus;
 use App\Filament\Resources\DispositionResource;
+use App\Models\ReportProcess;
 use Filament\Actions;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\Group;
@@ -10,6 +12,7 @@ use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Support\Facades\Auth;
 
 class ViewDisposition extends ViewRecord
 {
@@ -19,6 +22,25 @@ class ViewDisposition extends ViewRecord
     {
         return [
         ];
+    }
+
+    /**
+     * Resolve the record directly by ID to fix URL mismatch issue.
+     * This overrides the default behavior which uses getEloquentQuery() filter.
+     * Access control is maintained - users can only view their own dispositions.
+     */
+    public function resolveRecord($key): ReportProcess
+    {
+        $user = Auth::user();
+        $query = ReportProcess::where('id', $key)
+            ->where('response_status_id', ResponseStatus::Disposition->value);
+        
+        // Non-super-admin can only see dispositions assigned to them
+        if ($user && !$user->hasRole('super-admin')) {
+            $query->where('disposition_to_employee_id', $user->id);
+        }
+        
+        return $query->firstOrFail();
     }
 
     public function infolist(Infolist $infolist): Infolist
