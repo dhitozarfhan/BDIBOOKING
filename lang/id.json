@@ -97,7 +97,6 @@
     "Editor": "Penyunting",
     "Editor users have the ability to read, create, and update.": "Editor memiliki kemampuan untuk membaca, membuat, dan memperbarui.",
     "Email": "Surel",
-    "email": ":Attribute harus berupa alamat surel yang valid.",
     "Email Password Reset Link": "Tautan Pengaturan Ulang Kata Sandi Surel",
     "Enable": "Nyalakan",
     "Encrypted environment file already exists.": "Enkripsi file environment sudah ada.",
@@ -747,6 +746,6 @@
     "courier": "Kurir",
     "post": "Pos",
     "fax": "Faksimile",
-    "email": "Email",
-    "Information Usage": "Tujuan Penggunaan Informasi"
+    "Information Usage": "Tujuan Penggunaan Informasi",
+    "Information Answer": "Jawaban Informasi"
 }
