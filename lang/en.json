@@ -590,5 +590,17 @@
     "Disposisi": "Disposition",
     "Selesai": "Completed",
     "Registration code not found. Please double-check the code you entered.": "Registration code not found. Please double-check the code you entered.",
-    "Your Gratificaiton Report has been successfully submitted with the registration code:": "Your Gratificaiton Report has been successfully submitted with the registration code:"
+    "Your Gratificaiton Report has been successfully submitted with the registration code:": "Your Gratificaiton Report has been successfully submitted with the registration code:",
+    "see": "See/View",
+    "read": "Read",
+    "hear": "Listen/Hear",
+    "write": "Record/Write",
+    "hardcopy": "Get Hardcopy",
+    "softcopy": "Get Softcopy",
+    "direct": "Pick Up Directly",
+    "courier": "Courier Service",
+    "post": "Postal Mail",
+    "fax": "Fax",
+    "email": "Email",
+    "Information Usage": "Information Usage"
 }

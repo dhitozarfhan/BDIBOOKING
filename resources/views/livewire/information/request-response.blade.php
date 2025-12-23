@@ -73,9 +73,9 @@
                             <p class="text-sm text-base-content/70">{{ __('Acquisition Method') }}</p>
                             <p class="font-semibold text-base-content">
                                 @if(is_array($reportDetail->grab_method))
-                                    {{ implode(', ', array_map(fn($m) => ucfirst($m), $reportDetail->grab_method)) }}
+                                    {{ implode(', ', array_map(fn($m) => ucfirst(__($m)), $reportDetail->grab_method)) }}
                                 @else
-                                    {{ ucfirst($reportDetail->grab_method) }}
+                                    {{ ucfirst(__($reportDetail->grab_method)) }}
                                 @endif
                             </p>
                         </div>
@@ -84,9 +84,9 @@
                                 <p class="text-sm text-base-content/70">{{ __('Delivery Method') }}</p>
                                 <p class="font-semibold text-base-content">
                                     @if(is_array($reportDetail->delivery_method))
-                                        {{ implode(', ', array_map(fn($m) => ucfirst($m), $reportDetail->delivery_method)) }}
+                                        {{ implode(', ', array_map(fn($m) => ucfirst(__($m)), $reportDetail->delivery_method)) }}
                                     @else
-                                        {{ ucfirst($reportDetail->delivery_method) }}
+                                        {{ ucfirst(__($reportDetail->delivery_method)) }}
                                     @endif
                                 </p>
                             </div>
