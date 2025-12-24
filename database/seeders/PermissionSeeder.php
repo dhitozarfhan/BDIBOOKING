@@ -15,10 +15,8 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        if (Permission::count()) Permission::truncate();
-
         foreach (PermissionType::cases() as $permission) {
-            Permission::create(['name' => $permission->value]);
+            Permission::firstOrCreate(['name' => $permission->value]);
         }
     }
 }
