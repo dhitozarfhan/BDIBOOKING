@@ -1,0 +1,397 @@
+{
+  "info": {
+    "name": "BDIYK Mobile API",
+    "description": "REST API untuk aplikasi mobile BDIYK",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"your_username\",\n  \"password\": \"your_password\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Articles",
+      "item": [
+        {
+          "name": "Get All Articles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/articles?type=news&page=1&per_page=10",
+              "host": ["{{base_url}}"],
+              "path": ["articles"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "news"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Article by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/articles/1",
+              "host": ["{{base_url}}"],
+              "path": ["articles", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Article by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/articles/slug/article-title-1",
+              "host": ["{{base_url}}"],
+              "path": ["articles", "slug", "article-title-1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories?type=news",
+              "host": ["{{base_url}}"],
+              "path": ["categories"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "news"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/categories/1",
+              "host": ["{{base_url}}"],
+              "path": ["categories", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Slideshows",
+      "item": [
+        {
+          "name": "Get Active Slideshows",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/slideshows",
+              "host": ["{{base_url}}"],
+              "path": ["slideshows"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Information",
+      "item": [
+        {
+          "name": "Submit Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"081234567890\",\n  \"identity_number\": \"1234567890123456\",\n  \"address\": \"Full address\",\n  \"question\": \"Question content\",\n  \"question_type\": \"general\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/information/questions",
+              "host": ["{{base_url}}"],
+              "path": ["information", "questions"]
+            }
+          }
+        },
+        {
+          "name": "Check Question Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/information/questions/QST-2025-0001",
+              "host": ["{{base_url}}"],
+              "path": ["information", "questions", "QST-2025-0001"]
+            }
+          }
+        },
+        {
+          "name": "Submit Information Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"081234567890\",\n  \"identity_number\": \"1234567890123456\",\n  \"address\": \"Full address\",\n  \"request_type\": \"document\",\n  \"information_needed\": \"Information needed\",\n  \"purpose\": \"Purpose of request\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/information/requests",
+              "host": ["{{base_url}}"],
+              "path": ["information", "requests"]
+            }
+          }
+        },
+        {
+          "name": "Check Information Request Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/information/requests/REQ-2025-0001",
+              "host": ["{{base_url}}"],
+              "path": ["information", "requests", "REQ-2025-0001"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gratification",
+      "item": [
+        {
+          "name": "Submit Gratification Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reporter_name\": \"John Doe\",\n  \"reporter_email\": \"john@example.com\",\n  \"reporter_phone\": \"081234567890\",\n  \"incident_date\": \"2025-01-01\",\n  \"incident_location\": \"Location\",\n  \"gratification_type\": \"money\",\n  \"gratification_value\": 1000000,\n  \"description\": \"Detailed description\",\n  \"evidence_files\": [\"file1.pdf\", \"file2.jpg\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/gratification/reports",
+              "host": ["{{base_url}}"],
+              "path": ["gratification", "reports"]
+            }
+          }
+        },
+        {
+          "name": "Check Gratification Report Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/gratification/reports/GRAT-2025-0001",
+              "host": ["{{base_url}}"],
+              "path": ["gratification", "reports", "GRAT-2025-0001"]
+            }
+          }
+        },
+        {
+          "name": "Get All Gratification Reports",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/gratification/reports?status=pending&page=1&per_page=10",
+              "host": ["{{base_url}}"],
+              "path": ["gratification", "reports"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "WBS",
+      "item": [
+        {
+          "name": "Submit WBS Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reporter_name\": \"Anonymous\",\n  \"reporter_email\": \"anonymous@example.com\",\n  \"reporter_phone\": \"081234567890\",\n  \"violation_type\": \"corruption\",\n  \"violation_date\": \"2025-01-01\",\n  \"violation_location\": \"Location\",\n  \"perpetrator_name\": \"Perpetrator Name\",\n  \"perpetrator_position\": \"Position\",\n  \"description\": \"Detailed description\",\n  \"evidence_files\": [\"file1.pdf\", \"file2.jpg\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wbs/reports",
+              "host": ["{{base_url}}"],
+              "path": ["wbs", "reports"]
+            }
+          }
+        },
+        {
+          "name": "Check WBS Report Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wbs/reports/WBS-2025-0001",
+              "host": ["{{base_url}}"],
+              "path": ["wbs", "reports", "WBS-2025-0001"]
+            }
+          }
+        },
+        {
+          "name": "Get All WBS Reports",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/wbs/reports?status=pending&page=1&per_page=10",
+              "host": ["{{base_url}}"],
+              "path": ["wbs", "reports"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "per_page",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
