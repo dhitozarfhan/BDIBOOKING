@@ -37,6 +37,12 @@ class QuestionController extends Controller
             'identity_card_attachment' => $validated['identity_card_attachment'] ?? null,
         ]);
 
+        // Create the initial process record for the Question (Logic match Livewire)
+        $question->process()->create([
+            'response_status_id' => \App\Enums\ResponseStatus::Initiation->value,
+            'is_completed' => false,
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Question submitted successfully',
@@ -51,7 +57,21 @@ class QuestionController extends Controller
      */
     public function checkQuestion($registrationCode)
     {
-        $question = Question::where('registration_code', $registrationCode)->firstOrFail();
+        $question = Question::with(['reportProcesses.responseStatus', 'process.responseStatus'])
+            ->where('registration_code', $registrationCode)
+            ->firstOrFail();
+
+        // Prepare timeline/history
+        $history = $question->reportProcesses
+            ->sortBy('created_at')
+            ->map(function ($process) {
+                return [
+                    'status' => $process->responseStatus->name ?? 'Unknown',
+                    'answer' => $process->answer,
+                    'answer_attachment' => $process->answer_attachment,
+                    'created_at' => $process->created_at,
+                ];
+            })->values();
 
         return response()->json([
             'success' => true,
@@ -64,6 +84,8 @@ class QuestionController extends Controller
                 'email' => $question->email,
                 'identity_number' => $question->identity_number,
                 'identity_card_attachment' => $question->identity_card_attachment,
+                'status' => $question->process->responseStatus->name ?? 'Initiation', // Current status
+                'history' => $history,
                 'created_at' => $question->created_at,
             ],
         ]);

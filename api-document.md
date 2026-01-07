@@ -255,6 +255,15 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
       "email": "john@example.com",
       "identity_number": "1234567890",
       "identity_card_attachment": null,
+      "status": "Initiation",
+      "history": [
+        {
+          "status": "Initiation",
+          "answer": null,
+          "answer_attachment": null,
+          "created_at": "2023-01-01T00:00:00.000000Z"
+        }
+      ],
       "created_at": "2023-01-01T00:00:00.000000Z"
     }
   }
