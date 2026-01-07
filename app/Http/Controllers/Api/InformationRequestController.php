@@ -22,8 +22,8 @@ class InformationRequestController extends Controller
             'email' => 'required|email|max:255',
             'report_title' => 'required|string',
             'used_for' => 'required|string',
-            'grab_method' => 'required|array',
-            'delivery_method' => 'nullable|array',
+            'grab_method' => 'required|array', // Checkbox array
+            'delivery_method' => 'nullable|array', // Checkbox array, nullable depending on grab_method
             'rule_accepted' => 'required|boolean',
             'identity_card_attachment' => 'nullable|string',
         ]);
@@ -43,10 +43,16 @@ class InformationRequestController extends Controller
             'report_title' => $validated['report_title'],
             'used_for' => $validated['used_for'],
             'grab_method' => $validated['grab_method'],
-            'delivery_method' => $validated['delivery_method'] ?? null,
+            'delivery_method' => $validated['delivery_method'] ?? [],
             'rule_accepted' => $validated['rule_accepted'],
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
+        ]);
+
+        // Create the initial process record for the Information Request (Logic match Livewire)
+        $informationRequest->process()->create([
+            'response_status_id' => \App\Enums\ResponseStatus::Initiation->value,
+            'is_completed' => false,
         ]);
 
         return response()->json([
@@ -63,7 +69,21 @@ class InformationRequestController extends Controller
      */
     public function checkRequest($registrationCode)
     {
-        $informationRequest = InformationRequest::where('registration_code', $registrationCode)->firstOrFail();
+        $informationRequest = InformationRequest::with(['reportProcesses.responseStatus', 'process.responseStatus'])
+            ->where('registration_code', $registrationCode)
+            ->firstOrFail();
+
+        // Prepare timeline/history
+        $history = $informationRequest->reportProcesses
+            ->sortBy('created_at')
+            ->map(function ($process) {
+                return [
+                    'status' => $process->responseStatus->name ?? 'Unknown',
+                    'answer' => $process->answer,
+                    'answer_attachment' => $process->answer_attachment,
+                    'created_at' => $process->created_at,
+                ];
+            })->values();
 
         return response()->json([
             'success' => true,
@@ -80,6 +100,8 @@ class InformationRequestController extends Controller
                 'grab_method' => $informationRequest->grab_method,
                 'delivery_method' => $informationRequest->delivery_method,
                 'rule_accepted' => $informationRequest->rule_accepted,
+                'status' => $informationRequest->process->responseStatus->name ?? 'Initiation', // Current status
+                'history' => $history,
                 'created_at' => $informationRequest->created_at,
             ],
         ]);

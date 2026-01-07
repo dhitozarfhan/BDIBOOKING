@@ -345,8 +345,19 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
       "report_title": "Permintaan Informasi Program Pelatihan",
       "used_for": "Untuk keperluan penelitian",
       "grab_method": ["read", "softcopy"],
-      "delivery_method": ["email"],
+      "delivery_method": [
+        "email"
+      ],
       "rule_accepted": true,
+      "status": "Initiation",
+      "history": [
+        {
+          "status": "Initiation",
+          "answer": null,
+          "answer_attachment": null,
+          "created_at": "2023-01-01T00:00:00.000000Z"
+        }
+      ],
       "created_at": "2023-01-01T00:00:00.000000Z"
     }
   }
