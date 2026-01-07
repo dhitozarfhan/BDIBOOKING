@@ -417,6 +417,15 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
       "report_description": "Saya melihat gratifikasi terjadi di...",
       "attachment": null,
       "identity_card_attachment": null,
+      "status": "Initiation",
+      "history": [
+        {
+          "status": "Initiation",
+          "answer": null,
+          "answer_attachment": null,
+          "created_at": "2023-01-01T00:00:00.000000Z"
+        }
+      ],
       "created_at": "2023-01-01T00:00:00.000000Z"
     }
   }
@@ -534,3 +543,52 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
    - Status permintaan akan diperbarui seiring proses penanganan (melalui sistem ReportProcess)
 4. **Rate Limiting:** Beberapa endpoint mungkin memiliki rate limiting untuk mencegah spam
 5. **Caching:** Beberapa endpoint mungkin menggunakan caching untuk performa lebih baik
+
+## Analisis & Troubleshooting: Alur Data Gratifikasi
+
+Bagian ini menjelaskan secara teknis bagaimana data Gratifikasi mengalir dari input pengguna hingga tampilan admin, untuk membantu debugging masalah seperti status kosong.
+
+### 1. Struktur Data & Relasi
+Laporan Gratifikasi menggunakan sistem **Polymorphic Relationship** untuk mencatat status dan proses penanganan.
+
+- **Tabel Utama:** `gratifications` (Menyimpan data laporan)
+- **Tabel Proses:** `report_processes` (Menyimpan riwayat status & jawaban)
+- **Tabel Status:** `response_statuses` (Master data status)
+
+**Relasi:**
+`Gratification` (model) -> `morphMany` -> `ReportProcess` (model) -> `belongsTo` -> `ResponseStatus` (model)
+
+### 2. Alur Input (Livewire - Public)
+Saat pengguna mengirim laporan melalui form publik:
+1. Data disimpan ke tabel `gratifications`.
+2. Secara otomatis, sistem membuat record pertama di tabel `report_processes`.
+3. Record ini memiliki `response_status_id` yang diambil dari Enum `App\Enums\ResponseStatus::Initiation` (Nilai: 1).
+
+### 3. Alur Tampilan Admin (Filament)
+Saat admin melihat daftar laporan:
+1. Sistem memuat `Gratification`.
+2. Kolom Status mengambil data via relasi: `gratification->process->responseStatus->name`.
+   - `process` adalah relasi `latestOfMany` ke `report_processes`.
+   - `responseStatus` adalah relasi ke tabel `response_statuses`.
+
+### 4. Diagnosis Masalah Status Kosong
+Jika kolom Status terlihat kosong di dashboard admin, penyebab teknisnya adalah putusnya rantai relasi data:
+
+**Kondisi:**
+- Di tabel `report_processes`, kolom `response_status_id` bernilai `1` (Initiation).
+- Di tabel `response_statuses`, **TIDAK ADA** baris dengan `id = 1`.
+
+**Penyebab Umum:**
+- `ResponseStatusSeeder` menggunakan auto-increment, bukan ID eksplisit.
+- Jika database pernah di-reset atau di-seed ulang tanpa truncate yang bersih, ID di tabel `response_statuses` mungkin dimulai dari angka lain (misal: 5, 6, 7, 8).
+- Akibatnya: Code mencari status ID 1, tapi di database adanya ID 5. Relasi return `null`.
+
+**Verifikasi Manual (Tanpa Ubah Code):**
+Cek database langsung:
+```sql
+SELECT * FROM report_processes WHERE reportable_type LIKE '%Gratification%';
+-- Perhatikan response_status_id (misal: 1)
+
+SELECT * FROM response_statuses;
+-- Cek apakah ada id yang sesuai (misal: 1). Jika isinya mulai dari angka lain, itulah penyebabnya.
+```

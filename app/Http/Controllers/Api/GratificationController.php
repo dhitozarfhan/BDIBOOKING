@@ -43,6 +43,12 @@ class GratificationController extends Controller
             'attachment' => $validated['attachment'] ?? null,
         ]);
 
+        // Create the initial process record for the gratification (Logic match Livewire)
+        $gratification->reportProcesses()->create([
+            'response_status_id' => \App\Enums\ResponseStatus::Initiation->value,
+            'answer' => null,
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Gratification report submitted successfully',
@@ -57,7 +63,21 @@ class GratificationController extends Controller
      */
     public function checkReport($reportCode)
     {
-        $gratification = Gratification::where('registration_code', $reportCode)->firstOrFail();
+        $gratification = Gratification::with(['reportProcesses.responseStatus', 'process.responseStatus'])
+            ->where('registration_code', $reportCode)
+            ->firstOrFail();
+
+        // Prepare timeline/history
+        $history = $gratification->reportProcesses
+            ->sortBy('created_at')
+            ->map(function ($process) {
+                return [
+                    'status' => $process->responseStatus->name ?? 'Unknown',
+                    'answer' => $process->answer,
+                    'answer_attachment' => $process->answer_attachment,
+                    'created_at' => $process->created_at,
+                ];
+            })->values();
 
         return response()->json([
             'success' => true,
@@ -73,6 +93,8 @@ class GratificationController extends Controller
                 'report_description' => $gratification->report_description,
                 'attachment' => $gratification->attachment,
                 'identity_card_attachment' => $gratification->identity_card_attachment,
+                'status' => $gratification->process->responseStatus->name ?? 'Initiation', // Current status
+                'history' => $history,
                 'created_at' => $gratification->created_at,
             ],
         ]);
