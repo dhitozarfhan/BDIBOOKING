@@ -2,11 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\SlideshowController;
-use App\Http\Controllers\Api\InformationController;
+use App\Http\Controllers\Api\QuestionController;
+use App\Http\Controllers\Api\InformationRequestController;
 use App\Http\Controllers\Api\GratificationController;
 use App\Http\Controllers\Api\WbsController;
 
@@ -17,13 +17,6 @@ use App\Http\Controllers\Api\WbsController;
 */
 
 Route::prefix('v1')->group(function () {
-    
-    // Authentication Routes
-    Route::prefix('auth')->group(function () {
-        Route::post('/login', [AuthController::class, 'login']);
-        Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-        Route::get('/profile', [AuthController::class, 'profile'])->middleware('auth:sanctum');
-    });
 
     // Article Routes
     Route::prefix('articles')->group(function () {
@@ -41,34 +34,28 @@ Route::prefix('v1')->group(function () {
     // Slideshow Routes
     Route::get('/slideshows', [SlideshowController::class, 'index']);
 
-    // Information Routes
-    Route::prefix('information')->group(function () {
-        // Questions
-        Route::post('/questions', [InformationController::class, 'submitQuestion']);
-        Route::get('/questions/{registration_code}', [InformationController::class, 'checkQuestion']);
-        
-        // Information Requests
-        Route::post('/requests', [InformationController::class, 'submitRequest']);
-        Route::get('/requests/{registration_code}', [InformationController::class, 'checkRequest']);
+    // Question Routes
+    Route::prefix('questions')->group(function () {
+        Route::post('/', [QuestionController::class, 'submitQuestion']);
+        Route::get('/{registration_code}', [QuestionController::class, 'checkQuestion']);
+    });
+
+    // Information Request Routes
+    Route::prefix('information-requests')->group(function () {
+        Route::post('/', [InformationRequestController::class, 'submitRequest']);
+        Route::get('/{registration_code}', [InformationRequestController::class, 'checkRequest']);
     });
 
     // Gratification Routes
     Route::prefix('gratification')->group(function () {
         Route::post('/reports', [GratificationController::class, 'submitReport']);
         Route::get('/reports/{report_code}', [GratificationController::class, 'checkReport']);
-        Route::get('/reports', [GratificationController::class, 'index'])->middleware('auth:sanctum');
     });
 
     // WBS Routes
     Route::prefix('wbs')->group(function () {
         Route::post('/reports', [WbsController::class, 'submitReport']);
         Route::get('/reports/{report_code}', [WbsController::class, 'checkReport']);
-        Route::get('/reports', [WbsController::class, 'index'])->middleware('auth:sanctum');
     });
 
 });
-
-// Legacy route for backward compatibility
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');

@@ -14,43 +14,42 @@ class WbsController extends Controller
     public function submitReport(Request $request)
     {
         $validated = $request->validate([
-            'reporter_name' => 'nullable|string|max:255',
-            'reporter_email' => 'nullable|email|max:255',
-            'reporter_phone' => 'nullable|string|max:20',
-            'violation_type' => 'required|string',
-            'violation_date' => 'required|date',
-            'violation_location' => 'required|string',
-            'perpetrator_name' => 'nullable|string|max:255',
-            'perpetrator_position' => 'nullable|string|max:255',
-            'description' => 'required|string',
-            'evidence_files' => 'nullable|array',
-            'evidence_files.*' => 'nullable|string',
+            'reporter_name' => 'required|string|max:255',
+            'identity_number' => 'required|string|max:255',
+            'address' => 'required|string',
+            'occupation' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'report_title' => 'required|string|max:255',
+            'report_description' => 'required|string',
+            'attachment' => 'nullable|string',
+            'identity_card_attachment' => 'nullable|string',
+            'violation_id' => 'nullable|exists:violations,id',
         ]);
 
-        // Generate report code
-        $reportCode = 'WBS-' . date('Y') . '-' . str_pad(Wbs::whereYear('created_at', date('Y'))->count() + 1, 4, '0', STR_PAD_LEFT);
+        // Generate registration code (6 random characters like in Livewire)
+        $registrationCode = $this->generateRandomReportCode(Wbs::class);
 
         $wbs = Wbs::create([
-            'report_code' => $reportCode,
-            'reporter_name' => $validated['reporter_name'] ?? 'Anonymous',
-            'reporter_email' => $validated['reporter_email'] ?? null,
-            'reporter_phone' => $validated['reporter_phone'] ?? null,
-            'violation_type' => $validated['violation_type'],
-            'violation_date' => $validated['violation_date'],
-            'violation_location' => $validated['violation_location'],
-            'perpetrator_name' => $validated['perpetrator_name'] ?? null,
-            'perpetrator_position' => $validated['perpetrator_position'] ?? null,
-            'description' => $validated['description'],
-            'evidence_files' => isset($validated['evidence_files']) ? json_encode($validated['evidence_files']) : null,
-            'status' => 'pending',
+            'registration_code' => $registrationCode,
+            'reporter_name' => $validated['reporter_name'],
+            'identity_number' => $validated['identity_number'],
+            'identity_card_attachment' => $validated['identity_card_attachment'] ?? null,
+            'address' => $validated['address'],
+            'occupation' => $validated['occupation'],
+            'phone' => $validated['phone'],
+            'email' => $validated['email'],
+            'report_title' => $validated['report_title'],
+            'report_description' => $validated['report_description'],
+            'attachment' => $validated['attachment'] ?? null,
+            'violation_id' => $validated['violation_id'] ?? null,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'WBS report submitted successfully',
             'data' => [
-                'report_code' => $wbs->report_code,
-                'status' => $wbs->status,
+                'report_code' => $wbs->registration_code,
             ],
         ], 201);
     }
@@ -60,21 +59,23 @@ class WbsController extends Controller
      */
     public function checkReport($reportCode)
     {
-        $wbs = Wbs::where('report_code', $reportCode)->firstOrFail();
+        $wbs = Wbs::where('registration_code', $reportCode)->firstOrFail();
 
         return response()->json([
             'success' => true,
             'data' => [
-                'report_code' => $wbs->report_code,
-                'violation_type' => $wbs->violation_type,
-                'violation_date' => $wbs->violation_date,
-                'violation_location' => $wbs->violation_location,
-                'perpetrator_name' => $wbs->perpetrator_name,
-                'perpetrator_position' => $wbs->perpetrator_position,
-                'description' => $wbs->description,
-                'status' => $wbs->status,
-                'response' => $wbs->response,
-                'responded_at' => $wbs->responded_at,
+                'report_code' => $wbs->registration_code,
+                'reporter_name' => $wbs->reporter_name,
+                'identity_number' => $wbs->identity_number,
+                'address' => $wbs->address,
+                'occupation' => $wbs->occupation,
+                'phone' => $wbs->phone,
+                'email' => $wbs->email,
+                'report_title' => $wbs->report_title,
+                'report_description' => $wbs->report_description,
+                'attachment' => $wbs->attachment,
+                'identity_card_attachment' => $wbs->identity_card_attachment,
+                'violation_id' => $wbs->violation_id,
                 'created_at' => $wbs->created_at,
             ],
         ]);
@@ -110,5 +111,18 @@ class WbsController extends Controller
                 'last_page' => $reports->lastPage(),
             ],
         ]);
+    }
+
+    /**
+     * Generate random report code (6 characters like in Livewire)
+     */
+    private function generateRandomReportCode($model)
+    {
+        do {
+            $kode = strtoupper(substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 6));
+            $exists = $model::where('registration_code', $kode)->exists();
+        } while ($exists);
+
+        return $kode;
     }
 }

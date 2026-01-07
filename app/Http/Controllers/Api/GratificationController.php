@@ -15,40 +15,39 @@ class GratificationController extends Controller
     {
         $validated = $request->validate([
             'reporter_name' => 'required|string|max:255',
-            'reporter_email' => 'required|email|max:255',
-            'reporter_phone' => 'required|string|max:20',
-            'incident_date' => 'required|date',
-            'incident_location' => 'required|string',
-            'gratification_type' => 'required|string|in:money,goods,service,other',
-            'gratification_value' => 'nullable|numeric',
-            'description' => 'required|string',
-            'evidence_files' => 'nullable|array',
-            'evidence_files.*' => 'nullable|string',
+            'identity_number' => 'required|string|max:255',
+            'address' => 'required|string',
+            'occupation' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'report_title' => 'required|string|max:255',
+            'report_description' => 'required|string',
+            'attachment' => 'nullable|string',
+            'identity_card_attachment' => 'nullable|string',
         ]);
 
-        // Generate report code
-        $reportCode = 'GRAT-' . date('Y') . '-' . str_pad(Gratification::whereYear('created_at', date('Y'))->count() + 1, 4, '0', STR_PAD_LEFT);
+        // Generate registration code (6 random characters like in Livewire)
+        $registrationCode = $this->generateRandomReportCode(Gratification::class);
 
         $gratification = Gratification::create([
-            'report_code' => $reportCode,
+            'registration_code' => $registrationCode,
             'reporter_name' => $validated['reporter_name'],
-            'reporter_email' => $validated['reporter_email'],
-            'reporter_phone' => $validated['reporter_phone'],
-            'incident_date' => $validated['incident_date'],
-            'incident_location' => $validated['incident_location'],
-            'gratification_type' => $validated['gratification_type'],
-            'gratification_value' => $validated['gratification_value'] ?? null,
-            'description' => $validated['description'],
-            'evidence_files' => isset($validated['evidence_files']) ? json_encode($validated['evidence_files']) : null,
-            'status' => 'pending',
+            'identity_number' => $validated['identity_number'],
+            'identity_card_attachment' => $validated['identity_card_attachment'] ?? null,
+            'address' => $validated['address'],
+            'occupation' => $validated['occupation'],
+            'phone' => $validated['phone'],
+            'email' => $validated['email'],
+            'report_title' => $validated['report_title'],
+            'report_description' => $validated['report_description'],
+            'attachment' => $validated['attachment'] ?? null,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Gratification report submitted successfully',
             'data' => [
-                'report_code' => $gratification->report_code,
-                'status' => $gratification->status,
+                'report_code' => $gratification->registration_code,
             ],
         ], 201);
     }
@@ -58,21 +57,22 @@ class GratificationController extends Controller
      */
     public function checkReport($reportCode)
     {
-        $gratification = Gratification::where('report_code', $reportCode)->firstOrFail();
+        $gratification = Gratification::where('registration_code', $reportCode)->firstOrFail();
 
         return response()->json([
             'success' => true,
             'data' => [
-                'report_code' => $gratification->report_code,
+                'report_code' => $gratification->registration_code,
                 'reporter_name' => $gratification->reporter_name,
-                'incident_date' => $gratification->incident_date,
-                'incident_location' => $gratification->incident_location,
-                'gratification_type' => $gratification->gratification_type,
-                'gratification_value' => $gratification->gratification_value,
-                'description' => $gratification->description,
-                'status' => $gratification->status,
-                'response' => $gratification->response,
-                'responded_at' => $gratification->responded_at,
+                'identity_number' => $gratification->identity_number,
+                'address' => $gratification->address,
+                'occupation' => $gratification->occupation,
+                'phone' => $gratification->phone,
+                'email' => $gratification->email,
+                'report_title' => $gratification->report_title,
+                'report_description' => $gratification->report_description,
+                'attachment' => $gratification->attachment,
+                'identity_card_attachment' => $gratification->identity_card_attachment,
                 'created_at' => $gratification->created_at,
             ],
         ]);
@@ -103,5 +103,18 @@ class GratificationController extends Controller
                 'last_page' => $reports->lastPage(),
             ],
         ]);
+    }
+
+    /**
+     * Generate random report code (6 characters like in Livewire)
+     */
+    private function generateRandomReportCode($model)
+    {
+        do {
+            $kode = strtoupper(substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 6));
+            $exists = $model::where('registration_code', $kode)->exists();
+        } while ($exists);
+
+        return $kode;
     }
 }
