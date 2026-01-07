@@ -506,7 +506,17 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
       "report_description": "Saya melihat pelanggaran terjadi di...",
       "attachment": null,
       "identity_card_attachment": null,
-      "violation_id": null,
+      "violation_id": 1,
+      "violation_name": "Pelanggaran terhadap peraturan",
+      "status": "Initiation",
+      "history": [
+        {
+          "status": "Initiation",
+          "answer": null,
+          "answer_attachment": null,
+          "created_at": "2023-01-01T00:00:00.000000Z"
+        }
+      ],
       "created_at": "2023-01-01T00:00:00.000000Z"
     }
   }
@@ -592,3 +602,37 @@ SELECT * FROM report_processes WHERE reportable_type LIKE '%Gratification%';
 SELECT * FROM response_statuses;
 -- Cek apakah ada id yang sesuai (misal: 1). Jika isinya mulai dari angka lain, itulah penyebabnya.
 ```
+
+## Analisis & Troubleshooting: Alur Data WBS
+
+Secara arsitektur, modul WBS (Whistle Blowing System) sangat identik dengan modul Gratifikasi ("kembar"). Analisis untuk masalah status kosong berlaku juga di sini.
+
+### 1. Struktur Data & Relasi
+WBS memiliki tambahan relasi ke Jenis Pelanggaran:
+
+- **Tabel Utama:** `wbs`
+- **Tabel Proses:** `report_processes` (Polymorphic)
+- **Tabel Pelanggaran:** `violations` (Master data jenis pelanggaran)
+
+**Relasi:**
+`Wbs` (model) -> `belongsTo` -> `Violation` (model)
+
+### 2. Diagnosis Masalah Jenis Pelanggaran Kosong
+Jika kolom "Jenis Pelanggaran" kosong di dashboard admin, penyebabnya mirip dengan masalah status: mismatch ID.
+
+**Kondisi:**
+- Di tabel `wbs`, kolom `violation_id` terisi (misal: 1).
+- Di tabel `violations`, **TIDAK ADA** baris dengan `id = 1`.
+
+**Penyebab (Seeder Issue):**
+- `ViolationSeeder` menggunakan metode insert manual `DB::table('violations')->insert(...)`.
+- Metode ini bergantung pada auto-increment database untuk menghasilkan ID.
+- Jika database Anda memiliki "sejarah" ID sebelumnya (tidak di-reset bersih), ID pelanggaran mungkin dimulai dari angka lain (misal: 5, 6, 7).
+
+**Solusi & Verifikasi:**
+1. Cek isi tabel `violations`:
+   ```sql
+   SELECT * FROM violations;
+   ```
+2. Pastikan saat mengirim laporan via API (field `violation_id`), Anda menggunakan ID yang **benar-benar ada** di hasil query di atas.
+3. Jangan berasumsi ID selalu dimulai dari 1.

@@ -24,7 +24,7 @@ class WbsController extends Controller
             'report_description' => 'required|string',
             'attachment' => 'nullable|string',
             'identity_card_attachment' => 'nullable|string',
-            'violation_id' => 'nullable|exists:violations,id',
+            'violation_id' => 'required|exists:violations,id', // Changed to required as per Livewire
         ]);
 
         // Generate registration code (6 random characters like in Livewire)
@@ -42,7 +42,13 @@ class WbsController extends Controller
             'report_title' => $validated['report_title'],
             'report_description' => $validated['report_description'],
             'attachment' => $validated['attachment'] ?? null,
-            'violation_id' => $validated['violation_id'] ?? null,
+            'violation_id' => $validated['violation_id'],
+        ]);
+
+        // Create the initial process record for the WBS (Logic match Livewire)
+        $wbs->reportProcesses()->create([
+            'response_status_id' => \App\Enums\ResponseStatus::Initiation->value,
+            'answer' => null,
         ]);
 
         return response()->json([
@@ -59,7 +65,21 @@ class WbsController extends Controller
      */
     public function checkReport($reportCode)
     {
-        $wbs = Wbs::where('registration_code', $reportCode)->firstOrFail();
+        $wbs = Wbs::with(['reportProcesses.responseStatus', 'process.responseStatus', 'violation'])
+            ->where('registration_code', $reportCode)
+            ->firstOrFail();
+
+        // Prepare timeline/history
+        $history = $wbs->reportProcesses
+            ->sortBy('created_at')
+            ->map(function ($process) {
+                return [
+                    'status' => $process->responseStatus->name ?? 'Unknown',
+                    'answer' => $process->answer,
+                    'answer_attachment' => $process->answer_attachment,
+                    'created_at' => $process->created_at,
+                ];
+            })->values();
 
         return response()->json([
             'success' => true,
@@ -76,6 +96,9 @@ class WbsController extends Controller
                 'attachment' => $wbs->attachment,
                 'identity_card_attachment' => $wbs->identity_card_attachment,
                 'violation_id' => $wbs->violation_id,
+                'violation_name' => $wbs->violation->name ?? null, // Add violation name
+                'status' => $wbs->process->responseStatus->name ?? 'Initiation', // Current status
+                'history' => $history,
                 'created_at' => $wbs->created_at,
             ],
         ]);
