@@ -20,11 +20,16 @@ class QuestionController extends Controller
             'identity_number' => 'required|string|max:20',
             'content' => 'required|string',
             'report_title' => 'required|string|max:255',
-            'identity_card_attachment' => 'nullable|string',
+            'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
         ]);
 
         // Generate registration code (6 random characters like in Livewire)
         $registrationCode = $this->generateRandomRegistrationCode(Question::class);
+
+        $identityCardPath = null;
+        if ($request->hasFile('identity_card_attachment')) {
+            $identityCardPath = $request->file('identity_card_attachment')->store('identity_cards', 'private');
+        }
 
         $question = Question::create([
             'registration_code' => $registrationCode,
@@ -34,7 +39,7 @@ class QuestionController extends Controller
             'identity_number' => $validated['identity_number'],
             'content' => $validated['content'],
             'report_title' => $validated['report_title'],
-            'identity_card_attachment' => $validated['identity_card_attachment'] ?? null,
+            'identity_card_attachment' => $identityCardPath,
         ]);
 
         // Create the initial process record for the Question (Logic match Livewire)
@@ -73,6 +78,12 @@ class QuestionController extends Controller
                 ];
             })->values();
 
+        // Find termination process (last completed process) for final answer
+        $terminationProcess = $question->reportProcesses
+            ->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)
+            ->where('is_completed', true)
+            ->last();
+
         return response()->json([
             'success' => true,
             'data' => [
@@ -84,7 +95,9 @@ class QuestionController extends Controller
                 'email' => $question->email,
                 'identity_number' => $question->identity_number,
                 'identity_card_attachment' => $question->identity_card_attachment,
-                'status' => $question->process->responseStatus->name ?? 'Initiation', // Current status
+                'status' => $question->process->responseStatus->name ?? 'Initiation', 
+                'answer' => $terminationProcess->answer ?? null,
+                'answer_attachment' => $terminationProcess->answer_attachment ?? null,
                 'history' => $history,
                 'created_at' => $question->created_at,
             ],

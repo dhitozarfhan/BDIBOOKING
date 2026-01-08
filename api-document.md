@@ -684,3 +684,33 @@ Jika kolom "Jenis Pelanggaran" kosong di dashboard admin, penyebabnya mirip deng
     ]
   }
   ```
+### 8. Download File
+#### Download Lampiran (Privat)
+- **URL:** `GET /api/v1/download`
+- **Deskripsi:** Mengunduh file privat (lampiran laporan, jawaban, KTP) dengan aman.
+- **Parameter Query:**
+  - `path`: Path file yang didapat dari response API (misal: `wbs/contoh.pdf` atau `identity_cards/ktp.jpg`)
+- **Contoh Request:**
+  ```
+  GET /api/v1/download?path=wbs/XyZ123.pdf
+  ```
+- **Response:** File Binary (PDF, Image, dll).
+
+---
+
+## Update Format Response (Status Laporan)
+Semua endpoint "Cek Status" (`GET /api/v1/.../{code}`) kini menyertakan field jawaban final:
+
+```json
+{
+  "success": true,
+  "data": {
+    "report_code": "...",
+    "status": "Termination", // atau lainnya
+    "answer": "Ini jawaban resmi dari admin.", // NEW: Jawaban teks
+    "answer_attachment": "responses/jawaban.pdf", // NEW: Path file jawaban (download pakai /download endpoint)
+    "history": [...]
+    // ... field lainnya
+  }
+}
+```

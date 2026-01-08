@@ -22,26 +22,36 @@ class WbsController extends Controller
             'email' => 'required|email|max:255',
             'report_title' => 'required|string|max:255',
             'report_description' => 'required|string',
-            'attachment' => 'nullable|string',
-            'identity_card_attachment' => 'nullable|string',
+            'attachment' => 'nullable|file|max:10240', // 10MB max
+            'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
             'violation_id' => 'required|exists:violations,id', // Changed to required as per Livewire
         ]);
 
         // Generate registration code (6 random characters like in Livewire)
         $registrationCode = $this->generateRandomReportCode(Wbs::class);
 
+        $attachmentPath = null;
+        if ($request->hasFile('attachment')) {
+            $attachmentPath = $request->file('attachment')->store('wbs', 'private');
+        }
+
+        $identityCardPath = null;
+        if ($request->hasFile('identity_card_attachment')) {
+            $identityCardPath = $request->file('identity_card_attachment')->store('identity_cards', 'private');
+        }
+
         $wbs = Wbs::create([
             'registration_code' => $registrationCode,
             'reporter_name' => $validated['reporter_name'],
             'identity_number' => $validated['identity_number'],
-            'identity_card_attachment' => $validated['identity_card_attachment'] ?? null,
+            'identity_card_attachment' => $identityCardPath,
             'address' => $validated['address'],
             'occupation' => $validated['occupation'],
             'phone' => $validated['phone'],
             'email' => $validated['email'],
             'report_title' => $validated['report_title'],
             'report_description' => $validated['report_description'],
-            'attachment' => $validated['attachment'] ?? null,
+            'attachment' => $attachmentPath,
             'violation_id' => $validated['violation_id'],
         ]);
 
@@ -80,6 +90,12 @@ class WbsController extends Controller
                     'created_at' => $process->created_at,
                 ];
             })->values();
+        
+        // Find termination process (last completed process) for final answer
+        $terminationProcess = $wbs->reportProcesses
+            ->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)
+            ->where('is_completed', true)
+            ->last();
 
         return response()->json([
             'success' => true,
@@ -96,8 +112,10 @@ class WbsController extends Controller
                 'attachment' => $wbs->attachment,
                 'identity_card_attachment' => $wbs->identity_card_attachment,
                 'violation_id' => $wbs->violation_id,
-                'violation_name' => $wbs->violation->name ?? null, // Add violation name
-                'status' => $wbs->process->responseStatus->name ?? 'Initiation', // Current status
+                'violation_name' => $wbs->violation->name ?? null,
+                'status' => $wbs->process->responseStatus->name ?? 'Initiation', 
+                'answer' => $terminationProcess->answer ?? null,
+                'answer_attachment' => $terminationProcess->answer_attachment ?? null,
                 'history' => $history,
                 'created_at' => $wbs->created_at,
             ],

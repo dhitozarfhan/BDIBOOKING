@@ -25,17 +25,22 @@ class InformationRequestController extends Controller
             'grab_method' => 'required|array', // Checkbox array
             'delivery_method' => 'nullable|array', // Checkbox array, nullable depending on grab_method
             'rule_accepted' => 'required|boolean',
-            'identity_card_attachment' => 'nullable|string',
+            'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
         ]);
 
         // Generate registration code (6 random characters like in Livewire)
         $registrationCode = $this->generateRandomRegistrationCode(InformationRequest::class);
 
+        $identityCardPath = null;
+        if ($request->hasFile('identity_card_attachment')) {
+            $identityCardPath = $request->file('identity_card_attachment')->store('identity_cards', 'private');
+        }
+
         $informationRequest = InformationRequest::create([
             'registration_code' => $registrationCode,
             'reporter_name' => $validated['reporter_name'],
             'id_card_number' => $validated['id_card_number'],
-            'identity_card_attachment' => $validated['identity_card_attachment'] ?? null,
+            'identity_card_attachment' => $identityCardPath,
             'address' => $validated['address'],
             'occupation' => $validated['occupation'],
             'mobile' => $validated['mobile'],
@@ -85,6 +90,12 @@ class InformationRequestController extends Controller
                 ];
             })->values();
 
+        // Find termination process (last completed process) for final answer
+        $terminationProcess = $informationRequest->reportProcesses
+            ->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)
+            ->where('is_completed', true)
+            ->last();
+
         return response()->json([
             'success' => true,
             'data' => [
@@ -100,7 +111,9 @@ class InformationRequestController extends Controller
                 'grab_method' => $informationRequest->grab_method,
                 'delivery_method' => $informationRequest->delivery_method,
                 'rule_accepted' => $informationRequest->rule_accepted,
-                'status' => $informationRequest->process->responseStatus->name ?? 'Initiation', // Current status
+                'status' => $informationRequest->process->responseStatus->name ?? 'Initiation', 
+                'answer' => $terminationProcess->answer ?? null,
+                'answer_attachment' => $terminationProcess->answer_attachment ?? null,
                 'history' => $history,
                 'created_at' => $informationRequest->created_at,
             ],

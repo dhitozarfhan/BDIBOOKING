@@ -62,4 +62,7 @@ Route::prefix('v1')->group(function () {
     // Master Data Routes
     Route::get('/violations', [ViolationController::class, 'index']);
 
+    // File Download Route
+    Route::get('/download', [\App\Http\Controllers\DownloadController::class, 'download']);
+
 });

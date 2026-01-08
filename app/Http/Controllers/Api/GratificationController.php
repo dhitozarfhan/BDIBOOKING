@@ -22,25 +22,35 @@ class GratificationController extends Controller
             'email' => 'required|email|max:255',
             'report_title' => 'required|string|max:255',
             'report_description' => 'required|string',
-            'attachment' => 'nullable|string',
-            'identity_card_attachment' => 'nullable|string',
+            'attachment' => 'nullable|file|max:1024', // 1MB max
+            'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
         ]);
 
         // Generate registration code (6 random characters like in Livewire)
         $registrationCode = $this->generateRandomReportCode(Gratification::class);
 
+        $attachmentPath = null;
+        if ($request->hasFile('attachment')) {
+            $attachmentPath = $request->file('attachment')->store('gratifications', 'private');
+        }
+
+        $identityCardPath = null;
+        if ($request->hasFile('identity_card_attachment')) {
+            $identityCardPath = $request->file('identity_card_attachment')->store('identity_cards', 'private');
+        }
+
         $gratification = Gratification::create([
             'registration_code' => $registrationCode,
             'reporter_name' => $validated['reporter_name'],
             'identity_number' => $validated['identity_number'],
-            'identity_card_attachment' => $validated['identity_card_attachment'] ?? null,
+            'identity_card_attachment' => $identityCardPath,
             'address' => $validated['address'],
             'occupation' => $validated['occupation'],
             'phone' => $validated['phone'],
             'email' => $validated['email'],
             'report_title' => $validated['report_title'],
             'report_description' => $validated['report_description'],
-            'attachment' => $validated['attachment'] ?? null,
+            'attachment' => $attachmentPath,
         ]);
 
         // Create the initial process record for the gratification (Logic match Livewire)
@@ -79,6 +89,12 @@ class GratificationController extends Controller
                 ];
             })->values();
 
+        // Find termination process (last completed process) for final answer
+        $terminationProcess = $gratification->reportProcesses
+            ->where('response_status_id', \App\Enums\ResponseStatus::Termination->value)
+            ->where('is_completed', true)
+            ->last();
+
         return response()->json([
             'success' => true,
             'data' => [
@@ -93,7 +109,9 @@ class GratificationController extends Controller
                 'report_description' => $gratification->report_description,
                 'attachment' => $gratification->attachment,
                 'identity_card_attachment' => $gratification->identity_card_attachment,
-                'status' => $gratification->process->responseStatus->name ?? 'Initiation', // Current status
+                'status' => $gratification->process->responseStatus->name ?? 'Initiation',
+                'answer' => $terminationProcess->answer ?? null,
+                'answer_attachment' => $terminationProcess->answer_attachment ?? null,
                 'history' => $history,
                 'created_at' => $gratification->created_at,
             ],
