@@ -11,8 +11,13 @@ class Violation extends Model
 
     protected $fillable = [
         'name',
-        'description',
+        'is_active',
     ];
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 
     public function wbs()
     {

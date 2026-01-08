@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\InformationRequestController;
 use App\Http\Controllers\Api\GratificationController;
 use App\Http\Controllers\Api\WbsController;
+use App\Http\Controllers\Api\ViolationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,5 +58,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/reports', [WbsController::class, 'submitReport']);
         Route::get('/reports/{report_code}', [WbsController::class, 'checkReport']);
     });
+
+    // Master Data Routes
+    Route::get('/violations', [ViolationController::class, 'index']);
 
 });

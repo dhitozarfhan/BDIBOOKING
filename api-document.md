@@ -656,3 +656,31 @@ Jika kolom "Jenis Pelanggaran" kosong di dashboard admin, penyebabnya mirip deng
    ```
 2. Pastikan saat mengirim laporan via API (field `violation_id`), Anda menggunakan ID yang **benar-benar ada** di hasil query di atas.
 3. Jangan berasumsi ID selalu dimulai dari 1.
+
+### 7. Master Data
+
+#### Daftar Jenis Pelanggaran (Violation Types)
+- **URL:** `GET /api/v1/violations`
+- **Deskripsi:** Mendapatkan daftar jenis pelanggaran aktif untuk keperluan form WBS
+- **Contoh Request:**
+  ```
+  GET /api/v1/violations
+  ```
+- **Contoh Response:**
+  ```json
+  {
+    "success": true,
+    "data": [
+      {
+        "id": 1,
+        "name": "Pelanggaran terhadap peraturan",
+        "is_active": 1
+      },
+      {
+        "id": 2,
+        "name": "Penyalahgunaan wewenang atau jabatan",
+        "is_active": 1
+      }
+    ]
+  }
+  ```
