@@ -20,7 +20,7 @@ class ArticleController extends Controller
 
         // Filter by article type
         if ($request->has('type')) {
-            $articleType = ArticleType::where('name', $request->type)->first();
+            $articleType = ArticleType::where('slug', $request->type)->first();
             if ($articleType) {
                 $query->where('article_type_id', $articleType->id);
             }
