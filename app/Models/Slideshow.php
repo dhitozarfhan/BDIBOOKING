@@ -49,6 +49,11 @@ class Slideshow extends Model
         return $this->belongsTo(Article::class, 'article_id');
     }
 
+    public function getSlideImage()
+    {
+        return $this->image ? asset('storage/' . $this->image) : null;
+    }
+
     protected static function booted(): void
     {
         static::creating(function ($record) {
