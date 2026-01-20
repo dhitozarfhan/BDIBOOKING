@@ -25,7 +25,7 @@ class InformationRequestController extends Controller
             'grab_method' => 'required|array', // Checkbox array
             'delivery_method' => 'nullable|array', // Checkbox array, nullable depending on grab_method
             'rule_accepted' => 'required|boolean',
-            'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
+            'identity_card_attachment' => 'required|file|image|max:2048', // 2MB max
         ]);
 
         // Generate registration code (6 random characters like in Livewire)

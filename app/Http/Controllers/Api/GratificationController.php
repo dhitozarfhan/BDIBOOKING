@@ -22,8 +22,8 @@ class GratificationController extends Controller
             'email' => 'required|email|max:255',
             'report_title' => 'required|string|max:255',
             'report_description' => 'required|string',
-            'attachment' => 'nullable|file|max:1024', // 1MB max
-            'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
+            'attachment' => 'required|file|max:1024', // 1MB max
+            'identity_card_attachment' => 'required|file|image|max:2048', // 2MB max
         ]);
 
         // Generate registration code (6 random characters like in Livewire)

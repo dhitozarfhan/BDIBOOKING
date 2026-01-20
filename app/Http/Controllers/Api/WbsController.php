@@ -22,8 +22,8 @@ class WbsController extends Controller
             'email' => 'required|email|max:255',
             'report_title' => 'required|string|max:255',
             'report_description' => 'required|string',
-            'attachment' => 'nullable|file|max:10240', // 10MB max
-            'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
+            'attachment' => 'required|file|max:10240', // 10MB max
+            'identity_card_attachment' => 'required|file|image|max:2048', // 2MB max
             'violation_id' => 'required|exists:violations,id', // Changed to required as per Livewire
         ]);
 

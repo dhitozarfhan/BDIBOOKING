@@ -181,13 +181,51 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
       {
         "id": 1,
         "title": "Judul Slideshow",
-        "image": "http://localhost:8000/storage/path/to/slide.jpg",
-        "link": "http://example.com",
-        "order": 1
+        "description": "Deskripsi lengkap slideshow yang akan dipotong di mobile app",
+        "image": "http://localhost:8000/storage/slideshow/images/xxx.jpg",
+        "image_url": "http://localhost:8000/storage/slideshow/images/xxx.jpg",
+        "link": "#",
+        "path": null,
+        "target_blank": false,
+        "order": 1,
+        "link_type_id": 99,
+        "article_id": null
+      },
+      {
+        "id": 2,
+        "title": "Slideshow dengan Artikel",
+        "description": "Slideshow ini terhubung ke artikel",
+        "image": "http://localhost:8000/storage/slideshow/images/yyy.png",
+        "image_url": "http://localhost:8000/storage/slideshow/images/yyy.png",
+        "link": "#",
+        "path": null,
+        "target_blank": false,
+        "order": 2,
+        "link_type_id": 1,
+        "article_id": 5
       }
     ]
   }
   ```
+- **Field Response:**
+  | Field | Tipe | Deskripsi |
+  |-------|------|-----------|
+  | id | integer | ID slideshow |
+  | title | string | Judul slideshow |
+  | description | string | Deskripsi lengkap |
+  | image | string | URL gambar (format lama) |
+  | image_url | string | URL gambar (format baru) |
+  | link | string | URL link eksternal |
+  | path | string/null | Path internal |
+  | target_blank | boolean | Buka link di tab baru |
+  | order | integer | Urutan tampil |
+  | link_type_id | integer | Tipe link (99=tidak ada, 1=artikel) |
+  | article_id | integer/null | ID artikel terkait |
+
+- **Catatan Mobile App:**
+  - Gambar: Menggunakan `image_url` sebagai prioritas, fallback ke `image`
+  - Deskripsi: Dipotong maksimal 25 karakter dengan "..." di akhir
+  - Navigasi: Jika `article_id` ada, tap akan menuju halaman detail artikel
 
 ### 4. Informasi Publik
 
@@ -469,9 +507,9 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
     "email": "Email",
     "report_title": "Judul laporan",
     "report_description": "Deskripsi laporan WBS",
-    "attachment": "path/to/attachment (opsional)",
-    "identity_card_attachment": "path/to/identity_card_attachment (opsional)",
-    "violation_id": "ID pelanggaran (opsional)"
+    "attachment": "path/to/attachment",
+    "identity_card_attachment": "path/to/identity_card_attachment",
+    "violation_id": "ID pelanggaran"
   }
   ```
 - **Contoh Request:**
@@ -487,7 +525,8 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
     "phone": "081234567890",
     "email": "john@example.com",
     "report_title": "Laporan Pelanggaran",
-    "report_description": "Saya melihat pelanggaran terjadi di..."
+    "report_description": "Saya melihat pelanggaran terjadi di...",
+    "violation_id": 1
   }
   ```
 - **Contoh Response:**
@@ -714,3 +753,71 @@ Semua endpoint "Cek Status" (`GET /api/v1/.../{code}`) kini menyertakan field ja
   }
 }
 ```
+
+## Spesifikasi Form Mobile (Panduan Developer)
+
+Bagian ini berisi daftar lengkap field yang **Wajib (Required)** ada pada setiap form di aplikasi mobile, sesuai dengan standar validasi sistem. Gunakan tipe input yang sesuai.
+
+### 1. Form WBS (Whistle Blowing System)
+Endpoint: `POST /api/v1/wbs/reports`
+
+| Field Name | Tipe Input | Validasi / Keterangan |
+| :--- | :--- | :--- |
+| `reporter_name` | Text | Nama lengkap pelapor. |
+| `identity_number` | Text | Nomor KTP/Identitas. |
+| `email` | Email | Email aktif. |
+| `phone` | Phone | Nomor HP aktif. |
+| `occupation` | Text | Pekerjaan. |
+| `address` | Textarea | Alamat lengkap. |
+| `violation_id` | Select | Pilih Jenis Pelanggaran (Ambil dari `GET /api/v1/violations`). |
+| `report_title` | Text | Judul pelaporan. |
+| `report_description` | Textarea | Deskripsi pelanggaran. |
+| `attachment` | File | Bukti pendukung (Doc/PDF/Img Max 10MB). **Wajib**. |
+| `identity_card_attachment` | File | Foto/Scan KTP (Image Max 2MB). **Wajib**. |
+
+### 2. Form Laporan Gratifikasi
+Endpoint: `POST /api/v1/gratification/reports`
+
+| Field Name | Tipe Input | Validasi / Keterangan |
+| :--- | :--- | :--- |
+| `reporter_name` | Text | Nama lengkap pelapor. |
+| `identity_number` | Text | Nomor KTP/Identitas. |
+| `email` | Email | Email aktif. |
+| `phone` | Phone | Nomor HP aktif. |
+| `occupation` | Text | Pekerjaan. |
+| `address` | Textarea | Alamat lengkap. |
+| `report_title` | Text | Judul laporan. |
+| `report_description` | Textarea | Deskripsi gratifikasi. |
+| `attachment` | File | Bukti gratifikasi (Doc/PDF/Img Max 1MB). **Wajib**. |
+| `identity_card_attachment` | File | Foto/Scan KTP (Image Max 2MB). **Wajib**. |
+
+### 3. Form Pertanyaan Publik
+Endpoint: `POST /api/v1/questions`
+
+| Field Name | Tipe Input | Validasi / Keterangan |
+| :--- | :--- | :--- |
+| `reporter_name` | Text | Nama penanya. |
+| `email` | Email | Email aktif. |
+| `mobile` | Phone | Nomor HP aktif. |
+| `identity_number` | Text | Nomor KTP/Identitas. |
+| `report_title` | Text | Judul pertanyaan. |
+| `content` | Textarea | Isi pertanyaan. |
+| `identity_card_attachment` | File | Foto/Scan KTP (Image Max 2MB). **Wajib**. |
+
+### 4. Form Permintaan Informasi
+Endpoint: `POST /api/v1/information-requests`
+
+| Field Name | Tipe Input | Validasi / Keterangan |
+| :--- | :--- | :--- |
+| `reporter_name` | Text | Nama pemohon. |
+| `id_card_number` | Text | Nomor KTP. |
+| `address` | Textarea | Alamat lengkap. |
+| `occupation` | Text | Pekerjaan. |
+| `mobile` | Phone | Nomor HP aktif. |
+| `email` | Email | Email aktif. |
+| `report_title` | Text | Judul/Topik informasi yang diminta. |
+| `used_for` | Textarea | Tujuan penggunaan informasi. |
+| `grab_method[]` | Checkbox (Array) | Cara Memperoleh: `see`, `read`, `hear`, `write`, `hardcopy`, `softcopy` (Min 1). |
+| `delivery_method[]` | Checkbox (Array) | Cara Mendapat Salinan: `direct`, `courier`, `post`, `fax`, `email` (Wajib jika ada hardcopy/softcopy). |
+| `rule_accepted` | Checkbox / Switch | Persetujuan syarat & ketentuan (Nilai: `1` atau `true`). |
+| `identity_card_attachment` | File | Foto/Scan KTP (Image Max 2MB). **Wajib**. |

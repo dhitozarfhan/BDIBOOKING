@@ -20,7 +20,7 @@ class QuestionController extends Controller
             'identity_number' => 'required|string|max:20',
             'content' => 'required|string',
             'report_title' => 'required|string|max:255',
-            'identity_card_attachment' => 'nullable|file|image|max:2048', // 2MB max
+            'identity_card_attachment' => 'required|file|image|max:2048', // 2MB max
         ]);
 
         // Generate registration code (6 random characters like in Livewire)
