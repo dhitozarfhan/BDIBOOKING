@@ -82,6 +82,7 @@ class GratificationController extends Controller
             ->sortBy('created_at')
             ->map(function ($process) {
                 return [
+                    'status_id' => $process->response_status_id,
                     'status' => $process->responseStatus->name ?? 'Unknown',
                     'answer' => $process->answer,
                     'answer_attachment' => $process->answer_attachment,
@@ -109,6 +110,7 @@ class GratificationController extends Controller
                 'report_description' => $gratification->report_description,
                 'attachment' => $gratification->attachment,
                 'identity_card_attachment' => $gratification->identity_card_attachment,
+                'status_id' => $gratification->process->response_status_id ?? null,
                 'status' => $gratification->process->responseStatus->name ?? 'Initiation',
                 'answer' => $terminationProcess->answer ?? null,
                 'answer_attachment' => $terminationProcess->answer_attachment ?? null,

@@ -71,6 +71,7 @@ class QuestionController extends Controller
             ->sortBy('created_at')
             ->map(function ($process) {
                 return [
+                    'status_id' => $process->response_status_id,
                     'status' => $process->responseStatus->name ?? 'Unknown',
                     'answer' => $process->answer,
                     'answer_attachment' => $process->answer_attachment,
@@ -95,6 +96,7 @@ class QuestionController extends Controller
                 'email' => $question->email,
                 'identity_number' => $question->identity_number,
                 'identity_card_attachment' => $question->identity_card_attachment,
+                'status_id' => $question->process->response_status_id ?? null,
                 'status' => $question->process->responseStatus->name ?? 'Initiation', 
                 'answer' => $terminationProcess->answer ?? null,
                 'answer_attachment' => $terminationProcess->answer_attachment ?? null,

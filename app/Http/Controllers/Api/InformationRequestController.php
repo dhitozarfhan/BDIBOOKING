@@ -83,6 +83,7 @@ class InformationRequestController extends Controller
             ->sortBy('created_at')
             ->map(function ($process) {
                 return [
+                    'status_id' => $process->response_status_id,
                     'status' => $process->responseStatus->name ?? 'Unknown',
                     'answer' => $process->answer,
                     'answer_attachment' => $process->answer_attachment,
@@ -111,6 +112,7 @@ class InformationRequestController extends Controller
                 'grab_method' => $informationRequest->grab_method,
                 'delivery_method' => $informationRequest->delivery_method,
                 'rule_accepted' => $informationRequest->rule_accepted,
+                'status_id' => $informationRequest->process->response_status_id ?? null,
                 'status' => $informationRequest->process->responseStatus->name ?? 'Initiation', 
                 'answer' => $terminationProcess->answer ?? null,
                 'answer_attachment' => $terminationProcess->answer_attachment ?? null,

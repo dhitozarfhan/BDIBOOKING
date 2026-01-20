@@ -293,9 +293,11 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
       "email": "john@example.com",
       "identity_number": "1234567890",
       "identity_card_attachment": null,
+      "status_id": 1,
       "status": "Initiation",
       "history": [
         {
+          "status_id": 1,
           "status": "Initiation",
           "answer": null,
           "answer_attachment": null,
@@ -387,9 +389,11 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
         "email"
       ],
       "rule_accepted": true,
+      "status_id": 1,
       "status": "Initiation",
       "history": [
         {
+          "status_id": 1,
           "status": "Initiation",
           "answer": null,
           "answer_attachment": null,
@@ -475,9 +479,11 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
       "report_description": "Saya melihat gratifikasi terjadi di...",
       "attachment": null,
       "identity_card_attachment": null,
+      "status_id": 1,
       "status": "Initiation",
       "history": [
         {
+          "status_id": 1,
           "status": "Initiation",
           "answer": null,
           "answer_attachment": null,
@@ -567,9 +573,11 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
       "identity_card_attachment": null,
       "violation_id": 1,
       "violation_name": "Pelanggaran terhadap peraturan",
+      "status_id": 1,
       "status": "Initiation",
       "history": [
         {
+          "status_id": 1,
           "status": "Initiation",
           "answer": null,
           "answer_attachment": null,
@@ -745,6 +753,7 @@ Semua endpoint "Cek Status" (`GET /api/v1/.../{code}`) kini menyertakan field ja
   "success": true,
   "data": {
     "report_code": "...",
+    "status_id": 4, // NEW: ID Status (1=Initiation, 2=Process, 3=Disposition, 4=Termination)
     "status": "Termination", // atau lainnya
     "answer": "Ini jawaban resmi dari admin.", // NEW: Jawaban teks
     "answer_attachment": "responses/jawaban.pdf", // NEW: Path file jawaban (download pakai /download endpoint)

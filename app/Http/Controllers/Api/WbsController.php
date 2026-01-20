@@ -84,6 +84,7 @@ class WbsController extends Controller
             ->sortBy('created_at')
             ->map(function ($process) {
                 return [
+                    'status_id' => $process->response_status_id,
                     'status' => $process->responseStatus->name ?? 'Unknown',
                     'answer' => $process->answer,
                     'answer_attachment' => $process->answer_attachment,
@@ -113,6 +114,7 @@ class WbsController extends Controller
                 'identity_card_attachment' => $wbs->identity_card_attachment,
                 'violation_id' => $wbs->violation_id,
                 'violation_name' => $wbs->violation->name ?? null,
+                'status_id' => $wbs->process->response_status_id ?? null,
                 'status' => $wbs->process->responseStatus->name ?? 'Initiation', 
                 'answer' => $terminationProcess->answer ?? null,
                 'answer_attachment' => $terminationProcess->answer_attachment ?? null,
