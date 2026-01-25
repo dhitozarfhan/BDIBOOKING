@@ -81,13 +81,18 @@ class GratificationController extends Controller
         $history = $gratification->reportProcesses
             ->sortBy('created_at')
             ->map(function ($process) {
-                return [
+                $data = [
                     'status_id' => $process->response_status_id,
-                    'status' => $process->responseStatus->name ?? 'Unknown',
-                    'answer' => $process->answer,
-                    'answer_attachment' => $process->answer_attachment,
+                    'status' => $process->responseStatus->name ?? '-',
                     'created_at' => $process->created_at,
                 ];
+
+                if ($process->is_completed) {
+                    $data['answer'] = $process->answer;
+                    $data['answer_attachment'] = $process->answer_attachment;
+                }
+
+                return $data;
             })->values();
 
         // Find termination process (last completed process) for final answer
@@ -99,12 +104,13 @@ class GratificationController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
+                // Original API keys
                 'report_code' => $gratification->registration_code,
                 'reporter_name' => $gratification->reporter_name,
                 'identity_number' => $gratification->identity_number,
                 'address' => $gratification->address,
                 'occupation' => $gratification->occupation,
-                'phone' => $gratification->phone,
+                'phone' => $gratification->phone, // Raw for API consumers who might need it, but see 'mobile' below
                 'email' => $gratification->email,
                 'report_title' => $gratification->report_title,
                 'report_description' => $gratification->report_description,
@@ -116,6 +122,42 @@ class GratificationController extends Controller
                 'answer_attachment' => $terminationProcess->answer_attachment ?? null,
                 'history' => $history,
                 'created_at' => $gratification->created_at,
+
+                // Livewire Compatibility Keys
+                'subject' => $gratification->report_title,
+                'content' => $gratification->report_description,
+                'name' => $gratification->reporter_name,
+                'mobile' => $gratification->phone ? substr($gratification->phone, 0, -4) . 'xxxx' : '-', // Masked as per Livewire
+                'time_insert' => $gratification->created_at,
+                'processes' => $gratification->reportProcesses->map(function ($process) {
+                    $statusId = $process->response_status_id;
+                    $statusConfig = [
+                        \App\Enums\ResponseStatus::Initiation->value => ['label' => 'Initiation'],
+                        \App\Enums\ResponseStatus::Process->value => ['label' => 'Process'],
+                        \App\Enums\ResponseStatus::Disposition->value => ['label' => 'Disposition'],
+                        \App\Enums\ResponseStatus::Termination->value => ['label' => 'Completed'],
+                    ];
+                    $config = $statusConfig[$statusId] ?? ['label' => 'Unknown'];
+
+                    // Logic: Answer only visible if is_completed is true
+                    $showAnswer = $process->is_completed;
+
+                    $processData = [
+                        'id' => $process->id,
+                        'response_status_id' => $statusId,
+                        'responseStatus' => [
+                            'name' => $config['label'],
+                        ],
+                        'created_at' => $process->created_at,
+                    ];
+
+                    if ($showAnswer) {
+                        $processData['answer'] = $process->answer;
+                        $processData['answer_attachment'] = $process->answer_attachment;
+                    }
+
+                    return $processData;
+                }),
             ],
         ]);
     }

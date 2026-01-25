@@ -83,13 +83,18 @@ class WbsController extends Controller
         $history = $wbs->reportProcesses
             ->sortBy('created_at')
             ->map(function ($process) {
-                return [
+                $data = [
                     'status_id' => $process->response_status_id,
-                    'status' => $process->responseStatus->name ?? 'Unknown',
-                    'answer' => $process->answer,
-                    'answer_attachment' => $process->answer_attachment,
+                    'status' => $process->responseStatus->name ?? '-',
                     'created_at' => $process->created_at,
                 ];
+
+                if ($process->is_completed) {
+                    $data['answer'] = $process->answer;
+                    $data['answer_attachment'] = $process->answer_attachment;
+                }
+
+                return $data;
             })->values();
         
         // Find termination process (last completed process) for final answer
@@ -101,12 +106,13 @@ class WbsController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
+                // Original API keys
                 'report_code' => $wbs->registration_code,
                 'reporter_name' => $wbs->reporter_name,
                 'identity_number' => $wbs->identity_number,
                 'address' => $wbs->address,
                 'occupation' => $wbs->occupation,
-                'phone' => $wbs->phone,
+                'phone' => $wbs->phone, // Raw
                 'email' => $wbs->email,
                 'report_title' => $wbs->report_title,
                 'report_description' => $wbs->report_description,
@@ -120,6 +126,42 @@ class WbsController extends Controller
                 'answer_attachment' => $terminationProcess->answer_attachment ?? null,
                 'history' => $history,
                 'created_at' => $wbs->created_at,
+
+                // Livewire Compatibility Keys
+                'subject' => $wbs->report_title,
+                'content' => $wbs->report_description,
+                'name' => $wbs->reporter_name,
+                'mobile' => $wbs->phone ? substr($wbs->phone, 0, -4) . 'xxxx' : '-', // Masked
+                'time_insert' => $wbs->created_at,
+                'processes' => $wbs->reportProcesses->map(function ($process) {
+                    $statusId = $process->response_status_id;
+                    $statusConfig = [
+                        \App\Enums\ResponseStatus::Initiation->value => ['label' => 'Initiation'],
+                        \App\Enums\ResponseStatus::Process->value => ['label' => 'Process'],
+                        \App\Enums\ResponseStatus::Disposition->value => ['label' => 'Disposition'],
+                        \App\Enums\ResponseStatus::Termination->value => ['label' => 'Completed'],
+                    ];
+                    $config = $statusConfig[$statusId] ?? ['label' => 'Unknown'];
+
+                    // Logic: Answer only visible if is_completed is true
+                    $showAnswer = $process->is_completed;
+
+                    $processData = [
+                        'id' => $process->id,
+                        'response_status_id' => $statusId,
+                        'responseStatus' => [
+                            'name' => $config['label'],
+                        ],
+                        'created_at' => $process->created_at,
+                    ];
+
+                    if ($showAnswer) {
+                        $processData['answer'] = $process->answer;
+                        $processData['answer_attachment'] = $process->answer_attachment;
+                    }
+
+                    return $processData;
+                }),
             ],
         ]);
     }

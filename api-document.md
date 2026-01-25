@@ -289,22 +289,39 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
       "reporter_name": "John Doe",
       "content": "Apa itu BDI Yogyakarta?",
       "report_title": "Pertanyaan tentang BDI",
-      "mobile": "081234567890",
+      "mobile": "081234567890", // RAW (Backward Compatibility)
       "email": "john@example.com",
       "identity_number": "1234567890",
       "identity_card_attachment": null,
       "status_id": 1,
       "status": "Initiation",
-      "history": [
+      "history": [ ... ], // Old flat history
+      "created_at": "2023-01-01T00:00:00.000000Z",
+      
+      // New Livewire Compatibility Keys
+      "subject": "Pertanyaan tentang BDI",
+      "name": "John Doe",
+      "mobile_masked": "0812xxxx", // Privacy Safe
+      "time_insert": "2023-01-01T00:00:00.000000Z",
+      "processes": [
         {
-          "status_id": 1,
-          "status": "Initiation",
-          "answer": null,
-          "answer_attachment": null,
-          "created_at": "2023-01-01T00:00:00.000000Z"
+          "id": 1,
+          "response_status_id": 1,
+          "responseStatus": {
+            "name": "Initiation"
+          },
+          "answer": null // Hidden/Null if not completed
+        },
+        {
+          "id": 2,
+          "response_status_id": 4,
+          "responseStatus": {
+            "name": "Completed"
+          },
+          "answer": "Jawaban dari admin...", // Visible only if completed
+          "answer_attachment": "path/to/file.pdf"
         }
-      ],
-      "created_at": "2023-01-01T00:00:00.000000Z"
+      ]
     }
   }
   ```
@@ -380,7 +397,7 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
       "id_card_number": "1234567890",
       "address": "Jl. Contoh No. 123",
       "occupation": "Wiraswasta",
-      "mobile": "081234567890",
+      "mobile": "081234567890", // RAW
       "email": "john@example.com",
       "report_title": "Permintaan Informasi Program Pelatihan",
       "used_for": "Untuk keperluan penelitian",
@@ -391,16 +408,24 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
       "rule_accepted": true,
       "status_id": 1,
       "status": "Initiation",
-      "history": [
+      "history": [ ... ],
+      "created_at": "2023-01-01T00:00:00.000000Z",
+
+      // New Livewire Compatibility Keys
+      "subject": "Information Request", // Hardcoded
+      "name": "John Doe",
+      "mobile_masked": "0812xxxx", // Privacy Safe
+      "time_insert": "2023-01-01T00:00:00.000000Z",
+      "processes": [
         {
-          "status_id": 1,
-          "status": "Initiation",
-          "answer": null,
-          "answer_attachment": null,
-          "created_at": "2023-01-01T00:00:00.000000Z"
+          "id": 1,
+          "response_status_id": 1,
+          "responseStatus": {
+            "name": "Initiation"
+          },
+          "answer": null
         }
-      ],
-      "created_at": "2023-01-01T00:00:00.000000Z"
+      ]
     }
   }
   ```
@@ -473,7 +498,7 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
       "identity_number": "1234567890",
       "address": "Jl. Contoh No. 123",
       "occupation": "Wiraswasta",
-      "phone": "081234567890",
+      "phone": "081234567890", // RAW
       "email": "john@example.com",
       "report_title": "Laporan Gratifikasi",
       "report_description": "Saya melihat gratifikasi terjadi di...",
@@ -481,16 +506,25 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
       "identity_card_attachment": null,
       "status_id": 1,
       "status": "Initiation",
-      "history": [
+      "history": [ ... ],
+      "created_at": "2023-01-01T00:00:00.000000Z",
+
+      // New Livewire Compatibility Keys
+      "subject": "Laporan Gratifikasi",
+      "content": "Saya melihat gratifikasi terjadi di...",
+      "name": "John Doe",
+      "mobile": "0812xxxx", // MASKED for Privacy
+      "time_insert": "2023-01-01T00:00:00.000000Z",
+      "processes": [
         {
-          "status_id": 1,
-          "status": "Initiation",
-          "answer": null,
-          "answer_attachment": null,
-          "created_at": "2023-01-01T00:00:00.000000Z"
+          "id": 1,
+          "response_status_id": 1,
+          "responseStatus": {
+            "name": "Initiation"
+          },
+          "answer": null
         }
-      ],
-      "created_at": "2023-01-01T00:00:00.000000Z"
+      ]
     }
   }
   ```
@@ -565,7 +599,7 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
       "identity_number": "1234567890",
       "address": "Jl. Contoh No. 123",
       "occupation": "Wiraswasta",
-      "phone": "081234567890",
+      "phone": "081234567890", // RAW
       "email": "john@example.com",
       "report_title": "Laporan Pelanggaran",
       "report_description": "Saya melihat pelanggaran terjadi di...",
@@ -575,16 +609,34 @@ API ini dirancang khusus untuk kebutuhan frontend (Livewire) tanpa autentikasi, 
       "violation_name": "Pelanggaran terhadap peraturan",
       "status_id": 1,
       "status": "Initiation",
-      "history": [
+      "history": [ ... ],
+      "created_at": "2023-01-01T00:00:00.000000Z",
+
+      // New Livewire Compatibility Keys
+      "subject": "Laporan Pelanggaran",
+      "content": "Saya melihat pelanggaran terjadi di...",
+      "name": "John Doe",
+      "mobile": "0812xxxx", // MASKED for Privacy
+      "time_insert": "2023-01-01T00:00:00.000000Z",
+      "processes": [
         {
-          "status_id": 1,
-          "status": "Initiation",
-          "answer": null,
-          "answer_attachment": null,
-          "created_at": "2023-01-01T00:00:00.000000Z"
+          "id": 1,
+          "response_status_id": 1,
+          "responseStatus": {
+            "name": "Initiation"
+          },
+          "answer": null // Hidden/Null if not completed
+        },
+        {
+          "id": 2,
+          "response_status_id": 4,
+          "responseStatus": {
+            "name": "Completed"
+          },
+          "answer": "Jawaban resmi...", // Visible only if completed
+          "answer_attachment": "path/file.pdf"
         }
-      ],
-      "created_at": "2023-01-01T00:00:00.000000Z"
+      ]
     }
   }
   ```

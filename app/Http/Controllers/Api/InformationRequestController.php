@@ -82,13 +82,18 @@ class InformationRequestController extends Controller
         $history = $informationRequest->reportProcesses
             ->sortBy('created_at')
             ->map(function ($process) {
-                return [
+                $data = [
                     'status_id' => $process->response_status_id,
-                    'status' => $process->responseStatus->name ?? 'Unknown',
-                    'answer' => $process->answer,
-                    'answer_attachment' => $process->answer_attachment,
+                    'status' => $process->responseStatus->name ?? '-',
                     'created_at' => $process->created_at,
                 ];
+
+                if ($process->is_completed) {
+                    $data['answer'] = $process->answer;
+                    $data['answer_attachment'] = $process->answer_attachment;
+                }
+
+                return $data;
             })->values();
 
         // Find termination process (last completed process) for final answer
@@ -100,12 +105,13 @@ class InformationRequestController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
+                // Original API keys
                 'registration_code' => $informationRequest->registration_code,
                 'reporter_name' => $informationRequest->reporter_name,
                 'id_card_number' => $informationRequest->id_card_number,
                 'address' => $informationRequest->address,
                 'occupation' => $informationRequest->occupation,
-                'mobile' => $informationRequest->mobile,
+                'mobile' => $informationRequest->mobile, // Raw
                 'email' => $informationRequest->email,
                 'report_title' => $informationRequest->report_title,
                 'used_for' => $informationRequest->used_for,
@@ -118,6 +124,42 @@ class InformationRequestController extends Controller
                 'answer_attachment' => $terminationProcess->answer_attachment ?? null,
                 'history' => $history,
                 'created_at' => $informationRequest->created_at,
+
+                // Livewire Compatibility Keys
+                'subject' => __('Information Request'), // Hardcoded as per Livewire
+                'name' => $informationRequest->reporter_name,
+                'mobile_masked' => $informationRequest->mobile ? substr($informationRequest->mobile, 0, -4) . 'xxxx' : '-', // Masked
+                'time_insert' => $informationRequest->created_at,
+                // 'content' // InformationRequest uses 'used_for' / 'report_title' instead of content
+                'processes' => $informationRequest->reportProcesses->map(function ($process) {
+                    $statusId = $process->response_status_id;
+                    $statusConfig = [
+                        \App\Enums\ResponseStatus::Initiation->value => ['label' => 'Initiation'],
+                        \App\Enums\ResponseStatus::Process->value => ['label' => 'Process'],
+                        \App\Enums\ResponseStatus::Disposition->value => ['label' => 'Disposition'],
+                        \App\Enums\ResponseStatus::Termination->value => ['label' => 'Completed'],
+                    ];
+                    $config = $statusConfig[$statusId] ?? ['label' => 'Unknown'];
+
+                    // Logic: Answer only visible if is_completed is true
+                    $showAnswer = $process->is_completed;
+
+                    $processData = [
+                        'id' => $process->id,
+                        'response_status_id' => $statusId,
+                        'responseStatus' => [
+                            'name' => $config['label'],
+                        ],
+                        'created_at' => $process->created_at,
+                    ];
+
+                    if ($showAnswer) {
+                        $processData['answer'] = $process->answer;
+                        $processData['answer_attachment'] = $process->answer_attachment;
+                    }
+
+                    return $processData;
+                }),
             ],
         ]);
     }
