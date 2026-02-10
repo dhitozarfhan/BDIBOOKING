@@ -2,6 +2,11 @@
     <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
         <h2 class="text-2xl font-bold text-center mb-6">Login Peserta</h2>
 
+        @if (session()->has('success'))
+            <div class="mb-4 p-4 rounded-md bg-green-50 border border-green-200">
+                <p class="text-sm text-green-700">{{ session('success') }}</p>
+            </div>
+        @endif
         <form wire:submit.prevent="login">
             <!-- Email Address -->
             <div>

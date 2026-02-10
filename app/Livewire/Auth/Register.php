@@ -8,17 +8,16 @@ use App\Models\Participant;
 use App\Models\Gender;
 use App\Models\Religion;
 use App\Models\Occupation;
-use Illuminate\Support\Facades\Auth;
+use App\Mail\ParticipantRegistered;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class Register extends Component
 {
     public $nik;
     public $name;
     public $email;
-    public $password;
-    public $password_confirmation;
     public $birth_place;
     public $birth_date;
     public $gender_id;
@@ -29,13 +28,35 @@ class Register extends Component
     public $occupation_id;
     public $institution;
 
+    public function mount()
+    {
+        if (session()->has('ocr_data')) {
+            $ocrData = session('ocr_data');
+            
+            // Map OCR data to component properties
+            // Adjust keys based on OcrService mock/real response
+            $this->nik = $ocrData['nik'] ?? $this->nik;
+            $this->name = $ocrData['nama'] ?? $this->name;
+            $this->birth_place = $ocrData['tempat_lahir'] ?? $this->birth_place;
+            $this->birth_date = $ocrData['tanggal_lahir'] ?? $this->birth_date;
+            $this->address = $ocrData['alamat'] ?? $this->address;
+            
+            // Optional: You might want to try to map gender, religion etc if the OCR returns them and they match your DB IDs or similar.
+            // For now, valid defaults or just text fields are pre-filled.
+            
+            // Clear session data so it doesn't persist inappropriately if they leave and come back (optional logic)
+            // session()->forget('ocr_data'); 
+            
+            session()->flash('message', 'Formulir telah diisi otomatis dari hasil scan KTP.');
+        }
+    }
+
     protected function rules()
     {
         return [
             'nik' => ['required', 'string', 'max:16', 'unique:participants'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:participants'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'birth_place' => ['required', 'string', 'max:255'],
             'birth_date' => ['required', 'date'],
             'gender_id' => ['required', 'exists:genders,id'],
@@ -52,11 +73,14 @@ class Register extends Component
     {
         $this->validate();
 
+        // Auto-generate password
+        $plainPassword = Str::random(8);
+
         $participant = Participant::create([
             'nik' => $this->nik,
             'name' => $this->name,
             'email' => $this->email,
-            'password' => Hash::make($this->password),
+            'password' => Hash::make($plainPassword),
             'birth_place' => $this->birth_place,
             'birth_date' => $this->birth_date,
             'gender_id' => $this->gender_id,
@@ -68,9 +92,14 @@ class Register extends Component
             'institution' => $this->institution,
         ]);
 
-        Auth::guard('participant')->login($participant);
+        // Send password via email
+        Mail::to($participant->email)->send(
+            new ParticipantRegistered($participant->name, $plainPassword)
+        );
 
-        return redirect()->route('participant.dashboard');
+        session()->flash('success', 'Pendaftaran berhasil! Password telah dikirim ke email Anda. Silakan cek email untuk login.');
+
+        return redirect()->route('participant.login');
     }
 
     public function render()

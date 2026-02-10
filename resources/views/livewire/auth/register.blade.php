@@ -95,19 +95,7 @@
                     @error('phone') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
 
-                <!-- Password -->
-                <div>
-                    <label for="password" class="block font-medium text-sm text-gray-700">Password</label>
-                    <input wire:model="password" id="password" type="password" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required autocomplete="new-password" />
-                    @error('password') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
-
-                <!-- Confirm Password -->
-                <div>
-                    <label for="password_confirmation" class="block font-medium text-sm text-gray-700">Konfirmasi Password</label>
-                    <input wire:model="password_confirmation" id="password_confirmation" type="password" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required />
-                </div>
-            </div>
 
             <!-- Alamat -->
             <div class="mt-4">

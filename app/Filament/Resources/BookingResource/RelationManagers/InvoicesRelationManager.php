@@ -24,7 +24,8 @@ class InvoicesRelationManager extends RelationManager
                 Forms\Components\TextInput::make('amount')
                     ->required()
                     ->numeric()
-                    ->prefix('Rp'),
+                    ->prefix('Rp')
+                    ->default(fn () => $this->getOwnerRecord()->bookable?->price),
                 Forms\Components\Select::make('status')
                     ->options([
                         'unpaid' => 'Unpaid',
@@ -86,9 +87,9 @@ class InvoicesRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->visible(fn ($record) => !$record->is_expired && $record->status !== 'paid'),
+                    ->visible(fn ($record) => $record->effective_status === 'unpaid'),
                 Tables\Actions\DeleteAction::make()
-                    ->visible(fn ($record) => !$record->is_expired && $record->status !== 'paid'),
+                    ->visible(fn ($record) => $record->effective_status === 'unpaid'),
                 Tables\Actions\Action::make('verify')
                     ->label('Verifikasi Lunas')
                     ->icon('heroicon-o-check-circle')

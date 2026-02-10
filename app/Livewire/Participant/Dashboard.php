@@ -84,6 +84,7 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('livewire.participant.dashboard')->layout('layouts.guest');
+        return view('livewire.participant.dashboard')
+            ->layout('layouts.app', ['title' => 'Dashboard Peserta']);
     }
 }

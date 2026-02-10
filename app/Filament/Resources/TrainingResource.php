@@ -28,6 +28,12 @@ class TrainingResource extends Resource
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\Select::make('type')
+                    ->options([
+                        Training::TYPE_3IN1 => '3 in 1',
+                        Training::TYPE_PNBP => 'PNBP',
+                    ])
+                    ->required(),
                 Forms\Components\RichEditor::make('description')
                     ->required()
                     ->columnSpanFull(),
@@ -61,6 +67,12 @@ class TrainingResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\TextColumn::make('type')
+                    ->badge()
+                    ->colors([
+                        'primary' => Training::TYPE_3IN1,
+                        'success' => Training::TYPE_PNBP,
+                    ]),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('start_date')

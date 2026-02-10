@@ -1,30 +1,14 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Dashboard Peserta</h1>
-        <form method="POST" action="{{ route('logout') }}" x-data>
-            @csrf
-            {{-- Logout logic might need adjustment if using custom guard logout, but for now assuming standard form or custom action --}}
-            {{-- Since we don't have a direct logout route for participant, we might need one. Let's assume there's a global logout or we use a livewire action.
-               But usually logout is a POST route.
-               Let's add a logout button that calls a method in component or a route.
-               Since I didn't create a specific logout route for participant, I should probably add one or handle it here.
-               Actually, I can add a logout method to the component.
-            --}}
-        </form>
-         <button wire:click="$dispatch('logout')" class="btn btn-outline btn-error btn-sm">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900">Dashboard Peserta</h1>
+            <p class="text-sm text-gray-500 mt-1">Selamat datang, {{ Auth::guard('participant')->user()->name ?? 'Peserta' }}</p>
+        </div>
+        <button wire:click="logout" class="btn btn-outline btn-error btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
             Logout
         </button>
     </div>
-    
-    @script
-    <script>
-        $wire.on('logout', () => {
-             // We can't easily logout from Livewire without a full page reload or form submit.
-             // Best to just redirect to a logout route. I'll create a logout method in the component.
-             @this.logout();
-        });
-    </script>
-    @endscript
 
     @if (session()->has('success'))
         <div class="alert alert-success shadow-lg mb-6">

@@ -23,6 +23,7 @@ Route::get('/', \App\Livewire\Home::class)->name('home');
 Route::prefix('participant')->name('participant.')->group(function () {
     Route::get('/login', ParticipantLogin::class)->name('login');
     Route::get('/register', ParticipantRegister::class)->name('register');
+    Route::get('/ktp-login', \App\Livewire\Auth\KtpLogin::class)->name('ktp.login');
     
     Route::middleware('auth:participant')->group(function () {
         Route::get('/dashboard', ParticipantDashboard::class)->name('dashboard');

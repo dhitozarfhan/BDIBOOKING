@@ -38,9 +38,9 @@
                         {!! $training->description !!}
                     </div>
                 </div>
-                <div class="card bg-base-100 shadow-md mt-6 lg:mt-0 w-full lg:w-96 shrink-0">
-                    <figure class="px-5 pt-5">
-                        <img src="{{ $training->image ? Storage::url($training->image) : asset('images/default-training.jpg') }}" alt="{{ $training->title }}" class="rounded-xl w-full h-48 object-cover" />
+                <div class="card bg-base-100 shadow-xl mt-6 lg:mt-0 w-full lg:w-96 shrink-0 border border-base-200">
+                    <figure class="px-4 pt-4">
+                        <img src="{{ $training->image ? Storage::url($training->image) : asset('images/default-training.jpg') }}" alt="{{ $training->title }}" class="rounded-xl w-full h-56 object-cover shadow-sm" />
                     </figure>
                     <div class="card-body px-5 py-4">
                         <div class="flex flex-col gap-1 mb-4">
@@ -60,12 +60,9 @@
                                 </button>
                             @endif
                         @else
-                            <a href="{{ route('participant.login') }}" class="btn btn-secondary btn-block">
-                                Login untuk Daftar
+                            <a href="{{ route('participant.ktp.login') }}" class="btn btn-secondary btn-block">
+                                Daftar Sekarang
                             </a>
-                            <p class="text-xs text-center mt-2 text-gray-500">
-                                Belum punya akun? <a href="{{ route('participant.register') }}" class="underline hover:text-secondary">Daftar disini</a>
-                            </p>
                         @endif
                     </div>
                 </div>
