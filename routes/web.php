@@ -12,7 +12,22 @@ use App\Models\Question;
 use Illuminate\Http\Request;
 use App\Http\Controllers\DownloadController;
 
+
+use App\Livewire\Auth\Login as ParticipantLogin;
+use App\Livewire\Auth\Register as ParticipantRegister;
+use App\Livewire\Participant\Dashboard as ParticipantDashboard;
+
 Route::get('/', \App\Livewire\Home::class)->name('home');
+
+// Participant Auth Routes
+Route::prefix('participant')->name('participant.')->group(function () {
+    Route::get('/login', ParticipantLogin::class)->name('login');
+    Route::get('/register', ParticipantRegister::class)->name('register');
+    
+    Route::middleware('auth:participant')->group(function () {
+        Route::get('/dashboard', ParticipantDashboard::class)->name('dashboard');
+    });
+});
 
 Route::prefix('competency')->name('competency.')->group(function () {
     Route::get('/', CompetencyIndex::class)->name('index');
@@ -99,6 +114,8 @@ Route::get('/register/training/sdma-option/{id_diklat}/{slug?}', \App\Livewire\T
 Route::get('/register/training/kemenperin/{id_diklat}/{slug?}', \App\Livewire\Training\KemenperinRegistration::class)->name('training.kemenperin-register');
 
 Route::get('/training', TrainingIndex::class)->name('training.index');
+Route::get('/pnbp', \App\Livewire\Pnbp\Index::class)->name('pnbp.index');
+Route::get('/pnbp/detail/{id_diklat}/{slug?}', \App\Livewire\Pnbp\Detail::class)->name('pnbp.detail');
 Route::get('/training/presence/{id_diklat}/{slug?}', \App\Livewire\Training\Presence::class)->name('training.presence');
 Route::get('/training/{page?}', function ($page = 'index') {
     // prevent directory traversal from page name

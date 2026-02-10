@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
 
             ArticleSeeder::class,
             NavigationSeeder::class,
+            PnbpSeeder::class,
         ]);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Training;
+namespace App\Livewire\Pnbp;
 
 use App\Models\Booking;
 use App\Models\Training;
@@ -16,8 +16,8 @@ class Detail extends Component
     {
         $this->training = Training::findOrFail($id_diklat);
 
-        if ($this->training->type !== Training::TYPE_3IN1) {
-            return redirect()->route('pnbp.detail', ['id_diklat' => $this->training->id, 'slug' => \Illuminate\Support\Str::slug($this->training->title)]);
+        if ($this->training->type !== Training::TYPE_PNBP) {
+            return redirect()->route('training.detail', ['id_diklat' => $this->training->id, 'slug' => \Illuminate\Support\Str::slug($this->training->title)]);
         }
 
         if (Auth::guard('participant')->check()) {
@@ -31,6 +31,8 @@ class Detail extends Component
     public function register()
     {
         if (!Auth::guard('participant')->check()) {
+            // Store intended URL to redirect back after login
+            session()->put('url.intended', route('pnbp.detail', ['id_diklat' => $this->training->id, 'slug' => \Illuminate\Support\Str::slug($this->training->title)]));
             return redirect()->route('participant.login');
         }
 
@@ -52,9 +54,8 @@ class Detail extends Component
         
         return redirect()->route('participant.dashboard');
     }
-
     public function render()
     {
-        return view('livewire.training.detail')->title($this->training->title);
+        return view('livewire.pnbp.detail')->title($this->training->title);
     }
 }

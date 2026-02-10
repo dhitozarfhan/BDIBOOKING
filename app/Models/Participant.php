@@ -3,26 +3,56 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Participant extends Model
+class Participant extends Authenticatable
 {
-    use HasFactory;
-
-    protected $table = 'participant';
-    protected $primaryKey = 'participant_id';
-
-    public $timestamps = true;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
-        'seminar_id',
+        'nik',
         'name',
-        'no_wa',
         'email',
+        'password',
+        'birth_place',
+        'birth_date',
+        'gender_id',
+        'religion_id',
+        'blood_type',
+        'phone',
+        'address',
+        'occupation_id',
+        'institution',
     ];
 
-    public function seminar()
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'birth_date' => 'date',
+        'password' => 'hashed',
+    ];
+
+    public function occupation()
     {
-        return $this->belongsTo(Seminar::class, 'seminar_id', 'seminar_id');
+        return $this->belongsTo(Occupation::class);
+    }
+
+    public function gender()
+    {
+        return $this->belongsTo(Gender::class);
+    }
+
+    public function religion()
+    {
+        return $this->belongsTo(Religion::class);
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
     }
 }

@@ -38,6 +38,9 @@
         </div>
     </section>
 
+    </section>
+
+
     <section class="py-12 bg-base-200">
         <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
