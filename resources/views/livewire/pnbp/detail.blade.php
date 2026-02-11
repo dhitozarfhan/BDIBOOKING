@@ -45,7 +45,7 @@
                     <div class="card-body px-5 py-4">
                         <div class="flex flex-col gap-1 mb-4">
                                 <span class="text-lg font-bold text-secondary">{{ 'Rp ' . number_format($training->price, 0, ',', '.') }}</span>
-                                <span class="text-sm text-gray-500">Kuota: {{ $training->quota }} Peserta</span>
+                                <span class="text-sm text-gray-500">Kuota: {{ $training->quota == 0 ? 'Tidak Terbatas' : $training->quota . ' Peserta' }}</span>
                         </div>
 
                         @if(Auth::guard('participant')->check())

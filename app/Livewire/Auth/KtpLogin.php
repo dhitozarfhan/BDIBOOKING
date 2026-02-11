@@ -17,9 +17,13 @@ class KtpLogin extends Component
 
     public function scan(OcrService $ocrService)
     {
+        \Illuminate\Support\Facades\Log::info('KtpLogin: scan method called');
+        
         $this->validate([
             'ktp_image' => 'required|image|max:10240', // 10MB max
         ]);
+
+        \Illuminate\Support\Facades\Log::info('KtpLogin: validation passed, calling service');
 
         $data = $ocrService->scan($this->ktp_image);
 

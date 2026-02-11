@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class OcrService
@@ -16,45 +15,107 @@ class OcrService
      */
     public function scan(UploadedFile $file): array
     {
-        // For now, we mock the service since the API endpoint is not provided.
-        // In a real implementation, you would post the file to the external OCR API.
-        
-        // return $this->callRealApi($file);
-        
-        return $this->mockResponse();
+        return $this->callRealApi($file);
     }
 
     protected function callRealApi(UploadedFile $file): array
     {
-        try {
-            // Placeholder for real API call
-            // $response = Http::attach('image', file_get_contents($file), $file->getClientOriginalName())
-            //     ->post(config('services.ocr.url'));
-            
-            // if ($response->successful()) {
-            //     return $response->json();
-            // }
-            
-            // Log::error('OCR API Error: ' . $response->body());
-            return [];
-        } catch (\Exception $e) {
-            Log::error('OCR Service Exception: ' . $e->getMessage());
+        $url = 'https://unsoundable-swithly-bria.ngrok-free.dev/api/ocr';
+        $logFile = storage_path('logs/ocr_debug.log');
+        $timestamp = now()->toDateTimeString();
+        
+        file_put_contents($logFile, "[$timestamp] Starting OCR Request (Native cURL)...\n", FILE_APPEND);
+        file_put_contents($logFile, "[$timestamp] File: " . $file->getRealPath() . " (" . $file->getSize() . " bytes)\n", FILE_APPEND);
+
+        $curl = curl_init();
+
+        $cfile = new \CURLFile($file->getRealPath(), $file->getMimeType(), $file->getClientOriginalName());
+
+        // Note: Field name is assumed to be 'file'. If API expects 'image', this needs to be changed.
+        $postData = ['file' => $cfile];
+
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 60, // Increased timeout
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $postData,
+            CURLOPT_SSL_VERIFYHOST => 0, // Disable SSL verification for development
+            CURLOPT_SSL_VERIFYPEER => 0,
+        ]);
+
+        file_put_contents($logFile, "[$timestamp] Executing curl...\n", FILE_APPEND);
+
+        $response = curl_exec($curl);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $error = curl_error($curl);
+        $errno = curl_errno($curl);
+        
+        curl_close($curl);
+
+        file_put_contents($logFile, "[$timestamp] HTTP Code: $httpCode\n", FILE_APPEND);
+
+        if ($error || $errno) {
+            file_put_contents($logFile, "[$timestamp] cURL Error ($errno): $error\n", FILE_APPEND);
             return [];
         }
+
+        file_put_contents($logFile, "[$timestamp] Response: " . substr($response, 0, 1000) . "...\n", FILE_APPEND);
+
+        if ($httpCode >= 200 && $httpCode < 300) {
+            $responseArray = json_decode($response, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                file_put_contents($logFile, "[$timestamp] JSON Success\n", FILE_APPEND);
+                
+                // Check for successful status and data key
+                if (isset($responseArray['status']) && $responseArray['status'] === 'success' && isset($responseArray['data'])) {
+                    $data = $responseArray['data'];
+
+                    // Parse tempat_tgl_lahir if available
+                    if (isset($data['tempat_tgl_lahir'])) {
+                        $parts = explode(',', $data['tempat_tgl_lahir']);
+                        if (count($parts) >= 1) {
+                            $data['tempat_lahir'] = trim($parts[0]);
+                        }
+                        if (count($parts) >= 2) {
+                            $dateStr = trim($parts[1]);
+                            // Convert DD-MM-YYYY to YYYY-MM-DD
+                            try {
+                                $date = \DateTime::createFromFormat('d-m-Y', $dateStr);
+                                if ($date) {
+                                    $data['tanggal_lahir'] = $date->format('Y-m-d');
+                                }
+                            } catch (\Exception $e) {
+                                file_put_contents($logFile, "[$timestamp] Date Parse Error: " . $e->getMessage() . "\n", FILE_APPEND);
+                            }
+                        }
+                    }
+
+                    return $data;
+                }
+                
+                return $responseArray; // Return whole array if structure is different, let caller handle or fail
+            }
+            file_put_contents($logFile, "[$timestamp] JSON Decode Error: " . json_last_error_msg() . "\n", FILE_APPEND);
+        } else {
+            file_put_contents($logFile, "[$timestamp] Request failed with status $httpCode\n", FILE_APPEND);
+        }
+
+        return [];
     }
 
     protected function mockResponse(): array
     {
-        // Simulate processing time
         sleep(2);
-
-        // Return dummy data for testing
-        // You can change 'nik' here to test exist vs new user
         return [
-            'nik' => '1234567890123456', // Example NIK
-            'nama' => 'Budi Santoso', // Note: key might differ from API, adjust mapping in component
+            'nik' => '1234567890123456',
+            'nama' => 'Budi Santoso',
             'tempat_lahir' => 'Jakarta',
-            'tanggal_lahir' => '1990-01-01', // YYYY-MM-DD
+            'tanggal_lahir' => '1990-01-01',
             'alamat' => 'Jl. Merdeka No. 1, Jakarta Pusat',
             'agama' => 'Islam',
             'status_perkawinan' => 'Belum Kawin',
