@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('occupations', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name', 100);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

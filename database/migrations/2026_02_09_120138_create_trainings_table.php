@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('trainings', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('type')->default('3in1'); // '3in1', 'pnbp'
             $table->text('description');
             $table->string('image')->nullable();
             $table->date('start_date');
