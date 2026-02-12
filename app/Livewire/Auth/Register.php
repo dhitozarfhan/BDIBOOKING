@@ -93,11 +93,21 @@ class Register extends Component
         ]);
 
         // Send password via email
-        Mail::to($participant->email)->send(
-            new ParticipantRegistered($participant->name, $plainPassword)
-        );
-
-        session()->flash('success', 'Pendaftaran berhasil! Password telah dikirim ke email Anda. Silakan cek email untuk login.');
+        try {
+            \Illuminate\Support\Facades\Log::info('Mencoba mengirim email password ke: ' . $participant->email);
+            
+            Mail::to($participant->email)->send(
+                new ParticipantRegistered($participant->name, $plainPassword)
+            );
+            
+            \Illuminate\Support\Facades\Log::info('Email password berhasil dikirim ke: ' . $participant->email);
+            session()->flash('success', 'Pendaftaran berhasil! Password telah dikirim ke email Anda. Silakan cek Inbox atau Spam.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('GAGAL mengirim email password ke ' . $participant->email . '. Error: ' . $e->getMessage());
+            
+            // Tampilkan pesan error ke user agar mereka sadar
+            session()->flash('warning', 'Pendaftaran berhasil, namun GAGAL mengirim email password. Silakan hubungi admin atau coba "Lupa Password". Error: ' . $e->getMessage());
+        }
 
         return redirect()->route('participant.login');
     }
