@@ -107,20 +107,4 @@ class OcrService
 
         return [];
     }
-
-    protected function mockResponse(): array
-    {
-        sleep(2);
-        return [
-            'nik' => '1234567890123456',
-            'nama' => 'Budi Santoso',
-            'tempat_lahir' => 'Jakarta',
-            'tanggal_lahir' => '1990-01-01',
-            'alamat' => 'Jl. Merdeka No. 1, Jakarta Pusat',
-            'agama' => 'Islam',
-            'status_perkawinan' => 'Belum Kawin',
-            'pekerjaan' => 'Wiraswasta',
-            'kewarganegaraan' => 'WNI',
-        ];
-    }
 }
