@@ -33,19 +33,46 @@ class Register extends Component
         if (session()->has('ocr_data')) {
             $ocrData = session('ocr_data');
             
-            // Map OCR data to component properties
-            // Adjust keys based on OcrService mock/real response
+            // Map OCR text fields
             $this->nik = $ocrData['nik'] ?? $this->nik;
             $this->name = $ocrData['nama'] ?? $this->name;
             $this->birth_place = $ocrData['tempat_lahir'] ?? $this->birth_place;
             $this->birth_date = $ocrData['tanggal_lahir'] ?? $this->birth_date;
             $this->address = $ocrData['alamat'] ?? $this->address;
+
+            // Map golongan darah → blood_type (hanya jika valid: A, B, AB, O)
+            if (!empty($ocrData['gol_darah']) && in_array(strtoupper($ocrData['gol_darah']), ['A', 'B', 'AB', 'O'])) {
+                $this->blood_type = strtoupper($ocrData['gol_darah']);
+            }
             
-            // Optional: You might want to try to map gender, religion etc if the OCR returns them and they match your DB IDs or similar.
-            // For now, valid defaults or just text fields are pre-filled.
-            
-            // Clear session data so it doesn't persist inappropriately if they leave and come back (optional logic)
-            // session()->forget('ocr_data'); 
+            // Map jenis kelamin → gender_id
+            if (!empty($ocrData['jenis_kelamin'])) {
+                $gender = Gender::whereRaw('LOWER(type) = ?', [strtolower($ocrData['jenis_kelamin'])])->first();
+                if ($gender) {
+                    $this->gender_id = $gender->id;
+                }
+            }
+
+            // Map agama → religion_id
+            if (!empty($ocrData['agama'])) {
+                $religion = Religion::whereRaw('LOWER(name) = ?', [strtolower($ocrData['agama'])])->first();
+                if ($religion) {
+                    $this->religion_id = $religion->id;
+                }
+            }
+
+            // Map pekerjaan → occupation_id (fallback ke "Lainnya" jika tidak ditemukan)
+            if (!empty($ocrData['pekerjaan'])) {
+                $occupation = Occupation::whereRaw('LOWER(name) = ?', [strtolower($ocrData['pekerjaan'])])->first();
+                if ($occupation) {
+                    $this->occupation_id = $occupation->id;
+                } else {
+                    $lainnya = Occupation::whereRaw('LOWER(name) = ?', ['lainnya'])->first();
+                    if ($lainnya) {
+                        $this->occupation_id = $lainnya->id;
+                    }
+                }
+            }
             
             session()->flash('message', 'Formulir telah diisi otomatis dari hasil scan KTP.');
         }
