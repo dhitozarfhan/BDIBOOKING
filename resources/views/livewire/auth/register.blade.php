@@ -104,6 +104,20 @@
                 @error('address') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
             </div>
 
+            <!-- Provinsi & Kota -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div>
+                    <label for="province" class="block font-medium text-sm text-gray-700">Provinsi</label>
+                    <input wire:model="province" id="province" type="text" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required />
+                    @error('province') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                </div>
+                <div>
+                    <label for="city" class="block font-medium text-sm text-gray-700">Kota / Kabupaten</label>
+                    <input wire:model="city" id="city" type="text" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required />
+                    @error('city') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                </div>
+            </div>
+
             <!-- Instansi -->
             <div class="mt-4">
                 <label for="institution" class="block font-medium text-sm text-gray-700">Instansi / Asal (Opsional)</label>

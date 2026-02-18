@@ -83,7 +83,8 @@ class InvoicesRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->visible(fn () => !$this->getOwnerRecord()->invoices()->where('status', 'paid')->exists()),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()

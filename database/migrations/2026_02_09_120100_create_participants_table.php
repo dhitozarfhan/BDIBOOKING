@@ -26,13 +26,15 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->foreignId('occupation_id')->constrained('occupations');
             $table->string('institution')->nullable();
+            $table->string('province')->nullable();
+            $table->string('city')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
     }
 
     /**
-     * Reverse the migrations.
+     * Reverse the migrations.y
      */
     public function down(): void
     {

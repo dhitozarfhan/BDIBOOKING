@@ -22,6 +22,8 @@ class Participant extends Authenticatable
         'blood_type',
         'phone',
         'address',
+        'province',
+        'city',
         'occupation_id',
         'institution',
     ];

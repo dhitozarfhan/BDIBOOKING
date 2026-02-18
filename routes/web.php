@@ -16,6 +16,9 @@ use App\Http\Controllers\DownloadController;
 use App\Livewire\Auth\Login as ParticipantLogin;
 use App\Livewire\Auth\Register as ParticipantRegister;
 use App\Livewire\Participant\Dashboard as ParticipantDashboard;
+use App\Livewire\Participant\Enrolled as ParticipantEnrolled;
+use App\Livewire\Participant\Completed as ParticipantCompleted;
+use App\Livewire\Participant\Profile as ParticipantProfile;
 
 Route::get('/', \App\Livewire\Home::class)->name('home');
 
@@ -27,6 +30,9 @@ Route::prefix('participant')->name('participant.')->group(function () {
     
     Route::middleware('auth:participant')->group(function () {
         Route::get('/dashboard', ParticipantDashboard::class)->name('dashboard');
+        Route::get('/enrolled', ParticipantEnrolled::class)->name('enrolled');
+        Route::get('/completed', ParticipantCompleted::class)->name('completed');
+        Route::get('/profile', ParticipantProfile::class)->name('profile');
     });
 });
 

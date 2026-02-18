@@ -27,4 +27,9 @@ class Booking extends Model
     {
         return $this->hasMany(Invoice::class);
     }
+
+    public function certificate()
+    {
+        return $this->hasOne(Certificate::class);
+    }
 }

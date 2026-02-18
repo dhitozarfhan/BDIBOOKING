@@ -20,7 +20,7 @@ class OcrService
 
     protected function callRealApi(UploadedFile $file): array
     {
-        $url = 'https://unsoundable-swithly-bria.ngrok-free.dev/api/ocr';
+        $url = 'https://rosalva-unrevealable-unsatisfiedly.ngrok-free.dev/ocr-ktp';
         $logFile = storage_path('logs/ocr_debug.log');
         $timestamp = now()->toDateTimeString();
         
@@ -71,10 +71,12 @@ class OcrService
             if (json_last_error() === JSON_ERROR_NONE) {
                 file_put_contents($logFile, "[$timestamp] JSON Success\n", FILE_APPEND);
                 
-                // Check for successful status and data key
-                if (isset($responseArray['status']) && $responseArray['status'] === 'success' && isset($responseArray['data'])) {
-                    $data = $responseArray['data'];
+                // New API returns flat JSON (no 'status' wrapper)
+                $data = $responseArray;
 
+                // Validate at least NIK or Name exists
+                if (!empty($data['nik']) || !empty($data['nama'])) {
+                    
                     // Parse tempat_tgl_lahir if available
                     if (isset($data['tempat_tgl_lahir'])) {
                         $parts = explode(',', $data['tempat_tgl_lahir']);
@@ -98,7 +100,7 @@ class OcrService
                     return $data;
                 }
                 
-                return $responseArray; // Return whole array if structure is different, let caller handle or fail
+                return $responseArray; // Return whole array if structure is different
             }
             file_put_contents($logFile, "[$timestamp] JSON Decode Error: " . json_last_error_msg() . "\n", FILE_APPEND);
         } else {

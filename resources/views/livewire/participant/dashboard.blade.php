@@ -1,147 +1,181 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-    <div class="flex justify-between items-center mb-8">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-900">Dashboard Peserta</h1>
-            <p class="text-sm text-gray-500 mt-1">Selamat datang, {{ Auth::guard('participant')->user()->name ?? 'Peserta' }}</p>
-        </div>
-        <button wire:click="logout" class="btn btn-outline btn-error btn-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-            Logout
-        </button>
-    </div>
+<div class="min-h-screen bg-base-200/30">
+    <div class="flex">
+        {{-- Sidebar --}}
+        @include('layouts.partials.participant-sidebar')
 
-    @if (session()->has('success'))
-        <div class="alert alert-success shadow-lg mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            <span>{{ session('success') }}</span>
-        </div>
-    @endif
-    
-     @if (session()->has('error'))
-        <div class="alert alert-error shadow-lg mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            <span>{{ session('error') }}</span>
-        </div>
-    @endif
+        {{-- Main Content --}}
+        <div class="flex-1 min-w-0 p-8 lg:p-10">
+            {{-- Flash Messages --}}
+            @if (session()->has('success'))
+                <div class="alert alert-success mb-6 rounded-xl shadow-sm">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span>{{ session('success') }}</span>
+                </div>
+            @endif
+            @if (session()->has('error'))
+                <div class="alert alert-error mb-6 rounded-xl shadow-sm">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span>{{ session('error') }}</span>
+                </div>
+            @endif
 
-    <div class="grid gap-6">
-        @forelse($bookings as $booking)
-            <div class="card bg-base-100 shadow-xl border border-gray-200">
-                <div class="card-body">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div>
-                            <h2 class="card-title text-xl font-bold">{{ $booking->bookable->title ?? 'Diklat Tidak Dikenal' }}</h2>
-                            <p class="text-sm text-gray-500">
-                                Tanggal: {{ optional($booking->bookable->start_date)->format('d M Y') }} - {{ optional($booking->bookable->end_date)->format('d M Y') }}
-                            </p>
-                            <div class="mt-2">
-                                <span class="badge 
-                                    @switch($booking->status)
-                                        @case('approved') badge-success @break
-                                        @case('rejected') badge-error @break
-                                        @case('completed') badge-info @break
-                                        @default badge-ghost @endswitch
-                                ">
-                                    Status Pendaftaran: {{ ucfirst($booking->status) }}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            @if($booking->bookable->type === 'pnbp')
-                                <a href="{{ route('pnbp.detail', ['id_diklat' => $booking->bookable->id, 'slug' => Str::slug($booking->bookable->title)]) }}" class="btn btn-sm btn-ghost">Lihat Detail PNBP</a>
-                            @else
-                                <a href="{{ route('training.detail', ['id_diklat' => $booking->bookable->id, 'slug' => Str::slug($booking->bookable->title)]) }}" class="btn btn-sm btn-ghost">Lihat Detail Diklat</a>
-                            @endif
-                        </div>
+            {{-- Page Header --}}
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold text-base-content tracking-tight">Dashboard</h1>
+                <p class="text-sm text-base-content/50 mt-1">Ringkasan aktivitas pendaftaran diklat Anda.</p>
+            </div>
+
+            {{-- Stats Cards --}}
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+                {{-- Total Diklat --}}
+                <div class="bg-base-100 rounded-2xl border border-base-200/80 p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500/15 to-purple-500/15 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                     </div>
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-base-content/40">Total Diklat</p>
+                        <p class="text-2xl font-bold text-base-content mt-0.5">{{ $bookings->count() }}</p>
+                    </div>
+                </div>
 
-                    <div class="divider">Tagihan & Pembayaran</div>
+                {{-- Disetujui --}}
+                <div class="bg-base-100 rounded-2xl border border-base-200/80 p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/15 to-green-500/15 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-base-content/40">Disetujui</p>
+                        <p class="text-2xl font-bold text-base-content mt-0.5">{{ $bookings->whereIn('status', ['approved', 'completed'])->count() }}</p>
+                    </div>
+                </div>
 
-                    @if($booking->invoices->isEmpty())
-                        <div class="text-gray-500 text-sm italic">Belum ada tagihan yang diterbitkan.</div>
-                    @else
-                        <div class="overflow-x-auto">
-                            <table class="table w-full">
-                                <thead>
-                                    <tr>
-                                        <th>Kode Billing</th>
-                                        <th>Jatuh Tempo</th>
-                                        <th>Jumlah</th>
-                                        <th>Status</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                {{-- Menunggu --}}
+                <div class="bg-base-100 rounded-2xl border border-base-200/80 p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/15 to-orange-500/15 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-base-content/40">Menunggu</p>
+                        <p class="text-2xl font-bold text-base-content mt-0.5">{{ $bookings->where('status', 'pending')->count() }}</p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Invoices & Status --}}
+            <div>
+                <h2 class="text-base font-bold text-base-content mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" /></svg>
+                    Tagihan & Pembayaran
+                </h2>
+
+                <div class="space-y-4">
+                    @forelse($bookings as $booking)
+                        @if(!$booking->invoices->isEmpty())
+                            <div wire:key="booking-{{ $booking->id }}" class="bg-base-100 rounded-2xl border border-base-200/80 shadow-sm overflow-hidden">
+                                {{-- Booking Header --}}
+                                <div class="px-5 py-4 border-b border-base-200/60 flex flex-wrap items-center justify-between gap-2">
+                                    <div class="flex items-center gap-2.5">
+                                        <h3 class="font-semibold text-sm text-base-content">{{ $booking->bookable->title ?? 'Diklat' }}</h3>
+                                        <span class="badge badge-xs font-semibold
+                                            @switch($booking->status)
+                                                @case('approved') badge-success @break
+                                                @case('rejected') badge-error @break
+                                                @case('completed') badge-info @break
+                                                @default badge-ghost @endswitch
+                                        ">{{ ucfirst($booking->status) }}</span>
+                                    </div>
+                                    <span class="text-xs text-base-content/40">{{ $booking->created_at->format('d M Y') }}</span>
+                                </div>
+
+                                {{-- Invoice Items --}}
+                                <div class="divide-y divide-base-200/50">
                                     @foreach($booking->invoices as $invoice)
-                                        <tr wire:key="invoice-{{ $invoice->id }}">
-                                            <td class="font-mono font-bold">{{ $invoice->billing_code }}</td>
-                                            <td>{{ $invoice->due_date->format('d M Y H:i') }}</td>
-                                            <td>Rp {{ number_format($invoice->amount, 0, ',', '.') }}</td>
-                                            <td>
-                                                <span class="badge 
-                                                    @switch($invoice->status)
-                                                        @case('paid') badge-success @break
-                                                        @case('expired') badge-error @break
-                                                        @case('cancelled') badge-warning @break
-                                                        @default badge-ghost @endswitch
-                                                ">
-                                                    {{ ucfirst($invoice->status) }}
-                                                </span>
-                                                @if($invoice->payment_proof && $invoice->status == 'unpaid')
-                                                    <div class="badge badge-info badge-outline mt-1 text-xs">Menunggu Verifikasi</div>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <div class="flex flex-col gap-2">
+                                        <div wire:key="invoice-{{ $invoice->id }}" class="px-5 py-4">
+                                            <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+                                                <div class="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-y-3 gap-x-4">
+                                                    <div>
+                                                        <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/35">Kode Billing</p>
+                                                        <p class="font-mono font-bold text-sm mt-0.5 text-base-content">{{ $invoice->billing_code }}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/35">Jatuh Tempo</p>
+                                                        <p class="text-sm font-medium mt-0.5 text-base-content/80">{{ $invoice->due_date->format('d M Y H:i') }}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/35">Jumlah</p>
+                                                        <p class="text-sm font-bold text-indigo-600 mt-0.5">Rp {{ number_format($invoice->amount, 0, ',', '.') }}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/35">Status</p>
+                                                        <span class="inline-flex items-center gap-1 mt-1 text-xs font-semibold
+                                                            @if($invoice->effective_status === 'paid') text-emerald-600
+                                                            @elseif($invoice->effective_status === 'expired') text-red-500
+                                                            @else text-amber-500 @endif">
+                                                            <span class="w-1.5 h-1.5 rounded-full 
+                                                                @if($invoice->effective_status === 'paid') bg-emerald-500
+                                                                @elseif($invoice->effective_status === 'expired') bg-red-500
+                                                                @else bg-amber-500 @endif"></span>
+                                                            {{ ucfirst($invoice->effective_status) }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex flex-wrap items-center gap-2 shrink-0 lg:border-l lg:border-base-200/60 lg:pl-4">
                                                     @if($invoice->invoice_file)
-                                                        <button wire:click="downloadInvoice({{ $invoice->id }})" class="btn btn-xs btn-outline btn-primary">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                                                            Download Tagihan
+                                                        <button wire:click="downloadInvoice({{ $invoice->id }})" class="btn btn-xs btn-ghost rounded-lg gap-1 text-indigo-600 hover:bg-indigo-50">
+                                                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                                                            Download
                                                         </button>
                                                     @endif
-                                                    
-                                                    @if($invoice->status == 'unpaid')
-                                                        @if($invoice->payment_proof)
-                                                            <span class="text-xs text-success flex items-center">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
-                                                                Bukti Terupload
-                                                            </span>
-                                                        @else
-                                                            <div class="form-control w-full max-w-xs">
-                                                                <input type="file" wire:model="payment_proofs.{{ $invoice->id }}" class="file-input file-input-bordered file-input-xs w-full max-w-xs" accept="image/*,application/pdf" />
-                                                                @error("payment_proofs.{$invoice->id}") <span class="text-error text-xs">{{ $message }}</span> @enderror
-                                                                
-                                                                @if(isset($payment_proofs[$invoice->id]))
-                                                                    <button wire:click="uploadProof({{ $invoice->id }})" class="btn btn-xs btn-primary mt-1">
-                                                                        Upload Bukti
-                                                                    </button>
-                                                                @endif
-                                                            </div>
-                                                        @endif
-                                                    @endif
 
-                                                    @if($invoice->status == 'expired')
-                                                        <button class="btn btn-xs btn-warning" disabled>Expired - Hubungi Admin</button>
+                                                    @if($invoice->effective_status === 'unpaid' && !$invoice->payment_proof)
+                                                        <div class="flex items-center gap-2" x-data="{ fileName: '' }">
+                                                            <label class="btn btn-sm btn-outline btn-primary gap-2 cursor-pointer normal-case font-medium rounded-lg hover:bg-primary hover:text-white transition-all">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                                                                <span x-text="fileName ? (fileName.length > 20 ? fileName.substring(0, 17) + '...' : fileName) : 'Upload Bukti'">Upload Bukti</span>
+                                                                <input type="file" wire:model="payment_proofs.{{ $invoice->id }}" class="hidden" accept=".jpg,.jpeg,.png,.pdf" @change="fileName = $event.target.files[0].name" />
+                                                            </label>
+                                                            
+                                                            @if(isset($payment_proofs[$invoice->id]) && $payment_proofs[$invoice->id])
+                                                                <button wire:click="uploadProof({{ $invoice->id }})" class="btn btn-sm btn-primary rounded-lg shadow-sm animate-pulse">
+                                                                    Simpan
+                                                                </button>
+                                                            @endif
+                                                        </div>
+                                                    @elseif($invoice->payment_proof)
+                                                        <a href="{{ Storage::url($invoice->payment_proof) }}" target="_blank" class="btn btn-xs btn-ghost rounded-lg gap-1 text-base-content/60 hover:bg-base-200/60">
+                                                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                                            Lihat Bukti
+                                                        </a>
                                                     @endif
                                                 </div>
-                                            </td>
-                                        </tr>
+                                            </div>
+                                        </div>
                                     @endforeach
-                                </tbody>
-                            </table>
+                                </div>
+                            </div>
+                        @endif
+                    @empty
+                        <div class="bg-base-100 rounded-2xl border border-base-200/80 p-12 text-center">
+                            <div class="w-14 h-14 rounded-2xl bg-base-200/60 flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-7 h-7 text-base-content/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" /></svg>
+                            </div>
+                            <p class="text-sm text-base-content/40 font-medium">Belum ada tagihan.</p>
+                            <a href="{{ route('pnbp.index') }}" wire:navigate class="btn btn-sm btn-primary rounded-xl mt-4 gap-1.5">Lihat Daftar Diklat</a>
+                        </div>
+                    @endforelse
+
+                    {{-- Show message if bookings exist but none have invoices --}}
+                    @if($bookings->isNotEmpty() && $bookings->every(fn($b) => $b->invoices->isEmpty()))
+                        <div class="bg-base-100 rounded-2xl border border-base-200/80 p-12 text-center">
+                            <div class="w-14 h-14 rounded-2xl bg-base-200/60 flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-7 h-7 text-base-content/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" /></svg>
+                            </div>
+                            <p class="text-sm text-base-content/40 font-medium">Belum ada tagihan untuk diklat yang terdaftar.</p>
                         </div>
                     @endif
                 </div>
             </div>
-        @empty
-            <div class="text-center py-12 bg-white rounded-lg shadow">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
-                <h3 class="text-lg font-medium text-gray-900">Belum ada pendaftaran</h3>
-                <p class="mt-1 text-gray-500">Anda belum mendaftar di diklat manapun.</p>
-                <div class="mt-6">
-                    <a href="{{ route('training.index') }}" class="btn btn-primary">Lihat Daftar Diklat</a>
-                </div>
-            </div>
-        @endforelse
+        </div>
     </div>
 </div>

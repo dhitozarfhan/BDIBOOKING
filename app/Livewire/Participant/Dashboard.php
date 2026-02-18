@@ -13,7 +13,7 @@ class Dashboard extends Component
     use WithFileUploads;
 
     public $bookings;
-    public $payment_proofs = []; // Array to hold temporary file uploads keyed by invoice ID
+    public $payment_proofs = [];
 
     public function mount()
     {
@@ -24,7 +24,7 @@ class Dashboard extends Component
     {
         $this->bookings = Auth::guard('participant')->user()
             ->bookings()
-            ->with(['bookable', 'invoices' => function ($query) {
+            ->with(['bookable', 'certificate', 'invoices' => function ($query) {
                 $query->latest();
             }])
             ->latest()
@@ -34,12 +34,11 @@ class Dashboard extends Component
     public function uploadProof($invoiceId)
     {
         $this->validate([
-            "payment_proofs.{$invoiceId}" => 'mimes:jpg,jpeg,png,pdf|max:2048', // 2MB Max
+            "payment_proofs.{$invoiceId}" => 'mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
         $invoice = Invoice::findOrFail($invoiceId);
 
-        // Ensure the invoice belongs to a booking of the current user
         if ($invoice->booking->participant_id !== Auth::guard('participant')->id()) {
             abort(403);
         }
@@ -49,11 +48,9 @@ class Dashboard extends Component
             
             $invoice->update([
                 'payment_proof' => $path,
-                // We keep status as 'unpaid' until admin verifies, or maybe we can add a 'verification_pending' status if we want.
-                // For now, based on plan, admin verifies 'unpaid' invoices that have proof.
             ]);
 
-            $this->payment_proofs[$invoiceId] = null; // Reset
+            $this->payment_proofs[$invoiceId] = null;
             session()->flash('success', 'Bukti pembayaran berhasil diunggah. Menunggu verifikasi admin.');
             $this->refreshBookings();
         }
@@ -79,7 +76,7 @@ class Dashboard extends Component
         Auth::guard('participant')->logout();
         session()->invalidate();
         session()->regenerateToken();
-        return redirect()->route('home'); // Or participant.login
+        return redirect()->route('home');
     }
 
     public function render()
