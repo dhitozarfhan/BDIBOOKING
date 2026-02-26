@@ -8,6 +8,8 @@ use App\Models\Participant;
 use App\Models\Gender;
 use App\Models\Religion;
 use App\Models\Occupation;
+use App\Models\Province;
+use App\Models\City;
 use App\Mail\ParticipantRegistered;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -25,10 +27,12 @@ class Register extends Component
     public $blood_type;
     public $phone;
     public $address;
-    public $province;
-    public $city;
+    public $province_id;
+    public $city_id;
     public $occupation_id;
     public $institution;
+
+    public $cities = [];
 
     public function mount()
     {
@@ -42,36 +46,26 @@ class Register extends Component
             $this->nik = $ocrData['nik'] ?? $this->nik;
             $this->name = isset($ocrData['nama']) ? $toTitleCase($ocrData['nama']) : $this->name;
             
-            // Map Province & City (New API)
+            // Map Province from OCR — cari langsung di database
             if (isset($ocrData['provinsi'])) {
-                $rawProv = strtoupper(trim($ocrData['provinsi']));
-                // Manual fix for concatenated provinces (common ones)
-                $provMap = [
-                    'DAERAHISTIMEWAYOGYAKARTA' => 'Daerah Istimewa Yogyakarta',
-                    'DKIJAKARTA' => 'DKI Jakarta',
-                    'JAWATENGAH' => 'Jawa Tengah',
-                    'JAWABARAT' => 'Jawa Barat',
-                    'JAWATIMUR' => 'Jawa Timur',
-                    'NUSATENGGARABARAT' => 'Nusa Tenggara Barat',
-                    'NUSATENGGARATIMUR' => 'Nusa Tenggara Timur',
-                    'SUMATERAUTARA' => 'Sumatera Utara',
-                    'SUMATERABARAT' => 'Sumatera Barat',
-                    'SUMATERASELATAN' => 'Sumatera Selatan',
-                    'SULAWESISELATAN' => 'Sulawesi Selatan',
-                    'SULAWESIUTARA' => 'Sulawesi Utara',
-                    'SULAWESITENGAH' => 'Sulawesi Tengah',
-                    'SULAWESITENGGARA' => 'Sulawesi Tenggara',
-                    'KALIMANTANBARAT' => 'Kalimantan Barat',
-                    'KALIMANTANTIMUR' => 'Kalimantan Timur',
-                    'KALIMANTANSELATAN' => 'Kalimantan Selatan',
-                    'KALIMANTANTENGAH' => 'Kalimantan Tengah',
-                    'KALIMANTANUTARA' => 'Kalimantan Utara',
-                ];
-                $this->province = $provMap[$rawProv] ?? $toTitleCase($rawProv);
+                $province = Province::whereRaw('LOWER(name) = ?', [strtolower(trim($ocrData['provinsi']))])->first();
+                if ($province) {
+                    $this->province_id = $province->id;
+                    $this->cities = City::where('province_id', $province->id)->orderBy('name')->get();
+                }
             }
 
-            if (isset($ocrData['kab_kota'])) {
-                $this->city = $toTitleCase($ocrData['kab_kota']);
+            // Map Kota/Kab from OCR — cari langsung di database
+            if (isset($ocrData['kab_kota']) && $this->province_id) {
+                $rawCity = strtolower(trim($ocrData['kab_kota']));
+                // Hapus prefix "kabupaten " atau "kota " jika ada
+                $rawCity = preg_replace('/^(kabupaten|kota)\s+/i', '', $rawCity);
+                $city = City::where('province_id', $this->province_id)
+                    ->whereRaw('LOWER(name) = ?', [$rawCity])
+                    ->first();
+                if ($city) {
+                    $this->city_id = $city->id;
+                }
             }
 
             // Parse "ttl" (New API returns "GUNUNGKIDUL, 28-06-2003")
@@ -155,11 +149,7 @@ class Register extends Component
                     }
                 }
 
-                // Determine Full Year (Simple heuristic)
-                // If 2-digit year is greater than current year (e.g. 99 > 26), 1999. Else 20xx.
-                // NOTE: This logic assumes 17+ usually. 
-                // Adjust cutoff carefully. Let's say max age 100?
-                // Actually, standard is: if > current_year_short, 19xx. Else 20xx.
+                // Determine Full Year
                 $currentYearShort = (int) date('y');
                 $fullYear = ($thn > $currentYearShort) ? '19' . str_pad($thn, 2, '0', STR_PAD_LEFT) : '20' . str_pad($thn, 2, '0', STR_PAD_LEFT);
 
@@ -171,6 +161,17 @@ class Register extends Component
             
             session()->flash('message', 'Formulir telah diisi otomatis dari hasil scan KTP.');
         }
+    }
+
+    /**
+     * Ketika province_id berubah, load daftar kota/kabupaten terkait.
+     */
+    public function updatedProvinceId($value)
+    {
+        $this->city_id = null;
+        $this->cities = $value
+            ? City::where('province_id', $value)->orderBy('name')->get()
+            : [];
     }
 
     protected function rules()
@@ -186,8 +187,8 @@ class Register extends Component
             'blood_type' => ['nullable', 'string', 'in:A,B,AB,O'],
             'phone' => ['required', 'string', 'max:20'],
             'address' => ['required', 'string'],
-            'province' => ['required', 'string', 'max:255'],
-            'city' => ['required', 'string', 'max:255'],
+            'province_id' => ['required', 'exists:provinces,id'],
+            'city_id' => ['required', 'exists:cities,id'],
             'occupation_id' => ['required', 'exists:occupations,id'],
             'institution' => ['nullable', 'string', 'max:255'],
         ];
@@ -212,8 +213,8 @@ class Register extends Component
             'blood_type' => $this->blood_type,
             'phone' => $this->phone,
             'address' => $this->address,
-            'province' => $this->province,
-            'city' => $this->city,
+            'province_id' => $this->province_id,
+            'city_id' => $this->city_id,
             'occupation_id' => $this->occupation_id,
             'institution' => $this->institution,
         ]);
@@ -244,6 +245,7 @@ class Register extends Component
             'genders' => Gender::all(),
             'religions' => Religion::all(),
             'occupations' => Occupation::all(),
+            'provinces' => Province::orderBy('name')->get(),
         ])->layout('layouts.guest');
     }
 }

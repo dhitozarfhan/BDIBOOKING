@@ -22,8 +22,8 @@ class Participant extends Authenticatable
         'blood_type',
         'phone',
         'address',
-        'province',
-        'city',
+        'province_id',
+        'city_id',
         'occupation_id',
         'institution',
     ];
@@ -51,6 +51,16 @@ class Participant extends Authenticatable
     public function religion()
     {
         return $this->belongsTo(Religion::class);
+    }
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class);
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class);
     }
 
     public function bookings()

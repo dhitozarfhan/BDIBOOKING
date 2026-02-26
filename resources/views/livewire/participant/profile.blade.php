@@ -99,14 +99,24 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div class="form-control">
                                     <label class="label pb-1"><span class="label-text text-xs font-semibold uppercase tracking-wider text-base-content/50">Provinsi</span></label>
-                                    <input type="text" wire:model="province" class="input input-bordered rounded-xl w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
-                                    @error('province') <span class="text-error text-xs mt-1">{{ $message }}</span> @enderror
+                                    <select wire:model.live="province_id" class="select select-bordered rounded-xl w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                                        <option value="">Pilih Provinsi...</option>
+                                        @foreach($provinces as $prov)
+                                            <option value="{{ $prov->id }}">{{ $prov->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('province_id') <span class="text-error text-xs mt-1">{{ $message }}</span> @enderror
                                 </div>
 
                                 <div class="form-control">
                                     <label class="label pb-1"><span class="label-text text-xs font-semibold uppercase tracking-wider text-base-content/50">Kota / Kabupaten</span></label>
-                                    <input type="text" wire:model="city" class="input input-bordered rounded-xl w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
-                                    @error('city') <span class="text-error text-xs mt-1">{{ $message }}</span> @enderror
+                                    <select wire:model="city_id" class="select select-bordered rounded-xl w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                                        <option value="">Pilih Kota/Kabupaten...</option>
+                                        @foreach($cities as $ct)
+                                            <option value="{{ $ct->id }}">{{ ucfirst($ct->type) }} {{ $ct->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('city_id') <span class="text-error text-xs mt-1">{{ $message }}</span> @enderror
                                 </div>
                             </div>
 

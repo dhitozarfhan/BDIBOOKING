@@ -36,6 +36,10 @@ class DatabaseSeeder extends Seeder
 
             ArticleSeeder::class,
             NavigationSeeder::class,
+
+            ProvinceSeeder::class,
+            CitySeeder::class,
+
             PnbpSeeder::class,
         ]);
     }
