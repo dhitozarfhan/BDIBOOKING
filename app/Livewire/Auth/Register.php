@@ -48,7 +48,22 @@ class Register extends Component
             
             // Map Province from OCR — cari langsung di database
             if (isset($ocrData['provinsi'])) {
-                $province = Province::whereRaw('LOWER(name) = ?', [strtolower(trim($ocrData['provinsi']))])->first();
+                $rawProv = strtolower(trim($ocrData['provinsi']));
+                
+                // Normalisasi nama khusus yang sering beda format
+                $rawProv = str_replace(
+                    ['daerah istimewa yogyakarta', 'd.i. yogyakarta', 'd.k.i. jakarta', 'nanggroe aceh darussalam'],
+                    ['di yogyakarta', 'di yogyakarta', 'dki jakarta', 'aceh'],
+                    $rawProv
+                );
+                
+                // Hapus prefix "provinsi" atau "prov"
+                $rawProv = preg_replace('/^(provinsi|prov)\s*[\.\-]?\s*/i', '', $rawProv);
+                
+                // Hilangkan spasi dan titik untuk pencocokan yang lebih kebal typo/format (misal JAWABARAT vs Jawa Barat)
+                $cleanProv = str_replace([' ', '.'], '', $rawProv);
+                
+                $province = Province::whereRaw("REPLACE(REPLACE(LOWER(name), ' ', ''), '.', '') = ?", [$cleanProv])->first();
                 if ($province) {
                     $this->province_id = $province->id;
                     $this->cities = City::where('province_id', $province->id)->orderBy('name')->get();
@@ -58,10 +73,14 @@ class Register extends Component
             // Map Kota/Kab from OCR — cari langsung di database
             if (isset($ocrData['kab_kota']) && $this->province_id) {
                 $rawCity = strtolower(trim($ocrData['kab_kota']));
-                // Hapus prefix "kabupaten " atau "kota " jika ada
-                $rawCity = preg_replace('/^(kabupaten|kota)\s+/i', '', $rawCity);
+                
+                // Hapus prefix "kabupaten", "kota", "kab", "kot"
+                $rawCity = preg_replace('/^(kabupaten|kota|kab|kot)\s*[\.\-]?\s*/i', '', $rawCity);
+                
+                $cleanCity = str_replace([' ', '.'], '', $rawCity);
+                
                 $city = City::where('province_id', $this->province_id)
-                    ->whereRaw('LOWER(name) = ?', [$rawCity])
+                    ->whereRaw("REPLACE(REPLACE(LOWER(name), ' ', ''), '.', '') = ?", [$cleanCity])
                     ->first();
                 if ($city) {
                     $this->city_id = $city->id;
