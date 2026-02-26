@@ -75,47 +75,9 @@
                                 </div>
                                 <a href="{{ route('participant.dashboard') }}" class="btn btn-outline btn-block mt-2">Lihat Dashboard</a>
                             @else
-                                <button onclick="document.getElementById('confirmRegisterModal').showModal()" class="btn btn-secondary btn-block">
+                                <button wire:click="register" class="btn btn-secondary btn-block">
                                     Daftar Sekarang
                                 </button>
-
-                                {{-- Confirmation Modal --}}
-                                <dialog id="confirmRegisterModal" class="modal modal-bottom sm:modal-middle">
-                                    <div class="modal-box sm:rounded-2xl p-8">
-                                        {{-- Close Button --}}
-                                        <form method="dialog">
-                                            <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">✕</button>
-                                        </form>
-
-                                        {{-- Icon --}}
-                                        <div class="flex justify-center mb-5">
-                                            <div class="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center shadow-inner">
-                                                <svg class="w-10 h-10 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                </svg>
-                                            </div>
-                                        </div>
-
-                                        {{-- Content --}}
-                                        <h3 class="text-xl font-bold text-center text-base-content mb-2">Konfirmasi Pendaftaran</h3>
-                                        <p class="text-center text-base-content/60 text-sm leading-relaxed mb-8">
-                                            Apakah Anda yakin ingin mendaftar diklat PNBP <strong class="text-base-content">{{ $training->title }}</strong>?
-                                            <br>Tagihan sebesar <strong class="text-primary">Rp {{ number_format($training->price, 0, ',', '.') }}</strong> akan dibuat setelah pendaftaran.
-                                        </p>
-
-                                        {{-- Buttons --}}
-                                        <div class="flex gap-3">
-                                            <form method="dialog" class="flex-1">
-                                                <button class="btn btn-outline btn-block rounded-xl">Batal</button>
-                                            </form>
-                                            <button wire:click="register" onclick="document.getElementById('confirmRegisterModal').close()" class="btn btn-primary btn-block flex-1 rounded-xl gap-2">
-                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-                                                Ya, Daftar
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <form method="dialog" class="modal-backdrop"><button>close</button></form>
-                                </dialog>
                             @endif
                         @else
                             <a href="{{ route('participant.ktp.login') }}" class="btn btn-secondary btn-block">

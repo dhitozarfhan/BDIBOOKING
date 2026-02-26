@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('areas', function (Blueprint $table) {
+            $table->id();
+            $table->string('code', 13);
+            $table->string('name', 100)->nullable();
+            $table->text('formatted_address')->nullable();
+            $table->double('latitude')->nullable();
+            $table->double('longitude')->nullable();
+            $table->double('ne_latitude')->nullable();
+            $table->double('ne_longitude')->nullable();
+            $table->double('sw_latitude')->nullable();
+            $table->double('sw_longitude')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('areas');
+    }
+};

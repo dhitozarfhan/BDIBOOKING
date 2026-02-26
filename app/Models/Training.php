@@ -33,4 +33,9 @@ class Training extends Model
     {
         return $this->morphMany(Booking::class, 'bookable');
     }
+
+    public function requiredFields()
+    {
+        return $this->belongsToMany(RequiredField::class);
+    }
 }

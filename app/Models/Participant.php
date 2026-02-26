@@ -67,4 +67,9 @@ class Participant extends Authenticatable
     {
         return $this->hasMany(Booking::class);
     }
+
+    public function participantData()
+    {
+        return $this->hasMany(ParticipantData::class);
+    }
 }

@@ -123,6 +123,7 @@ Route::get('/register/training/kemenperin/{id_diklat}/{slug?}', \App\Livewire\Tr
 Route::get('/training', TrainingIndex::class)->name('training.index');
 Route::get('/pnbp', \App\Livewire\Pnbp\Index::class)->name('pnbp.index');
 Route::get('/pnbp/detail/{id_diklat}/{slug?}', \App\Livewire\Pnbp\Detail::class)->name('pnbp.detail');
+Route::get('/pnbp/register/{id_diklat}/{slug?}', \App\Livewire\Pnbp\Register::class)->name('training.pnbp.register');
 Route::get('/training/presence/{id_diklat}/{slug?}', \App\Livewire\Training\Presence::class)->name('training.presence');
 Route::get('/training/{page?}', function ($page = 'index') {
     // prevent directory traversal from page name

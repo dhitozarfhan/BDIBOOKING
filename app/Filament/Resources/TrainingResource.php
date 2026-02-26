@@ -59,6 +59,11 @@ class TrainingResource extends Resource
                     ->helperText('Isi 0 jika kuota unlimited'),
                 Forms\Components\Toggle::make('is_published')
                     ->required(),
+                Forms\Components\CheckboxList::make('requiredFields')
+                    ->relationship('requiredFields', 'name')
+                    ->columns(2)
+                    ->label('Persyaratan Dokumen')
+                    ->columnSpanFull(),
             ]);
     }
 

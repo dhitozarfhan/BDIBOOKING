@@ -41,18 +41,11 @@ class Detail extends Component
             return;
         }
 
-        // Create Booking
-        Booking::create([
-            'participant_id' => Auth::guard('participant')->id(),
-            'bookable_type' => Training::class,
-            'bookable_id' => $this->training->id,
-            'status' => 'pending',
+        // Redirect to new Register Component
+        return redirect()->route('training.pnbp.register', [
+            'id_diklat' => $this->training->id,
+            'slug' => \Illuminate\Support\Str::slug($this->training->title)
         ]);
-
-        $this->isRegistered = true;
-        session()->flash('success', 'Pendaftaran berhasil! Silakan cek dashboard untuk status dan pembayaran.');
-        
-        return redirect()->route('participant.dashboard');
     }
     public function render()
     {

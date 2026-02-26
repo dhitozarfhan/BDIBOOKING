@@ -32,4 +32,9 @@ class Booking extends Model
     {
         return $this->hasOne(Certificate::class);
     }
+
+    public function participantData()
+    {
+        return $this->hasMany(ParticipantData::class);
+    }
 }
