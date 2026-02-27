@@ -51,9 +51,19 @@ class KtpLoginTest extends TestCase
         Storage::fake('avatars');
         $file = UploadedFile::fake()->image('ktp.jpg');
 
+        $ocrMock = \Mockery::mock(OcrService::class);
+        $ocrMock->shouldReceive('scan')
+            ->once()
+            ->andReturn([
+                'nik' => '1234567890123456',
+                'nama' => 'Existing User',
+            ]);
+        $this->app->instance(OcrService::class, $ocrMock);
+
         Livewire::test(KtpLogin::class)
             ->set('ktp_image', $file)
             ->call('scan')
+            ->assertHasNoErrors()
             ->assertRedirect(route('participant.dashboard'));
 
         $this->assertAuthenticatedAs($participant, 'participant');
@@ -67,6 +77,15 @@ class KtpLoginTest extends TestCase
         
         Storage::fake('avatars');
         $file = UploadedFile::fake()->image('ktp.jpg');
+
+        $ocrMock = \Mockery::mock(OcrService::class);
+        $ocrMock->shouldReceive('scan')
+            ->once()
+            ->andReturn([
+                'nik' => '1234567890123456',
+                'nama' => 'New User',
+            ]);
+        $this->app->instance(OcrService::class, $ocrMock);
 
         Livewire::test(KtpLogin::class)
             ->set('ktp_image', $file)
