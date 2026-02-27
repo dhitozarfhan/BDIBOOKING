@@ -104,7 +104,7 @@
                 @error('address') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
             </div>
 
-            <!-- Provinsi & Kota -->
+            <!-- Provinsi, Kota, Kecamatan, Kelurahan -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div>
                     <label for="province_id" class="block font-medium text-sm text-gray-700">Provinsi</label>
@@ -118,21 +118,37 @@
                 </div>
                 <div>
                     <label for="city_id" class="block font-medium text-sm text-gray-700">Kota / Kabupaten</label>
-                    <select wire:model="city_id" id="city_id" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+                    <select wire:model.live="city_id" id="city_id" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                         <option value="">Pilih Kota/Kabupaten...</option>
                         @foreach($cities as $ct)
-                            <option value="{{ $ct->id }}">{{ ucfirst($ct->type) }} {{ $ct->name }}</option>
+                            <option value="{{ $ct->id }}">{{ $ct->name }}</option>
                         @endforeach
                     </select>
                     @error('city_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
             </div>
 
-            <!-- Instansi -->
-            <div class="mt-4">
-                <label for="institution" class="block font-medium text-sm text-gray-700">Instansi / Asal (Opsional)</label>
-                <input wire:model="institution" id="institution" type="text" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-                @error('institution') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div>
+                    <label for="district_id" class="block font-medium text-sm text-gray-700">Kecamatan</label>
+                    <select wire:model.live="district_id" id="district_id" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+                        <option value="">Pilih Kecamatan...</option>
+                        @foreach($districts as $dt)
+                            <option value="{{ $dt->id }}">{{ $dt->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('district_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                </div>
+                <div>
+                    <label for="village_id" class="block font-medium text-sm text-gray-700">Kelurahan / Desa</label>
+                    <select wire:model="village_id" id="village_id" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+                        <option value="">Pilih Kelurahan/Desa...</option>
+                        @foreach($villages as $vl)
+                            <option value="{{ $vl->id }}">{{ $vl->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('village_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                </div>
             </div>
 
             <div class="flex items-center justify-end mt-4">

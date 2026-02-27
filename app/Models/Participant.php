@@ -24,8 +24,9 @@ class Participant extends Authenticatable
         'address',
         'province_id',
         'city_id',
+        'district_id',
+        'village_id',
         'occupation_id',
-        'institution',
     ];
 
     protected $hidden = [
@@ -55,12 +56,22 @@ class Participant extends Authenticatable
 
     public function province()
     {
-        return $this->belongsTo(Province::class);
+        return $this->belongsTo(Area::class, 'province_id');
     }
 
     public function city()
     {
-        return $this->belongsTo(City::class);
+        return $this->belongsTo(Area::class, 'city_id');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo(Area::class, 'district_id');
+    }
+
+    public function village()
+    {
+        return $this->belongsTo(Area::class, 'village_id');
     }
 
     public function bookings()

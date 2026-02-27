@@ -7,13 +7,24 @@ use App\Models\Training;
 
 class Index extends Component
 {
+    public $selectedCategory = '';
+
     public function render()
     {
+        $query = Training::where('is_published', true);
+
+        if ($this->selectedCategory) {
+            $query->where('type', $this->selectedCategory);
+        }
+
+        $categories = Training::whereNotNull('type')
+            ->where('is_published', true)
+            ->distinct()
+            ->pluck('type');
+
         return view('livewire.pnbp.index', [
-            'trainings' => Training::where('type', Training::TYPE_PNBP)
-                ->where('is_published', true)
-                ->orderBy('start_date', 'asc')
-                ->get(),
+            'trainings' => $query->orderBy('start_date', 'asc')->get(),
+            'categories' => $categories,
         ]);
     }
 }

@@ -8,8 +8,7 @@ use App\Models\Participant;
 use App\Models\Gender;
 use App\Models\Religion;
 use App\Models\Occupation;
-use App\Models\Province;
-use App\Models\City;
+use App\Models\Area; // Replaced Province and City
 use App\Mail\ParticipantRegistered;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -29,10 +28,13 @@ class Register extends Component
     public $address;
     public $province_id;
     public $city_id;
+    public $district_id;
+    public $village_id;
     public $occupation_id;
-    public $institution;
 
     public $cities = [];
+    public $districts = [];
+    public $villages = [];
 
     public function mount()
     {
@@ -46,44 +48,81 @@ class Register extends Component
             $this->nik = $ocrData['nik'] ?? $this->nik;
             $this->name = isset($ocrData['nama']) ? $toTitleCase($ocrData['nama']) : $this->name;
             
-            // Map Province from OCR — cari langsung di database
+            // Map Province from OCR — cari langsung di database Area
             if (isset($ocrData['provinsi'])) {
+                // Ensure length corresponds to province code length (usually 2, as per DB)
                 $rawProv = strtolower(trim($ocrData['provinsi']));
                 
-                // Normalisasi nama khusus yang sering beda format
-                $rawProv = str_replace(
-                    ['daerah istimewa yogyakarta', 'd.i. yogyakarta', 'd.k.i. jakarta', 'nanggroe aceh darussalam'],
-                    ['di yogyakarta', 'di yogyakarta', 'dki jakarta', 'aceh'],
-                    $rawProv
-                );
+                // Normalisasi D.I. Yogyakarta yang sering salah OCR
+                if (str_contains($rawProv, 'yogyakarta') || str_contains($rawProv, 'd.i. yogyakarta')) {
+                    $cleanProv = 'diyogyakarta';
+                } else {
+                    $rawProv = preg_replace('/^(provinsi|prov)\s*[\.\-]?\s*/i', '', $rawProv);
+                    $cleanProv = str_replace([' ', '.'], '', $rawProv);
+                }
                 
-                // Hapus prefix "provinsi" atau "prov"
-                $rawProv = preg_replace('/^(provinsi|prov)\s*[\.\-]?\s*/i', '', $rawProv);
-                
-                // Hilangkan spasi dan titik untuk pencocokan yang lebih kebal typo/format (misal JAWABARAT vs Jawa Barat)
-                $cleanProv = str_replace([' ', '.'], '', $rawProv);
-                
-                $province = Province::whereRaw("REPLACE(REPLACE(LOWER(name), ' ', ''), '.', '') = ?", [$cleanProv])->first();
+                $province = Area::whereRaw('CHAR_LENGTH(code)=2')
+                    ->whereRaw("REPLACE(REPLACE(LOWER(name), ' ', ''), '.', '') = ?", [$cleanProv])
+                    ->first();
                 if ($province) {
                     $this->province_id = $province->id;
-                    $this->cities = City::where('province_id', $province->id)->orderBy('name')->get();
+                    $this->cities = Area::getCities(['province_id' => $province->id]);
                 }
             }
 
-            // Map Kota/Kab from OCR — cari langsung di database
+            // Map City from OCR
             if (isset($ocrData['kab_kota']) && $this->province_id) {
                 $rawCity = strtolower(trim($ocrData['kab_kota']));
-                
-                // Hapus prefix "kabupaten", "kota", "kab", "kot"
+                // Hilangkan kata awalan kab / kota biar match dgn "Banda Aceh" bukan "Kota Banda Aceh"
+                // Hanya hapus kata kab/kota di AWAL string
                 $rawCity = preg_replace('/^(kabupaten|kota|kab|kot)\s*[\.\-]?\s*/i', '', $rawCity);
                 
                 $cleanCity = str_replace([' ', '.'], '', $rawCity);
-                
-                $city = City::where('province_id', $this->province_id)
-                    ->whereRaw("REPLACE(REPLACE(LOWER(name), ' ', ''), '.', '') = ?", [$cleanCity])
-                    ->first();
-                if ($city) {
-                    $this->city_id = $city->id;
+
+                // Use the Area query logic for cities
+                $cityQuery = Area::getCities(['province_id' => $this->province_id]);
+                // Filter the collection to find a match
+                $cityMatch = $cityQuery->first(function ($city) use ($cleanCity) {
+                   $dbCityClean = str_replace([' ', '.'], '', strtolower($city->name));
+                   return $dbCityClean === $cleanCity;
+                });
+
+                if ($cityMatch) {
+                    $this->city_id = $cityMatch->id;
+                    $this->districts = Area::getDistricts(['city_id' => $cityMatch->id]);
+                }
+            }
+
+            // Map District from OCR
+            if (isset($ocrData['kecamatan']) && $this->city_id) {
+                $rawDistrict = strtolower(trim($ocrData['kecamatan']));
+                $cleanDistrict = str_replace([' ', '.'], '', $rawDistrict);
+
+                $districtQuery = Area::getDistricts(['city_id' => $this->city_id]);
+                $districtMatch = $districtQuery->first(function ($district) use ($cleanDistrict) {
+                   $dbDistrictClean = str_replace([' ', '.', 'kec'], '', strtolower($district->name));
+                   return $dbDistrictClean === str_replace('kec', '', $cleanDistrict);
+                });
+
+                if ($districtMatch) {
+                    $this->district_id = $districtMatch->id;
+                    $this->villages = Area::getVillages(['district_id' => $districtMatch->id]);
+                }
+            }
+            
+            // Map Village from OCR
+            if (isset($ocrData['kel_desa']) && $this->district_id) {
+                $rawVillage = strtolower(trim($ocrData['kel_desa']));
+                $cleanVillage = str_replace([' ', '.'], '', $rawVillage);
+
+                $villageQuery = Area::getVillages(['district_id' => $this->district_id]);
+                $villageMatch = $villageQuery->first(function ($village) use ($cleanVillage) {
+                   $dbVillageClean = str_replace([' ', '.', 'kel', 'ds'], '', strtolower($village->name));
+                   return $dbVillageClean === str_replace(['kel', 'ds', 'desa'], '', $cleanVillage);
+                });
+
+                if ($villageMatch) {
+                    $this->village_id = $villageMatch->id;
                 }
             }
 
@@ -187,10 +226,32 @@ class Register extends Component
      */
     public function updatedProvinceId($value)
     {
-        $this->city_id = null;
         $this->cities = $value
-            ? City::where('province_id', $value)->orderBy('name')->get()
+            ? Area::getCities(['province_id' => $value])
             : [];
+        $this->city_id = null; // Reset city when province changes
+        $this->district_id = null;
+        $this->village_id = null;
+        $this->districts = [];
+        $this->villages = [];
+    }
+    
+    public function updatedCityId($value)
+    {
+        $this->districts = $value
+            ? Area::getDistricts(['city_id' => $value])
+            : [];
+        $this->district_id = null;
+        $this->village_id = null;
+        $this->villages = [];
+    }
+
+    public function updatedDistrictId($value)
+    {
+        $this->villages = $value
+            ? Area::getVillages(['district_id' => $value])
+            : [];
+        $this->village_id = null;
     }
 
     protected function rules()
@@ -206,10 +267,11 @@ class Register extends Component
             'blood_type' => ['nullable', 'string', 'in:A,B,AB,O'],
             'phone' => ['required', 'string', 'max:20'],
             'address' => ['required', 'string'],
-            'province_id' => ['required', 'exists:provinces,id'],
-            'city_id' => ['required', 'exists:cities,id'],
+            'province_id' => ['required', 'exists:areas,id'],
+            'city_id' => ['required', 'exists:areas,id'],
+            'district_id' => ['required', 'exists:areas,id'],
+            'village_id' => ['required', 'exists:areas,id'],
             'occupation_id' => ['required', 'exists:occupations,id'],
-            'institution' => ['nullable', 'string', 'max:255'],
         ];
     }
 
@@ -234,8 +296,9 @@ class Register extends Component
             'address' => $this->address,
             'province_id' => $this->province_id,
             'city_id' => $this->city_id,
+            'district_id' => $this->district_id,
+            'village_id' => $this->village_id,
             'occupation_id' => $this->occupation_id,
-            'institution' => $this->institution,
         ]);
 
         // Send password via email
@@ -264,7 +327,7 @@ class Register extends Component
             'genders' => Gender::all(),
             'religions' => Religion::all(),
             'occupations' => Occupation::all(),
-            'provinces' => Province::orderBy('name')->get(),
+            'provinces' => Area::getProvinces(),
         ])->layout('layouts.guest');
     }
 }

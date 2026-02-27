@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('provinces', function (Blueprint $table) {
-            $table->id();
-            $table->string('code', 10)->unique(); // Kode BPS provinsi
-            $table->string('name');
-            $table->timestamps();
+        Schema::table('trainings', function (Blueprint $table) {
+            $table->string('type')->default(null)->change();
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('provinces');
+        Schema::table('trainings', function (Blueprint $table) {
+            $table->string('type')->default('3in1')->change();
+        });
     }
 };

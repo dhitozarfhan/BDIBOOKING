@@ -16,9 +16,6 @@ class Detail extends Component
     {
         $this->training = Training::findOrFail($id_diklat);
 
-        if ($this->training->type !== Training::TYPE_PNBP) {
-            return redirect()->route('training.detail', ['id_diklat' => $this->training->id, 'slug' => \Illuminate\Support\Str::slug($this->training->title)]);
-        }
 
         if (Auth::guard('participant')->check()) {
             $this->isRegistered = Booking::where('participant_id', Auth::guard('participant')->id())

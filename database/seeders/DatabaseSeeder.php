@@ -35,10 +35,9 @@ class DatabaseSeeder extends Seeder
             ArticleTypeSeeder::class,
 
             ArticleSeeder::class,
+            AreaSeeder::class,
+            TrainingSeeder::class,
             NavigationSeeder::class,
-
-            ProvinceSeeder::class,
-            CitySeeder::class,
 
             PnbpSeeder::class,
         ]);

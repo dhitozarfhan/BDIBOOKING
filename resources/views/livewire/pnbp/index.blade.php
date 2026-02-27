@@ -33,7 +33,15 @@
     {{-- Training List Section --}}
     <section class="py-12 bg-white">
         <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-center mb-8">Daftar Diklat PNBP Tersedia</h2>
+            <div class="mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
+                <h2 class="text-3xl font-bold text-center md:text-left">Daftar Pelatihan Tersedia</h2>
+                <div class="flex flex-wrap gap-2 justify-center md:justify-end">
+                    <button wire:click="$set('selectedCategory', '')" class="btn btn-sm {{ $selectedCategory === '' ? 'btn-primary' : 'btn-outline' }}">Semua</button>
+                    @foreach($categories as $category)
+                        <button wire:click="$set('selectedCategory', '{{ $category }}')" class="btn btn-sm {{ $selectedCategory === $category ? 'btn-primary' : 'btn-outline' }}">{{ $category }}</button>
+                    @endforeach
+                </div>
+            </div>
             
             @if($trainings->isEmpty())
                 <div class="text-center py-12">
@@ -47,6 +55,11 @@
                                 <img src="{{ $training->image ? Storage::url($training->image) : asset('images/default-training.jpg') }}" alt="{{ $training->title }}" class="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
                             </figure>
                             <div class="card-body">
+                                <div class="flex gap-2 mb-2">
+                                    @if($training->type)
+                                        <span class="badge badge-primary badge-sm">{{ $training->type }}</span>
+                                    @endif
+                                </div>
                                 <h2 class="card-title text-xl font-bold line-clamp-2 min-h-[3.5rem]">{{ $training->title }}</h2>
                                 <p class="text-sm text-gray-600 mb-2">
                                     <i class="bi bi-calendar-event mr-2"></i>

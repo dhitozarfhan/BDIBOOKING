@@ -33,13 +33,6 @@
                                 <p class="font-mono text-sm font-bold mt-0.5 text-base-content">{{ $nik }}</p>
                             </div>
                         @endif
-
-                        @if($institution)
-                            <div class="mt-2 rounded-xl bg-base-200/50 p-3.5">
-                                <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/35">Instansi</p>
-                                <p class="text-sm font-medium mt-0.5 text-base-content/80">{{ $institution }}</p>
-                            </div>
-                        @endif
                     </div>
                 </div>
 
@@ -69,12 +62,6 @@
                                     <label class="label pb-1"><span class="label-text text-xs font-semibold uppercase tracking-wider text-base-content/50">Telepon</span></label>
                                     <input type="text" wire:model="phone" class="input input-bordered rounded-xl w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" placeholder="+62..." />
                                     @error('phone') <span class="text-error text-xs mt-1">{{ $message }}</span> @enderror
-                                </div>
-
-                                <div class="form-control">
-                                    <label class="label pb-1"><span class="label-text text-xs font-semibold uppercase tracking-wider text-base-content/50">Instansi</span></label>
-                                    <input type="text" wire:model="institution" class="input input-bordered rounded-xl w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
-                                    @error('institution') <span class="text-error text-xs mt-1">{{ $message }}</span> @enderror
                                 </div>
 
                                 <div class="form-control">
@@ -110,13 +97,37 @@
 
                                 <div class="form-control">
                                     <label class="label pb-1"><span class="label-text text-xs font-semibold uppercase tracking-wider text-base-content/50">Kota / Kabupaten</span></label>
-                                    <select wire:model="city_id" class="select select-bordered rounded-xl w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                                    <select wire:model.live="city_id" class="select select-bordered rounded-xl w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
                                         <option value="">Pilih Kota/Kabupaten...</option>
                                         @foreach($cities as $ct)
-                                            <option value="{{ $ct->id }}">{{ ucfirst($ct->type) }} {{ $ct->name }}</option>
+                                            <option value="{{ $ct->id }}">{{ $ct->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('city_id') <span class="text-error text-xs mt-1">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="form-control">
+                                    <label class="label pb-1"><span class="label-text text-xs font-semibold uppercase tracking-wider text-base-content/50">Kecamatan</span></label>
+                                    <select wire:model.live="district_id" class="select select-bordered rounded-xl w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                                        <option value="">Pilih Kecamatan...</option>
+                                        @foreach($districts as $dt)
+                                            <option value="{{ $dt->id }}">{{ $dt->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('district_id') <span class="text-error text-xs mt-1">{{ $message }}</span> @enderror
+                                </div>
+
+                                <div class="form-control">
+                                    <label class="label pb-1"><span class="label-text text-xs font-semibold uppercase tracking-wider text-base-content/50">Kelurahan / Desa</span></label>
+                                    <select wire:model="village_id" class="select select-bordered rounded-xl w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                                        <option value="">Pilih Kelurahan/Desa...</option>
+                                        @foreach($villages as $vl)
+                                            <option value="{{ $vl->id }}">{{ $vl->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('village_id') <span class="text-error text-xs mt-1">{{ $message }}</span> @enderror
                                 </div>
                             </div>
 

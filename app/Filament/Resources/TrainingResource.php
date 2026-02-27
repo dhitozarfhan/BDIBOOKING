@@ -30,8 +30,11 @@ class TrainingResource extends Resource
                     ->maxLength(255),
                 Forms\Components\Select::make('type')
                     ->options([
-                        Training::TYPE_3IN1 => '3 in 1',
-                        Training::TYPE_PNBP => 'PNBP',
+                        'Webinar' => 'Webinar',
+                        'Seminar' => 'Seminar',
+                        'Workshop' => 'Workshop',
+                        'Bimtek' => 'Bimtek',
+                        'Diklat' => 'Diklat',
                     ])
                     ->required(),
                 Forms\Components\RichEditor::make('description')
@@ -75,8 +78,7 @@ class TrainingResource extends Resource
                 Tables\Columns\TextColumn::make('type')
                     ->badge()
                     ->colors([
-                        'primary' => Training::TYPE_3IN1,
-                        'success' => Training::TYPE_PNBP,
+                        'primary',
                     ]),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
