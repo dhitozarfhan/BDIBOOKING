@@ -1,5 +1,5 @@
 <div class="min-h-screen bg-base-200/30">
-    <div class="flex">
+    <div class="flex container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {{-- Sidebar --}}
         @include('layouts.partials.participant-sidebar')
 
@@ -79,7 +79,7 @@
                         </div>
                     </div>
                 @empty
-                    <div class="bg-base-100 rounded-2xl border border-base-200/80 p-12 text-center">
+                    <div class="bg-base-100 rounded-2xl border border-base-200/80 px-12 pt-10 pb-12 text-center">
                         <div class="w-14 h-14 rounded-2xl bg-base-200/60 flex items-center justify-center mx-auto mb-4">
                             <svg class="w-7 h-7 text-base-content/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
                         </div>

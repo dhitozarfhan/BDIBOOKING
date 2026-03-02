@@ -1,5 +1,5 @@
 <div class="min-h-screen bg-base-200/30">
-    <div class="flex">
+    <div class="flex container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {{-- Sidebar --}}
         @include('layouts.partials.participant-sidebar')
 
@@ -156,7 +156,7 @@
                             </div>
                         @endif
                     @empty
-                        <div class="bg-base-100 rounded-2xl border border-base-200/80 p-12 text-center">
+                        <div class="bg-base-100 rounded-2xl border border-base-200/80 px-12 pt-10 pb-12 text-center">
                             <div class="w-14 h-14 rounded-2xl bg-base-200/60 flex items-center justify-center mx-auto mb-4">
                                 <svg class="w-7 h-7 text-base-content/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" /></svg>
                             </div>
@@ -167,7 +167,7 @@
 
                     {{-- Show message if bookings exist but none have invoices --}}
                     @if($bookings->isNotEmpty() && $bookings->every(fn($b) => $b->invoices->isEmpty()))
-                        <div class="bg-base-100 rounded-2xl border border-base-200/80 p-12 text-center">
+                        <div class="bg-base-100 rounded-2xl border border-base-200/80 px-12 pt-10 pb-12 text-center">
                             <div class="w-14 h-14 rounded-2xl bg-base-200/60 flex items-center justify-center mx-auto mb-4">
                                 <svg class="w-7 h-7 text-base-content/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" /></svg>
                             </div>

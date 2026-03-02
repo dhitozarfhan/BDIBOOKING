@@ -1,5 +1,5 @@
 <div class="min-h-screen bg-base-200/30">
-    <div class="flex">
+    <div class="flex container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {{-- Sidebar --}}
         @include('layouts.partials.participant-sidebar')
 
@@ -74,6 +74,17 @@
                                     <label class="label pb-1"><span class="label-text text-xs font-semibold uppercase tracking-wider text-base-content/50">Tanggal Lahir</span></label>
                                     <input type="date" wire:model="birth_date" class="input input-bordered rounded-xl w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
                                     @error('birth_date') <span class="text-error text-xs mt-1">{{ $message }}</span> @enderror
+                                </div>
+
+                                <div class="form-control">
+                                    <label class="label pb-1"><span class="label-text text-xs font-semibold uppercase tracking-wider text-base-content/50">Jenis Kelamin</span></label>
+                                    <select wire:model="gender_id" class="select select-bordered rounded-xl w-full focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+                                        <option value="">Pilih Jenis Kelamin...</option>
+                                        @foreach($genders as $gender)
+                                            <option value="{{ $gender->id }}">{{ $gender->type }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('gender_id') <span class="text-error text-xs mt-1">{{ $message }}</span> @enderror
                                 </div>
                             </div>
 

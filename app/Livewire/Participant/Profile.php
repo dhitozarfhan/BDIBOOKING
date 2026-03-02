@@ -3,6 +3,7 @@
 namespace App\Livewire\Participant;
 
 use App\Models\Area;
+use App\Models\Gender;
 use App\Models\Occupation;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -20,6 +21,7 @@ class Profile extends Component
     public $birth_place;
     public $birth_date;
     public $nik;
+    public $gender_id;
 
     public $cities = [];
     public $districts = [];
@@ -39,6 +41,7 @@ class Profile extends Component
         $this->birth_place = $user->birth_place;
         $this->birth_date = $user->birth_date?->format('Y-m-d');
         $this->nik = $user->nik;
+        $this->gender_id = $user->gender_id;
 
         // Load cascading locations
         if ($this->province_id) {
@@ -98,6 +101,7 @@ class Profile extends Component
             'village_id' => 'nullable|exists:areas,id',
             'birth_place' => 'nullable|string|max:100',
             'birth_date' => 'nullable|date',
+            'gender_id' => 'nullable|exists:genders,id',
         ]);
 
         Auth::guard('participant')->user()->update([
@@ -111,6 +115,7 @@ class Profile extends Component
             'village_id' => $this->village_id,
             'birth_place' => $this->birth_place,
             'birth_date' => $this->birth_date,
+            'gender_id' => $this->gender_id,
         ]);
 
         session()->flash('success', 'Profil berhasil diperbarui.');
@@ -128,6 +133,7 @@ class Profile extends Component
     {
         return view('livewire.participant.profile', [
             'provinces' => Area::getProvinces(),
+            'genders' => Gender::orderBy('type')->get(),
             'occupations' => Occupation::orderBy('name')->get(),
         ])->layout('layouts.app', ['title' => 'Profil Peserta']);
     }
