@@ -25,9 +25,10 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
             $table->foreignId('occupation_id')->constrained('occupations');
-            $table->string('institution')->nullable();
-            $table->string('province')->nullable();
-            $table->string('city')->nullable();
+            $table->foreignId('province_id')->nullable()->constrained('areas');
+            $table->foreignId('city_id')->nullable()->constrained('areas');
+            $table->foreignId('district_id')->nullable()->constrained('areas');
+            $table->foreignId('village_id')->nullable()->constrained('areas');
             $table->rememberToken();
             $table->timestamps();
         });
