@@ -8,12 +8,14 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * Note: Updated participant_id → customer_id.
+     * For live DB migration, see restructure_booking_system migration.
      */
     public function up(): void
     {
         Schema::create('participant_data', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('participant_id')->constrained('participants')->cascadeOnDelete();
+            $table->foreignId('customer_id')->constrained('customers')->cascadeOnDelete();
             $table->foreignId('booking_id')->constrained('bookings')->cascadeOnDelete();
             $table->foreignId('required_field_id')->constrained('required_fields')->cascadeOnDelete();
             $table->text('value')->nullable();

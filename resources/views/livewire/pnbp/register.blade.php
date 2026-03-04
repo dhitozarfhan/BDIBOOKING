@@ -38,7 +38,7 @@
                             </p>
                         </div>
                         <div class="shrink-0 flex flex-col items-start md:items-end gap-1">
-                            <span class="text-xs font-semibold uppercase tracking-wider text-base-content/35">Biaya Pendaftaran</span>
+                            <span class="text-xs font-semibold uppercase tracking-wider text-base-content/35">Biaya per Peserta</span>
                             <span class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                                 {{ 'Rp ' . number_format($training->price, 0, ',', '.') }}
                             </span>
@@ -46,6 +46,57 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    {{-- Participant Count Card --}}
+    <div class="bg-base-100 rounded-3xl border border-base-200/80 shadow-sm overflow-hidden mb-8">
+        <div class="px-6 md:px-8 py-6 md:py-8">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/15 to-teal-500/15 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-base-content">Jumlah Peserta</h2>
+                    <p class="text-xs text-base-content/40">Tentukan jumlah peserta yang akan didaftarkan</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                {{-- Counter --}}
+                <div class="flex items-center gap-4">
+                    <button type="button" wire:click="$set('quantity', {{ max(1, $quantity - 1) }})" class="w-12 h-12 rounded-xl bg-base-200/60 hover:bg-red-50 hover:text-red-600 text-base-content/60 flex items-center justify-center transition-all duration-200 text-xl font-bold border border-base-200/80 hover:border-red-200">
+                        −
+                    </button>
+                    <input type="number" wire:model.live="quantity" min="1" class="w-20 h-12 text-center text-xl font-bold rounded-xl border border-base-200/80 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-base-100 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                    <button type="button" wire:click="$set('quantity', {{ $quantity + 1 }})" class="w-12 h-12 rounded-xl bg-base-200/60 hover:bg-emerald-50 hover:text-emerald-600 text-base-content/60 flex items-center justify-center transition-all duration-200 text-xl font-bold border border-base-200/80 hover:border-emerald-200">
+                        +
+                    </button>
+                    <span class="text-sm text-base-content/50 ml-1">orang</span>
+                </div>
+
+                {{-- Total Price --}}
+                <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl px-6 py-4 border border-indigo-100">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-indigo-400 block mb-1">Total Biaya</span>
+                    <span class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        Rp {{ number_format($training->price * $quantity, 0, ',', '.') }}
+                    </span>
+                    @if($quantity > 1)
+                        <span class="block text-xs text-indigo-400/80 mt-0.5">
+                            {{ $quantity }} × Rp {{ number_format($training->price, 0, ',', '.') }}
+                        </span>
+                    @endif
+                </div>
+            </div>
+
+            @error('quantity')
+                <p class="flex items-center gap-1 mt-3 text-xs text-red-500">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.268 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+                    {{ $message }}
+                </p>
+            @enderror
         </div>
     </div>
 

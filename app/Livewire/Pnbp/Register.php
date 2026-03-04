@@ -16,6 +16,7 @@ class Register extends Component
 
     public Training $training;
     public $isRegistered = false;
+    public int $quantity = 1;
     
     // To store dynamic input values keyed by required_field_id
     public array $formData = [];
@@ -29,7 +30,7 @@ class Register extends Component
             return redirect()->route('participant.login');
         }
 
-        $this->isRegistered = Booking::where('participant_id', Auth::guard('participant')->id())
+        $this->isRegistered = Booking::where('customer_id', Auth::guard('participant')->id())
             ->where('bookable_type', Training::class)
             ->where('bookable_id', $this->training->id)
             ->exists();
@@ -64,13 +65,22 @@ class Register extends Component
             }
         }
 
+        // Validate quantity
+        $maxQuota = $this->training->quota > 0 ? $this->training->quota : 100;
+        $rules['quantity'] = "required|integer|min:1|max:{$maxQuota}";
+        $messages['quantity.required'] = 'Jumlah wajib diisi.';
+        $messages['quantity.min'] = 'Jumlah minimal 1.';
+        $messages['quantity.max'] = "Jumlah maksimal {$maxQuota}.";
+
         $this->validate($rules, $messages);
 
         // 2. Create Booking
         $booking = Booking::create([
-            'participant_id' => Auth::guard('participant')->id(),
+            'customer_id' => Auth::guard('participant')->id(),
             'bookable_type' => Training::class,
             'bookable_id' => $this->training->id,
+            'booking_type' => $this->quantity > 1 ? 'batch' : 'individual',
+            'quantity' => $this->quantity,
             'status' => 'pending',
         ]);
 
@@ -85,7 +95,7 @@ class Register extends Component
             }
 
             ParticipantData::create([
-                'participant_id' => Auth::guard('participant')->id(),
+                'customer_id' => Auth::guard('participant')->id(),
                 'booking_id' => $booking->id,
                 'required_field_id' => $field->id,
                 'value' => $value,

@@ -22,12 +22,7 @@ class BookingResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->with([
-            'participant.gender',
-            'participant.religion',
-            'participant.province',
-            'participant.city',
-            'participant.district',
-            'participant.village',
+            'customer',
             'participantData.requiredField',
         ]);
     }
@@ -40,88 +35,30 @@ class BookingResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Data KTP / Identitas')
-                    ->description('Informasi identitas peserta dari KTP')
+                Forms\Components\Section::make('Data Customer / Pemesan')
+                    ->description('Informasi pemesan')
                     ->icon('heroicon-o-identification')
                     ->schema([
-                        Forms\Components\TextInput::make('participant.nik')
-                            ->label('NIK')
-                            ->formatStateUsing(function ($record) {
-                                $record?->loadMissing([
-                                    'participant.gender',
-                                    'participant.religion',
-                                    'participant.province',
-                                    'participant.city',
-                                    'participant.district',
-                                    'participant.village',
-                                    'participantData.requiredField',
-                                ]);
-                                return $record?->participant?->nik ?? '-';
-                            })
-                            ->disabled(),
-                        Forms\Components\TextInput::make('participant.name')
+                        Forms\Components\TextInput::make('customer.name')
                             ->label('Nama Lengkap')
-                            ->formatStateUsing(fn ($record) => $record?->participant?->name)
+                            ->formatStateUsing(fn ($record) => $record?->customer?->name)
                             ->disabled(),
-                        Forms\Components\TextInput::make('participant.birth_place')
-                            ->label('Tempat Lahir')
-                            ->formatStateUsing(fn ($record) => $record?->participant?->birth_place ?? '-')
-                            ->disabled(),
-                        Forms\Components\TextInput::make('participant.birth_date')
-                            ->label('Tanggal Lahir')
-                            ->formatStateUsing(fn ($record) => $record?->participant?->birth_date?->format('d M Y') ?? '-')
-                            ->disabled(),
-                        Forms\Components\TextInput::make('participant.gender_name')
-                            ->label('Jenis Kelamin')
-                            ->formatStateUsing(fn ($record) => $record?->participant?->gender?->type ?? '-')
-                            ->disabled(),
-                        Forms\Components\TextInput::make('participant.religion_name')
-                            ->label('Agama')
-                            ->formatStateUsing(fn ($record) => $record?->participant?->religion?->name ?? '-')
-                            ->disabled(),
-                    ])->columns(2),
-
-                Forms\Components\Section::make('Kontak & Alamat')
-                    ->description('Informasi kontak dan lokasi peserta')
-                    ->icon('heroicon-o-map-pin')
-                    ->schema([
-                        Forms\Components\TextInput::make('participant.email')
+                        Forms\Components\TextInput::make('customer.email')
                             ->label('Email')
-                            ->formatStateUsing(fn ($record) => $record?->participant?->email)
+                            ->formatStateUsing(fn ($record) => $record?->customer?->email)
                             ->disabled(),
-                        Forms\Components\TextInput::make('participant.phone')
+                        Forms\Components\TextInput::make('customer.phone')
                             ->label('No. Telepon')
-                            ->formatStateUsing(fn ($record) => $record?->participant?->phone ?? '-')
+                            ->formatStateUsing(fn ($record) => $record?->customer?->phone ?? '-')
                             ->disabled(),
-                        Forms\Components\Textarea::make('participant.address')
-                            ->label('Alamat')
-                            ->formatStateUsing(fn ($record) => $record?->participant?->address ?? '-')
-                            ->disabled()
-                            ->columnSpanFull(),
-                        Forms\Components\TextInput::make('participant.province_name')
-                            ->label('Provinsi')
-                            ->formatStateUsing(fn ($record) => $record?->participant?->province?->name ?? '-')
-                            ->disabled(),
-                        Forms\Components\TextInput::make('participant.city_name')
-                            ->label('Kota / Kabupaten')
-                            ->formatStateUsing(fn ($record) => $record?->participant?->city?->name ?? '-')
-                            ->disabled(),
-                        Forms\Components\TextInput::make('participant.district_name')
-                            ->label('Kecamatan')
-                            ->formatStateUsing(fn ($record) => $record?->participant?->district?->name ?? '-')
-                            ->disabled(),
-                        Forms\Components\TextInput::make('participant.village_name')
-                            ->label('Kelurahan / Desa')
-                            ->formatStateUsing(fn ($record) => $record?->participant?->village?->name ?? '-')
-                            ->disabled(),
-                    ])->columns(2),
+                    ])->columns(3),
 
-                Forms\Components\Section::make('Informasi Diklat')
+                Forms\Components\Section::make('Informasi Booking')
                     ->icon('heroicon-o-academic-cap')
                     ->schema([
                         Forms\Components\TextInput::make('bookable.title')
-                            ->label('Nama Diklat')
-                            ->formatStateUsing(fn ($record) => $record?->bookable?->title)
+                            ->label('Nama Diklat / Layanan')
+                            ->formatStateUsing(fn ($record) => $record?->bookable?->title ?? $record?->bookable?->name)
                             ->disabled(),
                         Forms\Components\Select::make('status')
                             ->options([
@@ -131,6 +68,14 @@ class BookingResource extends Resource
                                 'completed' => 'Completed',
                             ])
                             ->required(),
+                        Forms\Components\TextInput::make('booking_type')
+                            ->label('Tipe Booking')
+                            ->formatStateUsing(fn ($record) => ucfirst($record?->booking_type ?? 'individual'))
+                            ->disabled(),
+                        Forms\Components\TextInput::make('quantity')
+                            ->label('Jumlah')
+                            ->formatStateUsing(fn ($record) => $record?->quantity ?? 1)
+                            ->disabled(),
                         Forms\Components\TextInput::make('created_at_display')
                             ->label('Tanggal Pendaftaran')
                             ->formatStateUsing(fn ($record) => $record?->created_at?->format('d M Y H:i') ?? '-')
@@ -210,14 +155,25 @@ class BookingResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('participant.name')
-                    ->label('Peserta')
+                Tables\Columns\TextColumn::make('customer.name')
+                    ->label('Pemesan')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('participant.email')
+                Tables\Columns\TextColumn::make('customer.email')
                     ->label('Email'),
                 Tables\Columns\TextColumn::make('bookable.title')
-                    ->label('Diklat')
+                    ->label('Diklat / Layanan')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('booking_type')
+                    ->label('Tipe')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'individual' => 'info',
+                        'batch' => 'warning',
+                        default => 'gray',
+                    }),
+                Tables\Columns\TextColumn::make('quantity')
+                    ->label('Jumlah')
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -248,6 +204,12 @@ class BookingResource extends Resource
                         'approved' => 'Approved',
                         'rejected' => 'Rejected',
                         'completed' => 'Completed',
+                    ]),
+                Tables\Filters\SelectFilter::make('booking_type')
+                    ->label('Tipe Booking')
+                    ->options([
+                        'individual' => 'Individual',
+                        'batch' => 'Batch',
                     ]),
                 Tables\Filters\Filter::make('has_certificate')
                     ->label('Sudah ada sertifikat')

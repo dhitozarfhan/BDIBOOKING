@@ -9,15 +9,15 @@ class ParticipantData extends Model
     protected $table = 'participant_data';
 
     protected $fillable = [
-        'participant_id',
+        'customer_id',
         'booking_id',
         'required_field_id',
         'value',
     ];
 
-    public function participant()
+    public function customer()
     {
-        return $this->belongsTo(Participant::class);
+        return $this->belongsTo(Customer::class);
     }
 
     public function booking()

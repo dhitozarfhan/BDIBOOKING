@@ -7,20 +7,27 @@ use Illuminate\Database\Eloquent\Model;
 class Booking extends Model
 {
     protected $fillable = [
-        'participant_id',
+        'customer_id',
         'bookable_id',
         'bookable_type',
+        'booking_type',
+        'quantity',
         'status',
     ];
 
-    public function participant()
+    public function customer()
     {
-        return $this->belongsTo(Participant::class);
+        return $this->belongsTo(Customer::class);
     }
 
     public function bookable()
     {
         return $this->morphTo();
+    }
+
+    public function participants()
+    {
+        return $this->hasMany(Participant::class);
     }
 
     public function invoices()

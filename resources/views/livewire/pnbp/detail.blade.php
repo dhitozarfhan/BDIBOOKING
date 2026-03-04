@@ -80,9 +80,9 @@
                                 </button>
                             @endif
                         @else
-                            <a href="{{ route('participant.ktp.login') }}" class="btn btn-secondary btn-block">
+                            <button wire:click="register" class="btn btn-secondary btn-block">
                                 Daftar Sekarang
-                            </a>
+                            </button>
                         @endif
                     </div>
                 </div>

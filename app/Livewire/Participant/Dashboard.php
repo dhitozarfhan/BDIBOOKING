@@ -39,7 +39,7 @@ class Dashboard extends Component
 
         $invoice = Invoice::findOrFail($invoiceId);
 
-        if ($invoice->booking->participant_id !== Auth::guard('participant')->id()) {
+        if ($invoice->booking->customer_id !== Auth::guard('participant')->id()) {
             abort(403);
         }
 
@@ -60,7 +60,7 @@ class Dashboard extends Component
     {
         $invoice = Invoice::findOrFail($invoiceId);
         
-        if ($invoice->booking->participant_id !== Auth::guard('participant')->id()) {
+        if ($invoice->booking->customer_id !== Auth::guard('participant')->id()) {
             abort(403);
         }
 

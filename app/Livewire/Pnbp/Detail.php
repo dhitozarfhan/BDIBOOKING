@@ -18,7 +18,7 @@ class Detail extends Component
 
 
         if (Auth::guard('participant')->check()) {
-            $this->isRegistered = Booking::where('participant_id', Auth::guard('participant')->id())
+            $this->isRegistered = Booking::where('customer_id', Auth::guard('participant')->id())
                 ->where('bookable_type', Training::class)
                 ->where('bookable_id', $this->training->id)
                 ->exists();
