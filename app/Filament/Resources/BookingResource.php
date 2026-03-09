@@ -217,6 +217,12 @@ class BookingResource extends Resource
                 Tables\Filters\Filter::make('no_certificate')
                     ->label('Belum ada sertifikat')
                     ->query(fn ($query) => $query->whereDoesntHave('certificate')),
+                Tables\Filters\Filter::make('sewa_properti')
+                    ->label('Kategori: Sewa Properti')
+                    ->query(fn (Builder $query) => $query->where('bookable_type', \App\Models\Property::class)),
+                Tables\Filters\Filter::make('diklat')
+                    ->label('Kategori: Diklat')
+                    ->query(fn (Builder $query) => $query->where('bookable_type', \App\Models\Training::class)),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
