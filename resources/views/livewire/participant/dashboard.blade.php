@@ -22,7 +22,7 @@
             {{-- Page Header --}}
             <div class="mb-8">
                 <h1 class="text-2xl font-bold text-base-content tracking-tight">Dashboard</h1>
-                <p class="text-sm text-base-content/50 mt-1">Ringkasan aktivitas pendaftaran diklat Anda.</p>
+                <p class="text-sm text-base-content/50 mt-1">Ringkasan aktivitas pendaftaran layanan Anda.</p>
             </div>
 
             {{-- Stats Cards --}}
@@ -33,7 +33,7 @@
                         <svg class="w-6 h-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
                     </div>
                     <div>
-                        <p class="text-xs font-semibold uppercase tracking-wider text-base-content/40">Total Diklat</p>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-base-content/40">Total Layanan</p>
                         <p class="text-2xl font-bold text-base-content mt-0.5">{{ $bookings->count() }}</p>
                     </div>
                 </div>
@@ -70,12 +70,21 @@
 
                 <div class="space-y-4">
                     @forelse($bookings as $booking)
+                        @php
+                            $isTraining = $booking->bookable_type === \App\Models\Training::class;
+                            $bookableName = $isTraining ? ($booking->bookable->title ?? 'Pelatihan') : ($booking->bookable->name ?? 'Properti');
+                        @endphp
                         @if(!$booking->invoices->isEmpty())
                             <div wire:key="booking-{{ $booking->id }}" class="bg-base-100 rounded-2xl border border-base-200/80 shadow-sm overflow-hidden">
                                 {{-- Booking Header --}}
                                 <div class="px-5 py-4 border-b border-base-200/60 flex flex-wrap items-center justify-between gap-2">
                                     <div class="flex items-center gap-2.5">
-                                        <h3 class="font-semibold text-sm text-base-content">{{ $booking->bookable->title ?? 'Diklat' }}</h3>
+                                        <h3 class="font-semibold text-sm text-base-content">{{ $bookableName }}</h3>
+                                        @if($isTraining)
+                                            <span class="badge badge-primary badge-xs font-semibold">Pelatihan</span>
+                                        @else
+                                            <span class="badge badge-secondary badge-xs font-semibold">Properti</span>
+                                        @endif
                                         <span class="badge badge-xs font-semibold
                                             @switch($booking->status)
                                                 @case('approved') badge-success @break
@@ -161,7 +170,7 @@
                                 <svg class="w-7 h-7 text-base-content/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" /></svg>
                             </div>
                             <p class="text-sm text-base-content/40 font-medium">Belum ada tagihan.</p>
-                            <a href="{{ route('pnbp.index') }}" wire:navigate class="btn btn-sm btn-primary rounded-xl mt-4 gap-1.5">Lihat Daftar Diklat</a>
+                            <a href="{{ route('pnbp.index') }}" wire:navigate class="btn btn-sm btn-primary rounded-xl mt-4 gap-1.5">Lihat Layanan PNBP</a>
                         </div>
                     @endforelse
 
@@ -171,7 +180,7 @@
                             <div class="w-14 h-14 rounded-2xl bg-base-200/60 flex items-center justify-center mx-auto mb-4">
                                 <svg class="w-7 h-7 text-base-content/25" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" /></svg>
                             </div>
-                            <p class="text-sm text-base-content/40 font-medium">Belum ada tagihan untuk diklat yang terdaftar.</p>
+                            <p class="text-sm text-base-content/40 font-medium">Belum ada tagihan untuk layanan yang terdaftar.</p>
                         </div>
                     @endif
                 </div>

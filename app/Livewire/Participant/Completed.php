@@ -2,22 +2,36 @@
 
 namespace App\Livewire\Participant;
 
+use App\Models\Property;
+use App\Models\Training;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 
 class Completed extends Component
 {
-    public $bookings;
+    public $filter = 'semua';
 
-    public function mount()
+    public function setFilter($filter)
     {
-        $this->bookings = Auth::guard('participant')->user()
+        $this->filter = $filter;
+    }
+
+    public function getBookingsProperty()
+    {
+        $query = Auth::guard('participant')->user()
             ->bookings()
             ->with(['bookable', 'certificate'])
             ->where('status', 'completed')
-            ->latest()
-            ->get();
+            ->latest();
+
+        if ($this->filter === 'pelatihan') {
+            $query->where('bookable_type', Training::class);
+        } elseif ($this->filter === 'properti') {
+            $query->where('bookable_type', Property::class);
+        }
+
+        return $query->get();
     }
 
     public function downloadCertificate($bookingId)
@@ -47,7 +61,8 @@ class Completed extends Component
 
     public function render()
     {
-        return view('livewire.participant.completed')
-            ->layout('layouts.app', ['title' => 'Diklat Diselesaikan']);
+        return view('livewire.participant.completed', [
+            'bookings' => $this->bookings,
+        ])->layout('layouts.app', ['title' => 'Riwayat Layanan']);
     }
 }

@@ -52,7 +52,7 @@
 
                                 {{-- Kapasitas --}}
                                 <div class="p-4 rounded-xl bg-base-200/50 border border-base-200">
-                                    <span class="text-xs font-semibold uppercase text-base-content/50 block mb-2">Kapasitas</span>
+                                    <span class="text-xs font-semibold uppercase text-base-content/50 block mb-2">Kapasitas Ruangan</span>
                                     <div class="flex items-center gap-2 text-sm font-medium">
                                         <i class="bi bi-people-fill text-secondary"></i>
                                         <span>{{ $property->capacity }} orang</span>
@@ -97,7 +97,7 @@
                                     <div class="flex items-center gap-3 text-sm">
                                         <i class="bi bi-people-fill text-secondary"></i>
                                         <div>
-                                            <span class="text-base-content/50 block text-xs">Kapasitas</span>
+                                            <span class="text-base-content/50 block text-xs">Kapasitas Ruangan</span>
                                             <span class="font-medium">{{ $property->capacity }} orang</span>
                                         </div>
                                     </div>

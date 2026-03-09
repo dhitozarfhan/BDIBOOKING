@@ -37,7 +37,7 @@
                                     <p class="text-sm text-gray-600 line-clamp-3">{{ $property->description }}</p>
                                 @endif
                                 <div class="flex items-center gap-4 mt-2 text-sm text-gray-500">
-                                    <span><i class="bi bi-people-fill mr-1"></i> Kapasitas: {{ $property->capacity }} orang</span>
+                                    <span><i class="bi bi-people-fill mr-1"></i> Kapasitas Ruangan: {{ $property->capacity }} orang</span>
                                 </div>
                                 <p class="text-lg font-bold text-secondary mt-2">
                                     {{ 'Rp ' . number_format($property->price, 0, ',', '.') }}
