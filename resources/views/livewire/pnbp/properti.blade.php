@@ -43,7 +43,7 @@
                                     {{ 'Rp ' . number_format($property->price, 0, ',', '.') }}
                                 </p>
                                 <div class="card-actions justify-end mt-auto">
-                                    <a href="#" class="btn btn-secondary btn-block">
+                                    <a href="{{ route('pnbp.properti.detail', ['id' => $property->id, 'slug' => Str::slug($property->name)]) }}" class="btn btn-secondary btn-block">
                                         Lihat Detail
                                     </a>
                                 </div>

@@ -4,7 +4,7 @@
         <nav class="text-sm breadcrumbs">
             <ul>
                 <li><a href="{{ url('/') }}"><i class="bi bi-house-fill"></i></a></li>
-                <li>Diklat PNBP</li>
+                <li>Pelayanan PNBP</li>
             </ul>
         </nav>
     </div>
@@ -13,13 +13,13 @@
         <div class="container max-w-7xl mx-auto px-4">
             <div class="card" style="padding: 1rem;">
                 <div>
-                    <h2 class="text-4xl font-bold">Diklat PNBP</h2>
-                    <h4 class="text-2xl font-semibold mt-2 mb-4">Pelatihan Berbayar untuk Umum</h4>
+                    <h2 class="text-4xl font-bold">Pelayanan PNBP</h2>
+                    <h4 class="text-2xl font-semibold mt-2 mb-4">Pelayanan Berbayar untuk Umum</h4>
                 </div>
                 <div class="pt-2">
                     <div class="text-2xm leading-10">
-                        BDI Yogyakarta menyelenggarakan pelatihan berbasis PNBP (Penerimaan Negara Bukan Pajak) yang
-                        terbuka untuk masyarakat umum. Pelatihan ini dirancang untuk meningkatkan kompetensi
+                        BDI Yogyakarta menyelenggarakan pelayanan berbasis PNBP (Penerimaan Negara Bukan Pajak) yang
+                        terbuka untuk masyarakat umum. Pelayanan ini dirancang untuk meningkatkan kompetensi
                         di berbagai bidang industri kreatif, digital, dan manajemen.
                     </div>
                 </div>
