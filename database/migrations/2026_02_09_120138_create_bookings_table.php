@@ -14,6 +14,8 @@ return new class extends Migration
             $table->morphs('bookable'); // bookable_id, bookable_type (Training, Property, etc.)
             $table->enum('booking_type', ['individual', 'batch'])->default('individual');
             $table->unsignedInteger('quantity')->default(1);
+            $table->timestamp('start_date')->nullable()->comment('Tanggal mulai pelaksanaan');
+            $table->timestamp('end_date')->nullable()->comment('Tanggal berakhir pelaksanaan');
             $table->enum('status', ['pending', 'approved', 'rejected', 'completed'])->default('pending');
             $table->timestamps();
         });
