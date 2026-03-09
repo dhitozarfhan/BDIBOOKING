@@ -138,6 +138,7 @@ class BookingResource extends Resource
 
                 Forms\Components\Section::make('Sertifikat')
                     ->icon('heroicon-o-trophy')
+                    ->visible(fn ($record) => $record ? $record->bookable_type !== \App\Models\Property::class : true)
                     ->schema([
                         Forms\Components\TextInput::make('certificate.certificate_number')
                             ->label('No. Sertifikat')
@@ -160,9 +161,18 @@ class BookingResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('customer.email')
                     ->label('Email'),
-                Tables\Columns\TextColumn::make('bookable.title')
+                Tables\Columns\TextColumn::make('bookable_title')
                     ->label('Diklat / Layanan')
-                    ->searchable(),
+                    ->getStateUsing(fn ($record) => $record->bookable?->title ?? $record->bookable?->name ?? '-')
+                    ->searchable(query: function (Builder $query, string $search) {
+                        return $query->whereHasMorph('bookable', '*', function (Builder $query, string $type) use ($search) {
+                            if ($type === \App\Models\Training::class) {
+                                $query->where('title', 'like', "%{$search}%");
+                            } elseif ($type === \App\Models\Property::class) {
+                                $query->where('name', 'like', "%{$search}%");
+                            }
+                        });
+                    }),
                 Tables\Columns\TextColumn::make('booking_type')
                     ->label('Tipe')
                     ->badge()
@@ -187,6 +197,7 @@ class BookingResource extends Resource
                     ->placeholder('-')
                     ->badge()
                     ->color(fn ($state) => $state ? 'success' : 'gray')
+                    ->visible(fn ($livewire) => !property_exists($livewire, 'activeTab') || $livewire->activeTab !== 'properti')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -213,9 +224,11 @@ class BookingResource extends Resource
                     ]),
                 Tables\Filters\Filter::make('has_certificate')
                     ->label('Sudah ada sertifikat')
+                    ->visible(fn ($livewire) => !property_exists($livewire, 'activeTab') || $livewire->activeTab !== 'properti')
                     ->query(fn ($query) => $query->whereHas('certificate')),
                 Tables\Filters\Filter::make('no_certificate')
                     ->label('Belum ada sertifikat')
+                    ->visible(fn ($livewire) => !property_exists($livewire, 'activeTab') || $livewire->activeTab !== 'properti')
                     ->query(fn ($query) => $query->whereDoesntHave('certificate')),
                 Tables\Filters\Filter::make('sewa_properti')
                     ->label('Kategori: Sewa Properti')
@@ -233,7 +246,7 @@ class BookingResource extends Resource
                     ->label('Upload Sertifikat')
                     ->icon('heroicon-o-document-arrow-up')
                     ->color('primary')
-                    ->visible(fn ($record) => !$record->certificate && in_array($record->status, ['approved', 'completed']))
+                    ->visible(fn ($record) => $record->bookable_type !== \App\Models\Property::class && !$record->certificate && in_array($record->status, ['approved', 'completed']))
                     ->form([
                         Forms\Components\TextInput::make('certificate_number')
                             ->label('Nomor Sertifikat')
@@ -274,7 +287,7 @@ class BookingResource extends Resource
                     ->label('Download Sertifikat')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
-                    ->visible(fn ($record) => $record->certificate !== null)
+                    ->visible(fn ($record) => $record->bookable_type !== \App\Models\Property::class && $record->certificate !== null)
                     ->url(fn ($record) => $record->certificate ? Storage::url($record->certificate->file_path) : null)
                     ->openUrlInNewTab(),
 
@@ -282,7 +295,7 @@ class BookingResource extends Resource
                     ->label('Hapus Sertifikat')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
-                    ->visible(fn ($record) => $record->certificate !== null)
+                    ->visible(fn ($record) => $record->bookable_type !== \App\Models\Property::class && $record->certificate !== null)
                     ->requiresConfirmation()
                     ->modalHeading('Hapus Sertifikat')
                     ->modalDescription('Apakah Anda yakin ingin menghapus sertifikat ini?')
@@ -308,6 +321,8 @@ class BookingResource extends Resource
             RelationManagers\InvoicesRelationManager::class,
         ];
     }
+
+
 
     public static function getPages(): array
     {
