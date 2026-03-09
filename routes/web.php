@@ -121,6 +121,8 @@ Route::get('/register/training/kemenperin/{id_diklat}/{slug?}', \App\Livewire\Tr
 
 Route::get('/training', TrainingIndex::class)->name('training.index');
 Route::get('/pnbp', \App\Livewire\Pnbp\Index::class)->name('pnbp.index');
+Route::get('/pnbp/pelatihan', \App\Livewire\Pnbp\Pelatihan::class)->name('pnbp.pelatihan');
+Route::get('/pnbp/properti', \App\Livewire\Pnbp\Properti::class)->name('pnbp.properti');
 Route::get('/pnbp/detail/{id_diklat}/{slug?}', \App\Livewire\Pnbp\Detail::class)->name('pnbp.detail');
 Route::get('/pnbp/register/{id_diklat}/{slug?}', \App\Livewire\Pnbp\Register::class)->name('training.pnbp.register');
 Route::get('/training/presence/{id_diklat}/{slug?}', \App\Livewire\Training\Presence::class)->name('training.presence');

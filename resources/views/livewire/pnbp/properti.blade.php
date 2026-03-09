@@ -1,0 +1,57 @@
+<div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+        {{-- Breadcrumbs --}}
+        <nav class="text-sm breadcrumbs">
+            <ul>
+                <li><a href="{{ url('/') }}"><i class="bi bi-house-fill"></i></a></li>
+                <li><a href="{{ route('pnbp.index') }}">Pelayanan PNBP</a></li>
+                <li>Properti</li>
+            </ul>
+        </nav>
+    </div>
+
+    {{-- Property List Section --}}
+    <section class="py-8 bg-white">
+        <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-center md:text-left">Daftar Properti Tersedia</h2>
+            </div>
+
+            @if($properties->isEmpty())
+                <div class="text-center py-12">
+                    <i class="bi bi-building text-6xl text-gray-300 mb-4 block"></i>
+                    <p class="text-gray-500 text-lg">Belum ada properti yang tersedia saat ini.</p>
+                </div>
+            @else
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach($properties as $property)
+                        <div class="card bg-base-100 shadow-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300">
+                            <div class="card-body">
+                                <div class="flex gap-2 mb-2">
+                                    @if($property->propertyType)
+                                        <span class="badge badge-secondary badge-sm">{{ $property->propertyType->name }}</span>
+                                    @endif
+                                </div>
+                                <h2 class="card-title text-xl font-bold">{{ $property->name }}</h2>
+                                @if($property->description)
+                                    <p class="text-sm text-gray-600 line-clamp-3">{{ $property->description }}</p>
+                                @endif
+                                <div class="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                                    <span><i class="bi bi-people-fill mr-1"></i> Kapasitas: {{ $property->capacity }} orang</span>
+                                </div>
+                                <p class="text-lg font-bold text-secondary mt-2">
+                                    {{ 'Rp ' . number_format($property->price, 0, ',', '.') }}
+                                </p>
+                                <div class="card-actions justify-end mt-auto">
+                                    <a href="#" class="btn btn-secondary btn-block">
+                                        Lihat Detail
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    </section>
+</div>
