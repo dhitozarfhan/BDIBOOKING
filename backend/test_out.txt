@@ -1,0 +1,17 @@
+
+Warning: Module "pdo_pgsql" is already loaded in Unknown on line 0
+
+Warning: Module "pgsql" is already loaded in Unknown on line 0
+
+Warning: Module "pdo_pgsql" is already loaded in Unknown on line 0
+
+Warning: Module "pgsql" is already loaded in Unknown on line 0
+
+   PASS  Tests\Feature\ApiTest
+  ✓ admin can l… 0.43s  
+  ✓ property ty… 0.23s  
+  ✓ property an… 0.14s  
+
+  Tests:    3 passed (12 assertions)
+  Duration: 0.91s
+

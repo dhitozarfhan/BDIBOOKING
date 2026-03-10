@@ -1,0 +1,29 @@
+
+Warning: Module "pdo_pgsql" is already loaded in Unknown on line 0
+
+Warning: Module "pgsql" is already loaded in Unknown on line 0
+
+   INFO  Running migrations.
+
+  2026_03_09_150224_create_bookings_table  12.42ms FAIL
+
+   Illuminate\Database\QueryException
+
+  SQLSTATE[42P01]: Undefined table: 7 ERROR:  relation "properties" does not exist (Connection: pgsql, Host: 127.0.0.1, Port: 5432, Database: room_management, SQL: alter table "bookings" add constraint "bookings_property_id_foreign" foreign key ("property_id") references "properties" ("id") on delete cascade)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:838
+    834▕             $exceptionType = $this->isUniqueConstraintError($e)
+    835▕                 ? UniqueConstraintViolationException::class
+    836▕                 : QueryException::class;
+    837▕
+  ➜ 838▕             throw new $exceptionType(
+    839▕                 $this->getNameWithReadWriteType(),
+    840▕                 $query,
+    841▕                 $this->prepareBindings($bindings),
+    842▕                 $e,
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connection.php:584
+      PDOException::("SQLSTATE[42P01]: Undefined table: 7 ERROR:  relation "properties" does not exist")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connection.php:584
+      PDOStatement::execute()
