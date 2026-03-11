@@ -16,10 +16,11 @@ use Spatie\Permission\Traits\HasRoles;
 use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
 use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
 use Yebor974\Filament\RenewPassword\Traits\RenewPassword;
+use Laravel\Sanctum\HasApiTokens;
 
 class Employee extends Authenticatable implements RenewPasswordContract, FilamentUser
 {
-    use Notifiable, HasFactory, HasRoles, RenewPassword;
+    use HasApiTokens, Notifiable, HasFactory, HasRoles, RenewPassword;
 
     protected $fillable = [
         'username', 'nip', 'nip_intranet', 'name',

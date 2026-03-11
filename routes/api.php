@@ -65,4 +65,25 @@ Route::prefix('v1')->group(function () {
     // File Download Route
     Route::get('/download', [\App\Http\Controllers\DownloadController::class, 'download']);
 
+    // ==========================================
+    // MOBILE APP ROUTES (BDIBOOKING FRONTEND)
+    // ==========================================
+    Route::post('/login', [\App\Http\Controllers\Api\MobileAuthController::class, 'login']);
+
+    // Public Mobile Routes
+    Route::get('/property-types', [\App\Http\Controllers\Api\MobilePropertyTypeController::class, 'index']);
+    Route::get('/property-types/{id}', [\App\Http\Controllers\Api\MobilePropertyTypeController::class, 'show']);
+    Route::get('/properties', [\App\Http\Controllers\Api\MobilePropertyController::class, 'index']);
+    Route::get('/properties/{id}', [\App\Http\Controllers\Api\MobilePropertyController::class, 'show']);
+
+    // Protected Mobile Routes (Requires Sanctum Token)
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [\App\Http\Controllers\Api\MobileAuthController::class, 'logout']);
+        Route::get('/user', [\App\Http\Controllers\Api\MobileAuthController::class, 'user']);
+        
+        Route::get('/bookings', [\App\Http\Controllers\Api\MobileBookingController::class, 'index']);
+        Route::post('/bookings', [\App\Http\Controllers\Api\MobileBookingController::class, 'store']);
+        Route::get('/bookings/{id}', [\App\Http\Controllers\Api\MobileBookingController::class, 'show']);
+    });
+
 });
