@@ -10,7 +10,7 @@ class BookingController extends Controller
 {
     public function index()
     {
-        return response()->json(Booking::with('property', 'user')->get());
+        return response()->json(Booking::with('property.type', 'user', 'type')->get());
     }
 
     public function store(Request $request)
@@ -35,7 +35,7 @@ class BookingController extends Controller
 
     public function show($id)
     {
-        $booking = Booking::with('property', 'user')->find($id);
+        $booking = Booking::with('property.type', 'user', 'type')->find($id);
 
         if (!$booking) {
             return response()->json(['message' => 'Booking not found'], 404);

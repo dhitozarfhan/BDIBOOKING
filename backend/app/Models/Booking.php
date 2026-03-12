@@ -20,4 +20,16 @@ class Booking extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function type()
+    {
+        return $this->hasOneThrough(
+            PropertyType::class,
+            Property::class,
+            'id', // Foreign key on properties table...
+            'id', // Foreign key on property_types table...
+            'property_id', // Local key on bookings table...
+            'property_type_id' // Local key on properties table...
+        );
+    }
 }
