@@ -1,0 +1,103 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\PropertyAPK;
+use Illuminate\Http\Request;
+
+class PropertyApkController extends Controller
+{
+    public function index()
+    {
+        $properties = PropertyAPK::with('type', 'bookings')->get();
+        
+        // Transform the properties to include dynamically calculated status based on SRS 3.5
+        $properties->each(function($property) {
+            $now = now();
+            $isActiveBooking = $property->bookings()
+                ->whereIn('status', ['scheduled', 'in_use'])
+                ->where('start_date', '<=', $now)
+                ->where('end_date', '>=', $now)
+                ->exists();
+                
+            // If the manual status is maintenance, we keep it, otherwise calculated.
+            if ($property->status !== 'maintenance') {
+                $property->status = $isActiveBooking ? 'occupied' : 'available';
+            }
+        });
+
+        return response()->json($properties);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'property_type_id' => 'required|exists:property_types,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'capacity' => 'required|integer|min:1',
+            'status' => 'nullable|string|in:available,occupied,maintenance'
+        ]);
+
+        $property = PropertyAPK::create($validated);
+
+        return response()->json($property, 201);
+    }
+
+    public function show($id)
+    {
+        $property = Property::with('type', 'bookings')->find($id);
+
+        if (!$property) {
+            return response()->json(['message' => 'Property not found'], 404);
+        }
+
+        $now = now();
+        $isActiveBooking = $property->bookings()
+            ->whereIn('status', ['scheduled', 'in_use'])
+            ->where('start_date', '<=', $now)
+            ->where('end_date', '>=', $now)
+            ->exists();
+            
+        if ($property->status !== 'maintenance') {
+            $property->status = $isActiveBooking ? 'occupied' : 'available';
+        }
+
+        return response()->json($property);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $property = PropertyAPK::find($id);
+
+        if (!$property) {
+            return response()->json(['message' => 'Property not found'], 404);
+        }
+
+        $validated = $request->validate([
+            'property_type_id' => 'sometimes|exists:property_types,id',
+            'name' => 'sometimes|string|max:255',
+            'description' => 'nullable|string',
+            'capacity' => 'sometimes|integer|min:1',
+            'status' => 'sometimes|string|in:available,occupied,maintenance'
+        ]);
+
+        $property->update($validated);
+
+        return response()->json($property);
+    }
+
+    public function destroy($id)
+    {
+        $property = PropertyAPK::find($id);
+
+        if (!$property) {
+            return response()->json(['message' => 'Property not found'], 404);
+        }
+
+        $property->delete();
+
+        return response()->json(['message' => 'Property deleted successfully']);
+    }
+}

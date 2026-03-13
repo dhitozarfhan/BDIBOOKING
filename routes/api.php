@@ -65,4 +65,18 @@ Route::prefix('v1')->group(function () {
     // File Download Route
     Route::get('/download', [\App\Http\Controllers\DownloadController::class, 'download']);
 
+
+    Route::post('/loginAPK', [AuthController::class, 'login']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logoutAPK', [AuthController::class, 'logout']);
+        Route::get('/userAPK', function (Request $request) {
+            return $request->user();
+        });
+
+        Route::apiResource('property-typesAPK', PropertyTypeController::class);
+        Route::apiResource('propertiesAPK', PropertyController::class);
+        Route::apiResource('bookingsAPK', BookingController::class);
+    });
 });
+
