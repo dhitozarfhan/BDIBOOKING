@@ -8,10 +8,12 @@ class Property extends Model
 {
     protected $fillable = [
         'property_type_id',
+        'category',
         'name',
         'description',
         'capacity',
         'price',
+        'status',
     ];
 
     protected $casts = [

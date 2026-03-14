@@ -49,6 +49,15 @@ class PropertyResource extends Resource
                             ->rows(3)
                             ->label('Deskripsi'),
                     ]),
+                Forms\Components\Select::make('category')
+                    ->options([
+                        'kamar_inap' => 'Kamar Inap',
+                        'ruang_rapat' => 'Ruang Rapat',
+                        'kelas' => 'Kelas',
+                        'lainnya' => 'Lainnya',
+                    ])
+                    ->required()
+                    ->label('Kategori'),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255)
@@ -67,6 +76,22 @@ class PropertyResource extends Resource
                     ->minValue(0)
                     ->prefix('Rp')
                     ->default(0.00),
+                Forms\Components\Select::make('status')
+                    ->required()
+                    ->label('Status')
+                    ->options([
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                    ])
+                    ->default('active'),
+                Forms\Components\DateTimePicker::make('created_at')
+                    ->disabled()
+                    ->dehydrated(false)
+                    ->default(now()),
+                Forms\Components\DateTimePicker::make('updated_at')
+                    ->disabled()
+                    ->dehydrated(false)
+                    ->default(now()),
             ]);
     }
 
@@ -75,28 +100,43 @@ class PropertyResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('propertyType.name')
                     ->searchable()
-                    ->sortable()
-                    ->label('Type'),
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('category')
+                    ->badge()
+                    ->colors([
+                        'primary' => 'kamar_inap',
+                        'success' => 'ruang_rapat',
+                        'warning' => 'kelas',
+                        'gray' => 'lainnya',
+                    ]),
                 Tables\Columns\TextColumn::make('capacity')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('price')
                     ->money('IDR')
                     ->sortable(),
+                Tables\Columns\IconColumn::make('status')
+                    ->icon(fn ($state) => $state === 'active' ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
+                    ->color(fn ($state) => $state === 'active' ? 'success' : 'danger'),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('category')
+                    ->options([
+                        'kamar_inap' => 'Kamar Inap',
+                        'ruang_rapat' => 'Ruang Rapat',
+                        'kelas' => 'Kelas',
+                        'lainnya' => 'Lainnya',
+                    ]),
+                Tables\Filters\SelectFilter::make('status')
+                    ->options([
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -109,6 +149,7 @@ class PropertyResource extends Resource
                 ]),
             ]);
     }
+
 
     public static function getRelations(): array
     {

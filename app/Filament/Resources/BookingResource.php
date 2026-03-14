@@ -56,10 +56,24 @@ class BookingResource extends Resource
                 Forms\Components\Section::make('Informasi Booking')
                     ->icon('heroicon-o-academic-cap')
                     ->schema([
+                        Forms\Components\TextInput::make('id_booking')
+                            ->label('ID Booking')
+                            ->placeholder('Otomatis jika kosong')
+                            ->unique(ignoreRecord: true),
                         Forms\Components\TextInput::make('bookable.title')
                             ->label('Nama Diklat / Layanan')
                             ->formatStateUsing(fn ($record) => $record?->bookable?->title ?? $record?->bookable?->name)
                             ->disabled(),
+                        Forms\Components\Select::make('assigned_room_id')
+                            ->label('Ruangan / Kamar')
+                            ->relationship('assignedRoom', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->createOptionForm([
+                                Forms\Components\TextInput::make('name')
+                                    ->required(),
+                                Forms\Components\Textarea::make('description'),
+                            ]),
                         Forms\Components\Select::make('status')
                             ->options([
                                 'pending' => 'Pending',
@@ -75,6 +89,12 @@ class BookingResource extends Resource
                         Forms\Components\TextInput::make('quantity')
                             ->label('Jumlah')
                             ->formatStateUsing(fn ($record) => $record?->quantity ?? 1)
+                            ->disabled(),
+                        Forms\Components\DateTimePicker::make('start_date')
+                            ->label('Tanggal Mulai')
+                            ->disabled(),
+                        Forms\Components\DateTimePicker::make('end_date')
+                            ->label('Tanggal Selesai')
                             ->disabled(),
                         Forms\Components\TextInput::make('created_at_display')
                             ->label('Tanggal Pendaftaran')
@@ -156,11 +176,16 @@ class BookingResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id_booking')
+                    ->label('ID')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('customer.name')
                     ->label('Pemesan')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('customer.email')
-                    ->label('Email'),
+                    ->label('Email')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('bookable_title')
                     ->label('Diklat / Layanan')
                     ->getStateUsing(fn ($record) => $record->bookable?->title ?? $record->bookable?->name ?? '-')
@@ -184,6 +209,9 @@ class BookingResource extends Resource
                 Tables\Columns\TextColumn::make('quantity')
                     ->label('Jumlah')
                     ->alignCenter(),
+                Tables\Columns\TextColumn::make('assignedRoom.name')
+                    ->label('Ruangan')
+                    ->placeholder('-'),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
