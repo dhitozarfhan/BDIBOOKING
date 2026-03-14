@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\Customer;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -33,7 +34,7 @@ class AuthController extends Controller
 
         return $this->success([
             'token' => $token,
-            'user'  => $customer,
+            'user'  => new UserResource($customer),
         ], 'Registration successful', 201);
     }
 
@@ -81,12 +82,7 @@ class AuthController extends Controller
             'success'      => true,
             'message'      => 'Login successful',
             'access_token' => $token,
-            'user'         => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role ?? ($user instanceof \App\Models\Customer ? 'customer' : 'employee'),
-            ],
+            'user'         => new UserResource($user),
         ]);
     }
 
@@ -99,6 +95,6 @@ class AuthController extends Controller
 
     public function profile(Request $request)
     {
-        return $this->success($request->user(), 'Profile retrieved successfully');
+        return $this->success(new UserResource($request->user()), 'Profile retrieved successfully');
     }
 }
