@@ -14,10 +14,12 @@ class Property extends Model
         'capacity',
         'price',
         'status',
+        'image',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
+        'image' => 'array',
     ];
 
     public function propertyType()

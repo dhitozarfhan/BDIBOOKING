@@ -84,6 +84,14 @@ class PropertyResource extends Resource
                         'inactive' => 'Inactive',
                     ])
                     ->default('active'),
+                Forms\Components\FileUpload::make('image')
+                    ->image()
+                    ->multiple()
+                    ->maxFiles(5)
+                    ->reorderable()
+                    ->directory('properties')
+                    ->label('Gambar Properti (Maksimal 5)')
+                    ->columnSpanFull(),
                 Forms\Components\DateTimePicker::make('created_at')
                     ->disabled()
                     ->dehydrated(false)
@@ -99,6 +107,10 @@ class PropertyResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('image')
+                    ->circular()
+                    ->stacked()
+                    ->label('Gambar'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
