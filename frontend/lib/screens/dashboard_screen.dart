@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:frontend/providers/auth_provider.dart';
 import 'package:frontend/screens/login_screen.dart';
-import 'package:frontend/screens/property_types_screen.dart';
 import 'package:frontend/screens/properties_screen.dart';
 import 'package:frontend/screens/bookings_screen.dart';
 import 'package:frontend/screens/overview_screen.dart';
@@ -19,13 +18,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final List<String> _titles = [
     'Overview Summary',
     'Manage Properties',
-    'Property Types',
     'Manage Bookings',
   ];
   final List<Widget> _screens = [
     OverviewScreen(),
     PropertiesScreen(),
-    PropertyTypesScreen(),
     BookingsScreen(),
   ];
 
@@ -124,14 +121,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     index: 1,
                   ),
                   _buildDrawerItem(
-                    icon: Icons.category_rounded,
-                    title: 'Property Types',
-                    index: 2,
-                  ),
-                  _buildDrawerItem(
                     icon: Icons.book_online_rounded,
                     title: 'Bookings',
-                    index: 3,
+                    index: 2,
                   ),
                 ],
               ),

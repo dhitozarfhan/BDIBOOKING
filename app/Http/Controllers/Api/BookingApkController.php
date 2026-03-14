@@ -56,7 +56,6 @@ class BookingApkController extends Controller
             // If the authenticated user is an employee, we can optionally track it 
             // but the primary link remains customer_id for mobile bookings.
             $booking = Booking::create([
-                'user_id'       => ($user instanceof \App\Models\Employee) ? $user->id : null,
                 'customer_id'   => ($user instanceof \App\Models\Customer) ? $user->id : $customer->id,
                 'bookable_id'   => $validated['property_id'],
                 'bookable_type' => Property::class,
@@ -73,7 +72,7 @@ class BookingApkController extends Controller
 
     public function show($id)
     {
-        $booking = Booking::with('bookable', 'user', 'customer')->find($id);
+        $booking = Booking::with('bookable', 'customer')->find($id);
 
         if (!$booking) {
             return $this->error('Booking not found', 404);

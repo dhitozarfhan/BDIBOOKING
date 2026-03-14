@@ -3,9 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:frontend/models/property.dart';
-import 'package:frontend/models/property_type.dart';
 import 'package:frontend/providers/property_provider.dart';
-import 'package:frontend/providers/property_type_provider.dart';
 
 class PropertiesScreen extends StatefulWidget {
   @override
@@ -17,29 +15,11 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<PropertyTypeProvider>(
-        context,
-        listen: false,
-      ).fetchPropertyTypes();
       Provider.of<PropertyProvider>(context, listen: false).fetchProperties();
     });
   }
 
   void _showFormDialog(BuildContext context, [Property? property]) {
-    final types = Provider.of<PropertyTypeProvider>(
-      context,
-      listen: false,
-    ).propertyTypes;
-    if (types.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Required: Create a Property Type First'),
-          backgroundColor: Colors.orange.shade800,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      return;
-    }
 
     final _nameController = TextEditingController(text: property?.name ?? '');
     final _descriptionController = TextEditingController(
@@ -49,8 +29,6 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
       text: property?.capacity.toString() ?? '',
     );
     final _formKey = GlobalKey<FormState>();
-
-    int? _selectedTypeId = property?.propertyTypeId ?? types.first.id;
     String _selectedStatus = property?.status ?? 'available';
 
     showDialog(
@@ -72,25 +50,6 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      DropdownButtonFormField<int>(
-                        value: _selectedTypeId,
-                        decoration: const InputDecoration(
-                          labelText: 'Property Category',
-                          prefixIcon: Icon(Icons.category_outlined),
-                        ),
-                        items: types
-                            .map(
-                              (t) => DropdownMenuItem(
-                                value: t.id,
-                                child: Text(t.name),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (val) =>
-                            setState(() => _selectedTypeId = val),
-                        validator: (value) => value == null ? 'Required' : null,
-                      ),
-                      const SizedBox(height: 16),
                       TextFormField(
                         controller: _nameController,
                         decoration: const InputDecoration(
@@ -184,7 +143,6 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                       );
                       final newProperty = Property(
                         id: property?.id,
-                        propertyTypeId: _selectedTypeId!,
                         name: _nameController.text,
                         description: _descriptionController.text,
                         capacity: int.parse(_capacityController.text),
@@ -282,7 +240,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Ensure you have Property Types created first.',
+                    'Manage your properties here.',
                     style: GoogleFonts.inter(color: Colors.grey.shade500),
                   ),
                 ],
@@ -335,15 +293,6 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                 ),
                                 _buildStatusBadge(property.status),
                               ],
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              property.type?.name ?? "Unknown Category",
-                              style: GoogleFonts.inter(
-                                fontSize: 14,
-                                color: const Color(0xFF3B82F6),
-                                fontWeight: FontWeight.w500,
-                              ),
                             ),
                             const SizedBox(height: 8),
                             Row(

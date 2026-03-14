@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:frontend/providers/property_provider.dart';
-import 'package:frontend/providers/property_type_provider.dart';
 import 'package:frontend/providers/booking_provider.dart';
 
 class OverviewScreen extends StatefulWidget {
@@ -16,10 +15,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<PropertyTypeProvider>(
-        context,
-        listen: false,
-      ).fetchPropertyTypes();
       Provider.of<PropertyProvider>(context, listen: false).fetchProperties();
       Provider.of<BookingProvider>(context, listen: false).fetchBookings();
     });
@@ -79,10 +74,6 @@ class _OverviewScreenState extends State<OverviewScreen> {
   Future<void> _refreshData() async {
     // Refresh all the providers
     await Future.wait([
-      Provider.of<PropertyTypeProvider>(
-        context,
-        listen: false,
-      ).fetchPropertyTypes(),
       Provider.of<PropertyProvider>(context, listen: false).fetchProperties(),
       Provider.of<BookingProvider>(context, listen: false).fetchBookings(),
     ]);

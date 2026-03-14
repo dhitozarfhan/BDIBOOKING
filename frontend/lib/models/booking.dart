@@ -66,6 +66,11 @@ class Booking {
 
   Map<String, dynamic> toJson() {
     return {
+      'property_id': propertyId,
+      'contact_name': contactName,
+      'contact_email': contactEmail,
+      'contact_phone': contactPhone,
+      'institution': institution,
       'status': status,
       'start_date': startDate.toIso8601String(),
       'end_date': endDate.toIso8601String(),

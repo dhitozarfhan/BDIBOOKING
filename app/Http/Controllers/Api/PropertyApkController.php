@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Property;
-use App\Models\PropertyType;
 use Illuminate\Http\Request;
 
 class PropertyApkController extends Controller
@@ -13,14 +12,13 @@ class PropertyApkController extends Controller
 
     public function index()
     {
-        $properties = Property::with('propertyType')->get();
+        $properties = Property::all();
         return $this->success($properties, 'Properties retrieved successfully');
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'property_type_id' => 'required|exists:property_types,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'capacity' => 'required|integer|min:1',
@@ -29,12 +27,12 @@ class PropertyApkController extends Controller
 
         $property = Property::create($validated);
 
-        return $this->success($property->load('propertyType'), 'Property created successfully', 201);
+        return $this->success($property, 'Property created successfully', 201);
     }
 
     public function show($id)
     {
-        $property = Property::with('propertyType')->find($id);
+        $property = Property::find($id);
 
         if (!$property) {
             return $this->error('Property not found', 404);
@@ -52,7 +50,6 @@ class PropertyApkController extends Controller
         }
 
         $validated = $request->validate([
-            'property_type_id' => 'sometimes|exists:property_types,id',
             'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
             'capacity' => 'sometimes|integer|min:1',
@@ -62,7 +59,7 @@ class PropertyApkController extends Controller
 
         $property->update($validated);
 
-        return $this->success($property->load('propertyType'), 'Property updated successfully');
+        return $this->success($property, 'Property updated successfully');
     }
 
     public function destroy($id)

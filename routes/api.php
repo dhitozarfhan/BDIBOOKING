@@ -83,23 +83,19 @@ Route::prefix('v1')->group(function () {
         Route::get('/profile', [AuthController::class, 'profile']);
 
         // Properties
-        Route::get('/property-types', [PropertyTypeApkController::class, 'index']);
         Route::get('/properties', [PropertyApkController::class, 'index']);
+        Route::post('/properties', [PropertyApkController::class, 'store']);
         Route::get('/properties/{id}', [PropertyApkController::class, 'show']);
+        Route::put('/properties/{id}', [PropertyApkController::class, 'update']);
+        Route::delete('/properties/{id}', [PropertyApkController::class, 'destroy']);
 
         // Bookings
         Route::get('/my-bookings', [BookingApkController::class, 'index']);
+        Route::get('/bookings', [BookingApkController::class, 'index']);
         Route::post('/bookings', [BookingApkController::class, 'store']);
         Route::get('/bookings/{id}', [BookingApkController::class, 'show']);
         Route::put('/bookings/{id}', [BookingApkController::class, 'update']);
         Route::delete('/bookings/{id}', [BookingApkController::class, 'destroy']);
-
-        // New Read-Only Routes for Mobile APK (Using API Resources)
-        Route::get('/properties', [PropertyController::class, 'index']);
-        Route::get('/properties/{id}', [PropertyController::class, 'show']);
-        Route::get('/rooms', [RoomController::class, 'index']);
-        Route::get('/bookings', [BookingController::class, 'index']);
-        Route::get('/bookings/{id}', [BookingController::class, 'show']);
     });
 });
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/providers/auth_provider.dart';
-import 'package:frontend/providers/property_type_provider.dart';
 import 'package:frontend/providers/property_provider.dart';
 import 'package:frontend/providers/booking_provider.dart';
 import 'package:frontend/screens/login_screen.dart';
@@ -18,7 +17,6 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: authProvider),
-        ChangeNotifierProvider(create: (_) => PropertyTypeProvider()),
         ChangeNotifierProvider(create: (_) => PropertyProvider()),
         ChangeNotifierProvider(create: (_) => BookingProvider()),
       ],

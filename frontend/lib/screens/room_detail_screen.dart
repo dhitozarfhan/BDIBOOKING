@@ -91,15 +91,6 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    widget.property.type?.name ?? "Unknown Category",
-                    style: GoogleFonts.inter(
-                      fontSize: 16,
-                      color: const Color(0xFF3B82F6),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
                   if (widget.property.description != null &&
                       widget.property.description!.isNotEmpty) ...[
                     Text(
