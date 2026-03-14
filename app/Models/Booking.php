@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Property;
 
 class Booking extends Model
 {
@@ -21,7 +22,20 @@ class Booking extends Model
         'updated_at',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($booking) {
+            if (empty($booking->id_booking)) {
+                $prefix = $booking->bookable_type === Property::class ? 'PRP' : 'TRN';
+                $booking->id_booking = 'BKG-' . $prefix . '-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
+            }
+        });
+    }
+
     public function customer()
+
     {
         return $this->belongsTo(Customer::class);
     }
