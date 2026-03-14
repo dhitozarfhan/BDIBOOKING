@@ -7,9 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Room extends Model
 {
     protected $fillable = [
-        'name',
-        'description',
+        'property_id',
+        'room_number',
+        'floor',
+        'status',
     ];
+
+    public function property()
+    {
+        return $this->belongsTo(Property::class);
+    }
 
     public function bookings()
     {

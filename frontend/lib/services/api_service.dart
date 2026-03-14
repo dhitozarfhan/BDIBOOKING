@@ -33,9 +33,19 @@ class ApiService {
 
   static Future<http.Response> get(String endpoint) async {
     final headers = await getHeaders();
+    // Use v1 for specific endpoints if needed, or update baseUrl
+    String path = endpoint;
+    if ([
+      'properties',
+      'rooms',
+      'bookings',
+    ].contains(endpoint.split('/').first)) {
+      path = 'v1/$endpoint';
+    }
+
     try {
       return await http
-          .get(Uri.parse('$baseUrl/$endpoint'), headers: headers)
+          .get(Uri.parse('$baseUrl/$path'), headers: headers)
           .timeout(const Duration(seconds: 10));
     } catch (e) {
       return http.Response(

@@ -47,19 +47,27 @@ class AuthController extends Controller
 
         $login = $request->input('email') ?: $request->input('username');
         
-        // Smarter NIP detection: if it's 18 digits or specified as username, it's an employee
+        // Smarter NIP detection: if it's 10+ digits or specified as username, it's potentially an employee
         $isNip = $request->has('username') || (is_numeric($login) && strlen($login) >= 10);
 
         $user = null;
         if ($isNip) {
             $user = Employee::where('username', $login)->orWhere('nip', $login)->first();
-        } else {
+        } 
+        
+        // If not found or not NIP, try Customer email
+        if (!$user) {
             $user = Customer::where('email', $login)->first();
-            
-            // Fallback for employee login via email
-            if (!$user) {
-                $user = Employee::where('email', $login)->first();
-            }
+        }
+
+        // If still not found, try Employee email
+        if (!$user) {
+            $user = Employee::where('email', $login)->first();
+        }
+
+        // Final fallback: check core User model (for admin/staff login)
+        if (!$user && class_exists('\App\Models\User')) {
+            $user = \App\Models\User::where('email', $login)->orWhere('username', $login)->first();
         }
 
         if (!$user || !Hash::check($request->password, $user->password)) {
@@ -68,12 +76,17 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth-token')->plainTextToken;
 
-        // Custom response to match Flutter app expectations (flattened, access_token key)
+        // Custom response to match Flutter app expectations
         return response()->json([
             'success'      => true,
             'message'      => 'Login successful',
             'access_token' => $token,
-            'user'         => $user,
+            'user'         => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role ?? ($user instanceof \App\Models\Customer ? 'customer' : 'employee'),
+            ],
         ]);
     }
 
