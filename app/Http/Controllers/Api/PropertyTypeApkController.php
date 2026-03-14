@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\PropertyTypeAPK;
+use App\Models\PropertyType;
 use Illuminate\Http\Request;
 
 class PropertyTypeApkController extends Controller
 {
+    use ApiResponses;
+
     public function index()
     {
-        return response()->json(PropertyTypeAPK::all());
+        $types = PropertyType::all();
+        return $this->success($types, 'Property types retrieved successfully');
     }
 
     public function store(Request $request)
@@ -20,28 +23,28 @@ class PropertyTypeApkController extends Controller
             'description' => 'nullable|string'
         ]);
 
-        $propertyType = PropertyTypeAPK::create($validated);
+        $propertyType = PropertyType::create($validated);
 
-        return response()->json($propertyType, 201);
+        return $this->success($propertyType, 'Property type created successfully', 201);
     }
 
     public function show($id)
     {
-        $propertyType = PropertyTypeAPK::find($id);
+        $propertyType = PropertyType::find($id);
 
         if (!$propertyType) {
-            return response()->json(['message' => 'Property type not found'], 404);
+            return $this->error('Property type not found', 404);
         }
 
-        return response()->json($propertyType);
+        return $this->success($propertyType, 'Property type retrieved successfully');
     }
 
     public function update(Request $request, $id)
     {
-        $propertyType = PropertyTypeAPK::find($id);
+        $propertyType = PropertyType::find($id);
 
         if (!$propertyType) {
-            return response()->json(['message' => 'Property type not found'], 404);
+            return $this->error('Property type not found', 404);
         }
 
         $validated = $request->validate([
@@ -51,19 +54,19 @@ class PropertyTypeApkController extends Controller
 
         $propertyType->update($validated);
 
-        return response()->json($propertyType);
+        return $this->success($propertyType, 'Property type updated successfully');
     }
 
     public function destroy($id)
     {
-        $propertyType = PropertyTypeAPK::find($id);
+        $propertyType = PropertyType::find($id);
 
         if (!$propertyType) {
-            return response()->json(['message' => 'Property type not found'], 404);
+            return $this->error('Property type not found', 404);
         }
 
         $propertyType->delete();
 
-        return response()->json(['message' => 'Property type deleted successfully']);
+        return $this->success(null, 'Property type deleted successfully');
     }
 }

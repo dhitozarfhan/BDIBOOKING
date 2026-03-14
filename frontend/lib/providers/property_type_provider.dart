@@ -15,7 +15,7 @@ class PropertyTypeProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await ApiService.get('property-types');
+      final response = await ApiService.get('v1/property-typesAPK');
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         _propertyTypes = data
@@ -32,7 +32,10 @@ class PropertyTypeProvider with ChangeNotifier {
 
   Future<bool> createPropertyType(PropertyType type) async {
     try {
-      final response = await ApiService.post('property-types', type.toJson());
+      final response = await ApiService.post(
+        'v1/property-typesAPK',
+        type.toJson(),
+      );
       if (response.statusCode == 201) {
         await fetchPropertyTypes();
         return true;
@@ -46,7 +49,7 @@ class PropertyTypeProvider with ChangeNotifier {
   Future<bool> updatePropertyType(int id, PropertyType type) async {
     try {
       final response = await ApiService.put(
-        'property-types/$id',
+        'v1/property-typesAPK/$id',
         type.toJson(),
       );
       if (response.statusCode == 200) {
@@ -61,7 +64,7 @@ class PropertyTypeProvider with ChangeNotifier {
 
   Future<bool> deletePropertyType(int id) async {
     try {
-      final response = await ApiService.delete('property-types/$id');
+      final response = await ApiService.delete('v1/property-typesAPK/$id');
       if (response.statusCode == 200) {
         await fetchPropertyTypes();
         return true;

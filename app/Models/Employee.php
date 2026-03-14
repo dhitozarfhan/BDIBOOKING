@@ -6,6 +6,7 @@ use App\Enums\EmployeeStatus as EnumsEmployeeStatus;
 use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -19,7 +20,7 @@ use Yebor974\Filament\RenewPassword\Traits\RenewPassword;
 
 class Employee extends Authenticatable implements RenewPasswordContract, FilamentUser
 {
-    use Notifiable, HasFactory, HasRoles, RenewPassword;
+    use HasApiTokens, Notifiable, HasFactory, HasRoles, RenewPassword;
 
     protected $fillable = [
         'username', 'nip', 'nip_intranet', 'name',

@@ -10,6 +10,10 @@ use App\Http\Controllers\Api\InformationRequestController;
 use App\Http\Controllers\Api\GratificationController;
 use App\Http\Controllers\Api\WbsController;
 use App\Http\Controllers\Api\ViolationController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PropertyTypeApkController;
+use App\Http\Controllers\Api\PropertyApkController;
+use App\Http\Controllers\Api\BookingApkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,17 +70,26 @@ Route::prefix('v1')->group(function () {
     Route::get('/download', [\App\Http\Controllers\DownloadController::class, 'download']);
 
 
-    Route::post('/loginAPK', [AuthController::class, 'login']);
+    // Unified Authentication
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/loginAPK', [AuthController::class, 'login']); // Backward compatibility
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/logoutAPK', [AuthController::class, 'logout']);
-        Route::get('/userAPK', function (Request $request) {
-            return $request->user();
-        });
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::get('/profile', [AuthController::class, 'profile']);
 
-        Route::apiResource('property-typesAPK', PropertyTypeController::class);
-        Route::apiResource('propertiesAPK', PropertyController::class);
-        Route::apiResource('bookingsAPK', BookingController::class);
+        // Properties
+        Route::get('/property-types', [PropertyTypeApkController::class, 'index']);
+        Route::get('/properties', [PropertyApkController::class, 'index']);
+        Route::get('/properties/{id}', [PropertyApkController::class, 'show']);
+
+        // Bookings
+        Route::get('/my-bookings', [BookingApkController::class, 'index']);
+        Route::post('/bookings', [BookingApkController::class, 'store']);
+        Route::get('/bookings/{id}', [BookingApkController::class, 'show']);
+        Route::put('/bookings/{id}', [BookingApkController::class, 'update']);
+        Route::delete('/bookings/{id}', [BookingApkController::class, 'destroy']);
     });
 });
 

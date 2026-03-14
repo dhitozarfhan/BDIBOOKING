@@ -18,7 +18,7 @@ class PropertyProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await ApiService.get('properties');
+      final response = await ApiService.get('v1/propertiesAPK');
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         _properties = data.map((item) => Property.fromJson(item)).toList();
@@ -33,7 +33,10 @@ class PropertyProvider with ChangeNotifier {
 
   Future<bool> createProperty(Property property) async {
     try {
-      final response = await ApiService.post('properties', property.toJson());
+      final response = await ApiService.post(
+        'v1/propertiesAPK',
+        property.toJson(),
+      );
       if (response.statusCode == 201) {
         await fetchProperties();
         return true;
@@ -47,7 +50,7 @@ class PropertyProvider with ChangeNotifier {
   Future<bool> updateProperty(int id, Property property) async {
     try {
       final response = await ApiService.put(
-        'properties/$id',
+        'v1/propertiesAPK/$id',
         property.toJson(),
       );
       if (response.statusCode == 200) {
@@ -62,7 +65,7 @@ class PropertyProvider with ChangeNotifier {
 
   Future<bool> deleteProperty(int id) async {
     try {
-      final response = await ApiService.delete('properties/$id');
+      final response = await ApiService.delete('v1/propertiesAPK/$id');
       if (response.statusCode == 200) {
         await fetchProperties();
         return true;

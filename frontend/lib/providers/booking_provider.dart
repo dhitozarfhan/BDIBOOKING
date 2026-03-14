@@ -15,7 +15,7 @@ class BookingProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await ApiService.get('bookings');
+      final response = await ApiService.get('v1/bookingsAPK');
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         _bookings = data.map((item) => Booking.fromJson(item)).toList();
@@ -30,7 +30,10 @@ class BookingProvider with ChangeNotifier {
 
   Future<bool> createBooking(Booking booking) async {
     try {
-      final response = await ApiService.post('bookings', booking.toJson());
+      final response = await ApiService.post(
+        'v1/bookingsAPK',
+        booking.toJson(),
+      );
       if (response.statusCode == 201) {
         await fetchBookings();
         return true;
@@ -45,7 +48,10 @@ class BookingProvider with ChangeNotifier {
 
   Future<bool> updateBooking(int id, Booking booking) async {
     try {
-      final response = await ApiService.put('bookings/$id', booking.toJson());
+      final response = await ApiService.put(
+        'v1/bookingsAPK/$id',
+        booking.toJson(),
+      );
       if (response.statusCode == 200) {
         await fetchBookings();
         return true;
@@ -58,7 +64,7 @@ class BookingProvider with ChangeNotifier {
 
   Future<bool> deleteBooking(int id) async {
     try {
-      final response = await ApiService.delete('bookings/$id');
+      final response = await ApiService.delete('v1/bookingsAPK/$id');
       if (response.statusCode == 200) {
         await fetchBookings();
         return true;
@@ -71,7 +77,7 @@ class BookingProvider with ChangeNotifier {
 
   Future<bool> cancelBooking(int id) async {
     try {
-      final response = await ApiService.put('bookings/$id', {
+      final response = await ApiService.put('v1/bookingsAPK/$id', {
         'status': 'cancelled',
       });
       if (response.statusCode == 200) {

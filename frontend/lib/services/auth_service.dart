@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   Future<Map<String, dynamic>> login(String email, String password) async {
-    final response = await ApiService.post('login', {
+    final response = await ApiService.post('v1/loginAPK', {
       'email': email,
       'password': password,
     });
@@ -30,7 +30,7 @@ class AuthService {
   }
 
   Future<void> logout() async {
-    await ApiService.post('logout', {});
+    await ApiService.post('v1/logoutAPK', {});
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');
     await prefs.remove('user');

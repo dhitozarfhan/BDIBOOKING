@@ -123,4 +123,9 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'user_apk_api_key' => env('USER_APK_API_KEY'),
+    'property_apk_api_key' => env('PROPERTY_APK_API_KEY'),
+    'property_type_apk_api_key' => env('PROPERTY_TYPE_APK_API_KEY'),
+    'booking_apk_api_key' => env('BOOKING_APK_API_KEY'),
+
 ];
