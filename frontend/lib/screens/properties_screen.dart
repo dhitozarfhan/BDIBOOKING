@@ -18,13 +18,11 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = Provider.of<PropertyProvider>(context, listen: false);
       provider.fetchProperties();
-      provider.fetchPropertyTypes();
     });
   }
 
   void _showFormDialog(BuildContext context, [Property? property]) {
     final provider = Provider.of<PropertyProvider>(context, listen: false);
-    final propertyTypes = provider.propertyTypes;
 
     final _nameController = TextEditingController(text: property?.name ?? '');
     final _descriptionController = TextEditingController(
@@ -38,7 +36,6 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
     );
     final _formKey = GlobalKey<FormState>();
 
-    int? _selectedTypeId = property?.propertyTypeId ?? (propertyTypes.isNotEmpty ? propertyTypes.first['id'] : null);
     String _selectedCategory = property?.category ?? 'kamar_inap';
     String _selectedStatus = property?.status ?? 'active';
 
@@ -61,26 +58,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      DropdownButtonFormField<int>(
-                        value: _selectedTypeId,
-                        decoration: const InputDecoration(
-                          labelText: 'Property Type',
-                          prefixIcon: Icon(Icons.category_outlined),
-                        ),
-                        items: propertyTypes
-                            .map(
-                              (t) => DropdownMenuItem<int>(
-                                value: t['id'],
-                                child: Text(t['name']),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (val) =>
-                            setState(() => _selectedTypeId = val),
-                        validator: (value) =>
-                            value == null ? 'Required' : null,
-                      ),
-                      const SizedBox(height: 16),
+                      // Category
                       DropdownButtonFormField<String>(
                         value: _selectedCategory,
                         decoration: const InputDecoration(
@@ -194,7 +172,6 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                     if (_formKey.currentState!.validate()) {
                       final newProperty = Property(
                         id: property?.id,
-                        propertyTypeId: _selectedTypeId,
                         category: _selectedCategory,
                         name: _nameController.text,
                         description: _descriptionController.text,
@@ -372,7 +349,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                 ],
                               ),
                               Text(
-                                property.propertyType ?? 'No Type',
+                                property.category?.replaceAll('_', ' ').toUpperCase() ?? 'NO CATEGORY',
                                 style: GoogleFonts.inter(
                                   fontSize: 12,
                                   color: Colors.blue.shade700,

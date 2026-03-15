@@ -18,12 +18,24 @@
 
                 {{-- Left Column: Info --}}
                 <div class="lg:col-span-2 space-y-6">
+                    {{-- Image Section --}}
+                    <div class="rounded-3xl overflow-hidden border border-base-200 shadow-sm bg-base-100">
+                        @if($property->image && count((array)$property->image) > 0)
+                            <img src="{{ Storage::url($property->image[0]) }}" alt="{{ $property->name }}" class="w-full h-auto object-cover max-h-[400px]" />
+                        @else
+                            <div class="w-full h-64 bg-gradient-to-br from-secondary/10 to-primary/10 flex items-center justify-center">
+                                <i class="bi bi-building text-7xl text-base-content/10"></i>
+                            </div>
+                        @endif
+                    </div>
+
                     {{-- Title & Badge --}}
                     <div>
-                        <div class="flex gap-2 mb-3">
-                            @if($property->propertyType)
-                                <span class="badge badge-secondary">{{ $property->propertyType->name }}</span>
-                            @endif
+                        <div class="flex flex-wrap items-center gap-2 mb-3">
+                            <span class="badge badge-secondary">{{ str_replace('_', ' ', ucfirst($property->category)) }}</span>
+                            <span class="badge badge-outline @if($property->available_rooms_count > 0) badge-success @else badge-error @endif">
+                                {{ $property->available_rooms_count }} Unit Tersedia
+                            </span>
                         </div>
                         <h1 class="text-3xl md:text-4xl font-bold text-base-content mb-4">{{ $property->name }}</h1>
                         @if($property->description)
@@ -46,7 +58,7 @@
                                     <span class="text-xs font-semibold uppercase text-base-content/50 block mb-2">Tipe Properti</span>
                                     <div class="flex items-center gap-2 text-sm font-medium">
                                         <i class="bi bi-building text-secondary"></i>
-                                        <span>{{ $property->propertyType->name ?? '-' }}</span>
+                                        <span>{{ str_replace('_', ' ', ucfirst($property->category)) }}</span>
                                     </div>
                                 </div>
 
@@ -91,7 +103,7 @@
                                         <i class="bi bi-building text-secondary"></i>
                                         <div>
                                             <span class="text-base-content/50 block text-xs">Tipe</span>
-                                            <span class="font-medium">{{ $property->propertyType->name ?? '-' }}</span>
+                                            <span class="font-medium">{{ str_replace('_', ' ', ucfirst($property->category)) }}</span>
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-3 text-sm">

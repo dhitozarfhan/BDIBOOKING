@@ -11,7 +11,6 @@ use App\Http\Controllers\Api\GratificationController;
 use App\Http\Controllers\Api\WbsController;
 use App\Http\Controllers\Api\ViolationController;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\PropertyTypeApkController;
 use App\Http\Controllers\Api\PropertyApkController;
 use App\Http\Controllers\Api\BookingApkController;
 use App\Http\Controllers\Api\RoomApkController;
@@ -84,7 +83,6 @@ Route::prefix('v1')->group(function () {
         Route::get('/profile', [AuthController::class, 'profile']);
 
         // Properties
-        Route::get('/property-types', [PropertyApkController::class, 'getTypes']);
         Route::get('/properties', [PropertyApkController::class, 'index']);
         Route::post('/properties', [PropertyApkController::class, 'store']);
         Route::get('/properties/{id}', [PropertyApkController::class, 'show']);

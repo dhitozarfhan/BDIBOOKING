@@ -2,7 +2,6 @@ import 'package:frontend/models/room.dart';
 
 class Property {
   final int? id;
-  final int? propertyTypeId;
   final String? category;
   final String name;
   final String? description;
@@ -13,13 +12,10 @@ class Property {
 
   final int? totalRooms;
   final int? availableRooms;
-  final String? propertyType;
   final List<Room>? rooms;
 
   Property({
     this.id,
-    this.propertyTypeId,
-    this.propertyType,
     this.category,
     required this.name,
     this.description,
@@ -35,8 +31,6 @@ class Property {
   factory Property.fromJson(Map<String, dynamic> json) {
     return Property(
       id: json['id'],
-      propertyTypeId: json['property_type_id'],
-      propertyType: json['property_type'] != null ? json['property_type']['name'] : null,
       category: json['category'],
       name: json['name'],
       description: json['description'],
@@ -54,7 +48,6 @@ class Property {
 
   Map<String, dynamic> toJson() {
     return {
-      'property_type_id': propertyTypeId,
       'category': category,
       'name': name,
       'description': description,

@@ -9,7 +9,7 @@ class Properti extends Component
 {
     public function render()
     {
-        $properties = Property::with('propertyType')->get();
+        $properties = Property::get();
 
         return view('livewire.pnbp.properti', [
             'properties' => $properties,

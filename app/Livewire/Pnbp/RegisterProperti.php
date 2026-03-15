@@ -13,13 +13,16 @@ class RegisterProperti extends Component
     public Property $property;
     public $isBooked = false;
     public int $quantity = 1;
+    public int $max_quantity = 1;
     public ?string $start_date = null;
     public ?string $end_date = null;
     public ?string $notes = null;
+    public int $total_days = 0;
+    public float $total_price = 0;
 
     public function mount($id, $slug = null)
     {
-        $this->property = Property::with('propertyType')->findOrFail($id);
+        $this->property = Property::findOrFail($id);
 
         if (!Auth::guard('participant')->check()) {
             session()->put('url.intended', request()->url());
@@ -31,6 +34,31 @@ class RegisterProperti extends Component
             ->where('bookable_id', $this->property->id)
             ->where('status', 'pending')
             ->exists();
+
+        $this->max_quantity = $this->property->total_rooms_count ?: 1;
+        $this->calculateTotalPrice();
+    }
+
+    public function updated($propertyName)
+    {
+        if (in_array($propertyName, ['start_date', 'end_date', 'quantity'])) {
+            $this->calculateTotalPrice();
+        }
+    }
+
+    public function calculateTotalPrice()
+    {
+        if ($this->start_date && $this->end_date) {
+            $start = \Carbon\Carbon::parse($this->start_date);
+            $end = \Carbon\Carbon::parse($this->end_date);
+            
+            // Renting for 1 day (e.g., today to today) should count as 1 day of rental
+            $this->total_days = max(1, $start->diffInDays($end) + 1);
+        } else {
+            $this->total_days = 0;
+        }
+
+        $this->total_price = $this->property->price * $this->total_days * $this->quantity;
     }
 
     public function submit()
@@ -54,8 +82,12 @@ class RegisterProperti extends Component
             'bookable_id' => $this->property->id,
             'booking_type' => $this->quantity > 1 ? 'batch' : 'individual',
             'quantity' => $this->quantity,
+            'total_price' => $this->total_price,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
+            'contact_name' => Auth::guard('participant')->user()->name,
+            'contact_email' => Auth::guard('participant')->user()->email,
+            'contact_phone' => Auth::guard('participant')->user()->phone,
             'status' => 'pending',
         ]);
 

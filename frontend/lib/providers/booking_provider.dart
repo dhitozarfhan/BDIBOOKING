@@ -90,4 +90,35 @@ class BookingProvider with ChangeNotifier {
     }
     return false;
   }
+
+  Future<bool> assignRoom(int bookingId, int roomId) async {
+    try {
+      final response = await ApiService.put('bookings/$bookingId', {
+        'status': 'in_use',
+        'assigned_room_id': roomId,
+      });
+      if (response.statusCode == 200) {
+        await fetchBookings();
+        return true;
+      }
+    } catch (e) {
+      print('Error assigning room: $e');
+    }
+    return false;
+  }
+
+  Future<bool> checkoutBooking(int bookingId) async {
+    try {
+      final response = await ApiService.put('bookings/$bookingId', {
+        'status': 'finished',
+      });
+      if (response.statusCode == 200) {
+        await fetchBookings();
+        return true;
+      }
+    } catch (e) {
+      print('Error checking out booking: $e');
+    }
+    return false;
+  }
 }

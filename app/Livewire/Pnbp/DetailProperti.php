@@ -11,7 +11,7 @@ class DetailProperti extends Component
 
     public function mount($id)
     {
-        $this->property = Property::with('propertyType')->findOrFail($id);
+        $this->property = Property::findOrFail($id);
     }
 
     public function render()

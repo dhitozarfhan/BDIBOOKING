@@ -26,12 +26,21 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach($properties as $property)
                         <div class="card bg-base-100 shadow-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300">
-                            <div class="card-body">
-                                <div class="flex gap-2 mb-2">
-                                    @if($property->propertyType)
-                                        <span class="badge badge-secondary badge-sm">{{ $property->propertyType->name }}</span>
-                                    @endif
+                             {{-- Image Section --}}
+                             <div class="relative h-48 overflow-hidden">
+                                @if($property->image && count((array)$property->image) > 0)
+                                    <img src="{{ Storage::url($property->image[0]) }}" alt="{{ $property->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                @else
+                                    <div class="w-full h-full bg-gradient-to-br from-secondary/10 to-primary/10 flex items-center justify-center">
+                                        <i class="bi bi-building text-5xl text-base-content/10"></i>
+                                    </div>
+                                @endif
+                                <div class="absolute top-3 left-3 flex gap-2">
+                                    <span class="badge badge-secondary badge-sm shadow-sm">{{ str_replace('_', ' ', ucfirst($property->category)) }}</span>
                                 </div>
+                            </div>
+
+                            <div class="card-body">
                                 <h2 class="card-title text-xl font-bold">{{ $property->name }}</h2>
                                 @if($property->description)
                                     <p class="text-sm text-gray-600 line-clamp-3">{{ $property->description }}</p>

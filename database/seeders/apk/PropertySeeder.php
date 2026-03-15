@@ -18,7 +18,7 @@ class PropertySeeder extends Seeder
         $classrooms = ['Borobudur', 'Prambanan', 'Mendut', 'Boko'];
         foreach ($classrooms as $room) {
             $rooms[] = [
-                'property_type_id' => 1,
+                'category' => 'kelas',
                 'name' => 'Ruang Kelas ' . $room,
                 'description' => 'Ruang Kelas ' . $room . ' di Gedung Utama BDI Yogyakarta.',
                 'capacity' => 30,
@@ -34,7 +34,7 @@ class PropertySeeder extends Seeder
         $VIPRooms = ['101','102','103','104','129','131','133','135'];
         foreach ($VIPRooms as $room) {
             $rooms[] = [
-                'property_type_id' => 3,
+                'category' => 'kamar_inap',
                 'name' => 'Room '.$room,
                 'description' => 'Kamar Type VIP - Kapasitas 1 Orang dengan fasilitas lengkap.',
                 'capacity' => 1,
@@ -53,7 +53,7 @@ class PropertySeeder extends Seeder
         ];
         foreach ($bed2Rooms as $room) {
             $rooms[] = [
-                'property_type_id' => 4,
+                'category' => 'kamar_inap',
                 'name' => 'Room '.$room,
                 'description' => 'Kamar Bed 2 - Kapasitas 2 Orang.',
                 'capacity' => 2,
@@ -74,7 +74,7 @@ class PropertySeeder extends Seeder
         ];
         foreach ($bed3Rooms as $room) {
             $rooms[] = [
-                'property_type_id' => 5,
+                'category' => 'kamar_inap',
                 'name' => 'Room '.$room,
                 'description' => 'Bed 3 - Kapasitas 3 Orang.',
                 'capacity' => 3,

@@ -25,30 +25,6 @@ class PropertyResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('property_type_id')
-                    ->relationship('propertyType', 'name')
-                    ->required()
-                    ->label('Property Type')
-                    ->createOptionForm([
-                        Forms\Components\TextInput::make('name')
-                            ->required()
-                            ->maxLength(255)
-                            ->unique('property_types', 'name')
-                            ->label('Nama Tipe Properti'),
-                        Forms\Components\Textarea::make('description')
-                            ->rows(3)
-                            ->label('Deskripsi'),
-                    ])
-                    ->editOptionForm([
-                        Forms\Components\TextInput::make('name')
-                            ->required()
-                            ->maxLength(255)
-                            ->unique('property_types', 'name', ignoreRecord: true)
-                            ->label('Nama Tipe Properti'),
-                        Forms\Components\Textarea::make('description')
-                            ->rows(3)
-                            ->label('Deskripsi'),
-                    ]),
                 Forms\Components\Select::make('category')
                     ->options([
                         'kamar_inap' => 'Kamar Inap',

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Property extends Model
 {
     protected $fillable = [
-        'property_type_id',
         'category',
         'name',
         'description',
@@ -22,10 +21,6 @@ class Property extends Model
         'image' => 'array',
     ];
 
-    public function propertyType()
-    {
-        return $this->belongsTo(PropertyType::class);
-    }
 
     public function rooms()
     {
@@ -35,5 +30,21 @@ class Property extends Model
     public function bookings()
     {
         return $this->morphMany(Booking::class, 'bookable');
+    }
+
+    /**
+     * Get the number of available rooms for this property.
+     */
+    public function getAvailableRoomsCountAttribute()
+    {
+        return $this->rooms()->where('status', 'available')->count();
+    }
+
+    /**
+     * Get the total number of rooms for this property.
+     */
+    public function getTotalRoomsCountAttribute()
+    {
+        return $this->rooms()->count();
     }
 }

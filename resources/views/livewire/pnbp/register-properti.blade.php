@@ -30,9 +30,7 @@
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div class="flex-1 min-w-0">
                             <div class="flex gap-2 mb-2">
-                                @if($property->propertyType)
-                                    <span class="badge badge-secondary badge-sm">{{ $property->propertyType->name }}</span>
-                                @endif
+                                <span class="badge badge-secondary badge-sm">{{ str_replace('_', ' ', ucfirst($property->category)) }}</span>
                             </div>
                             <h1 class="text-xl md:text-2xl font-bold text-base-content leading-tight mb-2">
                                 {{ $property->name }}
@@ -120,24 +118,25 @@
                                 class="w-12 h-12 rounded-xl bg-base-200/60 hover:bg-red-50 hover:text-red-600 text-base-content/60 flex items-center justify-center transition-all duration-200 text-xl font-bold border border-base-200/80 hover:border-red-200">
                             −
                         </button>
-                        <input type="number" wire:model.live="quantity" min="1"
+                        <input type="number" wire:model.live="quantity" min="1" max="{{ $max_quantity }}"
                                class="w-20 h-12 text-center text-xl font-bold rounded-xl border border-base-200/80 focus:border-secondary focus:ring-1 focus:ring-secondary bg-base-100 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
-                        <button type="button" wire:click="$set('quantity', {{ $quantity + 1 }})"
-                                class="w-12 h-12 rounded-xl bg-base-200/60 hover:bg-emerald-50 hover:text-emerald-600 text-base-content/60 flex items-center justify-center transition-all duration-200 text-xl font-bold border border-base-200/80 hover:border-emerald-200">
+                        <button type="button" wire:click="$set('quantity', {{ min($max_quantity, $quantity + 1) }})"
+                                class="w-12 h-12 rounded-xl bg-base-200/60 hover:bg-emerald-50 hover:text-emerald-600 text-base-content/60 flex items-center justify-center transition-all duration-200 text-xl font-bold border border-base-200/80 hover:border-emerald-200"
+                                @if($quantity >= $max_quantity) disabled @endif>
                             +
                         </button>
-                        <span class="text-sm text-base-content/50 ml-1">unit</span>
+                        <span class="text-sm text-base-content/50 ml-1">unit (Maks: {{ $max_quantity }})</span>
                     </div>
 
                     {{-- Total Price --}}
                     <div class="bg-gradient-to-br from-pink-50 to-secondary/10 rounded-2xl px-6 py-4 border border-secondary/20">
                         <span class="text-xs font-semibold uppercase tracking-wider text-secondary/60 block mb-1">Total Biaya</span>
                         <span class="text-2xl font-bold text-secondary">
-                            Rp {{ number_format($property->price * $quantity, 0, ',', '.') }}
+                            Rp {{ number_format($total_price, 0, ',', '.') }}
                         </span>
-                        @if($quantity > 1)
+                        @if($total_days > 0)
                             <span class="block text-xs text-secondary/60 mt-0.5">
-                                {{ $quantity }} × Rp {{ number_format($property->price, 0, ',', '.') }}
+                                {{ $total_days }} hari × {{ $quantity }} unit × Rp {{ number_format($property->price, 0, ',', '.') }}
                             </span>
                         @endif
                     </div>

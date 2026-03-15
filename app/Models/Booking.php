@@ -10,16 +10,27 @@ class Booking extends Model
     protected $fillable = [
         'id_booking',
         'customer_id',
+        'user_id',
         'bookable_id',
         'bookable_type',
         'assigned_room_id',
+        'contact_name',
+        'contact_email',
+        'contact_phone',
+        'institution',
+        'total_price',
         'booking_type',
         'quantity',
         'status',
         'start_date',
         'end_date',
+        'remember_token',
         'created_at',
         'updated_at',
+    ];
+
+    protected $hidden = [
+        'remember_token',
     ];
 
     protected static function boot()

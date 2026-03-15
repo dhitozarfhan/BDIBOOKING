@@ -16,6 +16,8 @@ class Booking {
   final String status;
   final DateTime startDate;
   final DateTime endDate;
+  final double? totalPrice;
+  final int? assignedRoomId;
   final Property? property;
   final Room? room;
   final User? user;
@@ -29,6 +31,7 @@ class Booking {
     this.contactEmail,
     this.contactPhone,
     this.institution,
+    this.totalPrice,
     this.bookingType,
     this.quantity,
     required this.status,
@@ -37,6 +40,7 @@ class Booking {
     this.property,
     this.room,
     this.user,
+    this.assignedRoomId,
   });
 
   factory Booking.fromJson(Map<String, dynamic> json) {
@@ -51,15 +55,17 @@ class Booking {
       contactEmail: json['contact_email'],
       contactPhone: json['contact_phone'],
       institution: json['institution'],
+      totalPrice: json['total_price'] != null ? double.tryParse(json['total_price'].toString()) : null,
       bookingType: json['booking_type'],
       quantity: json['quantity'],
-      status: json['status'],
+      status: json['status'] ?? 'scheduled',
       startDate: DateTime.parse(json['start_date']),
       endDate: DateTime.parse(json['end_date']),
+      assignedRoomId: json['assigned_room_id'],
       property: json['property'] != null
           ? Property.fromJson(json['property'])
           : null,
-      room: json['room'] != null ? Room.fromJson(json['room']) : null,
+      room: json['assigned_room'] != null ? Room.fromJson(json['assigned_room']) : null,
       user: json['user'] != null ? User.fromJson(json['user']) : null,
     );
   }
@@ -71,9 +77,11 @@ class Booking {
       'contact_email': contactEmail,
       'contact_phone': contactPhone,
       'institution': institution,
+      'total_price': totalPrice,
       'status': status,
       'start_date': startDate.toIso8601String(),
       'end_date': endDate.toIso8601String(),
+      'assigned_room_id': assignedRoomId,
     };
   }
 }

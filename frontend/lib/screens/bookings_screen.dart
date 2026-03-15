@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:frontend/models/booking.dart';
 import 'package:frontend/providers/booking_provider.dart';
 import 'package:frontend/providers/property_provider.dart';
+import 'package:frontend/providers/room_provider.dart';
 
 class BookingsScreen extends StatefulWidget {
   @override
@@ -340,19 +341,120 @@ class _BookingsScreenState extends State<BookingsScreen> {
     );
   }
 
+  void _showCheckInDialog(BuildContext context, Booking booking) {
+    if (booking.propertyId == null) return;
+
+    final roomProvider = Provider.of<RoomProvider>(context, listen: false);
+    roomProvider.fetchRooms(propertyId: booking.propertyId);
+
+    int? _selectedRoomId;
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text(
+            'Check-In: Assign Room',
+            style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          ),
+          content: Consumer<RoomProvider>(
+            builder: (context, provider, child) {
+              if (provider.isLoading) {
+                return const SizedBox(
+                  height: 100,
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+
+              final availableRooms = provider.rooms
+                  .where((r) => r.status == 'available')
+                  .toList();
+
+              if (availableRooms.isEmpty) {
+                return const Text(
+                  'No available rooms for this property. Please update room status or clean available rooms first.',
+                  style: TextStyle(color: Colors.red),
+                );
+              }
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Select an available room to assign to this booking:'),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<int>(
+                    decoration: const InputDecoration(
+                      labelText: 'Room Number',
+                      prefixIcon: Icon(Icons.door_front_door_outlined),
+                    ),
+                    items: availableRooms
+                        .map((r) => DropdownMenuItem(
+                              value: r.id,
+                              child: Text('Room ${r.roomNumber} (${r.floor ?? 'Floor ?'})'),
+                            ))
+                        .toList(),
+                    onChanged: (val) => _selectedRoomId = val,
+                  ),
+                ],
+              );
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (_selectedRoomId != null) {
+                  final success = await Provider.of<BookingProvider>(
+                    context,
+                    listen: false,
+                  ).assignRoom(booking.id!, _selectedRoomId!);
+
+                  Navigator.pop(ctx);
+                  if (success && mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Checked-In Successfully')),
+                    );
+                    Provider.of<PropertyProvider>(context, listen: false)
+                        .fetchProperties();
+                  }
+                }
+              },
+              child: const Text('Confirm Check-In'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildStatusBadge(String status) {
     Color bg;
     Color textColors;
 
-    if (status == 'scheduled') {
-      bg = const Color(0xFFDBEAFE); // blue-100
-      textColors = const Color(0xFF1E40AF); // blue-800
-    } else if (status == 'cancelled') {
-      bg = const Color(0xFFFEE2E2); // red-100
-      textColors = const Color(0xFF991B1B); // red-800
-    } else {
-      bg = const Color(0xFFE2E8F0); // slate-200
-      textColors = const Color(0xFF475569); // slate-700
+    switch (status) {
+      case 'scheduled':
+        bg = const Color(0xFFDBEAFE); // blue-100
+        textColors = const Color(0xFF1E40AF); // blue-800
+        break;
+      case 'in_use':
+        bg = const Color(0xFFDCFCE7); // green-100
+        textColors = const Color(0xFF166534); // green-800
+        break;
+      case 'finished':
+        bg = const Color(0xFFF3F4F6); // gray-100
+        textColors = const Color(0xFF374151); // gray-800
+        break;
+      case 'cancelled':
+        bg = const Color(0xFFFEE2E2); // red-100
+        textColors = const Color(0xFF991B1B); // red-800
+        break;
+      default:
+        bg = const Color(0xFFE2E8F0); // slate-200
+        textColors = const Color(0xFF475569); // slate-700
     }
 
     return Container(
@@ -362,7 +464,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
-        status.toUpperCase(),
+        status.toUpperCase().replaceAll('_', ' '),
         style: GoogleFonts.inter(
           fontSize: 11,
           fontWeight: FontWeight.bold,
@@ -515,17 +617,52 @@ class _BookingsScreenState extends State<BookingsScreen> {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              if (!isCancelled)
+                              if (booking.status == 'scheduled')
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.login_outlined,
+                                    color: Colors.green,
+                                  ),
+                                  tooltip: 'Check-In (Assign Room)',
+                                  onPressed: () => 
+                                      _showCheckInDialog(context, booking),
+                                ),
+                              if (booking.status == 'in_use')
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.logout_outlined,
+                                    color: Colors.blueGrey,
+                                  ),
+                                  tooltip: 'Check-Out (Finish)',
+                                  onPressed: () async {
+                                    final confirm = await showDialog<bool>(
+                                      context: context,
+                                      builder: (ctx) => AlertDialog(
+                                        title: const Text('Confirm Check-Out'),
+                                        content: const Text('Finish this booking and free the room?'),
+                                        actions: [
+                                          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('No')),
+                                          ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Yes, Checkout')),
+                                        ],
+                                      ),
+                                    );
+                                    if (confirm == true) {
+                                      await provider.checkoutBooking(booking.id!);
+                                      Provider.of<PropertyProvider>(context, listen: false).fetchProperties();
+                                    }
+                                  },
+                                ),
+                              if (booking.status == 'scheduled' || booking.status == 'in_use')
                                 IconButton(
                                   icon: const Icon(
                                     Icons.edit_outlined,
                                     color: Colors.blueAccent,
                                   ),
-                                  tooltip: 'Edit Schedule',
+                                  tooltip: 'Edit Details',
                                   onPressed: () =>
                                       _showFormDialog(context, booking),
                                 ),
-                              if (!isCancelled)
+                              if (booking.status == 'scheduled')
                                 IconButton(
                                   icon: const Icon(
                                     Icons.event_busy,

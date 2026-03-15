@@ -40,7 +40,19 @@ class ArchivePage extends Page
     //canAccess
     public static function canAccess(): bool
     {
-        return Auth::user()->hasPermissionTo(\App\Enums\PermissionType::Archives->value);
+        $user = Auth::user();
+
+        // Safeguard: if permissions are not yet seeded or user missing permission,
+        // simply hide this page from navigation instead of throwing an exception.
+        if (! $user) {
+            return false;
+        }
+
+        try {
+            return $user->hasPermissionTo(\App\Enums\PermissionType::Archives->value);
+        } catch (\Spatie\Permission\Exceptions\PermissionDoesNotExist $e) {
+            return false;
+        }
     }
 
     public function mount()

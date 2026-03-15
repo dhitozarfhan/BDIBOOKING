@@ -12,7 +12,7 @@ class PropertyApkController extends Controller
 
     public function index()
     {
-        $properties = Property::with('propertyType')->get()->map(function ($property) {
+        $properties = Property::with('rooms')->get()->map(function ($property) {
             $property->total_rooms = $property->rooms()->count();
             $property->available_rooms = $property->rooms()->where('status', 'available')->count();
             return $property;
@@ -20,16 +20,9 @@ class PropertyApkController extends Controller
         return $this->success($properties, 'Properties retrieved successfully');
     }
 
-    public function getTypes()
-    {
-        $types = \App\Models\PropertyType::all();
-        return $this->success($types, 'Property types retrieved successfully');
-    }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'property_type_id' => 'required|exists:property_types,id',
             'category' => 'required|string|in:kamar_inap,ruang_rapat,kelas,lainnya',
             'name' => 'required|string|max:255|unique:properties,name',
             'description' => 'nullable|string',
@@ -41,12 +34,12 @@ class PropertyApkController extends Controller
 
         $property = Property::create($validated);
 
-        return $this->success($property->load('propertyType'), 'Property created successfully', 201);
+        return $this->success($property->load('rooms'), 'Property created successfully', 201);
     }
 
     public function show($id)
     {
-        $property = Property::with(['propertyType', 'rooms'])->find($id);
+        $property = Property::with(['rooms'])->find($id);
 
         if (!$property) {
             return $this->error('Property not found', 404);
@@ -67,7 +60,6 @@ class PropertyApkController extends Controller
         }
 
         $validated = $request->validate([
-            'property_type_id' => 'sometimes|required|exists:property_types,id',
             'category' => 'sometimes|required|string|in:kamar_inap,ruang_rapat,kelas,lainnya',
             'name' => 'sometimes|required|string|max:255|unique:properties,name,' . $id,
             'description' => 'nullable|string',
@@ -79,7 +71,7 @@ class PropertyApkController extends Controller
 
         $property->update($validated);
 
-        return $this->success($property->load('propertyType'), 'Property updated successfully');
+        return $this->success($property->load('rooms'), 'Property updated successfully');
     }
 
     public function destroy($id)

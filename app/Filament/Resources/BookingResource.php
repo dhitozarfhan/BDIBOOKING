@@ -66,11 +66,11 @@ class BookingResource extends Resource
                             ->disabled(),
                         Forms\Components\Select::make('assigned_room_id')
                             ->label('Ruangan / Kamar')
-                            ->relationship('assignedRoom', 'name')
+                            ->relationship('assignedRoom', 'room_number')
                             ->searchable()
                             ->preload()
                             ->createOptionForm([
-                                Forms\Components\TextInput::make('name')
+                                Forms\Components\TextInput::make('room_number')
                                     ->required(),
                                 Forms\Components\Textarea::make('description'),
                             ]),
@@ -209,7 +209,7 @@ class BookingResource extends Resource
                 Tables\Columns\TextColumn::make('quantity')
                     ->label('Jumlah')
                     ->alignCenter(),
-                Tables\Columns\TextColumn::make('assignedRoom.name')
+                Tables\Columns\TextColumn::make('assignedRoom.room_number')
                     ->label('Ruangan')
                     ->placeholder('-'),
                 Tables\Columns\TextColumn::make('status')

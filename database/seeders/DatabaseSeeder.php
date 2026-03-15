@@ -40,6 +40,7 @@ class DatabaseSeeder extends Seeder
             NavigationSeeder::class,
 
             PnbpSeeder::class,
+            DatabaseBootstrapSeeder::class,
         ]);
     }
 }
