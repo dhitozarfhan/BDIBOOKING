@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PropertyTypeApkController;
 use App\Http\Controllers\Api\PropertyApkController;
 use App\Http\Controllers\Api\BookingApkController;
+use App\Http\Controllers\Api\RoomApkController;
 use App\Http\Controllers\Api\PropertyController;
 use App\Http\Controllers\Api\RoomController;
 use App\Http\Controllers\Api\BookingController;
@@ -76,13 +77,14 @@ Route::prefix('v1')->group(function () {
     // Unified Authentication
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/loginAPK', [AuthController::class, 'login']); // Backward compatibility
+    Route::post('/loginAPK', [AuthController::class, 'loginAPK']); // Points to bypass login method
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/profile', [AuthController::class, 'profile']);
 
         // Properties
+        Route::get('/property-types', [PropertyApkController::class, 'getTypes']);
         Route::get('/properties', [PropertyApkController::class, 'index']);
         Route::post('/properties', [PropertyApkController::class, 'store']);
         Route::get('/properties/{id}', [PropertyApkController::class, 'show']);
@@ -96,6 +98,13 @@ Route::prefix('v1')->group(function () {
         Route::get('/bookings/{id}', [BookingApkController::class, 'show']);
         Route::put('/bookings/{id}', [BookingApkController::class, 'update']);
         Route::delete('/bookings/{id}', [BookingApkController::class, 'destroy']);
+
+        // Rooms
+        Route::get('/rooms', [RoomApkController::class, 'index']);
+        Route::post('/rooms', [RoomApkController::class, 'store']);
+        Route::get('/rooms/{id}', [RoomApkController::class, 'show']);
+        Route::put('/rooms/{room}', [RoomApkController::class, 'update']);
+        Route::delete('/rooms/{room}', [RoomApkController::class, 'destroy']);
     });
 });
 

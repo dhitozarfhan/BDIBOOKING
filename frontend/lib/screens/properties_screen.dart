@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:frontend/models/property.dart';
 import 'package:frontend/providers/property_provider.dart';
+import 'package:frontend/screens/room_detail_screen.dart';
 
 class PropertiesScreen extends StatefulWidget {
   @override
@@ -15,11 +16,15 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<PropertyProvider>(context, listen: false).fetchProperties();
+      final provider = Provider.of<PropertyProvider>(context, listen: false);
+      provider.fetchProperties();
+      provider.fetchPropertyTypes();
     });
   }
 
   void _showFormDialog(BuildContext context, [Property? property]) {
+    final provider = Provider.of<PropertyProvider>(context, listen: false);
+    final propertyTypes = provider.propertyTypes;
 
     final _nameController = TextEditingController(text: property?.name ?? '');
     final _descriptionController = TextEditingController(
@@ -28,8 +33,14 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
     final _capacityController = TextEditingController(
       text: property?.capacity.toString() ?? '',
     );
+    final _priceController = TextEditingController(
+      text: property?.price?.toString() ?? '',
+    );
     final _formKey = GlobalKey<FormState>();
-    String _selectedStatus = property?.status ?? 'available';
+
+    int? _selectedTypeId = property?.propertyTypeId ?? (propertyTypes.isNotEmpty ? propertyTypes.first['id'] : null);
+    String _selectedCategory = property?.category ?? 'kamar_inap';
+    String _selectedStatus = property?.status ?? 'active';
 
     showDialog(
       context: context,
@@ -41,7 +52,7 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                 borderRadius: BorderRadius.circular(16),
               ),
               title: Text(
-                property == null ? 'Add Property Room' : 'Edit Property Room',
+                property == null ? 'Add Property' : 'Edit Property',
                 style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
               ),
               content: Form(
@@ -50,11 +61,49 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      DropdownButtonFormField<int>(
+                        value: _selectedTypeId,
+                        decoration: const InputDecoration(
+                          labelText: 'Property Type',
+                          prefixIcon: Icon(Icons.category_outlined),
+                        ),
+                        items: propertyTypes
+                            .map(
+                              (t) => DropdownMenuItem<int>(
+                                value: t['id'],
+                                child: Text(t['name']),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (val) =>
+                            setState(() => _selectedTypeId = val),
+                        validator: (value) =>
+                            value == null ? 'Required' : null,
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        value: _selectedCategory,
+                        decoration: const InputDecoration(
+                          labelText: 'Category',
+                          prefixIcon: Icon(Icons.label_outline),
+                        ),
+                        items: const [
+                          DropdownMenuItem(value: 'kamar_inap', child: Text('Kamar Inap')),
+                          DropdownMenuItem(value: 'ruang_rapat', child: Text('Ruang Rapat')),
+                          DropdownMenuItem(value: 'kelas', child: Text('Kelas')),
+                          DropdownMenuItem(value: 'lainnya', child: Text('Lainnya')),
+                        ],
+                        onChanged: (val) =>
+                            setState(() => _selectedCategory = val!),
+                        validator: (value) =>
+                            value == null ? 'Required' : null,
+                      ),
+                      const SizedBox(height: 16),
                       TextFormField(
                         controller: _nameController,
                         decoration: const InputDecoration(
-                          labelText: 'Room Name / Number',
-                          prefixIcon: Icon(Icons.meeting_room_outlined),
+                          labelText: 'Property Name',
+                          prefixIcon: Icon(Icons.home_work_outlined),
                         ),
                         validator: (value) =>
                             value == null || value.isEmpty ? 'Required' : null,
@@ -84,39 +133,48 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                                 if (value == null || value.isEmpty)
                                   return 'Required';
                                 if (int.tryParse(value) == null)
-                                  return 'Must be a number';
+                                  return 'Number';
                                 return null;
                               },
                             ),
                           ),
                           const SizedBox(width: 16),
                           Expanded(
-                            child: DropdownButtonFormField<String>(
-                              value: _selectedStatus,
+                            child: TextFormField(
+                              controller: _priceController,
                               decoration: const InputDecoration(
-                                labelText: 'Status',
+                                labelText: 'Price',
+                                prefixIcon: Icon(Icons.payments_outlined),
                               ),
-                              items: ['available', 'maintenance']
-                                  .map(
-                                    (s) => DropdownMenuItem(
-                                      value: s,
-                                      child: Text(
-                                        s.toUpperCase(),
-                                        style: TextStyle(
-                                          color: s == 'available'
-                                              ? Colors.green.shade700
-                                              : Colors.orange.shade700,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (val) =>
-                                  setState(() => _selectedStatus = val!),
+                              keyboardType: TextInputType.number,
+                              validator: (value) {
+                                if (value == null || value.isEmpty)
+                                  return 'Required';
+                                if (double.tryParse(value) == null)
+                                  return 'Number';
+                                return null;
+                              },
                             ),
                           ),
                         ],
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        value: _selectedStatus,
+                        decoration: const InputDecoration(
+                          labelText: 'Status',
+                          prefixIcon: Icon(Icons.info_outline),
+                        ),
+                        items: ['active', 'inactive']
+                            .map(
+                              (s) => DropdownMenuItem(
+                                value: s,
+                                child: Text(s.toUpperCase()),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (val) =>
+                            setState(() => _selectedStatus = val!),
                       ),
                     ],
                   ),
@@ -129,23 +187,19 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(ctx).pop(),
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(color: Colors.grey),
-                  ),
+                  child: const Text('Cancel'),
                 ),
                 ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      final provider = Provider.of<PropertyProvider>(
-                        context,
-                        listen: false,
-                      );
                       final newProperty = Property(
                         id: property?.id,
+                        propertyTypeId: _selectedTypeId,
+                        category: _selectedCategory,
                         name: _nameController.text,
                         description: _descriptionController.text,
                         capacity: int.parse(_capacityController.text),
+                        price: _priceController.text,
                         status: _selectedStatus,
                       );
 
@@ -162,14 +216,12 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
                       Navigator.of(ctx).pop();
                       if (success && mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Property Saved Successfully'),
-                          ),
+                          const SnackBar(content: Text('Property Saved')),
                         );
                       }
                     }
                   },
-                  child: const Text('Save Property'),
+                  child: const Text('Save'),
                 ),
               ],
             );
@@ -252,120 +304,184 @@ class _PropertiesScreenState extends State<PropertiesScreen> {
             itemCount: provider.properties.length,
             itemBuilder: (ctx, index) {
               final property = provider.properties[index];
-              return Card(
-                margin: const EdgeInsets.only(bottom: 12),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 60,
-                        width: 60,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFEFF6FF),
-                          borderRadius: BorderRadius.circular(12),
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RoomDetailScreen(property: property),
+                    ),
+                  ).then((_) {
+                    if (mounted) {
+                      Provider.of<PropertyProvider>(context, listen: false).fetchProperties();
+                    }
+                  });
+                },
+                child: Card(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 80,
+                          width: 80,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFEFF6FF),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              const Icon(
+                                Icons.home_work_outlined,
+                                size: 40,
+                                color: Color(0xFF3B82F6),
+                              ),
+                              Positioned(
+                                bottom: 4,
+                                child: Text(
+                                  property.category?.replaceAll('_', ' ').toUpperCase() ?? '',
+                                  style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.meeting_room,
-                          size: 32,
-                          color: Color(0xFF3B82F6),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    property.name,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: const Color(0xFF1E293B),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      property.name,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: const Color(0xFF1E293B),
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    overflow: TextOverflow.ellipsis,
                                   ),
+                                  _buildStatusBadge(property.status),
+                                ],
+                              ),
+                              Text(
+                                property.propertyType ?? 'No Type',
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  color: Colors.blue.shade700,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                                _buildStatusBadge(property.status),
-                              ],
+                              ),
+                              const SizedBox(height: 8),
+                              Wrap(
+                                spacing: 16,
+                                runSpacing: 8,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.groups, size: 16, color: Colors.grey),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        '${property.capacity} Pax',
+                                        style: GoogleFonts.inter(fontSize: 13, color: Colors.grey.shade700),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.meeting_room, size: 16, color: Colors.blueGrey),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        'Rooms: ${property.availableRooms ?? 0}/${property.totalRooms ?? 0}',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 13, 
+                                          color: Colors.blueGrey.shade700,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.payments, size: 16, color: Colors.green),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        'Rp ${property.price ?? '0'}',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 13,
+                                          color: Colors.green.shade700,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            IconButton(
+                              icon: const Icon(
+                                Icons.edit_outlined,
+                                color: Colors.blueAccent,
+                              ),
+                              onPressed: () => _showFormDialog(context, property),
+                              tooltip: 'Edit Property',
                             ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.groups,
-                                  size: 16,
-                                  color: Colors.grey,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'Capacity: ${property.capacity} Pax',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 13,
-                                    color: Colors.grey.shade700,
+                            IconButton(
+                              icon: const Icon(
+                                Icons.delete_outline,
+                                color: Colors.redAccent,
+                              ),
+                              onPressed: () async {
+                                final confirm = await showDialog<bool>(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    title: const Text('Confirm Deletion'),
+                                    content: Text(
+                                      'Permanently delete ${property.name}?',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(ctx).pop(false),
+                                        child: const Text('Cancel'),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () =>
+                                            Navigator.of(ctx).pop(true),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.red.shade600,
+                                        ),
+                                        child: const Text('Delete'),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                );
+                                if (confirm == true) {
+                                  await provider.deleteProperty(property.id!);
+                                }
+                              },
                             ),
                           ],
                         ),
-                      ),
-                      Column(
-                        children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.edit_outlined,
-                              color: Colors.blueAccent,
-                            ),
-                            onPressed: () => _showFormDialog(context, property),
-                            tooltip: 'Edit Property',
-                          ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.delete_outline,
-                              color: Colors.redAccent,
-                            ),
-                            onPressed: () async {
-                              final confirm = await showDialog<bool>(
-                                context: context,
-                                builder: (ctx) => AlertDialog(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  title: const Text('Confirm Deletion'),
-                                  content: Text(
-                                    'Permanently delete ${property.name}?',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(ctx).pop(false),
-                                      child: const Text('Cancel'),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () =>
-                                          Navigator.of(ctx).pop(true),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.red.shade600,
-                                      ),
-                                      child: const Text('Delete'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                              if (confirm == true) {
-                                await provider.deleteProperty(property.id!);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ).animate().fadeIn(delay: (40 * index).ms).slideX(begin: 0.05);

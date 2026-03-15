@@ -5,10 +5,25 @@ import 'package:frontend/services/api_service.dart';
 
 class PropertyProvider with ChangeNotifier {
   List<Property> _properties = [];
+  List<dynamic> _propertyTypes = [];
   bool _isLoading = false;
 
   List<Property> get properties => _properties;
+  List<dynamic> get propertyTypes => _propertyTypes;
   bool get isLoading => _isLoading;
+
+  Future<void> fetchPropertyTypes() async {
+    try {
+      final response = await ApiService.get('property-types');
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        _propertyTypes = responseData['data'];
+        notifyListeners();
+      }
+    } catch (e) {
+      print('Error fetching property types: $e');
+    }
+  }
 
   List<Property> get availableRooms =>
       _properties.where((p) => p.status == 'available').toList();
@@ -20,7 +35,8 @@ class PropertyProvider with ChangeNotifier {
     try {
       final response = await ApiService.get('properties');
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        final List<dynamic> data = responseData['data'];
         _properties = data.map((item) => Property.fromJson(item)).toList();
       }
     } catch (e) {

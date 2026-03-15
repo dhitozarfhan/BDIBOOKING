@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:frontend/providers/room_provider.dart';
+import 'package:frontend/models/room.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -22,6 +24,8 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<BookingProvider>(context, listen: false).fetchBookings();
+      Provider.of<RoomProvider>(context, listen: false)
+          .fetchRooms(propertyId: widget.property.id);
     });
   }
 
@@ -118,6 +122,60 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                 ],
               ),
             ).animate().fadeIn(duration: 400.ms).slideY(begin: -0.05),
+ 
+            // Room Inventory Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Room Inventory',
+                        style: GoogleFonts.poppins(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF1E293B),
+                        ),
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: () => _showRoomFormDialog(context),
+                        icon: const Icon(Icons.add, size: 18),
+                        label: const Text('Add Room'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          backgroundColor: const Color(0xFF3B82F6),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Consumer<RoomProvider>(
+                    builder: (ctx, roomProvider, _) {
+                      if (roomProvider.isLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      
+                      if (roomProvider.rooms.isEmpty) {
+                        return _buildEmptyState('No Rooms Added', 'Tap "Add Room" to create inventory.');
+                      }
+
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: roomProvider.rooms.length,
+                        itemBuilder: (ctx, index) {
+                          final room = roomProvider.rooms[index];
+                          return _buildRoomTile(room);
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
 
             // Booking History
             Padding(
@@ -315,6 +373,198 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                   ),
                 ],
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(String title, String subtitle) {
+    return Container(
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Center(
+        child: Column(
+          children: [
+            Icon(Icons.inventory_2_outlined, size: 48, color: Colors.grey.shade300),
+            const SizedBox(height: 16),
+            Text(
+              title,
+              style: GoogleFonts.inter(fontSize: 16, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              subtitle,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(fontSize: 14, color: Colors.grey.shade500),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoomTile(Room room) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: Colors.grey.shade200),
+      ),
+      child: ListTile(
+        title: Text(
+          'Room ${room.roomNumber}',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          room.floor != null ? 'Floor ${room.floor}' : 'Level: Unknown',
+          style: GoogleFonts.inter(fontSize: 12),
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildRoomStatusBadge(room.status),
+            const SizedBox(width: 8),
+            IconButton(
+              icon: const Icon(Icons.edit_outlined, size: 20, color: Colors.blue),
+              onPressed: () => _showRoomFormDialog(context, room: room),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete_outline, size: 20, color: Colors.red),
+              onPressed: () => _confirmDeleteRoom(room),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoomStatusBadge(String status) {
+    Color bg;
+    Color text;
+    switch (status) {
+      case 'available':
+        bg = Colors.green.shade50;
+        text = Colors.green.shade700;
+        break;
+      case 'use':
+        bg = Colors.blue.shade50;
+        text = Colors.blue.shade700;
+        break;
+      case 'maintenance':
+        bg = Colors.orange.shade50;
+        text = Colors.orange.shade700;
+        break;
+      case 'cleaned':
+        bg = Colors.purple.shade50;
+        text = Colors.purple.shade700;
+        break;
+      default:
+        bg = Colors.grey.shade50;
+        text = Colors.grey.shade700;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(8)),
+      child: Text(
+        status.toUpperCase(),
+        style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: text),
+      ),
+    );
+  }
+
+  void _confirmDeleteRoom(Room room) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Room'),
+        content: Text('Are you sure you want to delete Room ${room.roomNumber}?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await Provider.of<RoomProvider>(context, listen: false).deleteRoom(room.id!);
+    }
+  }
+
+  void _showRoomFormDialog(BuildContext context, {Room? room}) {
+    final isEditing = room != null;
+    final numberController = TextEditingController(text: room?.roomNumber);
+    final floorController = TextEditingController(text: room?.floor);
+    String selectedStatus = room?.status ?? 'available';
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: Text(isEditing ? 'Edit Room' : 'Add New Room'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: numberController,
+                  decoration: const InputDecoration(labelText: 'Room Number (e.g. 101)'),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: floorController,
+                  decoration: const InputDecoration(labelText: 'Floor (Optional)'),
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: selectedStatus,
+                  items: ['available', 'use', 'maintenance', 'cleaned']
+                      .map((s) => DropdownMenuItem(value: s, child: Text(s.toUpperCase())))
+                      .toList(),
+                  onChanged: (val) => setState(() => selectedStatus = val!),
+                  decoration: const InputDecoration(labelText: 'Status'),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+            ElevatedButton(
+              onPressed: () async {
+                if (numberController.text.isEmpty) return;
+
+                final roomData = Room(
+                  id: room?.id,
+                  propertyId: widget.property.id!,
+                  roomNumber: numberController.text,
+                  floor: floorController.text,
+                  status: selectedStatus,
+                );
+
+                final provider = Provider.of<RoomProvider>(context, listen: false);
+                bool success;
+                if (isEditing) {
+                  success = await provider.updateRoom(roomData);
+                } else {
+                  success = await provider.addRoom(roomData);
+                }
+
+                if (success) {
+                  Navigator.pop(ctx);
+                }
+              },
+              child: Text(isEditing ? 'Update' : 'Add Room'),
             ),
           ],
         ),

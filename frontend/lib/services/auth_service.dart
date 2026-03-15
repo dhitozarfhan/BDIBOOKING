@@ -5,15 +5,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   Future<Map<String, dynamic>> login(String email, String password) async {
-    final response = await ApiService.post('v1/loginAPK', {
-      'email': email,
+    final response = await ApiService.post('loginAPK', {
+      'username': email, // AuthController expects 'username' based on user's manual edit
       'password': password,
     });
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final token = data['access_token'];
-      final user = User.fromJson(data['user']);
+      // Unwrapping 'data' from the success response
+      final responseData = data['data'];
+      final token = responseData['token'];
+      final user = User.fromJson(responseData['user']);
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('auth_token', token);
@@ -30,7 +32,7 @@ class AuthService {
   }
 
   Future<void> logout() async {
-    await ApiService.post('v1/logoutAPK', {});
+    await ApiService.post('logout', {});
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');
     await prefs.remove('user');
@@ -43,5 +45,10 @@ class AuthService {
       return User.fromJson(jsonDecode(userStr));
     }
     return null;
+  }
+
+  static Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('auth_token');
   }
 }

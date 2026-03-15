@@ -36,6 +36,8 @@ class ControllerAuthApk extends Controller
         ]);
     }
 
+    
+
     /**
      * Logout bypass user
      */

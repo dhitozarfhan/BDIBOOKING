@@ -17,7 +17,8 @@ class BookingProvider with ChangeNotifier {
     try {
       final response = await ApiService.get('bookings');
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        final List<dynamic> data = responseData['data'];
         _bookings = data.map((item) => Booking.fromJson(item)).toList();
       }
     } catch (e) {

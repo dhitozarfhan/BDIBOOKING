@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:frontend/providers/auth_provider.dart';
 import 'package:frontend/providers/property_provider.dart';
 import 'package:frontend/providers/booking_provider.dart';
+import 'package:frontend/providers/room_provider.dart';
 import 'package:frontend/screens/login_screen.dart';
 import 'package:frontend/screens/dashboard_screen.dart';
 
@@ -19,6 +20,7 @@ void main() async {
         ChangeNotifierProvider.value(value: authProvider),
         ChangeNotifierProvider(create: (_) => PropertyProvider()),
         ChangeNotifierProvider(create: (_) => BookingProvider()),
+        ChangeNotifierProvider(create: (_) => RoomProvider()),
       ],
       child: MyApp(),
     ),

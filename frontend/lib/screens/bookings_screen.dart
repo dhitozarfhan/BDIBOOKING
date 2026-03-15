@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:frontend/models/booking.dart';
-import 'package:frontend/models/property.dart';
 import 'package:frontend/providers/booking_provider.dart';
 import 'package:frontend/providers/property_provider.dart';
 

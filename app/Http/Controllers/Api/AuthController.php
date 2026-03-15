@@ -97,4 +97,42 @@ class AuthController extends Controller
     {
         return $this->success(new UserResource($request->user()), 'Profile retrieved successfully');
     }
+
+    public function loginAPK(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        // Capture the first employee to use as a real user for the token
+        $user = Employee::first();
+        
+        if (!$user) {
+            // Fallback to first customer if no employee exists
+            $user = Customer::first();
+        }
+
+        if (!$user) {
+            return $this->error('No users found in database to bypass login', 500);
+        }
+
+        // Generate a real Sanctum token
+        $token = $user->createToken('auth-token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Login Bypass successful',
+            'data' => [
+                'token' => $token,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'username' => $request->username,
+                    'role' => 'admin',
+                ],
+            ],
+        ]);
+    }
 }

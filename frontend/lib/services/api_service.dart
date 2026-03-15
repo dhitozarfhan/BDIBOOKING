@@ -7,16 +7,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiService {
   static String get baseUrl {
     if (kIsWeb) {
-      return 'http://localhost:8000/api';
+      return 'http://127.0.0.1:8000/api/v1';
     }
     try {
       if (Platform.isAndroid) {
-        return 'http://10.0.2.2:8000/api';
+        return 'http://10.0.2.2:8000/api/v1';
       }
     } catch (e) {
       // Platform.isAndroid might throw on web
     }
-    return 'http://127.0.0.1:8000/api';
+    return 'http://127.0.0.1:8000/api/v1';
   }
 
   static Future<Map<String, String>> getHeaders() async {
@@ -33,19 +33,9 @@ class ApiService {
 
   static Future<http.Response> get(String endpoint) async {
     final headers = await getHeaders();
-    // Use v1 for specific endpoints if needed, or update baseUrl
-    String path = endpoint;
-    if ([
-      'properties',
-      'rooms',
-      'bookings',
-    ].contains(endpoint.split('/').first)) {
-      path = 'v1/$endpoint';
-    }
-
     try {
       return await http
-          .get(Uri.parse('$baseUrl/$path'), headers: headers)
+          .get(Uri.parse('$baseUrl/$endpoint'), headers: headers)
           .timeout(const Duration(seconds: 10));
     } catch (e) {
       return http.Response(

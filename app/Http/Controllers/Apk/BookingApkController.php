@@ -81,3 +81,4 @@ class BookingApkController extends Controller
         return response()->json(['message' => 'Booking deleted successfully']);
     }
 }
+
